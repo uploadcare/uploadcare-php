@@ -46,7 +46,7 @@ try {
             <p>Would you like to <a href="../sample-project">upload more</a>?</p>
         </div>
         <div class="hinted">
-        	<a href="<?php echo $file->getUrl(); ?>" target="_blank"><img src="<?php print $file->getResizedUrl(); ?>" /></a>
+        	<a href="<?php echo $file->getUrl(); ?>" target="_blank"><img src="<?php print $file->resize(400, 400)->getUrl(); ?>" /></a>
         </div>
     </li>
 </ul>
