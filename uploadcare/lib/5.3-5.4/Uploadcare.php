@@ -41,7 +41,7 @@ class Api
 	/**
 	 * Widget instance.
 	 * 
-	 * @var string
+	 * @var Widget
 	 **/
 	public $widget = null;
 	
