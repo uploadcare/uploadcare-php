@@ -31,32 +31,32 @@ Let's start with widgets.
 
 If you want to get Javascript's url for widget, just call:
 
-    print $api->widget->getJavascriptUrl()
+    print $api-&gt;widget-&gt;getJavascriptUrl()
 
-You can easily get all contents and <script> sections to include in your HTML:
+You can easily get all contents and &lt;script&gt; sections to include in your HTML:
     
-    <blockquote>
-    <head>
-    <?php print $api->widget->getInclude(); ?>
-    </head>
-    </blockquote>
+    &lt;blockquote&gt;
+    &lt;head&gt;
+    &lt;?php print $api-&gt;widget-&gt;getInclude(); ?&gt;
+    &lt;/head&gt;
+    &lt;/blockquote&gt;
 
 Or just this method to print:
 
-    <blockquote>
-    <head>
-    <?php $api->widget->printInclude(); ?>
-    </head>
-    </blockquote>
+    &lt;blockquote&gt;
+    &lt;head&gt;
+    &lt;?php $api-&gt;widget-&gt;printInclude(); ?&gt;
+    &lt;/head&gt;
+    &lt;/blockquote&gt;
     
 Create some form to use with widget:
 
-    <blockquote>
-    <form method="POST" action="upload.php">
-      <input type="hidden" role="uploadcare-uploader" name="qs-file" data-upload-url-base="" />
-      <input type="submit" value="Save!" />
-     </form>
-     </blockquote>
+    &lt;blockquote&gt;
+    &lt;form method="POST" action="upload.php"&gt;
+      &lt;input type="hidden" role="uploadcare-uploader" name="qs-file" data-upload-url-base="" /&gt;
+      &lt;input type="submit" value="Save!" /&gt;
+     &lt;/form&gt;
+     &lt;/blockquote&gt;
      
 You will see an Uploadcare widget. After selecting file the "file_id" parameter will be set as value of hidden field.
  
@@ -64,14 +64,14 @@ The last thing left is to store file:
  
     $file_id = $_POST['qs-file'];
     $api = new Uploadcare\Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
-    $file = $api->getFile($file_id);
-    $file->store();
+    $file = $api-&gt;getFile($file_id);
+    $file-&gt;store();
  
 Now you have an Uploadcare\File object to work with. You can show an image like this:
 
-    <blockquote>
-    <img src="<?php echo $file->getUrl(); ?>" />
-    </blockquote>
+    &lt;blockquote&gt;
+    &lt;img src="&lt;?php echo $file-&gt;getUrl(); ?&gt;" /&gt;
+    &lt;/blockquote&gt;
 
 ## API and requests
 
@@ -81,13 +81,13 @@ This will return an stdClass with information about urls you can request.
 
 This is not really valuable data.
 
-    $data = $api->request(API_TYPE_RAW);
+    $data = $api-&gt;request(API_TYPE_RAW);
 
 Lets request account info.
 
 This will return just some essential data inside stdClass such as: username, pub_key and email
 
-    $account_data = $api->request(API_TYPE_ACCOUNT);
+    $account_data = $api-&gt;request(API_TYPE_ACCOUNT);
 
 Now lets get file list.
 
@@ -108,7 +108,7 @@ Each files has:
 * mime_type
 * original_file_url
 
-    $files_raw = $api->request(API_TYPE_FILES);
+    $files_raw = $api-&gt;request(API_TYPE_FILES);
 
 Previous request is just some raw request and it will return raw data from json.
 
@@ -119,66 +119,67 @@ It will return an array of \Uploadcare\File objects to work with.
 This objects don't provide all the data like in previous request, but provides ways to display the file 
 and to use methods such as resize, crop, etc 
 
-    $files = $api->getFileList();
+    $files = $api-&gt;getFileList();
 
 If you have a file_id (for example, it's saved in your database) you can create object for file easily.
 
 Just use request below:
 
     $file_id = '5255b9dd-f790-425e-9fa9-8b49d4e64643';
-    $file = $api->getFile($file_id);
+    $file = $api-&gt;getFile($file_id);
 
 ## File operations
 
 Using object of \Uploadcare\File class we can get url for the file
 
-    echo $file->getUrl();
+    echo $file-&gt;getUrl();
 
 Now let's do some crop.
+
     $width = 400;
     $height = 400;
     $is_center = true;
     $fill_color = 'ff0000';
-    echo $file->crop($width, $height, $is_center, $fill_color)->getUrl();
+    echo $file-&gt;crop($width, $height, $is_center, $fill_color)-&gt;getUrl();
 
 And here's some resize with width and height
 
-    echo $file->resize($width, $height)->getUrl();
+    echo $file-&gt;resize($width, $height)-&gt;getUrl();
 
 Width only
 
-    echo $file->resize($width)->getUrl();
+    echo $file-&gt;resize($width)-&gt;getUrl();
 
 Height only
 
-    echo $file->resize(false, $height)->getUrl();
+    echo $file-&gt;resize(false, $height)-&gt;getUrl();
 
 We can also use scale crop
     
-    echo $file->scaleCrop($width, $height, $is_center)->getUrl();
+    echo $file-&gt;scaleCrop($width, $height, $is_center)-&gt;getUrl();
 
 And we can apply some effects.
 
-    echo $file->applyFlip()->getUrl();
-    echo $file->applyGrayscale()->getUrl();
-    echo $file->applyInvert()->getUrl();
-    echo $file->applyMirror()->getUrl();
+    echo $file-&gt;applyFlip()-&gt;getUrl();
+    echo $file-&gt;applyGrayscale()-&gt;getUrl();
+    echo $file-&gt;applyInvert()-&gt;getUrl();
+    echo $file-&gt;applyMirror()-&gt;getUrl();
 
 We can apply more than one effect!
 
-    echo $file->applyFlip()->applyInvert()->getUrl();
+    echo $file-&gt;applyFlip()-&gt;applyInvert()-&gt;getUrl();
 
 We can combine operations, not just effects.
 
 Just chain methods and finish but calling "getUrl()".
 
-    echo $file->resize(false, $height)->crop(100, 100)->applyFlip()->applyInvert()->getUrl();
+    echo $file-&gt;resize(false, $height)-&gt;crop(100, 100)-&gt;applyFlip()-&gt;applyInvert()-&gt;getUrl();
 
 The way you provide operations matters.
 
 We can see the same operations below, but result will be a little bit different because of order:
 
-    echo $file->crop(100, 100)->resize(false, $height)->applyFlip()->applyInvert()->getUrl();
+    echo $file-&gt;crop(100, 100)-&gt;resize(false, $height)-&gt;applyFlip()-&gt;applyInvert()-&gt;getUrl();
 
 ## Uploading files
 Let's have some fun with uploading files.
@@ -187,35 +188,35 @@ First of all, we can upload file from url. Just use construction below.
 
 This will return Uploadcare\File instance.
 
-    $file = $api->uploader->fromUrl('http://www.baysflowers.co.nz/Images/tangerine-delight.jpg');
-    $file->store();
+    $file = $api-&gt;uploader-&gt;fromUrl('http://www.baysflowers.co.nz/Images/tangerine-delight.jpg');
+    $file-&gt;store();
 
 You can do any operations with this file now.
     
-    echo $file->applyFlip()->getUrl();
+    echo $file-&gt;applyFlip()-&gt;getUrl();
 
 You can upload file from path.
 
-    $file = $api->uploader->fromPath(dirname(__FILE__).'/test.jpg');
-    $file->store();
-    echo $file->applyFlip()->getUrl();
+    $file = $api-&gt;uploader-&gt;fromPath(dirname(__FILE__).'/test.jpg');
+    $file-&gt;store();
+    echo $file-&gt;applyFlip()-&gt;getUrl();
 
 Or even just use a file pointer.
 
     $fp = fopen(dirname(__FILE__).'/test.jpg', 'r');
-    $file = $api->uploader->fromResource($fp);
-    $file->store();
-    echo $file->applyFlip()->getUrl();
+    $file = $api-&gt;uploader-&gt;fromResource($fp);
+    $file-&gt;store();
+    echo $file-&gt;applyFlip()-&gt;getUrl();
 
 The last thing you can do is upload a file just from it's contents. But you will have to provide mime-type.
 
     $content = "This is some text I want to upload";
-    $file = $api->uploader->fromContent($content, 'text/plain');
-    $file->store();
-    echo $file->getUrl();
+    $file = $api-&gt;uploader-&gt;fromContent($content, 'text/plain');
+    $file-&gt;store();
+    echo $file-&gt;getUrl();
 
 If you want to delete file, just call delete() method on Uploadcare\File object.
     
-    $file->delete();
+    $file-&gt;delete();
 
 [1]: https://uploadcare.com/
