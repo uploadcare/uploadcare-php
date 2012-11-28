@@ -35,28 +35,28 @@ If you want to get Javascript's url for widget, just call:
 
 You can easily get all contents and <script> sections to include in your HTML:
     
-    ```html
+    <blockquote>
     <head>
     <?php print $api->widget->getInclude(); ?>
     </head>
-    ```
+    </blockquote>
 
 Or just this method to print:
 
-    ```html
+    <blockquote>
     <head>
     <?php $api->widget->printInclude(); ?>
     </head>
-    ```
+    </blockquote>
     
 Create some form to use with widget:
 
-    ```html
+    <blockquote>
     <form method="POST" action="upload.php">
       <input type="hidden" role="uploadcare-uploader" name="qs-file" data-upload-url-base="" />
       <input type="submit" value="Save!" />
      </form>
-     ```
+     </blockquote>
      
 You will see an Uploadcare widget. After selecting file the "file_id" parameter will be set as value of hidden field.
  
@@ -69,9 +69,9 @@ The last thing left is to store file:
  
 Now you have an Uploadcare\File object to work with. You can show an image like this:
 
-    ```html
+    <blockquote>
     <img src="<?php echo $file->getUrl(); ?>" />
-    ```
+    </blockquote>
 
 ## API and requests
 
