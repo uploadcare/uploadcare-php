@@ -35,26 +35,32 @@ If you want to get Javascript's url for widget, just call:
 
 You can easily get all contents and <script> sections to include in your HTML:
     
+    ```html
     <head>
     <?php print $api->widget->getInclude(); ?>
     </head>
+    ```
 
 Or just this method to print:
 
+    ```html
     <head>
     <?php $api->widget->printInclude(); ?>
     </head>
+    ```
     
 Create some form to use with widget:
 
+    ```html
     <form method="POST" action="upload.php">
       <input type="hidden" role="uploadcare-uploader" name="qs-file" data-upload-url-base="" />
       <input type="submit" value="Save!" />
      </form>
+     ```
      
- You will see an Uploadcare widget. After selecting file the "file_id" parameter will be set as value of hidden field.
+You will see an Uploadcare widget. After selecting file the "file_id" parameter will be set as value of hidden field.
  
- The last thing left is to store file:
+The last thing left is to store file:
  
     $file_id = $_POST['qs-file'];
     $api = new Uploadcare\Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
@@ -63,7 +69,9 @@ Create some form to use with widget:
  
 Now you have an Uploadcare\File object to work with. You can show an image like this:
 
+    ```html
     <img src="<?php echo $file->getUrl(); ?>" />
+    ```
 
 ## API and requests
 
@@ -87,18 +95,18 @@ This request will return stdClass with all files uploaded and some information a
 
 Each files has:
 
-- size
-- upload_date
-- last_keep_claim
-- on_s3
-- made_public
-- url
-- is_image
-- file_id
-- original_filename
-- removed
-- mime_type
-- original_file_url
+* size
+* upload_date
+* last_keep_claim
+* on_s3
+* made_public
+* url
+* is_image
+* file_id
+* original_filename
+* removed
+* mime_type
+* original_file_url
 
     $files_raw = $api->request(API_TYPE_FILES);
 
