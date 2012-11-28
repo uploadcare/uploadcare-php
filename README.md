@@ -1,6 +1,6 @@
 # Uploadcare PHP
 
-This is a set of libraries to user with [Uploadcare][1].
+This is a set of libraries to work with [Uploadcare][1].
 
 ## Install
 
@@ -87,18 +87,18 @@ This request will return stdClass with all files uploaded and some information a
 
 Each files has:
 
-* size
-* upload_date
-* last_keep_claim
-* on_s3
-* made_public
-* url
-* is_image
-* file_id
-* original_filename
-* removed
-* mime_type
-* original_file_url
+- size
+- upload_date
+- last_keep_claim
+- on_s3
+- made_public
+- url
+- is_image
+- file_id
+- original_filename
+- removed
+- mime_type
+- original_file_url
 
 
     $files_raw = $api->request(API_TYPE_FILES);
