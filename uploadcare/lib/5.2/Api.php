@@ -1,7 +1,5 @@
 <?php
-namespace Uploadcare;
-
-class Api
+class Uploadcare_Api
 {
 	/**
 	 * Uploadcare public key
@@ -25,16 +23,16 @@ class Api
 	private $api_host = 'api.uploadcare.com';
 
 	/**
-	 * Widget instance.
+	 * Uploadcare_Widget instance.
 	 *
-	 * @var Widget
+	 * @var Uploadcare_Widget
 	 **/
 	public $widget = null;
 	
 	/**
-	 * Uploader instance
+	 * Uploadcare_Uploader instance
 	 * 
-	 * @var Uploader
+	 * @var Uploadcare_Uploader
 	 **/
 	public $uploader = null;
 	
@@ -56,8 +54,8 @@ class Api
 	{
 		$this->public_key = $public_key;
 		$this->secret_key = $secret_key;
-		$this->widget = new Widget($this);
-		$this->uploader = new Uploader($this);
+		$this->widget = new Uploadcare_Widget($this);
+		$this->uploader = new Uploadcare_Uploader($this);
 	}
 
 	/**
@@ -71,7 +69,7 @@ class Api
 	}
 
 	/**
-	 * Return an array of File objects to work with.
+	 * Return an array of Uploadcare_File objects to work with.
 	 *
 	 * @return array
 	 **/
@@ -81,7 +79,7 @@ class Api
 		$files_raw = (array)$data->results;
 		$result = array();
 		foreach ($files_raw as $file_raw) {
-			$result[] = new File($file_raw->file_id, $this);
+			$result[] = new Uploadcare_File($file_raw->file_id, $this);
 		}
 		return $result;
 	}
@@ -107,11 +105,11 @@ class Api
 		$ch_info = curl_getinfo($ch);
 		if ($request_type == REQUEST_TYPE_DELETE) {
 			if ($ch_info['http_code'] != 204) {
-				throw new \Exception('Request returned unexpected http code '.$ch_info['http_code'].'. '.$data);
+				throw new Exception('Request returned unexpected http code '.$ch_info['http_code'].'. '.$data);
 			}			
 		} else {
 			if ($ch_info['http_code'] != 200) {
-				throw new \Exception('Request returned unexpected http code '.$ch_info['http_code'].'. '.$data);
+				throw new Exception('Request returned unexpected http code '.$ch_info['http_code'].'. '.$data);
 			}
 		}
 		curl_close($ch);
@@ -151,16 +149,16 @@ class Api
 				return sprintf('https://%s/files/', $this->api_host);
 			case API_TYPE_STORE:
 				if (array_key_exists(UC_PARAM_FILE_ID, $params) == false) {
-					throw new \Exception('Please provide "store_id" param for request');
+					throw new Exception('Please provide "store_id" param for request');
 				}
 				return sprintf('https://%s/files/%s/storage/', $this->api_host, $params['file_id']);
 			case API_TYPE_FILE:
 				if (array_key_exists(UC_PARAM_FILE_ID, $params) == false) {
-					throw new \Exception('Please provide "store_id" param for request');
+					throw new Exception('Please provide "store_id" param for request');
 				}				
 				return sprintf('https://%s/files/%s/', $this->api_host, $params['file_id']);
 			default:
-				throw new \Exception('No api url type is provided for request. Use store, or appropriate constants.');
+				throw new Exception('No api url type is provided for request. Use store, or appropriate constants.');
 		}
 	}
 
@@ -194,7 +192,7 @@ class Api
 				curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'OPTIONS');
 				break;
 			default:
-				throw new \Exception('No request type is provided for request. Use post, put, delete, get or appropriate constants.');
+				throw new Exception('No request type is provided for request. Use post, put, delete, get or appropriate constants.');
 		}
 	}
 
@@ -219,13 +217,13 @@ class Api
 	}
 
 	/**
-	 * Get object of File class by file_id
+	 * Get object of Uploadcare_File class by file_id
 	 *
 	 * @param string $file_id Uploadcare file_id
-	 * @return File
+	 * @return Uploadcare_File
 	 **/
 	public function getFile($file_id)
 	{
-		return new File($file_id, $this);
+		return new Uploadcare_File($file_id, $this);
 	}
 }
