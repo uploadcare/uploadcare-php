@@ -18,10 +18,18 @@ Just include one file to start using Uploadcare inside your PHP project and use 
 
     require_once '../uploadcare/lib/5.3-5.4/Uploadcare.php';
     use \Uploadcare;
+    
+If you are using PHP 5.2+, then you should include Uploadcare PHP libraries like this:
+
+    require_once '../uploadcare/lib/5.2/Uploadcare.php';
 
 Now, we are ready. Create an object of Uploadcare\Api class:
     
     $api = new Uploadcare\Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
+    
+For PHP 5.2 it will be:
+  
+    $api = new Uploadcare_Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
 
 This is a main object your should work with. It has everything you need.
 
