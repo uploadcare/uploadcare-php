@@ -60,28 +60,12 @@ class File
 
 	/**
 	 * Try to store file.
-	 * If $check_status is true is will user Uploader to check if file is uploaded and not in progress.
 	 *
 	 * @param boolean $check_status Check upload status?
 	 * @return array
 	 **/
-	public function store($check_status = false, $timeout = 1, $max_attempts = 5)
+	public function store()
 	{
-		if ($check_status) {
-			$success = false;
-			$attempts = 0;
-			while (!$success) {
-				$data = $this->api->uploader->status($this->file_id);
-				if ($data->status == 'success') {
-					$success = true;
-				}
-				if ($attempts == $max_attempts) {
-					throw new \Exception('Cannot store file, max attempts reached, upload is not successful');
-				}
-				sleep($timeout);
-				$attempts++;
-			}
-		}
 		return $this->api->request(API_TYPE_STORE, REQUEST_TYPE_POST, array('file_id' => $this->file_id));
 	}
 	

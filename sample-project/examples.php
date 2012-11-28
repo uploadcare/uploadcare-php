@@ -68,10 +68,10 @@ $files_raw = $api->request(API_TYPE_FILES);
 $files = $api->getFileList();
 
 /**
- * If you have a file_id (for example, it's saved it your database) you can create object for file easily.
+ * If you have a file_id (for example, it's saved in your database) you can create object for file easily.
  * Just user request below
  */
-$file_id = $files[0]->getFileId();
+$file_id = '5255b9dd-f790-425e-9fa9-8b49d4e64643';
 $file = $api->getFile($file_id);
 
 /**
@@ -142,7 +142,6 @@ echo $file->crop(100, 100)->resize(false, $height)->applyFlip()->applyInvert()->
  * This will return File instance.
  */
 $file = $api->uploader->fromUrl('http://www.baysflowers.co.nz/Images/tangerine-delight.jpg');
-$status = $api->uploader->status($file->getFileId());
 
 /**
  * File must be uploaded, but it's not stored yet. 
@@ -188,5 +187,4 @@ echo $file->getUrl()."\n";
 /**
  * Lets delete the last file.
  */
-$result = $file->delete();
-var_dump($result);
+$file->delete();

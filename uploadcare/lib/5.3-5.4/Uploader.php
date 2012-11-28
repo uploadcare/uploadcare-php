@@ -32,10 +32,10 @@ class Uploader
 	 * @param string $file_id 
 	 * @return array
 	 **/
-	public function status($file_id)
+	public function status($token)
 	{		
 		$data = array(
-				'token' => $file_id,
+				'token' => $token,
 		);
 		$ch = $this->__initRequest('status', $data);
 		$this->__setHeaders($ch);
@@ -49,7 +49,7 @@ class Uploader
 	 * @param string $url An url of file to be uploaded.
 	 * @return File
 	 **/
-	public function fromUrl($url)
+	public function fromUrl($url, $check_status = true, $timeout = 1, $max_attempts = 5)
 	{
 		$data = array(
 				'_' => time(),
@@ -60,7 +60,27 @@ class Uploader
 		$this->__setHeaders($ch);
 
 		$data = $this->__runRequest($ch);
-		$file_id = $data->token;
+		$token = $data->token;
+		
+		if ($check_status) {
+			$success = false;
+			$attempts = 0;
+			while (!$success) {
+				$data = $this->status($token);
+				if ($data->status == 'success') {
+					$success = true;
+				}
+				if ($attempts == $max_attempts) {
+					throw new \Exception('Cannot store file, max attempts reached, upload is not successful');
+				}
+				sleep($timeout);
+				$attempts++;
+			}
+		} else {
+			$data = $this->status($token);
+		}		
+		$file_id = $data->file_id;
+		
 		return new File($file_id, $this->api);
 	}
 	
