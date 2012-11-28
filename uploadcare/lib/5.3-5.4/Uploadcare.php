@@ -16,3 +16,4 @@ define('UC_PARAM_FILE_ID', 'file_id');
 require_once 'Api.php';
 require_once 'File.php';
 require_once 'Widget.php';
+require_once 'Uploader.php';

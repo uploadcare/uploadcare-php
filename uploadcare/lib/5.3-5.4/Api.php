@@ -30,6 +30,20 @@ class Api
 	 * @var Widget
 	 **/
 	public $widget = null;
+	
+	/**
+	 * Uploader instance
+	 * 
+	 * @var Uploader
+	 **/
+	public $uploader = null;
+	
+	/**
+	 * Uploadcare library version
+	 * 
+	 * @var string
+	 **/
+	public $version = '1.0.0/5.3';
 
 	/**
 	 * Constructor
@@ -43,6 +57,7 @@ class Api
 		$this->public_key = $public_key;
 		$this->secret_key = $secret_key;
 		$this->widget = new Widget($this);
+		$this->uploader = new Uploader($this);
 	}
 
 	/**
@@ -91,6 +106,8 @@ class Api
 		$data = curl_exec($ch);
 		$ch_info = curl_getinfo($ch);
 		if ($ch_info['http_code'] != 200) {
+			var_dump($data);
+			var_dump($ch_info);
 			throw new \Exception('Request returned unexpected http code '.$ch_info['http_code'].'. '.$data);
 		}
 		curl_close($ch);
@@ -125,9 +142,9 @@ class Api
 			case API_TYPE_RAW:
 				return sprintf('https://%s/', $this->api_host);
 			case API_TYPE_ACCOUNT:
-				return sprintf('http://%s/account/', $this->api_host);
+				return sprintf('https://%s/account/', $this->api_host);
 			case API_TYPE_FILES:
-				return sprintf('http://%s/files/', $this->api_host);
+				return sprintf('https://%s/files/', $this->api_host);
 			case API_TYPE_STORE:
 				if (array_key_exists(UC_PARAM_FILE_ID, $params) == false) {
 					throw new \Exception('Please provide "store_id" param for request');
@@ -180,15 +197,16 @@ class Api
 	 **/
 	private function __setHeaders($ch)
 	{
+		$headers = array(
+				sprintf('Host: %s', $this->api_host),
+				sprintf('Authorization: Uploadcare.Simple %s:%s', $this->public_key, $this->secret_key),
+				'Content-Type: application/json',
+				'Content-Length: 0',
+				'User-Agent: PHP Uploadcare Module '.$this->version,
+				sprintf('Date: %s', date('Y-m-d H:i:s')),
+		);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-		sprintf('Host: %s', $this->api_host),
-		sprintf('Authorization: Uploadcare.Simple %s:%s', $this->public_key, $this->secret_key),
-		'Content-Type: application/json',
-		'Content-Length: 0',
-		'User-Agent: PHP Uploadcare Module',
-		sprintf('Date: %s', date('Y-m-d H:i:s')),
-		));
+		curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 	}
 
 	/**

@@ -137,5 +137,50 @@ echo $file->crop(100, 100)->resize(false, $height)->applyFlip()->applyInvert()->
 
 /**
  * Ok, it's everything with operations.
- * Let's have some fun with storing files.
+ * Let's have some fun with uploading files.
+ * First of all, we can upload file from url. Just use construction below.
+ * This will return File instance.
  */
+$file = $api->uploader->fromUrl('http://www.baysflowers.co.nz/Images/tangerine-delight.jpg');
+$status = $api->uploader->status($file->getFileId());
+
+/**
+ * File must be uploaded, but it's not stored yet. 
+ * Let's store it.
+ * We user true flag to be sure that file is uploaded.
+ **/
+try {
+	$file->store(true);	
+} catch (Exception $e) {
+	echo $e->getMessage()."\n";
+	echo nl2br($e->getTraceAsString())."\n";	
+}
+
+/**
+ * We can do any operations with this file now.
+ **/
+echo $file->applyFlip()->getUrl()."\n";
+
+/**
+ * We can upload file from path
+ * */
+$file = $api->uploader->fromPath(dirname(__FILE__).'/test.jpg');
+$file->store();
+echo $file->applyFlip()->getUrl()."\n";
+
+/**
+ * Or even just use a file pointer.
+ **/
+$fp = fopen(dirname(__FILE__).'/test.jpg', 'r');
+$file = $api->uploader->fromResource($fp);
+$file->store();
+echo $file->applyFlip()->getUrl()."\n";
+
+/**
+ * The last thing you can do is upload a file just from it's contents. But you will have to provide 
+ * mime-type.
+ */
+$content = "This is some text I want to upload";
+$file = $api->uploader->fromContent($content, 'text/plain');
+$file->store();
+echo $file->getUrl()."\n";
