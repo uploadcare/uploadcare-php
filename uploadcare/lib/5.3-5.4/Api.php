@@ -105,10 +105,14 @@ class Api
 
 		$data = curl_exec($ch);
 		$ch_info = curl_getinfo($ch);
-		if ($ch_info['http_code'] != 200) {
-			var_dump($data);
-			var_dump($ch_info);
-			throw new \Exception('Request returned unexpected http code '.$ch_info['http_code'].'. '.$data);
+		if ($request_type == REQUEST_TYPE_DELETE) {
+			if ($ch_info['http_code'] != 204) {
+				throw new \Exception('Request returned unexpected http code '.$ch_info['http_code'].'. '.$data);
+			}			
+		} else {
+			if ($ch_info['http_code'] != 200) {
+				throw new \Exception('Request returned unexpected http code '.$ch_info['http_code'].'. '.$data);
+			}
 		}
 		curl_close($ch);
 		return json_decode($data);
@@ -150,6 +154,11 @@ class Api
 					throw new \Exception('Please provide "store_id" param for request');
 				}
 				return sprintf('https://%s/files/%s/storage/', $this->api_host, $params['file_id']);
+			case API_TYPE_FILE:
+				if (array_key_exists(UC_PARAM_FILE_ID, $params) == false) {
+					throw new \Exception('Please provide "store_id" param for request');
+				}				
+				return sprintf('https://%s/files/%s/', $this->api_host, $params['file_id']);
 			default:
 				throw new \Exception('No api url type is provided for request. Use store, or appropriate constants.');
 		}

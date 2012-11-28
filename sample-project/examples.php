@@ -184,3 +184,9 @@ $content = "This is some text I want to upload";
 $file = $api->uploader->fromContent($content, 'text/plain');
 $file->store();
 echo $file->getUrl()."\n";
+
+/**
+ * Lets delete the last file.
+ */
+$result = $file->delete();
+var_dump($result);

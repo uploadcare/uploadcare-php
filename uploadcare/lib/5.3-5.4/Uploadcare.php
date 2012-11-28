@@ -3,6 +3,7 @@ define('API_TYPE_STORE', 'store');
 define('API_TYPE_RAW', 'raw');
 define('API_TYPE_ACCOUNT', 'account');
 define('API_TYPE_FILES', 'files');
+define('API_TYPE_FILE', 'file');
 
 define('REQUEST_TYPE_POST', 'post');
 define('REQUEST_TYPE_PUT', 'put');

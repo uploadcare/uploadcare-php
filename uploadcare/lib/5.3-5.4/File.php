@@ -72,7 +72,6 @@ class File
 			$attempts = 0;
 			while (!$success) {
 				$data = $this->api->uploader->status($this->file_id);
-				var_dump($data);
 				if ($data->status == 'success') {
 					$success = true;
 				}
@@ -83,7 +82,17 @@ class File
 				$attempts++;
 			}
 		}
-		$this->api->request(API_TYPE_STORE, REQUEST_TYPE_POST, array('file_id' => $this->file_id));
+		return $this->api->request(API_TYPE_STORE, REQUEST_TYPE_POST, array('file_id' => $this->file_id));
+	}
+	
+	/**
+	 * Delete file
+	 * 
+	 * @return array
+	 **/
+	public function delete()
+	{
+		return $this->api->request(API_TYPE_FILE, REQUEST_TYPE_DELETE, array('file_id' => $this->file_id));
 	}
 
 	/**
