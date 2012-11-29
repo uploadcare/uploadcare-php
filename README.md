@@ -50,7 +50,7 @@ You can easily get all contents and &lt;script&gt; sections to include in your H
 Create some form to use with widget:
 
     <form method="POST" action="upload.php">
-      <input type="hidden" role="uploadcare-uploader" name="qs-file" data-upload-url-base="" />
+      <?php echo $api->widget->getInputTag('qs-file', array('attr' => 1)); ?>
       <input type="submit" value="Save!" />
      </form>
      

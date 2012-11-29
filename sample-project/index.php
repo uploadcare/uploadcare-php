@@ -38,7 +38,7 @@ $uc_handler = new Uploadcare\Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
         </div>
         <div class="hinted">
         		<form method="POST" action="upload.php" id="uc_form">
-            	<input type="hidden" role="uploadcare-uploader" name="qs-file" data-upload-url-base="" />
+        			<?php echo $uc_handler->widget->getInputTag('qs-file', array('attr' => 1)); ?>
             	<input type="submit" value="Save!" />
             </form>
             <p id="uc_form_nofile_hint" style="display: none; margin-top: 20px; color: #ff0033;">

@@ -53,5 +53,20 @@ class Widget
 		}
 		return sprintf('https://ucarecdn.com/widget/%s/uploadcare/uploadcare-%s.min.js', $version, $version);
 	}
-
+	
+	/**
+	 * Gets input tag to use with widget
+	 * 
+	 * @param string $name Input name
+	 * @param array $attribs Custom attributes to include
+	 * @return string
+	 **/
+	public function getInputTag($name, $attribs = array())
+	{
+		$to_compile = array();
+		foreach ($attribs as $key => $value) {
+			$to_compile[] = sprintf('%s="%s"', $key, $value);
+		}
+		return sprintf('<input type="hidden" role="uploadcare-uploader" name="%s" data-upload-url-base="" %s />', $name, join(' ', $to_compile));
+	}
 }
