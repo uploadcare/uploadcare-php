@@ -131,6 +131,11 @@ echo $file->resize(false, $height)->crop(100, 100)->effect('flip')->effect('inve
 echo $file->crop(100, 100)->resize(false, $height)->effect('flip')->effect('invert')->getUrl()."\n";
 
 /**
+ * You can find more about operations here:
+ * https://uploadcare.com/documentation/reference/basic/cdn.html
+ */
+
+/**
  * Ok, it's everything with operations.
  * Let's have some fun with uploading files.
  * First of all, we can upload file from url. Just use construction below.

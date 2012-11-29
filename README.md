@@ -229,6 +229,8 @@ We can see the same operations below, but result will be a little bit different 
 
     echo $file->crop(100, 100)->resize(false, $height)->effect('flip')->effect('invert')->getUrl();
 
+[More information on file operations can be found here][2]
+
 ## Uploading files
 Let's have some fun with uploading files.
 
@@ -355,3 +357,4 @@ Checks text file is uploaded correctly.
 Checks for file deletions. No exceptions must be thrown.
 
 [1]: https://uploadcare.com/
+[2]: https://uploadcare.com/documentation/reference/basic/cdn.html
