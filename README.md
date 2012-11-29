@@ -234,9 +234,13 @@ You can run any custom operations like this:
     echo $file->op('effect/flip');
     echo $file->op('resize/400x400')->op('effect/flip');
     
-You can call getUrl with postfix parameter. This is will add some readable postfix.
+You can call getUrl with postfix parameter. This is will add some readable postfix.  
   
     echo $file->getUrl('image.jpg');    
+    
+The result will be like this one:
+
+    http://ucarecdn.com/85b5644f-e692-4855-9db0-8c5a83096e25/-/crop/970x500/center/he.jpg
 
 [More information on file operations can be found here][2]
 
