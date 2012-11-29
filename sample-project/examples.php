@@ -137,6 +137,11 @@ echo $file->op('effect/flip')."\n";
 echo $file->op('resize/400x400')->op('effect/flip')."\n";
 
 /**
+ * You can call getUrl with postfix parameter. This is will add some readable postfix.
+ */
+echo $file->getUrl('image.jpg')."\n";
+
+/**
  * You can find more about operations here:
  * https://uploadcare.com/documentation/reference/basic/cdn.html
  */

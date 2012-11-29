@@ -233,6 +233,10 @@ You can run any custom operations like this:
 
     echo $file->op('effect/flip');
     echo $file->op('resize/400x400')->op('effect/flip');
+    
+You can call getUrl with postfix parameter. This is will add some readable postfix.
+  
+    echo $file->getUrl('image.jpg');    
 
 [More information on file operations can be found here][2]
 

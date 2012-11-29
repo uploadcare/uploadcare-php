@@ -105,9 +105,10 @@ class Uploadcare_File
 	/**
 	 * Get url of original image
 	 *
+	 * @param string $postfix
 	 * @return string
 	 **/
-	public function getUrl()
+	public function getUrl($postfix = null)
 	{
 		$url = sprintf('https://%s/%s/', $this->cdn_host, $this->file_id);
 
@@ -145,9 +146,9 @@ class Uploadcare_File
 
 		if (count($operations)) {
 			$operations_part = join('/-/', $operations);
-			return $url.'-/'.$operations_part.'/';
+			return $url.'-/'.$operations_part.'/'.$postfix;
 		} else {
-			return $url;
+			return $url.$postfix;
 		}
 	}
 
