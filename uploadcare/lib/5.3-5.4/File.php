@@ -66,6 +66,14 @@ class File
 	}	
 	
 	/**
+	 * @return string
+	 **/
+	public function __toString()
+	{
+		return $this->getUrl();
+	}
+	
+	/**
 	 * Return file_id for this file
 	 *
 	 * @return string

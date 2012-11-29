@@ -66,6 +66,10 @@ The last thing left is to store file:
 Now you have an Uploadcare\File object to work with. You can show an image like this:
 
     <img src="<?php echo $file->getUrl(); ?>" />
+    
+Or just:
+
+    <img src="<?php echo $file; ?>" />
 
 ## API and requests
 

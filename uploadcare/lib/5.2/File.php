@@ -62,6 +62,14 @@ class Uploadcare_File
 			return $this->cached_data;
 		}
 	}
+	
+	/**
+	 * @return string
+	 **/
+	public function __toString()
+	{
+		return $this->getUrl();
+	}	
 
 	/**
 	 * Return file_id for this file
