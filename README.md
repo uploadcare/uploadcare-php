@@ -229,6 +229,11 @@ We can see the same operations below, but result will be a little bit different 
 
     echo $file->crop(100, 100)->resize(false, $height)->effect('flip')->effect('invert')->getUrl();
 
+You can run any custom operations like this:
+
+    echo $file->op('effect/flip');
+    echo $file->op('resize/400x400')->op('effect/flip');
+
 [More information on file operations can be found here][2]
 
 ## Uploading files

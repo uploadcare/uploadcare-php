@@ -131,6 +131,12 @@ echo $file->resize(false, $height)->crop(100, 100)->effect('flip')->effect('inve
 echo $file->crop(100, 100)->resize(false, $height)->effect('flip')->effect('invert')->getUrl()."\n";
 
 /**
+ * You can run any custom operations like this:
+ */
+echo $file->op('effect/flip')."\n";
+echo $file->op('resize/400x400')->op('effect/flip')."\n";
+
+/**
  * You can find more about operations here:
  * https://uploadcare.com/documentation/reference/basic/cdn.html
  */

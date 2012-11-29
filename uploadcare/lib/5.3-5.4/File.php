@@ -136,6 +136,9 @@ class File
 					case 'effect':
 						$part = $this->__addPartEffect($part, $operation_params);
 						break;
+					case 'custom':
+						$part = array($operation_params);
+						break;						
 				}
 				$part_str = join('/', $part);
 				$operations[] = $part_str;
@@ -225,6 +228,18 @@ class File
 		$result->operations[]['effect'] = $effect;
 		return $result;
 	}
+	
+	/**
+	 * Add any custom operation.
+	 *
+	 * @param string $operation
+	 **/
+	public function op($operation)
+	{
+		$result = clone $this;
+		$result->operations[]['custom'] = $operation;
+		return $result;
+	}	
 
 	/**
 	 * Adds part with size for operations
