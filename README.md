@@ -154,8 +154,7 @@ There's a better way to handle all the files by using method below.
 
 It will return an array of \Uploadcare\File objects to work with.
 
-This objects don't provide all the data like in previous request, but provides ways to display the file 
-and to use methods such as resize, crop, etc 
+This objects provide ways to display the file and to use methods such as resize, crop, etc 
 
     $files = $api->getFileList();
 
@@ -165,6 +164,13 @@ Just use request below:
 
     $file_id = '5255b9dd-f790-425e-9fa9-8b49d4e64643';
     $file = $api->getFile($file_id);
+
+You can access raw data like this:
+
+    $file->data['size'];
+    
+Trying to access "data" parameter will fire GET request to get all that data once. 
+It will be a cached array if you will try to access "data" parameter again.
 
 ## File operations
 

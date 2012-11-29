@@ -35,6 +35,13 @@ class File
 	 * Operations list
 	 **/
 	private $operation_list = array('crop', 'resize', 'scale_crop', 'effect');
+	
+	/**
+	 * Cached data
+	 *
+	 * @var array
+	 **/
+	private $cached_data = null;	
 
 	/**
 	 * Constructs an object for CDN file with specified ID
@@ -48,6 +55,16 @@ class File
 		$this->api = $api;
 	}
 
+	public function __get($name)
+	{
+		if ($name == 'data') {
+			if (!$this->cached_data) {
+				$this->cached_data = (array)$this->api->request(API_TYPE_FILE, REQUEST_TYPE_GET, array('file_id' => $this->file_id));
+			}
+			return $this->cached_data;
+		}
+	}	
+	
 	/**
 	 * Return file_id for this file
 	 *
