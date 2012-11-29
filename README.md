@@ -39,20 +39,14 @@ Let's start with widgets.
 
 If you want to get Javascript's url for widget, just call:
 
-    print $api->widget->getJavascriptUrl()
+    print $api->widget->getScriptSrc()
 
 You can easily get all contents and &lt;script&gt; sections to include in your HTML:
     
     <head>
-    <?php print $api->widget->getInclude(); ?>
+    <?php print $api->widget->getScriptTag(); ?>
     </head>
 
-Or just this method to print:
-
-    <head>
-    <?php $api->widget->printInclude(); ?>
-    </head>
-    
 Create some form to use with widget:
 
     <form method="POST" action="upload.php">
