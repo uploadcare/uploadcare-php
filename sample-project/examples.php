@@ -13,17 +13,12 @@ $api = new Uploadcare\Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
  * Let's start with widgets.
  * You can get widget url by using this:
  * */
-print $api->widget->getJavascriptUrl()."\n";
+print $api->widget->getScriptSrc()."\n";
 
 /**
  * You can just use method below to get all the code to insert widget
  */
-print $api->widget->getInclude()."\n";
-
-/**
- * Or just this method to print
- */
-$api->widget->printInclude()."\n";
+print $api->widget->getScriptTag()."\n";
 
 /**
  * Ok, lets do some requests. This is request to index (http://api.uploadcare.com).

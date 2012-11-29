@@ -30,19 +30,11 @@ class Uploadcare_Widget
 	 * @param string $version Uploadcare version
 	 * @return string
 	 **/
-	public function getInclude($version = null)
+	public function getScriptTag($version = null)
 	{
 		$result = sprintf('<script>UPLOADCARE_PUBLIC_KEY = "%s";</script>', $this->api->getPublicKey());
-		$result .= sprintf('<script async="async" src="%s"></script>', $this->getJavascriptUrl($version));
+		$result .= sprintf('<script async="async" src="%s"></script>', $this->getScriptSrc($version));
 		return $result;
-	}
-
-	/**
-	 * Echoes <script> sections to include Uploadcare widget
-	 **/
-	public function printInclude($version = null)
-	{
-		echo $this->getInclude($version);
 	}
 
 	/**
@@ -52,7 +44,7 @@ class Uploadcare_Widget
 	 * @param string $version Version of Uploadcare.com widget
 	 * @return string
 	 **/
-	public function getJavascriptUrl($version = null)
+	public function getScriptSrc($version = null)
 	{
 		if (!$version) {
 			$version = $this->version;

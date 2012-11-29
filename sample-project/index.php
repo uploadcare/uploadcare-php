@@ -12,7 +12,7 @@ $uc_handler = new Uploadcare\Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
 <link href="//ucarecdn.com/assets/application-68fbe95c430b7646b16aef33e1ad2824.css" media="screen" rel="stylesheet" type="text/css" />
 <link href="https://fonts.googleapis.com/css?family=PT+Sans:400,700,400italic|PT+Sans+Caption&amp;subset=latin,cyrillic" media="screen" rel="stylesheet" type="text/css" />
 <script src="//ucarecdn.com/assets/application-241564109602bb3ae298c344abff83a7.js" type="text/javascript"></script>
-<?php $uc_handler->widget->printInclude(); ?>
+<?php echo $uc_handler->widget->getScriptTag(); ?>
 </head>
 <body class='welcome quick_start docs'>
 <div class='wrap'>
