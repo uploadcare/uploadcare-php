@@ -204,26 +204,26 @@ We can also use scale crop
 
 And we can apply some effects.
 
-    echo $file->applyFlip()->getUrl();
-    echo $file->applyGrayscale()->getUrl();
-    echo $file->applyInvert()->getUrl();
-    echo $file->applyMirror()->getUrl();
+    echo $file->effect('flip')->getUrl();
+    echo $file->effect('grayscale')->getUrl();
+    echo $file->effect('invert')->getUrl();
+    echo $file->effect('mirror')->getUrl();
 
 We can apply more than one effect!
 
-    echo $file->applyFlip()->applyInvert()->getUrl();
+    echo $file->effect('flip')->effect('invert')->getUrl();
 
 We can combine operations, not just effects.
 
 Just chain methods and finish but calling "getUrl()".
 
-    echo $file->resize(false, $height)->crop(100, 100)->applyFlip()->applyInvert()->getUrl();
+    echo $file->resize(false, $height)->crop(100, 100)->effect('flip')->effect('invert')->getUrl();
 
 The way you provide operations matters.
 
 We can see the same operations below, but result will be a little bit different because of order:
 
-    echo $file->crop(100, 100)->resize(false, $height)->applyFlip()->applyInvert()->getUrl();
+    echo $file->crop(100, 100)->resize(false, $height)->effect('flip')->effect('invert')->getUrl();
 
 ## Uploading files
 Let's have some fun with uploading files.
@@ -237,20 +237,20 @@ This will return Uploadcare\File instance.
 
 You can do any operations with this file now.
     
-    echo $file->applyFlip()->getUrl();
+    echo $file->effect('flip')->getUrl();
 
 You can upload file from path.
 
     $file = $api->uploader->fromPath(dirname(__FILE__).'/test.jpg');
     $file->store();
-    echo $file->applyFlip()->getUrl();
+    echo $file->effect('flip')->getUrl();
 
 Or even just use a file pointer.
 
     $fp = fopen(dirname(__FILE__).'/test.jpg', 'r');
     $file = $api->uploader->fromResource($fp);
     $file->store();
-    echo $file->applyFlip()->getUrl();
+    echo $file->effect('flip')->getUrl();
 
 The last thing you can do is upload a file just from it's contents. But you will have to provide mime-type.
 

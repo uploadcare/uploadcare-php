@@ -204,52 +204,17 @@ class Uploadcare_File
 	}
 
 	/**
-	 * Apply flip effect
+	 * Apply effect
 	 *
-	 * @return Uploadcare_File
+	 * @param string $effect Effect name
+	 * @return File
 	 **/
-	public function applyFlip()
+	public function effect($effect)
 	{
 		$result = clone $this;
-		$result->operations[]['effect'] = 'flip';
+		$result->operations[]['effect'] = $effect;
 		return $result;
-	}
-
-	/**
-	 * Apply grayscale effect
-	 *
-	 * @return Uploadcare_File
-	 **/
-	public function applyGrayscale()
-	{
-		$result = clone $this;
-		$result->operations[]['effect'] = 'grayscale';
-		return $result;
-	}
-
-	/**
-	 * Apply invert effect
-	 *
-	 * @return Uploadcare_File
-	 **/
-	public function applyInvert()
-	{
-		$result = clone $this;
-		$result->operations[]['effect'] = 'invert';
-		return $result;
-	}
-
-	/**
-	 * Apply mirror effect
-	 *
-	 * @return Uploadcare_File
-	 **/
-	public function applyMirror()
-	{
-		$result = clone $this;
-		$result->operations[]['effect'] = 'mirror';
-		return $result;
-	}
+	}	
 
 	/**
 	 * Adds part with size for operations

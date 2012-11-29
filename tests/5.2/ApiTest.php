@@ -227,15 +227,15 @@ class ApiTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals($file->scaleCrop(400, 400)->getUrl(), 'https://ucarecdn.com/4bd3a897-f489-4b9f-b643-961b1c9f657e/-/scale_crop/400x400/');
 		$this->assertEquals($file->scaleCrop(400, 400, true)->getUrl(), 'https://ucarecdn.com/4bd3a897-f489-4b9f-b643-961b1c9f657e/-/scale_crop/400x400/center/');
 		
-		$this->assertEquals($file->applyFlip()->getUrl(), 'https://ucarecdn.com/4bd3a897-f489-4b9f-b643-961b1c9f657e/-/effect/flip/');
-		$this->assertEquals($file->applyGrayscale()->getUrl(), 'https://ucarecdn.com/4bd3a897-f489-4b9f-b643-961b1c9f657e/-/effect/grayscale/');
-		$this->assertEquals($file->applyInvert()->getUrl(), 'https://ucarecdn.com/4bd3a897-f489-4b9f-b643-961b1c9f657e/-/effect/invert/');
-		$this->assertEquals($file->applyMirror()->getUrl(), 'https://ucarecdn.com/4bd3a897-f489-4b9f-b643-961b1c9f657e/-/effect/mirror/');
+		$this->assertEquals($file->effect('flip')->getUrl(), 'https://ucarecdn.com/4bd3a897-f489-4b9f-b643-961b1c9f657e/-/effect/flip/');
+		$this->assertEquals($file->effect('grayscale')->getUrl(), 'https://ucarecdn.com/4bd3a897-f489-4b9f-b643-961b1c9f657e/-/effect/grayscale/');
+		$this->assertEquals($file->effect('invert')->getUrl(), 'https://ucarecdn.com/4bd3a897-f489-4b9f-b643-961b1c9f657e/-/effect/invert/');
+		$this->assertEquals($file->effect('mirror')->getUrl(), 'https://ucarecdn.com/4bd3a897-f489-4b9f-b643-961b1c9f657e/-/effect/mirror/');
 		
-		$this->assertEquals($file->applyFlip()->applyMirror()->getUrl(), 'https://ucarecdn.com/4bd3a897-f489-4b9f-b643-961b1c9f657e/-/effect/flip/-/effect/mirror/');
-		$this->assertEquals($file->applyMirror()->applyFlip()->getUrl(), 'https://ucarecdn.com/4bd3a897-f489-4b9f-b643-961b1c9f657e/-/effect/mirror/-/effect/flip/');
+		$this->assertEquals($file->effect('flip')->effect('mirror')->getUrl(), 'https://ucarecdn.com/4bd3a897-f489-4b9f-b643-961b1c9f657e/-/effect/flip/-/effect/mirror/');
+		$this->assertEquals($file->effect('mirror')->effect('flip')->getUrl(), 'https://ucarecdn.com/4bd3a897-f489-4b9f-b643-961b1c9f657e/-/effect/mirror/-/effect/flip/');
 		
-		$this->assertEquals($file->resize(400, 400)->scaleCrop(200, 200, true)->applyMirror()->getUrl(), 'https://ucarecdn.com/4bd3a897-f489-4b9f-b643-961b1c9f657e/-/resize/400x400/-/scale_crop/200x200/center/-/effect/mirror/');
+		$this->assertEquals($file->resize(400, 400)->scaleCrop(200, 200, true)->effect('mirror')->getUrl(), 'https://ucarecdn.com/4bd3a897-f489-4b9f-b643-961b1c9f657e/-/resize/400x400/-/scale_crop/200x200/center/-/effect/mirror/');
 	}
 	
 	/**
