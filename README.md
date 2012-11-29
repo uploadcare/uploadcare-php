@@ -234,6 +234,22 @@ This will return Uploadcare\File instance.
 
     $file = $api->uploader->fromUrl('http://www.baysflowers.co.nz/Images/tangerine-delight.jpg');
     $file->store();
+    
+By using default params of "fromUrl" method you tell Uploader to check file to be uploaded.
+
+By default, Uploader will make 5 checks max with 1 second wait. You can change these params:
+
+    $file = $api->uploader->fromUrl('http://www.baysflowers.co.nz/Images/tangerine-delight.jpg', true, $timeout, $max_attempts);
+    
+If file is not uploaded an Exception will be thrown.
+
+You can just get token and check status manually later any time:
+
+    $token = $api->uploader->fromUrl('http://www.baysflowers.co.nz/Images/tangerine-delight.jpg', false);
+    $status_array = $api->uploader->status($token);
+    if ($data->status == 'success') {
+      // do smth
+    }
 
 You can do any operations with this file now.
     
