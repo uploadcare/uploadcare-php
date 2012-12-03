@@ -265,7 +265,7 @@ If file is not uploaded an Exception will be thrown.
 You can just get token and check status manually later any time:
 
     $token = $api->uploader->fromUrl('http://www.baysflowers.co.nz/Images/tangerine-delight.jpg', false);
-    $status_array = $api->uploader->status($token);
+    $data = $api->uploader->status($token);
     if ($data->status == 'success') {
       $file_id = $data->file_id
       // do smth with a file
