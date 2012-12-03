@@ -39,24 +39,18 @@ Let's start with widgets.
 
 If you want to get Javascript's url for widget, just call:
 
-    print $api->widget->getJavascriptUrl()
+    print $api->widget->getScriptSrc()
 
 You can easily get all contents and &lt;script&gt; sections to include in your HTML:
     
     <head>
-    <?php print $api->widget->getInclude(); ?>
+    <?php print $api->widget->getScriptTag(); ?>
     </head>
 
-Or just this method to print:
-
-    <head>
-    <?php $api->widget->printInclude(); ?>
-    </head>
-    
 Create some form to use with widget:
 
     <form method="POST" action="upload.php">
-      <input type="hidden" role="uploadcare-uploader" name="qs-file" data-upload-url-base="" />
+      <?php echo $api->widget->getInputTag('qs-file'); ?>
       <input type="submit" value="Save!" />
      </form>
      
@@ -72,8 +66,24 @@ The last thing left is to store file:
 Now you have an Uploadcare\File object to work with. You can show an image like this:
 
     <img src="<?php echo $file->getUrl(); ?>" />
+    
+Or just:
+
+    <img src="<?php echo $file; ?>" />
+    
+Or you can even call a getImgTag method. This will return a prepared <img> tag:
+
+    echo $file->getImgTag('image.jpg', array('alt' => 'Image'));
 
 ## API and requests
+
+You can do any simple request if you like by calling:
+
+    $api->request($method, $path, $data = array(), $headers = array());
+    
+Don't forget, that each API url has it's own allowed methods.
+
+If method is not allowed exceptions will be thrown.
 
 Ok, lets do some requests. This is request to index (http://api.uploadcare.com).
 
@@ -81,13 +91,13 @@ This will return an stdClass with information about urls you can request.
 
 This is not really valuable data.
 
-    $data = $api->request(API_TYPE_RAW);
+    $data = $api->request('GET', '/');
 
 Lets request account info.
 
 This will return just some essential data inside stdClass such as: username, pub_key and email
 
-    $account_data = $api->request(API_TYPE_ACCOUNT);
+    $account_data = $api->request('GET', '/account/');
 
 Now lets get file list.
 
@@ -109,8 +119,8 @@ Each files has:
 - original_file_url
 
 
-    $files_raw = $api->request(API_TYPE_FILES);
-
+    $files_raw = $api->request('GET', '/files/');
+    
 
 Previous request is just some raw request and it will return raw data from json.
 
@@ -118,8 +128,7 @@ There's a better way to handle all the files by using method below.
 
 It will return an array of \Uploadcare\File objects to work with.
 
-This objects don't provide all the data like in previous request, but provides ways to display the file 
-and to use methods such as resize, crop, etc 
+This objects provide ways to display the file and to use methods such as resize, crop, etc 
 
     $files = $api->getFileList();
 
@@ -129,6 +138,13 @@ Just use request below:
 
     $file_id = '5255b9dd-f790-425e-9fa9-8b49d4e64643';
     $file = $api->getFile($file_id);
+
+You can access raw data like this:
+
+    $file->data['size'];
+    
+Trying to access "data" parameter will fire GET request to get all that data once. 
+It will be a cached array if you will try to access "data" parameter again.
 
 ## File operations
 
@@ -162,26 +178,49 @@ We can also use scale crop
 
 And we can apply some effects.
 
-    echo $file->applyFlip()->getUrl();
-    echo $file->applyGrayscale()->getUrl();
-    echo $file->applyInvert()->getUrl();
-    echo $file->applyMirror()->getUrl();
+    echo $file->effect('flip')->getUrl();
+    echo $file->effect('grayscale')->getUrl();
+    echo $file->effect('invert')->getUrl();
+    echo $file->effect('mirror')->getUrl();
 
 We can apply more than one effect!
 
-    echo $file->applyFlip()->applyInvert()->getUrl();
+    echo $file->effect('flip')->effect('invert')->getUrl();
 
 We can combine operations, not just effects.
 
 Just chain methods and finish but calling "getUrl()".
 
-    echo $file->resize(false, $height)->crop(100, 100)->applyFlip()->applyInvert()->getUrl();
+    echo $file->resize(false, $height)->crop(100, 100)->effect('flip')->effect('invert')->getUrl();
+
+getUrl() returns a string with the resulting URL. 
+
+However, it's optional – the object itself becomes a string when treated as such.
+
+An example below will print an url too:
+
+    echo $file->resize(false, $height)->crop(100, 100)->effect('flip')->effect('invert');
 
 The way you provide operations matters.
 
 We can see the same operations below, but result will be a little bit different because of order:
 
-    echo $file->crop(100, 100)->resize(false, $height)->applyFlip()->applyInvert()->getUrl();
+    echo $file->crop(100, 100)->resize(false, $height)->effect('flip')->effect('invert')->getUrl();
+
+You can run any custom operations like this:
+
+    echo $file->op('effect/flip');
+    echo $file->op('resize/400x400')->op('effect/flip');
+    
+You can call getUrl with postfix parameter. This is will add some readable postfix.  
+  
+    echo $file->getUrl('image.jpg');    
+    
+The result will be like this one:
+
+    http://ucarecdn.com/85b5644f-e692-4855-9db0-8c5a83096e25/-/crop/970x500/center/he.jpg
+
+[More information on file operations can be found here][2]
 
 ## Uploading files
 Let's have some fun with uploading files.
@@ -192,23 +231,40 @@ This will return Uploadcare\File instance.
 
     $file = $api->uploader->fromUrl('http://www.baysflowers.co.nz/Images/tangerine-delight.jpg');
     $file->store();
+    
+By using default params of "fromUrl" method you tell Uploader to check file to be uploaded.
+
+By default, Uploader will make 5 checks max with 1 second wait. You can change these params:
+
+    $file = $api->uploader->fromUrl('http://www.baysflowers.co.nz/Images/tangerine-delight.jpg', true, $timeout, $max_attempts);
+    
+If file is not uploaded an Exception will be thrown.
+
+You can just get token and check status manually later any time:
+
+    $token = $api->uploader->fromUrl('http://www.baysflowers.co.nz/Images/tangerine-delight.jpg', false);
+    $data = $api->uploader->status($token);
+    if ($data->status == 'success') {
+      $file_id = $data->file_id
+      // do smth with a file
+    }
 
 You can do any operations with this file now.
     
-    echo $file->applyFlip()->getUrl();
+    echo $file->effect('flip')->getUrl();
 
 You can upload file from path.
 
     $file = $api->uploader->fromPath(dirname(__FILE__).'/test.jpg');
     $file->store();
-    echo $file->applyFlip()->getUrl();
+    echo $file->effect('flip')->getUrl();
 
 Or even just use a file pointer.
 
     $fp = fopen(dirname(__FILE__).'/test.jpg', 'r');
     $file = $api->uploader->fromResource($fp);
     $file->store();
-    echo $file->applyFlip()->getUrl();
+    echo $file->effect('flip')->getUrl();
 
 The last thing you can do is upload a file just from it's contents. But you will have to provide mime-type.
 
@@ -292,3 +348,4 @@ Checks text file is uploaded correctly.
 Checks for file deletions. No exceptions must be thrown.
 
 [1]: https://uploadcare.com/
+[2]: https://uploadcare.com/documentation/reference/basic/cdn.html

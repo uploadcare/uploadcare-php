@@ -75,7 +75,7 @@ class Uploadcare_Uploader
 				$attempts++;
 			}
 		} else {
-			$data = $this->status($token);
+			return $token;
 		}		
 		$file_id = $data->file_id;
 		

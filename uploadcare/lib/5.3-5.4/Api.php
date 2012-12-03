@@ -77,7 +77,7 @@ class Api
 	 **/
 	public function getFileList()
 	{
-		$data = $this->request(API_TYPE_FILES);
+		$data = $this->__preparedRequest(API_TYPE_FILES);
 		$files_raw = (array)$data->results;
 		$result = array();
 		foreach ($files_raw as $file_raw) {
@@ -86,6 +86,36 @@ class Api
 		return $result;
 	}
 
+	/**
+	 * Run raw request to REST.
+	 * 
+	 * @param string $method Request method: GET, POST, HEAD, OPTIONS, PUT, etc
+	 * @param string $path Path to request
+	 * @param string $data Array of data to send.
+	 * @param string $headers Additonal headers.
+	 * @return array
+	 **/
+	public function request($method, $path, $data = array(), $headers = array())
+	{
+		$ch = curl_init(sprintf('https://%s%s', $this->api_host, $path));
+		$this->__setRequestType($ch, $method);
+		$this->__setHeaders($ch, $headers, $data);
+		
+		$data = curl_exec($ch);
+		$ch_info = curl_getinfo($ch);
+		if ($method == REQUEST_TYPE_DELETE) {
+			if ($ch_info['http_code'] != 204) {
+				throw new \Exception('Request returned unexpected http code '.$ch_info['http_code'].'. '.$data);
+			}
+		} else {
+			if ($ch_info['http_code'] != 200) {
+				throw new \Exception('Request returned unexpected http code '.$ch_info['http_code'].'. '.$data);
+			}
+		}
+		curl_close($ch);
+		return json_decode($data);		
+	}
+	
 	/**
 	 * Make request to API.
 	 * Throws Exception if not http code 200 was returned.
@@ -97,8 +127,10 @@ class Api
 	 * @throws Exception
 	 * @return array
 	 **/
-	public function request($type, $request_type = REQUEST_TYPE_GET, $params = array())
+	public function __preparedRequest($type, $request_type = REQUEST_TYPE_GET, $params = array())
 	{
+		$url = $this->__getUrl($type, $params);
+		
 		$ch = $this->__initRequest($type, $params);
 		$this->__setRequestType($ch, $request_type);
 		$this->__setHeaders($ch);
@@ -177,20 +209,26 @@ class Api
 	{
 		switch ($type) {
 			case REQUEST_TYPE_GET:
+			case 'GET':
 				break;
 			case REQUEST_TYPE_POST:
+			case 'POST':
 				curl_setopt($ch, CURLOPT_POST, true);
 				break;
 			case REQUEST_TYPE_PUT:
+			case 'PUT':
 				curl_setopt($ch, CURLOPT_PUT, true);
 				break;
 			case REQUEST_TYPE_DELETE:
+				case 'DELETE':
 				curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'DELETE');
 				break;
 			case REQUEST_TYPE_HEAD:
+			case 'HEAD':
 				curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'HEAD');
 				break;
 			case REQUEST_TYPE_OPTIONS:
+			case 'OPTIONS':
 				curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'OPTIONS');
 				break;
 			default:
@@ -202,18 +240,24 @@ class Api
 	 * Set all the headers for request and set returntrasfer.
 	 *
 	 * @param resource $ch. Curl resource.
+	 * @param array $headers additional headers.
+	 * @param array $data Data array.
 	 * @return void
 	 **/
-	private function __setHeaders($ch)
+	private function __setHeaders($ch, $add_headers = array(), $data = array())
 	{
+		$content_length = 0;
+		if (count($data)) {
+			$content_length = strlen(http_build_query($data));
+		}
 		$headers = array(
 				sprintf('Host: %s', $this->api_host),
 				sprintf('Authorization: Uploadcare.Simple %s:%s', $this->public_key, $this->secret_key),
 				'Content-Type: application/json',
-				'Content-Length: 0',
+				'Content-Length: '.$content_length,
 				'User-Agent: PHP Uploadcare Module '.$this->version,
 				sprintf('Date: %s', date('Y-m-d H:i:s')),
-		);
+		) + $add_headers;
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 	}

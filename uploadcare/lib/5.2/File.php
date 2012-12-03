@@ -33,6 +33,13 @@ class Uploadcare_File
 	 * Operations list
 	 **/
 	private $operation_list = array('crop', 'resize', 'scale_crop', 'effect');
+	
+	/**
+	 * Cached data
+	 * 
+	 * @var array
+	 **/
+	private $cached_data = null;
 
 	/**
 	 * Constructs an object for CDN file with specified ID
@@ -45,6 +52,24 @@ class Uploadcare_File
 		$this->file_id = $file_id;
 		$this->api = $api;
 	}
+	
+	public function __get($name)
+	{		
+		if ($name == 'data') {
+			if (!$this->cached_data) {
+				$this->cached_data = (array)$this->api->__preparedRequest(API_TYPE_FILE, REQUEST_TYPE_GET, array('file_id' => $this->file_id));
+			}
+			return $this->cached_data;
+		}
+	}
+	
+	/**
+	 * @return string
+	 **/
+	public function __toString()
+	{
+		return $this->getUrl();
+	}	
 
 	/**
 	 * Return file_id for this file
@@ -64,7 +89,7 @@ class Uploadcare_File
 	 **/
 	public function store()
 	{
-		return $this->api->request(API_TYPE_STORE, REQUEST_TYPE_POST, array('file_id' => $this->file_id));
+		return $this->api->__preparedRequest(API_TYPE_STORE, REQUEST_TYPE_POST, array('file_id' => $this->file_id));
 	}
 	
 	/**
@@ -74,15 +99,16 @@ class Uploadcare_File
 	 **/
 	public function delete()
 	{
-		return $this->api->request(API_TYPE_FILE, REQUEST_TYPE_DELETE, array('file_id' => $this->file_id));
+		return $this->api->__preparedRequest(API_TYPE_FILE, REQUEST_TYPE_DELETE, array('file_id' => $this->file_id));
 	}
 
 	/**
 	 * Get url of original image
 	 *
+	 * @param string $postfix
 	 * @return string
 	 **/
-	public function getUrl()
+	public function getUrl($postfix = null)
 	{
 		$url = sprintf('https://%s/%s/', $this->cdn_host, $this->file_id);
 
@@ -109,6 +135,9 @@ class Uploadcare_File
 					case 'effect':
 						$part = $this->__addPartEffect($part, $operation_params);
 						break;
+					case 'custom':
+						$part = array($operation_params);
+						break;
 				}
 				$part_str = join('/', $part);
 				$operations[] = $part_str;
@@ -117,11 +146,27 @@ class Uploadcare_File
 
 		if (count($operations)) {
 			$operations_part = join('/-/', $operations);
-			return $url.'-/'.$operations_part.'/';
+			return $url.'-/'.$operations_part.'/'.$postfix;
 		} else {
-			return $url;
+			return $url.$postfix;
 		}
 	}
+	
+	/**
+	 * Get image tag
+	 *
+	 * @param string $postfix File path postfix
+	 * @param array $attrs additional attributes
+	 * @return string
+	 **/
+	public function getImgTag($postfix = null, $attribs = array())
+	{
+		$to_compile = array();
+		foreach ($attribs as $key => $value) {
+			$to_compile[] = sprintf('%s="%s"', $key, $value);
+		}
+		return sprintf('<img src="%s" %s />', $this->getUrl(), join(' ', $to_compile));
+	}	
 
 	/**
 	 * Get object with cropped parameters.
@@ -187,50 +232,27 @@ class Uploadcare_File
 	}
 
 	/**
-	 * Apply flip effect
+	 * Apply effect
 	 *
-	 * @return Uploadcare_File
+	 * @param string $effect Effect name
+	 * @return File
 	 **/
-	public function applyFlip()
+	public function effect($effect)
 	{
 		$result = clone $this;
-		$result->operations[]['effect'] = 'flip';
+		$result->operations[]['effect'] = $effect;
 		return $result;
-	}
-
+	}	
+	
 	/**
-	 * Apply grayscale effect
-	 *
-	 * @return Uploadcare_File
+	 * Add any custom operation. 
+	 * 
+	 * @param string $operation
 	 **/
-	public function applyGrayscale()
+	public function op($operation)
 	{
 		$result = clone $this;
-		$result->operations[]['effect'] = 'grayscale';
-		return $result;
-	}
-
-	/**
-	 * Apply invert effect
-	 *
-	 * @return Uploadcare_File
-	 **/
-	public function applyInvert()
-	{
-		$result = clone $this;
-		$result->operations[]['effect'] = 'invert';
-		return $result;
-	}
-
-	/**
-	 * Apply mirror effect
-	 *
-	 * @return Uploadcare_File
-	 **/
-	public function applyMirror()
-	{
-		$result = clone $this;
-		$result->operations[]['effect'] = 'mirror';
+		$result->operations[]['custom'] = $operation;
 		return $result;
 	}
 

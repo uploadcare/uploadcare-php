@@ -12,29 +12,24 @@ $api = new Uploadcare_Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
  * Let's start with widgets.
  * You can get widget url by using this:
  * */
-print $api->widget->getJavascriptUrl()."\n";
+print $api->widget->getScriptSrc()."\n";
 
 /**
  * You can just use method below to get all the code to insert widget
  */
-print $api->widget->getInclude()."\n";
-
-/**
- * Or just this method to print
- */
-$api->widget->printInclude()."\n";
+print $api->widget->getScriptTag()."\n";
 
 /**
  * Ok, lets do some requests. This is request to index (http://api.uploadcare.com).
  * This will return an stdClass with information about urls you can request.
  */
-$data = $api->request(API_TYPE_RAW);
+$data = $api->request('GET', '/');
 
 /**
  * Lets request account info.
  * This will return just some essential data inside stdClass such as: username, pub_key and email
  */
-$account_data = $api->request(API_TYPE_ACCOUNT);
+$account_data = $api->request('GET', '/account/');
 
 /**
  * Ok, now lets get file list.
@@ -54,7 +49,7 @@ $account_data = $api->request(API_TYPE_ACCOUNT);
  *  - original_file_url
  *  
  */
-$files_raw = $api->request(API_TYPE_FILES);
+$files_raw = $api->request('GET', '/files/');
 
 /**
  *  Previous request is just some raw request and it will return raw data from json.
@@ -77,6 +72,11 @@ $file = $api->getFile($file_id);
  * Ok, using object of \Uploadcare\File class we can get url for the file
  */
 echo $file->getUrl()."\n";
+
+/**
+ * Or even get an image tag
+ */
+echo $file->getImgTag('image.jpg', array('alt' => 'Somealt'))."\n";
 
 /**
  * Now let's do some crop.
@@ -110,15 +110,15 @@ echo $file->scaleCrop($width, $height, $is_center)->getUrl()."\n";
 /**
  * And we can apply some effects.
  */
-echo $file->applyFlip()->getUrl()."\n";
-echo $file->applyGrayscale()->getUrl()."\n";
-echo $file->applyInvert()->getUrl()."\n";
-echo $file->applyMirror()->getUrl()."\n";
+echo $file->effect('flip')->getUrl()."\n";
+echo $file->effect('grayscale')->getUrl()."\n";
+echo $file->effect('invert')->getUrl()."\n";
+echo $file->effect('mirror')->getUrl()."\n";
 
 /**
  * We can apply more that one effect!
  * */
-echo  $file->applyFlip()->applyInvert()->getUrl()."\n";
+echo  $file->effect('flip')->effect('invert')->getUrl()."\n";
 
 /**
  * We can combine operations, not just effects.
@@ -126,13 +126,29 @@ echo  $file->applyFlip()->applyInvert()->getUrl()."\n";
  * Just chain methods and finish but calling "getUrl()".
  * 
  * */
-echo $file->resize(false, $height)->crop(100, 100)->applyFlip()->applyInvert()->getUrl()."\n";
+echo $file->resize(false, $height)->crop(100, 100)->effect('flip')->effect('invert')->getUrl()."\n";
 
 /**
  * The way you provide operations matters.
  * We can see the same operations below, but result will be a little bit different.
  */
-echo $file->crop(100, 100)->resize(false, $height)->applyFlip()->applyInvert()->getUrl()."\n";
+echo $file->crop(100, 100)->resize(false, $height)->effect('flip')->effect('invert')->getUrl()."\n";
+
+/**
+ * You can run any custom operations like this:
+ */
+echo $file->op('effect/flip')."\n";
+echo $file->op('resize/400x400')->op('effect/flip')."\n";
+
+/**
+ * You can call getUrl with postfix parameter. This is will add some readable postfix.
+ */
+echo $file->getUrl('image.jpg')."\n";
+
+/**
+ * You can find more about operations here:
+ * https://uploadcare.com/documentation/reference/basic/cdn.html
+ */
 
 /**
  * Ok, it's everything with operations.
@@ -157,14 +173,14 @@ try {
 /**
  * We can do any operations with this file now.
  **/
-echo $file->applyFlip()->getUrl()."\n";
+echo $file->effect('flip')->getUrl()."\n";
 
 /**
  * We can upload file from path
  * */
 $file = $api->uploader->fromPath(dirname(__FILE__).'/test.jpg');
 $file->store();
-echo $file->applyFlip()->getUrl()."\n";
+echo $file->effect('flip')->getUrl()."\n";
 
 /**
  * Or even just use a file pointer.
@@ -172,7 +188,7 @@ echo $file->applyFlip()->getUrl()."\n";
 $fp = fopen(dirname(__FILE__).'/test.jpg', 'r');
 $file = $api->uploader->fromResource($fp);
 $file->store();
-echo $file->applyFlip()->getUrl()."\n";
+echo $file->effect('flip')->getUrl()."\n";
 
 /**
  * The last thing you can do is upload a file just from it's contents. But you will have to provide 
