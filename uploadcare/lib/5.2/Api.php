@@ -87,21 +87,21 @@ class Uploadcare_Api
 	/**
 	 * Run raw request to REST.
 	 * 
-	 * @param string $type Request Type: GET, POST, HEAD, OPTIONS, PUT, etc
+	 * @param string $method Request method: GET, POST, HEAD, OPTIONS, PUT, etc
 	 * @param string $path Path to request
 	 * @param string $data Array of data to send.
 	 * @param string $headers Additonal headers.
 	 * @return array
 	 **/
-	public function request($type, $path, $data = array(), $headers = array())
+	public function request($method, $path, $data = array(), $headers = array())
 	{
-		$ch = curl_init(sprintf('https://%s/%s/', $this->api_host, $path));
-		$this->__setRequestType($ch, $type);
+		$ch = curl_init(sprintf('https://%s%s', $this->api_host, $path));
+		$this->__setRequestType($ch, $method);
 		$this->__setHeaders($ch, $headers, $data);
 		
 		$data = curl_exec($ch);
 		$ch_info = curl_getinfo($ch);
-		if ($type == REQUEST_TYPE_DELETE) {
+		if ($method == REQUEST_TYPE_DELETE) {
 			if ($ch_info['http_code'] != 204) {
 				throw new Exception('Request returned unexpected http code '.$ch_info['http_code'].'. '.$data);
 			}

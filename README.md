@@ -79,7 +79,7 @@ Or you can even call a getImgTag method. This will return a prepared <img> tag:
 
 You can do any simple request if you like by calling:
 
-    $api->request($type, $path, $data = array(), $headers = array());
+    $api->request($method, $path, $data = array(), $headers = array());
     
 Don't forget, that each API url has it's own allowed methods.
 
@@ -91,13 +91,13 @@ This will return an stdClass with information about urls you can request.
 
 This is not really valuable data.
 
-    $data = $api->request('GET', '');
+    $data = $api->request('GET', '/');
 
 Lets request account info.
 
 This will return just some essential data inside stdClass such as: username, pub_key and email
 
-    $account_data = $api->request('GET', 'account');
+    $account_data = $api->request('GET', '/account/');
 
 Now lets get file list.
 
@@ -119,7 +119,7 @@ Each files has:
 - original_file_url
 
 
-    $files_raw = $api->request('GET', 'files');
+    $files_raw = $api->request('GET', '/files/');
     
 
 Previous request is just some raw request and it will return raw data from json.

@@ -24,13 +24,13 @@ print $api->widget->getScriptTag()."\n";
  * Ok, lets do some requests. This is request to index (http://api.uploadcare.com).
  * This will return an stdClass with information about urls you can request.
  */
-$data = $api->request('GET', '');
+$data = $api->request('GET', '/');
 
 /**
  * Lets request account info.
  * This will return just some essential data inside stdClass such as: username, pub_key and email
  */
-$account_data = $api->request('GET', 'account');
+$account_data = $api->request('GET', '/account/');
 
 /**
  * Ok, now lets get file list.
@@ -50,7 +50,7 @@ $account_data = $api->request('GET', 'account');
  *  - original_file_url
  *  
  */
-$files_raw = $api->request('GET', 'files');
+$files_raw = $api->request('GET', '/files/');
 
 /**
  *  Previous request is just some raw request and it will return raw data from json.

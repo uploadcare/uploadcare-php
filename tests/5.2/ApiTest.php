@@ -81,9 +81,9 @@ class ApiTest extends PHPUnit_Framework_TestCase
 		//this are request to https://api.uploadcare.com/ url.
 		//no exceptions should be thrown
 		try {
-			$result = $api->request('GET', '');
-			$api->request('HEAD', '');
-			$api->request('OPTIONS', '');
+			$result = $api->request('GET', '/');
+			$api->request('HEAD', '/');
+			$api->request('OPTIONS', '/');
 		} catch (Exception $e) {
 			$this->fail('An unexpected exception thrown');
 		}
@@ -94,19 +94,19 @@ class ApiTest extends PHPUnit_Framework_TestCase
 		//this are requests to https://api.uploadcare.com/ url.
 		//But this requests are now allowed but this url and we must have an exception
 		try {
-			$api->request('POST', '');
+			$api->request('POST', '/');
 			$this->fail('We must get an exception but everything worked fine!');
 		} catch (Exception $e) {
 		}
 		
 		try {
-			$api->request('PUT', '');
+			$api->request('PUT', '/');
 			$this->fail('We must get an exception but everything worked fine!');
 		} catch (Exception $e) {
 		}		
 
 		try {
-			$api->request('DELETE', '');
+			$api->request('DELETE', '/');
 			$this->fail('We must get an exception but everything worked fine!');
 		} catch (Exception $e) {
 		}		
@@ -122,9 +122,9 @@ class ApiTest extends PHPUnit_Framework_TestCase
 		//this are request to https://api.uploadcare.com/account/ url.
 		//no exceptions should be thrown
 		try {
-			$result = $api->request('GET', 'account');
-			$api->request('HEAD', 'account');
-			$api->request('OPTIONS', 'account');
+			$result = $api->request('GET', '/account/');
+			$api->request('HEAD', '/account/');
+			$api->request('OPTIONS', '/account/');
 		} catch (Exception $e) {
 			$this->fail('An unexpected exception thrown');
 		}
@@ -137,19 +137,19 @@ class ApiTest extends PHPUnit_Framework_TestCase
 		//this are requests to https://api.uploadcare.com/account/ url.
 		//But this requests are now allowed but this url and we must have an exception
 		try {
-			$api->request('POST', 'account');
+			$api->request('POST', '/account/');
 			$this->fail('We must get an exception but everything worked fine!');
 		} catch (Exception $e) {
 		}
 		
 		try {
-			$api->request('PUT', 'account');
+			$api->request('PUT', '/account/');
 			$this->fail('We must get an exception but everything worked fine!');
 		} catch (Exception $e) {
 		}
 		
 		try {
-			$api->request('DELETE', 'account');
+			$api->request('DELETE', '/account/');
 			$this->fail('We must get an exception but everything worked fine!');
 		} catch (Exception $e) {
 		}		
@@ -165,9 +165,9 @@ class ApiTest extends PHPUnit_Framework_TestCase
 		//this are request to https://api.uploadcare.com/files/ url.
 		//no exceptions should be thrown
 		try {
-			$result = $api->request('GET', 'files');
-			$api->request('HEAD', 'files');
-			$api->request('OPTIONS', 'files');
+			$result = $api->request('GET', '/files/');
+			$api->request('HEAD', '/files/');
+			$api->request('OPTIONS', '/files/');
 		} catch (Exception $e) {
 			$this->fail('An unexpected exception thrown');
 		}
@@ -186,19 +186,19 @@ class ApiTest extends PHPUnit_Framework_TestCase
 		//this are requests to https://api.uploadcare.com/files/ url.
 		//But this requests are now allowed but this url and we must have an exception
 		try {
-			$api->request('POST', 'files');
+			$api->request('POST', '/files/');
 			$this->fail('We must get an exception but everything worked fine!');
 		} catch (Exception $e) {
 		}
 	
 		try {
-			$api->request('PUT', 'files');
+			$api->request('PUT', '/files/');
 			$this->fail('We must get an exception but everything worked fine!');
 		} catch (Exception $e) {
 		}
 	
 		try {
-			$api->request('DELETE', 'files');
+			$api->request('DELETE', '/files/');
 			$this->fail('We must get an exception but everything worked fine!');
 		} catch (Exception $e) {
 		}
