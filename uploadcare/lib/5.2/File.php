@@ -57,7 +57,7 @@ class Uploadcare_File
 	{		
 		if ($name == 'data') {
 			if (!$this->cached_data) {
-				$this->cached_data = (array)$this->api->request(API_TYPE_FILE, REQUEST_TYPE_GET, array('file_id' => $this->file_id));
+				$this->cached_data = (array)$this->api->__preparedRequest(API_TYPE_FILE, REQUEST_TYPE_GET, array('file_id' => $this->file_id));
 			}
 			return $this->cached_data;
 		}
@@ -89,7 +89,7 @@ class Uploadcare_File
 	 **/
 	public function store()
 	{
-		return $this->api->request(API_TYPE_STORE, REQUEST_TYPE_POST, array('file_id' => $this->file_id));
+		return $this->api->__preparedRequest(API_TYPE_STORE, REQUEST_TYPE_POST, array('file_id' => $this->file_id));
 	}
 	
 	/**
@@ -99,7 +99,7 @@ class Uploadcare_File
 	 **/
 	public function delete()
 	{
-		return $this->api->request(API_TYPE_FILE, REQUEST_TYPE_DELETE, array('file_id' => $this->file_id));
+		return $this->api->__preparedRequest(API_TYPE_FILE, REQUEST_TYPE_DELETE, array('file_id' => $this->file_id));
 	}
 
 	/**

@@ -79,42 +79,8 @@ Or you can even call a getImgTag method. This will return a prepared <img> tag:
 
 You can do any simple request if you like by calling:
 
-    $api->request($type, $request_type, $params);
+    $api->request($type, $path, $data = array(), $headers = array());
     
-$type variable defines the url will be requested.
-
-You can use this constants:
-
-- API_TYPE_RAW - to request http://api.uploadcare.com/
-
-- API_TYPE_ACCOUNT - to request http://api.uploadcare.com/account/
-
-- API_TYPE_FILES - to request http://api.uploadcare.com/files/
-
-- API_TYPE_FILE - to request http://api.uploadcare.com/files/%file_id%/ 
-
-Don't forget to provide file_id as parameter like this:
-
-    $api->request(API_TYPE_FILE, REQUEST_TYPE_GET, array('file_id' => '5255b9dd-f790-425e-9fa9-8b49d4e64643'))
-
-- API_TYPE_STORE - to request http://api.uploadcare.com/files/%file_id%/storage/
-
-The $request_type is a Request Type such as GET, POST, HEAD, etc.
-
-You can use this constants:
-
-- REQUEST_TYPE_POST - POST request
-
-- REQUEST_TYPE_PUT - PUT request
-
-- REQUEST_TYPE_DELETE - DELETE request
-
-- REQUEST_TYPE_GET - GET request
-
-- REQUEST_TYPE_HEAD - HEAD request
-
-- REQUEST_TYPE_OPTIONS - OPTIONS
-
 Don't forget, that each API url has it's own allowed methods.
 
 If method is not allowed exceptions will be thrown.
@@ -125,13 +91,13 @@ This will return an stdClass with information about urls you can request.
 
 This is not really valuable data.
 
-    $data = $api->request(API_TYPE_RAW);
+    $data = $api->request('GET', '');
 
 Lets request account info.
 
 This will return just some essential data inside stdClass such as: username, pub_key and email
 
-    $account_data = $api->request(API_TYPE_ACCOUNT);
+    $account_data = $api->request('GET', 'account');
 
 Now lets get file list.
 
@@ -153,8 +119,8 @@ Each files has:
 - original_file_url
 
 
-    $files_raw = $api->request(API_TYPE_FILES);
-
+    $files_raw = $api->request('GET', 'files');
+    
 
 Previous request is just some raw request and it will return raw data from json.
 

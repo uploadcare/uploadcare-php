@@ -82,9 +82,9 @@ class ApiTest extends PHPUnit_Framework_TestCase
 		//this are request to https://api.uploadcare.com/ url.
 		//no exceptions should be thrown
 		try {
-			$result = $api->request(API_TYPE_RAW);
-			$api->request(API_TYPE_RAW, REQUEST_TYPE_HEAD);
-			$api->request(API_TYPE_RAW, REQUEST_TYPE_OPTIONS);
+			$result = $api->request('GET', '');
+			$api->request('HEAD', '');
+			$api->request('OPTIONS', '');
 		} catch (Exception $e) {
 			$this->fail('An unexpected exception thrown');
 		}
@@ -95,19 +95,19 @@ class ApiTest extends PHPUnit_Framework_TestCase
 		//this are requests to https://api.uploadcare.com/ url.
 		//But this requests are now allowed but this url and we must have an exception
 		try {
-			$api->request(API_TYPE_RAW, REQUEST_TYPE_POST);
+			$api->request('POST', '');
 			$this->fail('We must get an exception but everything worked fine!');
 		} catch (Exception $e) {
 		}
 		
 		try {
-			$api->request(API_TYPE_RAW, REQUEST_TYPE_PUT);
+			$api->request('PUT', '');
 			$this->fail('We must get an exception but everything worked fine!');
 		} catch (Exception $e) {
 		}		
 
 		try {
-			$api->request(API_TYPE_RAW, REQUEST_TYPE_DELETE);
+			$api->request('DELETE', '');
 			$this->fail('We must get an exception but everything worked fine!');
 		} catch (Exception $e) {
 		}		
@@ -123,9 +123,9 @@ class ApiTest extends PHPUnit_Framework_TestCase
 		//this are request to https://api.uploadcare.com/account/ url.
 		//no exceptions should be thrown
 		try {
-			$result = $api->request(API_TYPE_ACCOUNT);
-			$api->request(API_TYPE_ACCOUNT, REQUEST_TYPE_HEAD);
-			$api->request(API_TYPE_ACCOUNT, REQUEST_TYPE_OPTIONS);
+			$result = $api->request('GET', 'account');
+			$api->request('HEAD', 'account');
+			$api->request('OPTIONS', 'account');
 		} catch (Exception $e) {
 			$this->fail('An unexpected exception thrown');
 		}
@@ -138,19 +138,19 @@ class ApiTest extends PHPUnit_Framework_TestCase
 		//this are requests to https://api.uploadcare.com/account/ url.
 		//But this requests are now allowed but this url and we must have an exception
 		try {
-			$api->request(API_TYPE_ACCOUNT, REQUEST_TYPE_POST);
+			$api->request('POST', 'account');
 			$this->fail('We must get an exception but everything worked fine!');
 		} catch (Exception $e) {
 		}
 		
 		try {
-			$api->request(API_TYPE_ACCOUNT, REQUEST_TYPE_PUT);
+			$api->request('PUT', 'account');
 			$this->fail('We must get an exception but everything worked fine!');
 		} catch (Exception $e) {
 		}
 		
 		try {
-			$api->request(API_TYPE_ACCOUNT, REQUEST_TYPE_DELETE);
+			$api->request('delete', 'account');
 			$this->fail('We must get an exception but everything worked fine!');
 		} catch (Exception $e) {
 		}		
@@ -166,9 +166,9 @@ class ApiTest extends PHPUnit_Framework_TestCase
 		//this are request to https://api.uploadcare.com/files/ url.
 		//no exceptions should be thrown
 		try {
-			$result = $api->request(API_TYPE_FILES);
-			$api->request(API_TYPE_FILES, REQUEST_TYPE_HEAD);
-			$api->request(API_TYPE_FILES, REQUEST_TYPE_OPTIONS);
+			$result = $api->request('GET', 'files');
+			$api->request('HEAD', 'files');
+			$api->request('OPTIONS', 'files');
 		} catch (Exception $e) {
 			$this->fail('An unexpected exception thrown');
 		}
@@ -187,19 +187,19 @@ class ApiTest extends PHPUnit_Framework_TestCase
 		//this are requests to https://api.uploadcare.com/files/ url.
 		//But this requests are now allowed but this url and we must have an exception
 		try {
-			$api->request(API_TYPE_FILES, REQUEST_TYPE_POST);
+			$api->request('POST', 'files');
 			$this->fail('We must get an exception but everything worked fine!');
 		} catch (Exception $e) {
 		}
 	
 		try {
-			$api->request(API_TYPE_FILES, REQUEST_TYPE_PUT);
+			$api->request('PUT', 'files');
 			$this->fail('We must get an exception but everything worked fine!');
 		} catch (Exception $e) {
 		}
 	
 		try {
-			$api->request(API_TYPE_FILES, REQUEST_TYPE_DELETE);
+			$api->request('DELETE', 'files');
 			$this->fail('We must get an exception but everything worked fine!');
 		} catch (Exception $e) {
 		}
