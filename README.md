@@ -70,6 +70,10 @@ Now you have an Uploadcare\File object to work with. You can show an image like 
 Or just:
 
     <img src="<?php echo $file; ?>" />
+    
+Or you can even call a getImgTag method. This will return a prepared <img> tag:
+
+    echo $file->getImgTag('image.jpg', array('alt' => 'Image'));
 
 ## API and requests
 

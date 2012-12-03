@@ -151,6 +151,22 @@ class Uploadcare_File
 			return $url.$postfix;
 		}
 	}
+	
+	/**
+	 * Get image tag
+	 *
+	 * @param string $postfix File path postfix
+	 * @param array $attrs additional attributes
+	 * @return string
+	 **/
+	public function getImgTag($postfix = null, $attribs = array())
+	{
+		$to_compile = array();
+		foreach ($attribs as $key => $value) {
+			$to_compile[] = sprintf('%s="%s"', $key, $value);
+		}
+		return sprintf('<img src="%s" %s />', $this->getUrl(), join(' ', $to_compile));
+	}	
 
 	/**
 	 * Get object with cropped parameters.

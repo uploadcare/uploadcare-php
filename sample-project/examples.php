@@ -75,6 +75,11 @@ $file = $api->getFile($file_id);
 echo $file->getUrl()."\n";
 
 /**
+ * Or even get an image tag
+ */
+echo $file->getImgTag('image.jpg', array('alt' => 'Somealt'))."\n";
+
+/**
  * Now let's do some crop.
  */
 $width = 400;
