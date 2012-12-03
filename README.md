@@ -227,6 +227,12 @@ Just chain methods and finish but calling "getUrl()".
 
     echo $file->resize(false, $height)->crop(100, 100)->effect('flip')->effect('invert')->getUrl();
 
+getUrl() returns a string with the resulting URL. 
+However, it's optional – the object itself becomes a string when treated as such.
+An example below will print an url too:
+
+    echo $file->resize(false, $height)->crop(100, 100)->effect('flip')->effect('invert');
+
 The way you provide operations matters.
 
 We can see the same operations below, but result will be a little bit different because of order:
