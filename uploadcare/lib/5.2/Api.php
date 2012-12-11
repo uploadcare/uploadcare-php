@@ -69,19 +69,33 @@ class Uploadcare_Api
 	}
 
 	/**
-	 * Return an array of Uploadcare_File objects to work with.
+	 * Return an array of File objects to work with.
 	 *
+	 * @param integer $page Page to be shown. 
 	 * @return array
 	 **/
-	public function getFileList()
+	public function getFileList($page = 1)
 	{
-		$data = $this->__preparedRequest(API_TYPE_FILES);
+		$data = $this->__preparedRequest(API_TYPE_FILES, REQUEST_TYPE_GET, array('page' => $page));
 		$files_raw = (array)$data->results;
 		$result = array();
 		foreach ($files_raw as $file_raw) {
 			$result[] = new Uploadcare_File($file_raw->file_id, $this);
 		}
 		return $result;
+	}
+	
+	/**
+	 * Get info about pagination.
+	 * 
+	 * @param integer $page
+	 * @return array
+	 **/
+	public function getFilePaginationInfo($page = 1)
+	{
+		$data = (array)$this->__preparedRequest(API_TYPE_FILES, REQUEST_TYPE_GET, array('page' => $page));		
+		unset($data['results']);
+		return $data;
 	}
 
 	/**
@@ -178,7 +192,7 @@ class Uploadcare_Api
 			case API_TYPE_ACCOUNT:
 				return sprintf('https://%s/account/', $this->api_host);
 			case API_TYPE_FILES:
-				return sprintf('https://%s/files/', $this->api_host);
+				return sprintf('https://%s/files/?page=%s', $this->api_host, $params['page']);
 			case API_TYPE_STORE:
 				if (array_key_exists(UC_PARAM_FILE_ID, $params) == false) {
 					throw new Exception('Please provide "store_id" param for request');
