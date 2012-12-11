@@ -205,7 +205,7 @@ class File
 	{
 		$result = clone $this;
 		if (!$width && !$height) {
-			throw \Exception('Please, provide at least width or height for resize');
+			throw new \Exception('Please, provide at least width or height for resize');
 		}
 		$result->operations[]['resize'] = array(
 				'width' => $width,
