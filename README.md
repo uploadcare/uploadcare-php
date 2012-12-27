@@ -4,6 +4,8 @@ This is a set of libraries to work with [Uploadcare][1].
 
 ## Install
 
+**Note**: php-curl must be installed.
+
 Just clone source code anywhere you like inside your project:
 
     git clone git://github.com/uploadcare/uploadcare-php.git
