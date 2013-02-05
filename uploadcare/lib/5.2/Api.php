@@ -115,7 +115,7 @@ class Uploadcare_Api
    **/
   public function request($method, $path, $data = array(), $headers = array())
   {
-    $ch = curl_init(sprintf('https:// %s%s', $this->api_host, $path));
+    $ch = curl_init(sprintf('https://%s%s', $this->api_host, $path));
     $this->__setRequestType($ch, $method);
     $this->__setHeaders($ch, $headers, $data);
 
@@ -132,7 +132,7 @@ class Uploadcare_Api
     }
     curl_close($ch);
     if ($this->public_key == 'demopublickey' || $this->secret_key == 'demoprivatekey') {
-      trigger_error('You are using the demo account. Please get an Uploadcare account at https:// uploadcare.com/accounts/create/', E_USER_WARNING);
+      trigger_error('You are using the demo account. Please get an Uploadcare account at https://uploadcare.com/accounts/create/', E_USER_WARNING);
     }
     return json_decode($data);
   }
@@ -169,7 +169,7 @@ class Uploadcare_Api
     }
     curl_close($ch);
     if ($this->public_key == 'demopublickey' || $this->secret_key == 'demoprivatekey') {
-      trigger_error('You are using the demo account. Please get an Uploadcare account at https:// uploadcare.com/accounts/create/', E_USER_WARNING);
+      trigger_error('You are using the demo account. Please get an Uploadcare account at https://uploadcare.com/accounts/create/', E_USER_WARNING);
     }
     return json_decode($data);
   }
@@ -200,21 +200,21 @@ class Uploadcare_Api
   {
     switch ($type) {
       case API_TYPE_RAW:
-        return sprintf('https:// %s/', $this->api_host);
+        return sprintf('https://%s/', $this->api_host);
       case API_TYPE_ACCOUNT:
-        return sprintf('https:// %s/account/', $this->api_host);
+        return sprintf('https://%s/account/', $this->api_host);
       case API_TYPE_FILES:
-        return sprintf('https:// %s/files/?page=%s', $this->api_host, $params['page']);
+        return sprintf('https://%s/files/?page=%s', $this->api_host, $params['page']);
       case API_TYPE_STORE:
         if (array_key_exists(UC_PARAM_FILE_ID, $params) == false) {
           throw new Exception('Please provide "store_id" param for request');
         }
-        return sprintf('https:// %s/files/%s/storage/', $this->api_host, $params['file_id']);
+        return sprintf('https://%s/files/%s/storage/', $this->api_host, $params['file_id']);
       case API_TYPE_FILE:
         if (array_key_exists(UC_PARAM_FILE_ID, $params) == false) {
           throw new Exception('Please provide "store_id" param for request');
         }
-        return sprintf('https:// %s/files/%s/', $this->api_host, $params['file_id']);
+        return sprintf('https://%s/files/%s/', $this->api_host, $params['file_id']);
       default:
         throw new Exception('No api url type is provided for request. Use store, or appropriate constants.');
     }
