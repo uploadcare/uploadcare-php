@@ -1,12 +1,15 @@
 <?php
-//This is just some config with public and secret keys for UC.
+/**
+ * Examples
+ */
+// This is just some config with public and secret keys for UC.
 require_once 'config.php';
-//requesting lib for PHP 5.3/5.4
+// requesting lib for PHP 5.3/5.4
 require_once '../uploadcare/lib/5.3-5.4/Uploadcare.php';
-//using namespace
+// using namespace
 use \Uploadcare;
 
-//create object istance for Api.
+// create object istance for Api.
 $api = new Uploadcare\Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
 
 /**
@@ -21,7 +24,7 @@ print $api->widget->getScriptSrc()."\n";
 print $api->widget->getScriptTag()."\n";
 
 /**
- * Ok, lets do some requests. This is request to index (http://api.uploadcare.com).
+ * Ok, lets do some requests. This is request to index (http:// api.uploadcare.com).
  * This will return an stdClass with information about urls you can request.
  */
 $data = $api->request('GET', '/');
@@ -170,7 +173,7 @@ echo $file->getUrl('image.jpg')."\n";
 
 /**
  * You can find more about operations here:
- * https://uploadcare.com/documentation/reference/basic/cdn.html
+ * https:// uploadcare.com/documentation/reference/basic/cdn.html
  */
 
 /**
@@ -179,7 +182,7 @@ echo $file->getUrl('image.jpg')."\n";
  * First of all, we can upload file from url. Just use construction below.
  * This will return File instance.
  */
-$file = $api->uploader->fromUrl('http://www.baysflowers.co.nz/Images/tangerine-delight.jpg');
+$file = $api->uploader->fromUrl('http:// www.baysflowers.co.nz/Images/tangerine-delight.jpg');
 
 /**
  * File must be uploaded, but it's not stored yet.

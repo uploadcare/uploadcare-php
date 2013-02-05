@@ -1,18 +1,24 @@
 <?php
+/**
+ * @file
+ *
+ * Uploadcare_File
+ */
+
 class Uploadcare_File
 {
   /**
    * Uploadcare cdn host
    *
    * @var string
-   **/
+   */
   private $cdn_host = 'ucarecdn.com';
 
   /**
    * Uploadcare file id
    *
    * @var string
-   **/
+   */
   private $file_id = null;
 
   /**
@@ -26,19 +32,19 @@ class Uploadcare_File
    * Uploadcare class instance.
    *
    * @var Uploadcare_Api
-  **/
+  */
   private $api = null;
 
   /**
    * Operations list
-   **/
+   */
   private $operation_list = array('crop', 'resize', 'scale_crop', 'effect');
 
   /**
    * Cached data
    *
    * @var array
-  **/
+  */
   private $cached_data = null;
 
   /**
@@ -46,7 +52,7 @@ class Uploadcare_File
    *
    * @param string $file_id Uploadcare file_id
    * @param Uploadcare_Uploadcare $api Uploadcare class instance
-   **/
+   */
   public function __construct($file_id, Uploadcare_Api $api)
   {
     $this->file_id = $file_id;
@@ -65,7 +71,7 @@ class Uploadcare_File
 
   /**
    * @return string
-   **/
+   */
   public function __toString()
   {
     return $this->getUrl();
@@ -75,7 +81,7 @@ class Uploadcare_File
    * Return file_id for this file
    *
    * @return string
-   **/
+   */
   public function getFileId()
   {
     return $this->file_id;
@@ -86,7 +92,7 @@ class Uploadcare_File
    *
    * @param boolean $check_status Check upload status?
    * @return array
-   **/
+   */
   public function store()
   {
     return $this->api->__preparedRequest(API_TYPE_STORE, REQUEST_TYPE_POST, array('file_id' => $this->file_id));
@@ -96,7 +102,7 @@ class Uploadcare_File
    * Delete file
    *
    * @return array
-   **/
+   */
   public function delete()
   {
     return $this->api->__preparedRequest(API_TYPE_FILE, REQUEST_TYPE_DELETE, array('file_id' => $this->file_id));
@@ -107,10 +113,10 @@ class Uploadcare_File
    *
    * @param string $postfix
    * @return string
-   **/
+   */
   public function getUrl($postfix = null)
   {
-    $url = sprintf('https://%s/%s/', $this->cdn_host, $this->file_id);
+    $url = sprintf('https:// %s/%s/', $this->cdn_host, $this->file_id);
 
     $operations = array();
 
@@ -158,7 +164,7 @@ class Uploadcare_File
    * @param string $postfix File path postfix
    * @param array $attrs additional attributes
    * @return string
-   **/
+   */
   public function getImgTag($postfix = null, $attribs = array())
   {
     $to_compile = array();
@@ -198,7 +204,7 @@ class Uploadcare_File
    * @param integer $height Resized image height. Provide false if you resize proportionally.
    * @throws Exception
    * @return Uploadcare_File
-   **/
+   */
   public function resize($width = false, $height = false)
   {
     $result = clone $this;
@@ -236,7 +242,7 @@ class Uploadcare_File
    *
    * @param string $effect Effect name
    * @return File
-   **/
+   */
   public function effect($effect)
   {
     $result = clone $this;
@@ -248,7 +254,7 @@ class Uploadcare_File
    * Add any custom operation.
    *
    * @param string $operation
-   **/
+   */
   public function op($operation)
   {
     $result = clone $this;
@@ -262,7 +268,7 @@ class Uploadcare_File
    * @param array $part
    * @param array $params
    * @return array
-   **/
+   */
   private function __addPartSize($part, $params)
   {
     $part[] = sprintf('%sx%s', $params['width'], $params['height']);
@@ -275,7 +281,7 @@ class Uploadcare_File
    * @param array $part
    * @param array $params
    * @return array
-   **/
+   */
   private function __addPartCenter($part, $params)
   {
     if ($params['center'] !== false) {
@@ -290,7 +296,7 @@ class Uploadcare_File
    * @param array $part
    * @param array $params
    * @return array
-   **/
+   */
   private function __addPartFillColor($part, $params)
   {
     if ($params['fill_color'] !== false) {
@@ -305,7 +311,7 @@ class Uploadcare_File
    * @param array $part
    * @param string $effect
    * @return array
-   **/
+   */
   private function __addPartEffect($part, $effect)
   {
     $part[] = $effect;

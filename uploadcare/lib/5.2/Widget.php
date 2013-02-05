@@ -1,26 +1,30 @@
 <?php
-class Uploadcare_Widget
-{
+/**
+ * @file
+ *
+ * Uploadcare_Widget
+ */
+
+class Uploadcare_Widget {
   /**
    * Uploadcare_Api instance
    *
    * @var Uploadcare_Api
-   **/
+   */
   private $api = null;
 
   /**
    * Uploadcare widget version
    * @var string
-   **/
+   */
   private $version = '0.5.0';
 
   /**
    * Constructor
    *
    * @param Uploadcare_Api $api
-   **/
-  public function __construct(Uploadcare_Api $api)
-  {
+   */
+  public function __construct(Uploadcare_Api $api) {
     $this->api = $api;
   }
 
@@ -29,9 +33,8 @@ class Uploadcare_Widget
    *
    * @param string $version Uploadcare version
    * @return string
-   **/
-  public function getScriptTag($version = null)
-  {
+   */
+  public function getScriptTag($version = null) {
     $result = sprintf('<script>UPLOADCARE_PUBLIC_KEY = "%s";</script>', $this->api->getPublicKey());
     $result .= sprintf('<script async="async" src="%s"></script>', $this->getScriptSrc($version));
     return $result;
@@ -43,13 +46,12 @@ class Uploadcare_Widget
    *
    * @param string $version Version of Uploadcare.com widget
    * @return string
-   **/
-  public function getScriptSrc($version = null)
-  {
+   */
+  public function getScriptSrc($version = null) {
     if (!$version) {
       $version = $this->version;
     }
-    return sprintf('https://ucarecdn.com/widget/%s/uploadcare/uploadcare-%s.min.js', $version, $version);
+    return sprintf('https:// ucarecdn.com/widget/%s/uploadcare/uploadcare-%s.min.js', $version, $version);
   }
 
   /**
@@ -58,9 +60,8 @@ class Uploadcare_Widget
    * @param string $name Input name
    * @param array $attribs Custom attributes to include
    * @return string
-   **/
-  public function getInputTag($name, $attribs = array())
-  {
+   */
+  public function getInputTag($name, $attribs = array()) {
     $to_compile = array();
     foreach ($attribs as $key => $value) {
       $to_compile[] = sprintf('%s="%s"', $key, $value);

@@ -7,19 +7,19 @@ class Uploader
    * Base upload host
    *
    * @var string
-   **/
+   */
   private $host = 'upload.uploadcare.com';
 
   /**
    * Api instance
    *
    * @var Api
-   **/
+   */
   private $api = null;
 
   /**
    * Constructor
-   **/
+   */
   public function __construct(Api $api)
   {
     $this->api = $api;
@@ -31,7 +31,7 @@ class Uploader
    *
    * @param string $file_id
    * @return array
-   **/
+   */
   public function status($token)
   {
     $data = array(
@@ -48,7 +48,7 @@ class Uploader
    *
    * @param string $url An url of file to be uploaded.
    * @return File
-   **/
+   */
   public function fromUrl($url, $check_status = true, $timeout = 1, $max_attempts = 5)
   {
     $data = array(
@@ -89,7 +89,7 @@ class Uploader
    *
    * @param string $path
    * @return File
-   **/
+   */
   public function fromPath($path)
   {
     $data = array(
@@ -111,7 +111,7 @@ class Uploader
    *
    * @param resourse $fp
    * @return File
-   **/
+   */
   public function fromResource($fp)
   {
     $tmpfile = tempnam(sys_get_temp_dir(), 'ucr');
@@ -142,7 +142,7 @@ class Uploader
    * @param string $content
    * @param string $mime_type
    * @return File
-   **/
+   */
   public function fromContent($content, $mime_type)
   {
     $tmpfile = tempnam(sys_get_temp_dir(), 'ucr');
@@ -169,10 +169,10 @@ class Uploader
    *
    * @param array $data
    * @return resource
-   **/
+   */
   private function __initRequest($type, $data = null)
   {
-    $url = sprintf('https://%s/%s/', $this->host, $type);
+    $url = sprintf('https:// %s/%s/', $this->host, $type);
     if (is_array($data)) {
       $url = sprintf('%s?%s', $url, http_build_query($data));
     }
@@ -185,7 +185,7 @@ class Uploader
    *
    * @param resource $ch
    * @return void
-   **/
+   */
   private function __setRequestType($ch)
   {
     curl_setopt($ch, CURLOPT_POST, true);
@@ -196,7 +196,7 @@ class Uploader
    *
    * @param resource $ch. Curl resource.
    * @return void
-   **/
+   */
   private function __setHeaders($ch)
   {
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -211,7 +211,7 @@ class Uploader
    * @param resource $ch. Curl resource
    * @param array $data
    * @return void
-   **/
+   */
   private function __setData($ch, $data = array())
   {
     curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
@@ -224,7 +224,7 @@ class Uploader
    * @param resource $ch. Curl resource
    * @throws Exception
    * @return array
-   **/
+   */
   private function __runRequest($ch)
   {
     $data = curl_exec($ch);

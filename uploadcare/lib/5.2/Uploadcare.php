@@ -1,4 +1,10 @@
 <?php
+/**
+ * @file
+ *
+ * Uploadcare Constants
+ */
+
 define('API_TYPE_RAW', 'raw');
 define('API_TYPE_ACCOUNT', 'account');
 define('API_TYPE_FILES', 'files');

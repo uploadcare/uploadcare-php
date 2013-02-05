@@ -1,25 +1,29 @@
 <?php
-class Uploadcare_Uploader
-{
+/**
+ * @file
+ *
+ * Uploadcare_Uploader
+ */
+
+class Uploadcare_Uploader {
   /**
    * Base upload host
    *
    * @var string
-   **/
+   */
   private $host = 'upload.uploadcare.com';
 
   /**
    * Api instance
    *
    * @var Uploadcare_Api
-   **/
+   */
   private $api = null;
 
   /**
    * Constructor
-   **/
-  public function __construct(Uploadcare_Api $api)
-  {
+   */
+  public function __construct(Uploadcare_Api $api) {
     $this->api = $api;
   }
 
@@ -29,11 +33,10 @@ class Uploadcare_Uploader
    *
    * @param string $file_id
    * @return array
-   **/
-  public function status($token)
-  {
+   */
+  public function status($token) {
     $data = array(
-        'token' => $token,
+      'token' => $token,
     );
     $ch = $this->__initRequest('status', $data);
     $this->__setHeaders($ch);
@@ -46,13 +49,12 @@ class Uploadcare_Uploader
    *
    * @param string $url An url of file to be uploaded.
    * @return Uploadcare_File
-   **/
-  public function fromUrl($url, $check_status = true, $timeout = 1, $max_attempts = 5)
-  {
+   */
+  public function fromUrl($url, $check_status = true, $timeout = 1, $max_attempts = 5) {
     $data = array(
-        '_' => time(),
-        'source_url' => $url,
-        'pub_key' => $this->api->getPublicKey(),
+      '_' => time(),
+      'source_url' => $url,
+      'pub_key' => $this->api->getPublicKey(),
     );
     $ch = $this->__initRequest('from_url', $data);
     $this->__setHeaders($ch);
@@ -87,12 +89,11 @@ class Uploadcare_Uploader
    *
    * @param string $path
    * @return Uploadcare_File
-   **/
-  public function fromPath($path)
-  {
+   */
+  public function fromPath($path) {
     $data = array(
-        'UPLOADCARE_PUB_KEY' => $this->api->getPublicKey(),
-        'file' => '@'.$path,
+      'UPLOADCARE_PUB_KEY' => $this->api->getPublicKey(),
+      'file' => '@'.$path,
     );
     $ch = $this->__initRequest('base');
     $this->__setRequestType($ch);
@@ -109,9 +110,8 @@ class Uploadcare_Uploader
    *
    * @param resourse $fp
    * @return Uploadcare_File
-   **/
-  public function fromResource($fp)
-  {
+   */
+  public function fromResource($fp) {
     $tmpfile = tempnam(sys_get_temp_dir(), 'ucr');
     $temp = fopen($tmpfile, 'w');
     while (!feof($fp)) {
@@ -121,14 +121,14 @@ class Uploadcare_Uploader
     fclose($fp);
 
     $data = array(
-        'UPLOADCARE_PUB_KEY' => $this->api->getPublicKey(),
-        'file' => '@'.$tmpfile,
+      'UPLOADCARE_PUB_KEY' => $this->api->getPublicKey(),
+      'file' => '@'.$tmpfile,
     );
     $ch = $this->__initRequest('base');
     $this->__setRequestType($ch);
     $this->__setData($ch, $data);
     $this->__setHeaders($ch);
-    	
+     
     $data = $this->__runRequest($ch);
     $file_id = $data->file;
     return new Uploadcare_File($file_id, $this->api);
@@ -140,23 +140,22 @@ class Uploadcare_Uploader
    * @param string $content
    * @param string $mime_type
    * @return Uploadcare_File
-   **/
-  public function fromContent($content, $mime_type)
-  {
+   */
+  public function fromContent($content, $mime_type) {
     $tmpfile = tempnam(sys_get_temp_dir(), 'ucr');
     $temp = fopen($tmpfile, 'w');
     fwrite($temp, $content);
     fclose($temp);
 
     $data = array(
-        'UPLOADCARE_PUB_KEY' => $this->api->getPublicKey(),
-        'file' => sprintf('@%s;type=%s', $tmpfile, $mime_type),
+      'UPLOADCARE_PUB_KEY' => $this->api->getPublicKey(),
+      'file' => sprintf('@%s;type=%s', $tmpfile, $mime_type),
     );
     $ch = $this->__initRequest('base');
     $this->__setRequestType($ch);
     $this->__setData($ch, $data);
     $this->__setHeaders($ch);
-    	
+     
     $data = $this->__runRequest($ch);
     $file_id = $data->file;
     return new Uploadcare_File($file_id, $this->api);
@@ -167,10 +166,9 @@ class Uploadcare_Uploader
    *
    * @param array $data
    * @return resource
-   **/
-  private function __initRequest($type, $data = null)
-  {
-    $url = sprintf('https://%s/%s/', $this->host, $type);
+   */
+  private function __initRequest($type, $data = null) {
+    $url = sprintf('https:// %s/%s/', $this->host, $type);
     if (is_array($data)) {
       $url = sprintf('%s?%s', $url, http_build_query($data));
     }
@@ -183,9 +181,8 @@ class Uploadcare_Uploader
    *
    * @param resource $ch
    * @return void
-   **/
-  private function __setRequestType($ch)
-  {
+   */
+  private function __setRequestType($ch) {
     curl_setopt($ch, CURLOPT_POST, true);
   }
 
@@ -194,9 +191,8 @@ class Uploadcare_Uploader
    *
    * @param resource $ch. Curl resource.
    * @return void
-   **/
-  private function __setHeaders($ch)
-  {
+   */
+  private function __setHeaders($ch) {
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_HTTPHEADER, array(
     'User-Agent: PHP Uploadcare Module '.$this->api->version,
@@ -209,9 +205,8 @@ class Uploadcare_Uploader
    * @param resource $ch. Curl resource
    * @param array $data
    * @return void
-   **/
-  private function __setData($ch, $data = array())
-  {
+   */
+  private function __setData($ch, $data = array()) {
     curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
   }
 
@@ -222,9 +217,8 @@ class Uploadcare_Uploader
    * @param resource $ch. Curl resource
    * @throws Exception
    * @return array
-   **/
-  private function __runRequest($ch)
-  {
+   */
+  private function __runRequest($ch) {
     $data = curl_exec($ch);
     $ch_info = curl_getinfo($ch);
     if ($ch_info['http_code'] != 200) {

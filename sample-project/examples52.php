@@ -1,11 +1,11 @@
 <?php
-//This is just some config with public and secret keys for UC.
+// This is just some config with public and secret keys for UC.
 require_once 'config.php';
-//requesting lib for PHP 5.2
+// requesting lib for PHP 5.2
 require_once '../uploadcare/lib/5.2/Uploadcare.php';
-//using namespace
+// using namespace
 
-//create object istance for Api.
+// create object istance for Api.
 $api = new Uploadcare_Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
 
 /**
@@ -20,7 +20,7 @@ print $api->widget->getScriptSrc()."\n";
 print $api->widget->getScriptTag()."\n";
 
 /**
- * Ok, lets do some requests. This is request to index (http://api.uploadcare.com).
+ * Ok, lets do some requests. This is request to index (http:// api.uploadcare.com).
  * This will return an stdClass with information about urls you can request.
  */
 $data = $api->request('GET', '/');
@@ -169,7 +169,7 @@ echo $file->getUrl('image.jpg')."\n";
 
 /**
  * You can find more about operations here:
- * https://uploadcare.com/documentation/reference/basic/cdn.html
+ * https:// uploadcare.com/documentation/reference/basic/cdn.html
  */
 
 /**
@@ -178,13 +178,13 @@ echo $file->getUrl('image.jpg')."\n";
  * First of all, we can upload file from url. Just use construction below.
  * This will return File instance.
  */
-$file = $api->uploader->fromUrl('http://www.baysflowers.co.nz/Images/tangerine-delight.jpg');
+$file = $api->uploader->fromUrl('http:// www.baysflowers.co.nz/Images/tangerine-delight.jpg');
 
 /**
  * File must be uploaded, but it's not stored yet.
  * Let's store it.
  * We user true flag to be sure that file is uploaded.
-**/
+*/
 try {
   $file->store(true);
 } catch (Exception $e) {
@@ -194,7 +194,7 @@ try {
 
 /**
  * We can do any operations with this file now.
- **/
+ */
 echo $file->effect('flip')->getUrl()."\n";
 
 /**
@@ -206,7 +206,7 @@ echo $file->effect('flip')->getUrl()."\n";
 
 /**
  * Or even just use a file pointer.
- **/
+ */
 $fp = fopen(dirname(__FILE__).'/test.jpg', 'r');
 $file = $api->uploader->fromResource($fp);
 $file->store();

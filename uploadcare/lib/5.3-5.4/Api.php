@@ -7,42 +7,42 @@ class Api
    * Uploadcare public key
    *
    * @var string
-   **/
+   */
   private $public_key = null;
 
   /**
    * Uploadcare secret key
    *
    * @var string
-   **/
+   */
   private $secret_key = null;
 
   /**
    * API host for requests
    *
    * @var string
-   **/
+   */
   private $api_host = 'api.uploadcare.com';
 
   /**
    * Widget instance.
    *
    * @var Widget
-   **/
+   */
   public $widget = null;
 
   /**
    * Uploader instance
    *
    * @var Uploader
-   **/
+   */
   public $uploader = null;
 
   /**
    * Uploadcare library version
    *
    * @var string
-   **/
+   */
   public $version = '1.0.0/5.3';
 
   /**
@@ -51,7 +51,7 @@ class Api
    * @param string $public_key A public key given by Uploadcare.com
    * @param string $secret_key A private (secret) key given by Uploadcare.com
    * @return void
-   **/
+   */
   public function __construct($public_key, $secret_key)
   {
     $this->public_key = $public_key;
@@ -64,7 +64,7 @@ class Api
    * Returns public key
    *
    * @return string
-   **/
+   */
   public function getPublicKey()
   {
     return $this->public_key;
@@ -75,7 +75,7 @@ class Api
    *
    * @param integer $page Page to be shown.
    * @return array
-   **/
+   */
   public function getFileList($page = 1)
   {
     $data = $this->__preparedRequest(API_TYPE_FILES, REQUEST_TYPE_GET, array('page' => $page));
@@ -92,7 +92,7 @@ class Api
    *
    * @param integer $page
    * @return array
-   **/
+   */
   public function getFilePaginationInfo($page = 1)
   {
     $data = (array)$this->__preparedRequest(API_TYPE_FILES, REQUEST_TYPE_GET, array('page' => $page));
@@ -108,10 +108,10 @@ class Api
    * @param string $data Array of data to send.
    * @param string $headers Additonal headers.
    * @return array
-   **/
+   */
   public function request($method, $path, $data = array(), $headers = array())
   {
-    $ch = curl_init(sprintf('https://%s%s', $this->api_host, $path));
+    $ch = curl_init(sprintf('https:// %s%s', $this->api_host, $path));
     $this->__setRequestType($ch, $method);
     $this->__setHeaders($ch, $headers, $data);
 
@@ -128,7 +128,7 @@ class Api
     }
     curl_close($ch);
     if ($this->public_key == 'demopublickey' || $this->secret_key == 'demoprivatekey') {
-      trigger_error('You are using the demo account. Please get an Uploadcare account at https://uploadcare.com/accounts/create/', E_USER_WARNING);
+      trigger_error('You are using the demo account. Please get an Uploadcare account at https:// uploadcare.com/accounts/create/', E_USER_WARNING);
     }
     return json_decode($data);
   }
@@ -143,7 +143,7 @@ class Api
    * @param array $params Additional parameters for requests as array.
    * @throws Exception
    * @return array
-   **/
+   */
   public function __preparedRequest($type, $request_type = REQUEST_TYPE_GET, $params = array())
   {
     $url = $this->__getUrl($type, $params);
@@ -165,7 +165,7 @@ class Api
     }
     curl_close($ch);
     if ($this->public_key == 'demopublickey' || $this->secret_key == 'demoprivatekey') {
-      trigger_error('You are using the demo account. Please get an Uploadcare account at https://uploadcare.com/accounts/create/', E_USER_WARNING);
+      trigger_error('You are using the demo account. Please get an Uploadcare account at https:// uploadcare.com/accounts/create/', E_USER_WARNING);
     }
     return json_decode($data);
   }
@@ -176,7 +176,7 @@ class Api
    * @param string $type Construct type. Url will be generated using this params. Options: store
    * @param array $params Additional parameters for requests as array.
    * @return resource
-   **/
+   */
   private function __initRequest($type, $params = array())
   {
     $url = $this->__getUrl($type, $params);
@@ -191,26 +191,26 @@ class Api
    * @param array $params Additional parameters for requests as array.
    * @throws Exception
    * @return string
-   **/
+   */
   private function __getUrl($type, $params = array())
   {
     switch ($type) {
       case API_TYPE_RAW:
-        return sprintf('https://%s/', $this->api_host);
+        return sprintf('https:// %s/', $this->api_host);
       case API_TYPE_ACCOUNT:
-        return sprintf('https://%s/account/', $this->api_host);
+        return sprintf('https:// %s/account/', $this->api_host);
       case API_TYPE_FILES:
-        return sprintf('https://%s/files/?page=%s', $this->api_host, $params['page']);
+        return sprintf('https:// %s/files/?page=%s', $this->api_host, $params['page']);
       case API_TYPE_STORE:
         if (array_key_exists(UC_PARAM_FILE_ID, $params) == false) {
           throw new \Exception('Please provide "store_id" param for request');
         }
-        return sprintf('https://%s/files/%s/storage/', $this->api_host, $params['file_id']);
+        return sprintf('https:// %s/files/%s/storage/', $this->api_host, $params['file_id']);
       case API_TYPE_FILE:
         if (array_key_exists(UC_PARAM_FILE_ID, $params) == false) {
           throw new \Exception('Please provide "store_id" param for request');
         }
-        return sprintf('https://%s/files/%s/', $this->api_host, $params['file_id']);
+        return sprintf('https:// %s/files/%s/', $this->api_host, $params['file_id']);
       default:
         throw new \Exception('No api url type is provided for request. Use store, or appropriate constants.');
     }
@@ -224,7 +224,7 @@ class Api
    * @param string $type Request type. Options: get, post, put, delete.
    * @throws Exception
    * @return void
-   **/
+   */
   private function __setRequestType($ch, $type = REQUEST_TYPE_GET)
   {
     switch ($type) {
@@ -263,7 +263,7 @@ class Api
    * @param array $headers additional headers.
    * @param array $data Data array.
    * @return void
-   **/
+   */
   private function __setHeaders($ch, $add_headers = array(), $data = array())
   {
     $content_length = 0;
@@ -287,7 +287,7 @@ class Api
    *
    * @param string $file_id Uploadcare file_id
    * @return File
-   **/
+   */
   public function getFile($file_id)
   {
     return new File($file_id, $this);

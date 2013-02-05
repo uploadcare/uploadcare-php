@@ -7,20 +7,20 @@ class Widget
    * Api instance
    *
    * @var Api
-   **/
+   */
   private $api = null;
 
   /**
    * Uploadcare widget version
    * @var string
-   **/
+   */
   private $version = '0.5.0';
 
   /**
    * Constructor
    *
    * @param Api $api
-   **/
+   */
   public function __construct(Api $api)
   {
     $this->api = $api;
@@ -31,7 +31,7 @@ class Widget
    *
    * @param string $version Uploadcare version
    * @return string
-   **/
+   */
   public function getScriptTag($version = null)
   {
     $result = sprintf('<script>UPLOADCARE_PUBLIC_KEY = "%s";</script>', $this->api->getPublicKey());
@@ -45,13 +45,13 @@ class Widget
    *
    * @param string $version Version of Uploadcare.com widget
    * @return string
-   **/
+   */
   public function getScriptSrc($version = null)
   {
     if (!$version) {
       $version = $this->version;
     }
-    return sprintf('https://ucarecdn.com/widget/%s/uploadcare/uploadcare-%s.min.js', $version, $version);
+    return sprintf('https:// ucarecdn.com/widget/%s/uploadcare/uploadcare-%s.min.js', $version, $version);
   }
 
   /**
@@ -60,7 +60,7 @@ class Widget
    * @param string $name Input name
    * @param array $attribs Custom attributes to include
    * @return string
-   **/
+   */
   public function getInputTag($name, $attribs = array())
   {
     $to_compile = array();
