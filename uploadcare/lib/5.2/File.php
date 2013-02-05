@@ -116,7 +116,7 @@ class Uploadcare_File
    */
   public function getUrl($postfix = null)
   {
-    $url = sprintf('https:// %s/%s/', $this->cdn_host, $this->file_id);
+    $url = sprintf('https://%s/%s/', $this->cdn_host, $this->file_id);
 
     $operations = array();
 

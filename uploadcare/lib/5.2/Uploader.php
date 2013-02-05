@@ -168,7 +168,7 @@ class Uploadcare_Uploader {
    * @return resource
    */
   private function __initRequest($type, $data = null) {
-    $url = sprintf('https:// %s/%s/', $this->host, $type);
+    $url = sprintf('https://%s/%s/', $this->host, $type);
     if (is_array($data)) {
       $url = sprintf('%s?%s', $url, http_build_query($data));
     }

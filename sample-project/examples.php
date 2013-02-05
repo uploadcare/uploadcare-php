@@ -24,16 +24,10 @@ print $api->widget->getScriptSrc()."\n";
 print $api->widget->getScriptTag()."\n";
 
 /**
- * Ok, lets do some requests. This is request to index (http:// api.uploadcare.com).
+ * Ok, lets do some requests. This is request to index (http://api.uploadcare.com).
  * This will return an stdClass with information about urls you can request.
  */
 $data = $api->request('GET', '/');
-
-/**
- * Lets request account info.
- * This will return just some essential data inside stdClass such as: username, pub_key and email
-*/
-$account_data = $api->request('GET', '/account/');
 
 /**
  * Ok, now lets get file list.
@@ -173,7 +167,7 @@ echo $file->getUrl('image.jpg')."\n";
 
 /**
  * You can find more about operations here:
- * https:// uploadcare.com/documentation/reference/basic/cdn.html
+ * https://uploadcare.com/documentation/reference/basic/cdn.html
  */
 
 /**
@@ -182,7 +176,7 @@ echo $file->getUrl('image.jpg')."\n";
  * First of all, we can upload file from url. Just use construction below.
  * This will return File instance.
  */
-$file = $api->uploader->fromUrl('http:// www.baysflowers.co.nz/Images/tangerine-delight.jpg');
+$file = $api->uploader->fromUrl('http://www.baysflowers.co.nz/Images/tangerine-delight.jpg');
 
 /**
  * File must be uploaded, but it's not stored yet.

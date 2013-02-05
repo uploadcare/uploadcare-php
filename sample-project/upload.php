@@ -22,7 +22,7 @@ try {
 	href="// ucarecdn.com/assets/application-68fbe95c430b7646b16aef33e1ad2824.css"
 	media="screen" rel="stylesheet" type="text/css" />
 <link
-	href="https:// fonts.googleapis.com/css?family=PT+Sans:400,700,400italic|PT+Sans+Caption&amp;subset=latin,cyrillic"
+	href="https://fonts.googleapis.com/css?family=PT+Sans:400,700,400italic|PT+Sans+Caption&amp;subset=latin,cyrillic"
 	media="screen" rel="stylesheet" type="text/css" />
 <script
 	src="// ucarecdn.com/assets/application-241564109602bb3ae298c344abff83a7.js"

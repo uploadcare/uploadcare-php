@@ -80,7 +80,7 @@ class ApiTest extends PHPUnit_Framework_TestCase
   {
     $api = new Uploadcare_Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
 
-    // this are request to https:// api.uploadcare.com/ url.
+    // this are request to https://api.uploadcare.com/ url.
     // no exceptions should be thrown
     try {
       $result = $api->request('GET', '/');
@@ -93,7 +93,7 @@ class ApiTest extends PHPUnit_Framework_TestCase
     // let's check we have a "resources"
     $this->assertTrue(is_array($result->resources));
 
-    // this are requests to https:// api.uploadcare.com/ url.
+    // this are requests to https://api.uploadcare.com/ url.
     // But this requests are now allowed but this url and we must have an exception
     try {
       $api->request('POST', '/');
@@ -121,7 +121,7 @@ class ApiTest extends PHPUnit_Framework_TestCase
   {
     $api = new Uploadcare_Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
 
-    // this are request to https:// api.uploadcare.com/account/ url.
+    // this are request to https://api.uploadcare.com/account/ url.
     // no exceptions should be thrown
     try {
       $result = $api->request('GET', '/account/');
@@ -136,7 +136,7 @@ class ApiTest extends PHPUnit_Framework_TestCase
     $this->assertEquals($result->pub_key, 'demopublickey');
     $this->assertEquals($result->email, 'demo@uploadcare.com');
 
-    // this are requests to https:// api.uploadcare.com/account/ url.
+    // this are requests to https://api.uploadcare.com/account/ url.
     // But this requests are now allowed but this url and we must have an exception
     try {
       $api->request('POST', '/account/');
@@ -164,7 +164,7 @@ class ApiTest extends PHPUnit_Framework_TestCase
   {
     $api = new Uploadcare_Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
 
-    // this are request to https:// api.uploadcare.com/files/ url.
+    // this are request to https://api.uploadcare.com/files/ url.
     // no exceptions should be thrown
     try {
       $result = $api->request('GET', '/files/');
@@ -185,7 +185,7 @@ class ApiTest extends PHPUnit_Framework_TestCase
     $this->assertArrayHasKey('original_filename', $file_raw);
     $this->assertArrayHasKey('mime_type', $file_raw);
 
-    // this are requests to https:// api.uploadcare.com/files/ url.
+    // this are requests to https://api.uploadcare.com/files/ url.
     // But this requests are now allowed but this url and we must have an exception
     try {
       $api->request('POST', '/files/');
@@ -216,28 +216,28 @@ class ApiTest extends PHPUnit_Framework_TestCase
 
     $this->assertEquals(get_class($file), 'Uploadcare_File');
 
-    $this->assertEquals($file->getUrl(), 'https:// ucarecdn.com/4bd3a897-f489-4b9f-b643-961b1c9f657e/');
-    $this->assertEquals($file->resize(400, 400)->getUrl(), 'https:// ucarecdn.com/4bd3a897-f489-4b9f-b643-961b1c9f657e/-/resize/400x400/');
-    $this->assertEquals($file->resize(400, false)->getUrl(), 'https:// ucarecdn.com/4bd3a897-f489-4b9f-b643-961b1c9f657e/-/resize/400x/');
-    $this->assertEquals($file->resize(false, 400)->getUrl(), 'https:// ucarecdn.com/4bd3a897-f489-4b9f-b643-961b1c9f657e/-/resize/x400/');
+    $this->assertEquals($file->getUrl(), 'https://ucarecdn.com/4bd3a897-f489-4b9f-b643-961b1c9f657e/');
+    $this->assertEquals($file->resize(400, 400)->getUrl(), 'https://ucarecdn.com/4bd3a897-f489-4b9f-b643-961b1c9f657e/-/resize/400x400/');
+    $this->assertEquals($file->resize(400, false)->getUrl(), 'https://ucarecdn.com/4bd3a897-f489-4b9f-b643-961b1c9f657e/-/resize/400x/');
+    $this->assertEquals($file->resize(false, 400)->getUrl(), 'https://ucarecdn.com/4bd3a897-f489-4b9f-b643-961b1c9f657e/-/resize/x400/');
 
-    $this->assertEquals($file->crop(400, 400)->getUrl(), 'https:// ucarecdn.com/4bd3a897-f489-4b9f-b643-961b1c9f657e/-/crop/400x400/');
-    $this->assertEquals($file->crop(400, 400, true)->getUrl(), 'https:// ucarecdn.com/4bd3a897-f489-4b9f-b643-961b1c9f657e/-/crop/400x400/center/');
-    $this->assertEquals($file->crop(400, 400, true, 'ff0000')->getUrl(), 'https:// ucarecdn.com/4bd3a897-f489-4b9f-b643-961b1c9f657e/-/crop/400x400/center/ff0000/');
-    $this->assertEquals($file->crop(400, 400, false, 'ff0000')->getUrl(), 'https:// ucarecdn.com/4bd3a897-f489-4b9f-b643-961b1c9f657e/-/crop/400x400/ff0000/');
+    $this->assertEquals($file->crop(400, 400)->getUrl(), 'https://ucarecdn.com/4bd3a897-f489-4b9f-b643-961b1c9f657e/-/crop/400x400/');
+    $this->assertEquals($file->crop(400, 400, true)->getUrl(), 'https://ucarecdn.com/4bd3a897-f489-4b9f-b643-961b1c9f657e/-/crop/400x400/center/');
+    $this->assertEquals($file->crop(400, 400, true, 'ff0000')->getUrl(), 'https://ucarecdn.com/4bd3a897-f489-4b9f-b643-961b1c9f657e/-/crop/400x400/center/ff0000/');
+    $this->assertEquals($file->crop(400, 400, false, 'ff0000')->getUrl(), 'https://ucarecdn.com/4bd3a897-f489-4b9f-b643-961b1c9f657e/-/crop/400x400/ff0000/');
 
-    $this->assertEquals($file->scaleCrop(400, 400)->getUrl(), 'https:// ucarecdn.com/4bd3a897-f489-4b9f-b643-961b1c9f657e/-/scale_crop/400x400/');
-    $this->assertEquals($file->scaleCrop(400, 400, true)->getUrl(), 'https:// ucarecdn.com/4bd3a897-f489-4b9f-b643-961b1c9f657e/-/scale_crop/400x400/center/');
+    $this->assertEquals($file->scaleCrop(400, 400)->getUrl(), 'https://ucarecdn.com/4bd3a897-f489-4b9f-b643-961b1c9f657e/-/scale_crop/400x400/');
+    $this->assertEquals($file->scaleCrop(400, 400, true)->getUrl(), 'https://ucarecdn.com/4bd3a897-f489-4b9f-b643-961b1c9f657e/-/scale_crop/400x400/center/');
 
-    $this->assertEquals($file->effect('flip')->getUrl(), 'https:// ucarecdn.com/4bd3a897-f489-4b9f-b643-961b1c9f657e/-/effect/flip/');
-    $this->assertEquals($file->effect('grayscale')->getUrl(), 'https:// ucarecdn.com/4bd3a897-f489-4b9f-b643-961b1c9f657e/-/effect/grayscale/');
-    $this->assertEquals($file->effect('invert')->getUrl(), 'https:// ucarecdn.com/4bd3a897-f489-4b9f-b643-961b1c9f657e/-/effect/invert/');
-    $this->assertEquals($file->effect('mirror')->getUrl(), 'https:// ucarecdn.com/4bd3a897-f489-4b9f-b643-961b1c9f657e/-/effect/mirror/');
+    $this->assertEquals($file->effect('flip')->getUrl(), 'https://ucarecdn.com/4bd3a897-f489-4b9f-b643-961b1c9f657e/-/effect/flip/');
+    $this->assertEquals($file->effect('grayscale')->getUrl(), 'https://ucarecdn.com/4bd3a897-f489-4b9f-b643-961b1c9f657e/-/effect/grayscale/');
+    $this->assertEquals($file->effect('invert')->getUrl(), 'https://ucarecdn.com/4bd3a897-f489-4b9f-b643-961b1c9f657e/-/effect/invert/');
+    $this->assertEquals($file->effect('mirror')->getUrl(), 'https://ucarecdn.com/4bd3a897-f489-4b9f-b643-961b1c9f657e/-/effect/mirror/');
 
-    $this->assertEquals($file->effect('flip')->effect('mirror')->getUrl(), 'https:// ucarecdn.com/4bd3a897-f489-4b9f-b643-961b1c9f657e/-/effect/flip/-/effect/mirror/');
-    $this->assertEquals($file->effect('mirror')->effect('flip')->getUrl(), 'https:// ucarecdn.com/4bd3a897-f489-4b9f-b643-961b1c9f657e/-/effect/mirror/-/effect/flip/');
+    $this->assertEquals($file->effect('flip')->effect('mirror')->getUrl(), 'https://ucarecdn.com/4bd3a897-f489-4b9f-b643-961b1c9f657e/-/effect/flip/-/effect/mirror/');
+    $this->assertEquals($file->effect('mirror')->effect('flip')->getUrl(), 'https://ucarecdn.com/4bd3a897-f489-4b9f-b643-961b1c9f657e/-/effect/mirror/-/effect/flip/');
 
-    $this->assertEquals($file->resize(400, 400)->scaleCrop(200, 200, true)->effect('mirror')->getUrl(), 'https:// ucarecdn.com/4bd3a897-f489-4b9f-b643-961b1c9f657e/-/resize/400x400/-/scale_crop/200x200/center/-/effect/mirror/');
+    $this->assertEquals($file->resize(400, 400)->scaleCrop(200, 200, true)->effect('mirror')->getUrl(), 'https://ucarecdn.com/4bd3a897-f489-4b9f-b643-961b1c9f657e/-/resize/400x400/-/scale_crop/200x200/center/-/effect/mirror/');
   }
 
   /**
@@ -249,7 +249,7 @@ class ApiTest extends PHPUnit_Framework_TestCase
 
     // upload form url
     try {
-      $file = $api->uploader->fromUrl('http:// www.baysflowers.co.nz/Images/tangerine-delight.jpg');
+      $file = $api->uploader->fromUrl('http://www.baysflowers.co.nz/Images/tangerine-delight.jpg');
     } catch (Exception $e) {
       $this->fail('We get an unexpected exception trying to upload from url '.$e->getMessage());
     }

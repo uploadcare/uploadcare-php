@@ -51,7 +51,7 @@ class Uploadcare_Widget {
     if (!$version) {
       $version = $this->version;
     }
-    return sprintf('https:// ucarecdn.com/widget/%s/uploadcare/uploadcare-%s.min.js', $version, $version);
+    return sprintf('https://ucarecdn.com/widget/%s/uploadcare/uploadcare-%s.min.js', $version, $version);
   }
 
   /**
