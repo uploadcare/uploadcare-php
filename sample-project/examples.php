@@ -6,13 +6,13 @@ require_once '../uploadcare/lib/5.3-5.4/Uploadcare.php';
 //using namespace
 use \Uploadcare;
 
-//create object istance for Api. 
+//create object istance for Api.
 $api = new Uploadcare\Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
 
 /**
  * Let's start with widgets.
  * You can get widget url by using this:
- * */
+* */
 print $api->widget->getScriptSrc()."\n";
 
 /**
@@ -29,7 +29,7 @@ $data = $api->request('GET', '/');
 /**
  * Lets request account info.
  * This will return just some essential data inside stdClass such as: username, pub_key and email
- */
+*/
 $account_data = $api->request('GET', '/account/');
 
 /**
@@ -48,52 +48,52 @@ $account_data = $api->request('GET', '/account/');
  *  - removed
  *  - mime_type
  *  - original_file_url
- *  
- */
+ *
+*/
 $files_raw = $api->request('GET', '/files/');
 
 /**
  *  Previous request is just some raw request and it will return raw data from json.
  *  There's a better way to handle all the files by using method below.
  *  It will return an array of \Uploadcare\File objects to work with.
- *  
- *  This objects don't provide all the data like in previous request, but provides ways to display the file 
- *  and to use methods such as resize, crop, etc 
- */
+ *
+ *  This objects don't provide all the data like in previous request, but provides ways to display the file
+ *  and to use methods such as resize, crop, etc
+*/
 $files = $api->getFileList();
 
 /**
  * getFileList called without any params will return just an array of first 20 files objects (first page).
- * 
+ *
  * But you can supply a page you want to see:
- */
+*/
 $page = 2;
 $files = $api->getFileList($page);
 
 /**
  * You can get some information about pagination.
- * 
+ *
  * You will get an array with params:
  * - page: current page
  * - next: uri to request next page
  * - per_page: number of files per page
  * - pages: number of pages
  * - previous: uri to request previous page
- * 
+ *
  * Use "per_page" and "pages" information to create pagination inside your own project
- */
+*/
 $pagination_info = $api->getFilePaginationInfo();
 
 /**
  * If you have a file_id (for example, it's saved in your database) you can create object for file easily.
  * Just user request below
- */
+*/
 $file_id = '5255b9dd-f790-425e-9fa9-8b49d4e64643';
 $file = $api->getFile($file_id);
 
 /**
  * Ok, using object of \Uploadcare\File class we can get url for the file
- */
+*/
 echo $file->getUrl()."\n";
 
 /**
@@ -145,9 +145,9 @@ echo  $file->effect('flip')->effect('invert')->getUrl()."\n";
 
 /**
  * We can combine operations, not just effects.
- * 
+ *
  * Just chain methods and finish but calling "getUrl()".
- * 
+ *
  * */
 echo $file->resize(false, $height)->crop(100, 100)->effect('flip')->effect('invert')->getUrl()."\n";
 
@@ -182,15 +182,15 @@ echo $file->getUrl('image.jpg')."\n";
 $file = $api->uploader->fromUrl('http://www.baysflowers.co.nz/Images/tangerine-delight.jpg');
 
 /**
- * File must be uploaded, but it's not stored yet. 
+ * File must be uploaded, but it's not stored yet.
  * Let's store it.
  * We user true flag to be sure that file is uploaded.
- **/
+**/
 try {
-	$file->store(true);	
+  $file->store(true);
 } catch (Exception $e) {
-	echo $e->getMessage()."\n";
-	echo nl2br($e->getTraceAsString())."\n";	
+  echo $e->getMessage()."\n";
+  echo nl2br($e->getTraceAsString())."\n";
 }
 
 /**
@@ -214,7 +214,7 @@ $file->store();
 echo $file->effect('flip')->getUrl()."\n";
 
 /**
- * The last thing you can do is upload a file just from it's contents. But you will have to provide 
+ * The last thing you can do is upload a file just from it's contents. But you will have to provide
  * mime-type.
  */
 $content = "This is some text I want to upload";
