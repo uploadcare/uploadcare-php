@@ -116,6 +116,9 @@ class Api
     $this->__setHeaders($ch, $headers, $data);
 
     $data = curl_exec($ch);
+    if (!$data) {
+      throw new \Exception(curl_error($ch));
+    }    
     $ch_info = curl_getinfo($ch);
     if ($method == REQUEST_TYPE_DELETE) {
       if ($ch_info['http_code'] != 204) {
