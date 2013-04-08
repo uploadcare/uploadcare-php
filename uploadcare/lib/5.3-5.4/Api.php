@@ -116,7 +116,7 @@ class Api
     $this->__setHeaders($ch, $headers, $data);
 
     $data = curl_exec($ch);
-    if (!$data) {
+    if ($data === false) {
       throw new \Exception(curl_error($ch));
     }    
     $ch_info = curl_getinfo($ch);
