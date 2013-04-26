@@ -6,32 +6,31 @@ This is a set of libraries to work with [Uploadcare][1].
 
 **Note**: php-curl must be installed.
 
-Just clone source code anywhere you like inside your project:
+Just update your `composer.json` with:
 
-    git clone git://github.com/uploadcare/uploadcare-php.git
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "git://github.com/RiderSx/uploadcare-php.git"
+        }
+    ],
+    "require": {
+        "RiderSx/uploadcare-php": ">=v1.0.3"
+    }
 
 If you like, define some constants with Public and Secret keys within your project:
 
     define('UC_PUBLIC_KEY', 'demopublickey');
     define('UC_SECRET_KEY', 'demoprivatekey');
 
-If you are using PHP 5.3+ or 5.4+ it will be much better to use library with namespaces.
 Just include one file to start using Uploadcare inside your PHP project and use namespace "\Uploadcare":
 
-    require_once '../uploadcare/lib/5.3-5.4/Uploadcare.php';
+    require_once 'vendor/autoload.php';
     use \Uploadcare;
-    
-If you are using PHP 5.2+, then you should include Uploadcare PHP libraries like this:
-
-    require_once '../uploadcare/lib/5.2/Uploadcare.php';
 
 Now, we are ready. Create an object of Uploadcare\Api class:
-    
+
     $api = new Uploadcare\Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
-    
-For PHP 5.2 it will be:
-  
-    $api = new Uploadcare_Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
 
 This is a main object your should work with. It has everything you need.
 
@@ -44,7 +43,7 @@ If you want to get Javascript's url for widget, just call:
     print $api->widget->getScriptSrc()
 
 You can easily get all contents and &lt;script&gt; sections to include in your HTML:
-    
+
     <head>
     <?php print $api->widget->getScriptTag(); ?>
     </head>
@@ -55,24 +54,24 @@ Create some form to use with widget:
       <?php echo $api->widget->getInputTag('qs-file'); ?>
       <input type="submit" value="Save!" />
      </form>
-     
+
 You will see an Uploadcare widget. After selecting file the "file_id" parameter will be set as value of hidden field.
- 
+
 The last thing left is to store file:
- 
+
     $file_id = $_POST['qs-file'];
     $api = new Uploadcare\Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
     $file = $api->getFile($file_id);
     $file->store();
- 
+
 Now you have an Uploadcare\File object to work with. You can show an image like this:
 
     <img src="<?php echo $file->getUrl(); ?>" />
-    
+
 Or just:
 
     <img src="<?php echo $file; ?>" />
-    
+
 Or you can even call a getImgTag method. This will return a prepared <img> tag:
 
     echo $file->getImgTag('image.jpg', array('alt' => 'Image'));
@@ -82,7 +81,7 @@ Or you can even call a getImgTag method. This will return a prepared <img> tag:
 You can do any simple request if you like by calling:
 
     $api->request($method, $path, $data = array(), $headers = array());
-    
+
 Don't forget, that each API url has it's own allowed methods.
 
 If method is not allowed exceptions will be thrown.
@@ -122,7 +121,7 @@ Each files has:
 
 
     $files_raw = $api->request('GET', '/files/');
-    
+
 
 Previous request is just some raw request and it will return raw data from json.
 
@@ -130,12 +129,12 @@ There's a better way to handle all the files by using method below.
 
 It will return an array of \Uploadcare\File objects to work with.
 
-This objects provide ways to display the file and to use methods such as resize, crop, etc 
+This objects provide ways to display the file and to use methods such as resize, crop, etc
 
     $files = $api->getFileList();
 
 getFileList called without any params will return just an array of first 20 files objects (first page).
- 
+
 But you can supply a page you want to see:
 
     $page = 2;
@@ -150,7 +149,7 @@ You will get an array with params:
 - per_page: number of files per page
 - pages: number of pages
 - previous: uri to request previous page
- 
+
 Use "per_page" and "pages" information to create pagination inside your own project
 
     $pagination_info = $api->getFilePaginationInfo();
@@ -165,8 +164,8 @@ Just use request below:
 You can access raw data like this:
 
     $file->data['size'];
-    
-Trying to access "data" parameter will fire GET request to get all that data once. 
+
+Trying to access "data" parameter will fire GET request to get all that data once.
 It will be a cached array if you will try to access "data" parameter again.
 
 ## File operations
@@ -196,7 +195,7 @@ Height only
     echo $file->resize(false, $height)->getUrl();
 
 We can also use scale crop
-    
+
     echo $file->scaleCrop($width, $height, $is_center)->getUrl();
 
 And we can apply some effects.
@@ -216,7 +215,7 @@ Just chain methods and finish but calling "getUrl()".
 
     echo $file->resize(false, $height)->crop(100, 100)->effect('flip')->effect('invert')->getUrl();
 
-getUrl() returns a string with the resulting URL. 
+getUrl() returns a string with the resulting URL.
 
 However, it's optional – the object itself becomes a string when treated as such.
 
@@ -234,11 +233,11 @@ You can run any custom operations like this:
 
     echo $file->op('effect/flip');
     echo $file->op('resize/400x400')->op('effect/flip');
-    
-You can call getUrl with postfix parameter. This is will add some readable postfix.  
-  
-    echo $file->getUrl('image.jpg');    
-    
+
+You can call getUrl with postfix parameter. This is will add some readable postfix.
+
+    echo $file->getUrl('image.jpg');
+
 The result will be like this one:
 
     http://ucarecdn.com/85b5644f-e692-4855-9db0-8c5a83096e25/-/crop/970x500/center/he.jpg
@@ -254,13 +253,13 @@ This will return Uploadcare\File instance.
 
     $file = $api->uploader->fromUrl('http://www.baysflowers.co.nz/Images/tangerine-delight.jpg');
     $file->store();
-    
+
 By using default params of "fromUrl" method you tell Uploader to check file to be uploaded.
 
 By default, Uploader will make 5 checks max with 1 second wait. You can change these params:
 
     $file = $api->uploader->fromUrl('http://www.baysflowers.co.nz/Images/tangerine-delight.jpg', true, $timeout, $max_attempts);
-    
+
 If file is not uploaded an Exception will be thrown.
 
 You can just get token and check status manually later any time:
@@ -273,7 +272,7 @@ You can just get token and check status manually later any time:
     }
 
 You can do any operations with this file now.
-    
+
     echo $file->effect('flip')->getUrl();
 
 You can upload file from path.
@@ -297,7 +296,7 @@ The last thing you can do is upload a file just from it's contents. But you will
     echo $file->getUrl();
 
 If you want to delete file, just call delete() method on Uploadcare\File object.
-    
+
     $file->delete();
 
 ## Tests
@@ -309,11 +308,6 @@ This tests are based on PHPUnit, so you must have PHPUnit installed on your syst
 To execute tests just run this for PHP 5.3:
 
     cd tests/5.3/
-    phpunit ApiTest.php
-    
-or for PHP 5.2:
-
-    cd tests/5.2/
     phpunit ApiTest.php
 
 ApiTest is divided is sections/methods.
