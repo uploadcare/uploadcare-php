@@ -86,7 +86,7 @@ Don't forget, that each API url has it's own allowed methods.
 
 If method is not allowed exceptions will be thrown.
 
-Ok, lets do some requests. This is request to index (http://api.uploadcare.com).
+Ok, lets do some requests. This is request to index (https://api.uploadcare.com).
 
 This will return an stdClass with information about urls you can request.
 
@@ -365,4 +365,4 @@ Checks text file is uploaded correctly.
 Checks for file deletions. No exceptions must be thrown.
 
 [1]: https://uploadcare.com/
-[2]: https://uploadcare.com/documentation/reference/basic/cdn.html
+[2]: https://uploadcare.com/documentation/cdn/
