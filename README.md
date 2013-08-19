@@ -11,11 +11,11 @@ Just update your `composer.json` with:
     "repositories": [
         {
             "type": "vcs",
-            "url": "git://github.com/RiderSx/uploadcare-php.git"
+            "url": "git://github.com/uploadcare/uploadcare-php.git"
         }
     ],
     "require": {
-        "RiderSx/uploadcare-php": ">=v1.0.3"
+        "uploadcare/uploadcare-php": ">=v1.0.3"
     }
 
 If you like, define some constants with Public and Secret keys within your project:
