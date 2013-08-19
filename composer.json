@@ -1,11 +1,11 @@
 {
-    "name": "ridersx/uploadcare-php",
+    "name": "uploadcare/uploadcare-php",
     "description": "Uploadcare API binding for PHP",
     "license": "MIT",
     "authors": [
         {
-            "name": "Alexander Kuhta",
-            "email": "alexridersx@gmail.com"
+            "name": "Uploadcare",
+            "email": "support@uploadcare.com"
         }
     ],
     "minimum-stability": "dev",
