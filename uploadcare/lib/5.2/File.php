@@ -12,7 +12,7 @@ class Uploadcare_File
    *
    * @var string
    */
-  private $cdn_host = 'ucarecdn.com';
+  private $cdn_host = 'www.ucarecdn.com';
 
   /**
    * Uploadcare file id
@@ -105,7 +105,7 @@ class Uploadcare_File
    */
   public function delete()
   {
-    return $this->api->__preparedRequest(API_TYPE_FILE, REQUEST_TYPE_DELETE, array('file_id' => $this->file_id));
+    return $this->api->__preparedRequest(API_TYPE_STORE, REQUEST_TYPE_DELETE, array('file_id' => $this->file_id));
   }
 
   /**
@@ -116,7 +116,7 @@ class Uploadcare_File
    */
   public function getUrl($postfix = null)
   {
-    $url = sprintf('https://%s/%s/', $this->cdn_host, $this->file_id);
+    $url = sprintf('http://%s/%s/', $this->cdn_host, $this->file_id);
 
     $operations = array();
 

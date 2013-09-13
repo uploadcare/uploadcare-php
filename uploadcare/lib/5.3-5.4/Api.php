@@ -43,7 +43,14 @@ class Api
    *
    * @var string
    */
-  public $version = '1.0.2/5.3';
+  public $version = '1.0.4/5.3';
+
+  /**
+   * Uploadcare rest API version
+   *
+   * @var string
+   */
+  public $api_version = '0.3';
 
   /**
    * Constructor
@@ -121,7 +128,7 @@ class Api
     }    
     $ch_info = curl_getinfo($ch);
     if ($method == REQUEST_TYPE_DELETE) {
-      if ($ch_info['http_code'] != 204) {
+      if ($ch_info['http_code'] != 302) {
         throw new \Exception('Request returned unexpected http code '.$ch_info['http_code'].'. '.$data);
       }
     } else {
@@ -157,8 +164,8 @@ class Api
 
     $data = curl_exec($ch);
     $ch_info = curl_getinfo($ch);
-    if ($request_type == REQUEST_TYPE_DELETE) {
-      if ($ch_info['http_code'] != 204) {
+    if ($request_type == REQUEST_TYPE_DELETE && $type == API_TYPE_STORE) {
+      if ($ch_info['http_code'] != 302) {
         throw new \Exception('Request returned unexpected http code '.$ch_info['http_code'].'. '.$data);
       }
     } else {
@@ -279,6 +286,7 @@ class Api
         'Content-Type: application/json',
         'Content-Length: '.$content_length,
         'User-Agent: PHP Uploadcare Module '.$this->version,
+        'Accept: application/vnd.uploadcare-v'.$this->api_version.'+json',
         sprintf('Date: %s', date('Y-m-d H:i:s')),
     ) + $add_headers;
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
