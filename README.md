@@ -310,59 +310,5 @@ To execute tests just run this for PHP 5.3:
     cd tests/5.3/
     phpunit ApiTest.php
 
-ApiTest is divided is sections/methods.
-
-Here's descriptions of methods:
-
-### testConstantValid
-
-Just some basic unit test to test, that constants are not misspelled.
-
-### testChildObjectsValid
-
-Test that Api object has proper child objects.
-
-### testPublicKeyValid
-
-Test for public key is correct.
-
-### testFileList
-
-Test that getFilesList mehtod returns array and each item of array is an object of Uploadcare\File class
-
-### testRequestsRaw
-
-Test different request types to url https://api.uploadcare.com/.
-
-Some requests must throw an exception, some must not.
-
-Checks for some result returned.
-
-### testRequestsAccount
-
-The same as "testRequestsRaw" but with https://api.uploadcare.com/account/ url.
-
-### testRequestsFiles
-
-Makes raw request to get an array of files.
-
-Check's if each file has essentials parameters.
-
-### testFile
-
-Tests Uploadcare\File object to work correctly.
-
-Test runs different operations and checks url is returned correctly for each of them.
-
-### testUploadAndDelete
-
-Tests all four types of uploading.
-
-None of them should throw exception while uplaoding and storing.
-
-Checks text file is uploaded correctly.
-
-Checks for file deletions. No exceptions must be thrown.
-
 [1]: https://uploadcare.com/
 [2]: https://uploadcare.com/documentation/cdn/
