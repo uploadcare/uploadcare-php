@@ -3,7 +3,6 @@
 error_reporting(E_ERROR);
 require_once dirname(__FILE__).'/config.php';
 require_once dirname(__FILE__).'/../../uploadcare/lib/5.2/Uploadcare.php';
-require_once dirname(__FILE__).'/config.php';
 
 
 class ApiTest extends PHPUnit_Framework_TestCase
