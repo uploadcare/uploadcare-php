@@ -99,6 +99,33 @@ class Uploadcare_Api
   }
 
   /**
+   * Return an array of groups
+   *
+   * @param $from string
+   * @return array
+   */
+  public function getGroupList($from = null)
+  {
+    $data = $this->__preparedRequest(API_TYPE_GROUPS, REQUEST_TYPE_GET, array('from' => $from));
+    $groups = (array)$data->results;
+    $result = array();
+    foreach ($groups as $group) {
+      $result[] = new Group($group->id, $this);
+    }
+    return $result;
+  }
+  
+  /**
+   * Get group.
+   *
+   * @param $group_id string Group ID.
+   */
+  public function getGroup($group_id)
+  {
+    return new Group($group_id, $this);
+  }  
+  
+  /**
    * Get info about pagination.
    *
    * @param integer $page
@@ -225,6 +252,15 @@ class Uploadcare_Api
           throw new Exception('Please provide "store_id" param for request');
         }
         return sprintf('https://%s/files/%s/', $this->api_host, $params['file_id']);
+      case API_TYPE_GROUPS:
+        return sprintf('https://%s/groups/?from=%s', $this->api_host, $params['from']);
+      case API_TYPE_GROUP:
+        return sprintf('https://%s/groups/%s/', $this->api_host, $params['group_id']);
+      case API_TYPE_STORE:
+        if (array_key_exists(UC_PARAM_GROUP_ID, $params) == false) {
+          throw new \Exception('Please provide "group_id" param for request');
+        }
+        return sprintf('https://%s/groups/%s/storage/', $this->api_host, $params['group_id']);        
       default:
         throw new Exception('No api url type is provided for request. Use store, or appropriate constants.');
     }

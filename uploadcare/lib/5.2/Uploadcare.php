@@ -10,6 +10,9 @@ define('API_TYPE_ACCOUNT', 'account');
 define('API_TYPE_FILES', 'files');
 define('API_TYPE_FILE', 'file');
 define('API_TYPE_STORE', 'store');
+define('API_TYPE_GROUPS', 'groups');
+define('API_TYPE_GROUP', 'group');
+define('API_TYPE_GROUP_STORE', 'group_store');
 
 define('REQUEST_TYPE_POST', 'post');
 define('REQUEST_TYPE_PUT', 'put');
@@ -19,8 +22,10 @@ define('REQUEST_TYPE_HEAD', 'head');
 define('REQUEST_TYPE_OPTIONS', 'options');
 
 define('UC_PARAM_FILE_ID', 'file_id');
+define('UC_PARAM_GROUP_ID', 'group_id');
 
 require_once dirname(__FILE__).'/Api.php';
 require_once dirname(__FILE__).'/File.php';
+require_once dirname(__FILE__).'/Group.php';
 require_once dirname(__FILE__).'/Widget.php';
 require_once dirname(__FILE__).'/Uploader.php';

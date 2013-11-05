@@ -113,7 +113,7 @@ Each files has:
 - made_public
 - url
 - is_image
-- file_id
+- uuid
 - original_filename
 - removed
 - mime_type
@@ -167,6 +167,28 @@ You can access raw data like this:
 
 Trying to access "data" parameter will fire GET request to get all that data once.
 It will be a cached array if you will try to access "data" parameter again.
+
+## Groups
+
+To get list of groups:
+
+    $from = '2013-10-10';
+    $api->getGroupList($from);
+
+"$from" parameter is not required. You will get an array of Group objects.
+
+To get group:
+
+    $group_id = 'badfc9f7-f88f-4921-9cc0-22e2c08aa2da~12';
+    $group = $api->getGroup($group_id);
+    
+To retrieve files for group:
+  
+    $files = $group->getFiles();
+    
+To store group:
+  
+    $group->store();
 
 ## File operations
 
