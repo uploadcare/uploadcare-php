@@ -187,8 +187,6 @@ class Uploadcare_Api
    **/
   public function __preparedRequest($type, $request_type = REQUEST_TYPE_GET, $params = array())
   {
-    $url = $this->__getUrl($type, $params);
-
     $ch = $this->__initRequest($type, $params);
     $this->__setRequestType($ch, $request_type);
     $this->__setHeaders($ch);
