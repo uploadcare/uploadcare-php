@@ -312,7 +312,8 @@ class Api
   {
     $content_length = 0;
     if (count($data)) {
-      $content_length = strlen(http_build_query($data));
+      $content_length = strlen(json_encode($data));
+      curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
     }
     $headers = array(
         sprintf('Host: %s', $this->api_host),
