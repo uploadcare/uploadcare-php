@@ -163,7 +163,7 @@ class Uploadcare_Api
         throw new Exception('Request returned unexpected http code '.$ch_info['http_code'].'. '.$data);
       }
     } else {
-      if (($ch_info['http_code'] != 200)&&($ch_info['http_code'] != 201)) {
+      if (!(($ch_info['http_code'] >= 200)&&($ch_info['http_code'] < 300))) {
         throw new Exception('Request returned unexpected http code '.$ch_info['http_code'].'. '.$data);
       }
     }
