@@ -159,7 +159,7 @@ class Api
         throw new \Exception('Request returned unexpected http code '.$ch_info['http_code'].'. '.$data);
       }
     } else {
-      if ($ch_info['http_code'] != 200) {
+      if (($ch_info['http_code'] != 200)&&($ch_info['http_code'] != 201)) {
         throw new \Exception('Request returned unexpected http code '.$ch_info['http_code'].'. '.$data);
       }
     }
