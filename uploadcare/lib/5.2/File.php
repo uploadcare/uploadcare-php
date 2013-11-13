@@ -97,6 +97,16 @@ class Uploadcare_File
   {
     return $this->api->__preparedRequest(API_TYPE_STORE, REQUEST_TYPE_POST, array('file_id' => $this->file_id));
   }
+  
+  /**
+   * Copy the file.
+   * 
+   * @param string $target Name of custom storage.
+   */
+  public function copy($target = null)
+  {
+    return $this->api->copyFile($this->getUrl(), $target);
+  }
 
   /**
    * Delete file

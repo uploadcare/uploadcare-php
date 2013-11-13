@@ -266,6 +266,19 @@ The result will be like this one:
 
 [More information on file operations can be found here][2]
 
+## Copy file
+
+You can copy your file with all file operations like this:
+
+    $new_file = $file->crop(200, 200)->effect('invert')->copy();
+    
+This will return a new Uploadcare\File object. This file will be cropped and 
+invert effect will be already applied to it.
+
+You can also copy file like this:
+
+    $new_file = $api->copyFile('http://www.ucarecdn.com/3ace4d6d-6ff8-4b2e-9c37-9d1cd0559527/-/resize/200x200/');
+
 ## Uploading files
 Let's have some fun with uploading files.
 

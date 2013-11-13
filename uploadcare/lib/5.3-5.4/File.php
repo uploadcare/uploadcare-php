@@ -95,6 +95,16 @@ class File
   }
 
   /**
+   * Copy the file.
+   *
+   * @param string $target Name of custom storage.
+   */
+  public function copy($target = null)
+  {
+    return $this->api->copyFile($this->getUrl(), $target);
+  }
+  
+  /**
    * Delete file
    *
    * @return array
