@@ -133,6 +133,23 @@ class Api
     unset($data['results']);
     return $data;
   }
+  
+  /**
+   * Copy file
+   *
+   * @param string $source CDN URL or file's uuid you need to copy.
+   * @param string $target Name of custom storage connected to your project. Uploadcare storage is used if target is absent.
+   * @return File|string
+   */
+  public function copyFile($source, $target = null)
+  {
+    $data = $this->__preparedRequest(API_TYPE_FILES, REQUEST_TYPE_POST, array(), array('source' => $source, 'target' => $target));
+    if (key_exists('result', (array)$data) == true) {
+      return new File((string)$data->result->uuid, $this);
+    } else {
+      return (string)$data->detail;
+    }
+  }  
 
   /**
    * Run raw request to REST.
@@ -178,14 +195,15 @@ class Api
    * @param string $type Construct type. Url will be generated using this params. Options: store
    * @param string $request_type Request type. Options: get, post, put, delete.
    * @param array $params Additional parameters for requests as array.
+   * @param array $data Data will be posted like json. 
    * @throws Exception
    * @return array
    */
-  public function __preparedRequest($type, $request_type = REQUEST_TYPE_GET, $params = array())
+  public function __preparedRequest($type, $request_type = REQUEST_TYPE_GET, $params = array(), $data = array())
   {
     $ch = $this->__initRequest($type, $params);
     $this->__setRequestType($ch, $request_type);
-    $this->__setHeaders($ch);
+    $this->__setHeaders($ch, array(), $data);
 
     $data = curl_exec($ch);
     $ch_info = curl_getinfo($ch);
@@ -194,7 +212,7 @@ class Api
         throw new \Exception('Request returned unexpected http code '.$ch_info['http_code'].'. '.$data);
       }
     } else {
-      if ($ch_info['http_code'] != 200) {
+      if ($ch_info['http_code'] < 200 or $ch_info['http_code'] > 299) {
         throw new \Exception('Request returned unexpected http code '.$ch_info['http_code'].'. '.$data);
       }
     }
