@@ -201,43 +201,12 @@ class Api
    */
   public function __preparedRequest($type, $request_type = REQUEST_TYPE_GET, $params = array(), $data = array())
   {
-    $ch = $this->__initRequest($type, $params);
-    $this->__setRequestType($ch, $request_type);
-    $this->__setHeaders($ch, array(), $data);
-
-    $data = curl_exec($ch);
-    $ch_info = curl_getinfo($ch);
-    if ($request_type == REQUEST_TYPE_DELETE && $type == API_TYPE_STORE) {
-      if ($ch_info['http_code'] != 302) {
-        throw new \Exception('Request returned unexpected http code '.$ch_info['http_code'].'. '.$data);
-      }
-    } else {
-      if ($ch_info['http_code'] < 200 or $ch_info['http_code'] > 299) {
-        throw new \Exception('Request returned unexpected http code '.$ch_info['http_code'].'. '.$data);
-      }
-    }
-    curl_close($ch);
-    if ($this->public_key == 'demopublickey' || $this->secret_key == 'demoprivatekey') {
-      trigger_error('You are using the demo account. Please get an Uploadcare account at https://uploadcare.com/accounts/create/', E_USER_WARNING);
-    }
-    return json_decode($data);
+    $path = $this->__getPath($type, $params);
+    return $this->request($request_type, $path, $data);
   }
 
   /**
-   * Inits curl request and rerturn handler
-   *
-   * @param string $type Construct type. Url will be generated using this params. Options: store
-   * @param array $params Additional parameters for requests as array.
-   * @return resource
-   */
-  private function __initRequest($type, $params = array())
-  {
-    $url = $this->__getUrl($type, $params);
-    return $ch = curl_init($url);
-  }
-
-  /**
-   * Return url to send request to.
+   * Return path to send request to.
    * Throws Exception if wrong type is provided or parameters missing.
    *
    * @param string $type Construct type.
@@ -245,34 +214,34 @@ class Api
    * @throws Exception
    * @return string
    */
-  private function __getUrl($type, $params = array())
+  private function __getPath($type, $params = array())
   {
     switch ($type) {
       case API_TYPE_RAW:
-        return sprintf('https://%s/', $this->api_host);
+        return '/';
       case API_TYPE_ACCOUNT:
-        return sprintf('https://%s/account/', $this->api_host);
+        return '/account/';
       case API_TYPE_FILES:
-        return sprintf('https://%s/files/?page=%s', $this->api_host, $params['page']);
+        return sprintf('/files/?page=%s', $params['page']);
       case API_TYPE_STORE:
         if (array_key_exists(UC_PARAM_FILE_ID, $params) == false) {
           throw new \Exception('Please provide "store_id" param for request');
         }
-        return sprintf('https://%s/files/%s/storage/', $this->api_host, $params['file_id']);
+        return sprintf('/files/%s/storage/', $params['file_id']);
       case API_TYPE_FILE:
         if (array_key_exists(UC_PARAM_FILE_ID, $params) == false) {
           throw new \Exception('Please provide "store_id" param for request');
         }
-        return sprintf('https://%s/files/%s/', $this->api_host, $params['file_id']);
+        return sprintf('/files/%s/', $params['file_id']);
       case API_TYPE_GROUPS:
-        return sprintf('https://%s/groups/?from=%s', $this->api_host, $params['from']);
+        return sprintf('/groups/?from=%s', $params['from']);
       case API_TYPE_GROUP:
-        return sprintf('https://%s/groups/%s/', $this->api_host, $params['group_id']);
+        return sprintf('/groups/%s/', $params['group_id']);
       case API_TYPE_STORE:
           if (array_key_exists(UC_PARAM_GROUP_ID, $params) == false) {
             throw new \Exception('Please provide "group_id" param for request');
           }
-          return sprintf('https://%s/groups/%s/storage/', $this->api_host, $params['group_id']);  
+          return sprintf('/groups/%s/storage/', $params['group_id']);  
       default:
         throw new \Exception('No api url type is provided for request. Use store, or appropriate constants.');
     }
