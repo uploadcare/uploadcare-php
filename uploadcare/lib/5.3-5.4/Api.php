@@ -237,7 +237,7 @@ class Api
         return sprintf('/groups/?from=%s', $params['from']);
       case API_TYPE_GROUP:
         return sprintf('/groups/%s/', $params['group_id']);
-      case API_TYPE_STORE:
+      case API_TYPE_GROUP_STORE:
           if (array_key_exists(UC_PARAM_GROUP_ID, $params) == false) {
             throw new \Exception('Please provide "group_id" param for request');
           }

@@ -110,7 +110,7 @@ class Uploadcare_Api
     $groups = (array)$data->results;
     $result = array();
     foreach ($groups as $group) {
-      $result[] = new Group($group->id, $this);
+      $result[] = new Uploadcare_Group($group->id, $this);
     }
     return $result;
   }
@@ -122,7 +122,7 @@ class Uploadcare_Api
    */
   public function getGroup($group_id)
   {
-    return new Group($group_id, $this);
+    return new Uploadcare_Group($group_id, $this);
   }  
   
   /**

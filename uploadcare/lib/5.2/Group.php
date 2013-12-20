@@ -35,7 +35,7 @@ class Uploadcare_Group
    * @param string $group_id Uploadcare group_id
    * @param Uploadcare $api Uploadcare class instance
    */
-  public function __construct($group_id, Api $api)
+  public function __construct($group_id, Uploadcare_Api $api)
   {
     $this->group_id = $group_id;
     $this->api = $api;
@@ -99,7 +99,7 @@ class Uploadcare_Group
     $result = array();
     foreach ($this->data['files'] as $file) {
       if ($file) {
-        $result[] = new File($file->uuid, $this->api);
+        $result[] = new Uploadcare_File($file->uuid, $this->api);
       }
     }
     return $result;
