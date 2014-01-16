@@ -99,10 +99,10 @@ class Api
     }
     return $result;
   }
-  
+
   /**
    * Return an array of groups
-   * 
+   *
    * @param $from string
    * @return array
    */
@@ -118,15 +118,15 @@ class Api
   }
 
   /**
-   * Get group. 
-   * 
+   * Get group.
+   *
    * @param $group_id string Group ID.
    */
   public function getGroup($group_id)
   {
     return new Group($group_id, $this);
   }
-  
+
   /**
    * Get info about pagination.
    *
@@ -139,7 +139,7 @@ class Api
     unset($data['results']);
     return $data;
   }
-  
+
   /**
    * Copy file
    *
@@ -155,7 +155,7 @@ class Api
     } else {
       return (string)$data->detail;
     }
-  }  
+  }
 
   /**
    * Run raw request to REST.
@@ -178,7 +178,7 @@ class Api
     $data = curl_exec($ch);
     if ($data === false) {
       throw new \Exception(curl_error($ch));
-    }    
+    }
     $ch_info = curl_getinfo($ch);
     if ($method == REQUEST_TYPE_DELETE) {
       if ($ch_info['http_code'] != 302) {
@@ -204,7 +204,7 @@ class Api
    * @param string $type Construct type. Url will be generated using this params. Options: store
    * @param string $request_type Request type. Options: get, post, put, delete.
    * @param array $params Additional parameters for requests as array.
-   * @param array $data Data will be posted like json. 
+   * @param array $data Data will be posted like json.
    * @throws Exception
    * @return array
    */
@@ -250,7 +250,7 @@ class Api
           if (array_key_exists(UC_PARAM_GROUP_ID, $params) == false) {
             throw new \Exception('Please provide "group_id" param for request');
           }
-          return sprintf('/groups/%s/storage/', $params['group_id']);  
+          return sprintf('/groups/%s/storage/', $params['group_id']);
       default:
         throw new \Exception('No api url type is provided for request. Use store, or appropriate constants.');
     }

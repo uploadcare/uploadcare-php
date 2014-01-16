@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * 
+ *
  * Uploadcare_Api
  */
 
@@ -120,7 +120,7 @@ class Uploadcare_Api
     }
     return $result;
   }
-  
+
   /**
    * Get group.
    *
@@ -129,8 +129,8 @@ class Uploadcare_Api
   public function getGroup($group_id)
   {
     return new Uploadcare_Group($group_id, $this);
-  }  
-  
+  }
+
   /**
    * Get info about pagination.
    *
@@ -143,10 +143,10 @@ class Uploadcare_Api
     unset($data['results']);
     return $data;
   }
-  
+
   /**
    * Copy file
-   * 
+   *
    * @param string $source CDN URL or file's uuid you need to copy.
    * @param string $target Name of custom storage connected to your project. Uploadcare storage is used if target is absent.
    * @return File|string
@@ -254,7 +254,7 @@ class Uploadcare_Api
           if (array_key_exists(UC_PARAM_GROUP_ID, $params) == false) {
             throw new Exception('Please provide "group_id" param for request');
           }
-          return sprintf('/groups/%s/storage/', $params['group_id']);  
+          return sprintf('/groups/%s/storage/', $params['group_id']);
       default:
         throw new Exception('No api url type is provided for request. Use store, or appropriate constants.');
     }

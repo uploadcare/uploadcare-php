@@ -90,10 +90,10 @@ class Group
   {
     return $this->data['cdn_url'];
   }
-  
+
   /**
    * Get all Files
-   * 
+   *
    * @return array
    **/
   public function getFiles()

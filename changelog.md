@@ -6,3 +6,5 @@
 - fix HEAD requests
 - allow custom User Agent
 - prepopulate File with data on Api->getFileList()
+- add Groups API
+- add File->copy()
