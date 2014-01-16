@@ -32,7 +32,7 @@ class Uploadcare_File
    * Uploadcare class instance.
    *
    * @var Uploadcare_Api
-  */
+   */
   private $api = null;
 
   /**
@@ -44,7 +44,7 @@ class Uploadcare_File
    * Cached data
    *
    * @var array
-  */
+   */
   private $cached_data = null;
 
   /**
@@ -52,11 +52,15 @@ class Uploadcare_File
    *
    * @param string $file_id Uploadcare file_id
    * @param Uploadcare_Uploadcare $api Uploadcare class instance
+   * @param boolean|array $data prepopulate this->cached_data
    */
-  public function __construct($file_id, Uploadcare_Api $api)
+  public function __construct($file_id, Uploadcare_Api $api, $data = false)
   {
     $this->file_id = $file_id;
     $this->api = $api;
+    if ($data) {
+        $this->cached_data = $data;
+    }
   }
 
   public function __get($name)

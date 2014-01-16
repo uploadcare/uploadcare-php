@@ -47,7 +47,7 @@ class Uploadcare_Api
    *
    * @var string
    **/
-  public $version = '1.0.4/5.2';
+  public $version = '1.0.5-dev/5.2';
 
   /**
    * Uploadcare rest API version
@@ -61,14 +61,20 @@ class Uploadcare_Api
    *
    * @param string $public_key A public key given by Uploadcare.com
    * @param string $secret_key A private (secret) key given by Uploadcare.com
+   * @param string $ua Custom User-Agent to report
    * @return void
    **/
-  public function __construct($public_key, $secret_key)
+  public function __construct($public_key, $secret_key, $ua = false)
   {
     $this->public_key = $public_key;
     $this->secret_key = $secret_key;
     $this->widget = new Uploadcare_Widget($this);
     $this->uploader = new Uploadcare_Uploader($this);
+    if($ua) {
+      $this->ua = $ua;
+    } else {
+      $this->ua = 'PHP Uploadcare Module ' . $this->version;
+    }
   }
 
   /**
@@ -93,7 +99,7 @@ class Uploadcare_Api
     $files_raw = (array)$data->results;
     $result = array();
     foreach ($files_raw as $file_raw) {
-      $result[] = new Uploadcare_File($file_raw->file_id, $this);
+      $result[] = new Uploadcare_File($file_raw->file_id, $this, $file_raw);
     }
     return $result;
   }
@@ -169,6 +175,9 @@ class Uploadcare_Api
     $ch = curl_init(sprintf('https://%s%s', $this->api_host, $path));
     $this->__setRequestType($ch, $method);
     $this->__setHeaders($ch, $headers, $data);
+    if ($method == 'HEAD') {
+      curl_setopt($ch, CURLOPT_NOBODY, true);
+    }
 
     $data = curl_exec($ch);
     if ($data === false) {
@@ -310,9 +319,9 @@ class Uploadcare_Api
         sprintf('Host: %s', $this->api_host),
         sprintf('Authorization: Uploadcare.Simple %s:%s', $this->public_key, $this->secret_key),
         'Content-Type: application/json',
-        'Content-Length: '.$content_length,
-        'User-Agent: PHP Uploadcare Module '.$this->version,
-        'Accept: application/vnd.uploadcare-v'.$this->api_version.'+json',
+        'Content-Length: ' . $content_length,
+        'User-Agent: ' . $this->ua,
+        'Accept: application/vnd.uploadcare-v' . $this->api_version . '+json',
         sprintf('Date: %s', date('Y-m-d H:i:s')),
     ) + $add_headers;
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);

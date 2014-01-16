@@ -2,9 +2,12 @@
 
 This is a set of libraries to work with [Uploadcare][1].
 
-## Install
+## Requirements
 
-**Note**: `php-curl` must be installed.
+- `php-curl`
+- `php-json`
+
+## Install
 
 Just update your `composer.json` with:
 

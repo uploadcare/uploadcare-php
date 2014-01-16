@@ -40,7 +40,7 @@ class File
    * Cached data
    *
    * @var array
-  */
+   */
   private $cached_data = null;
 
   /**
@@ -48,11 +48,15 @@ class File
    *
    * @param string $file_id Uploadcare file_id
    * @param Uploadcare $api Uploadcare class instance
+   * @param boolean|array $data prepopulate this->cached_data
    */
-  public function __construct($file_id, Api $api)
+  public function __construct($file_id, Api $api, $data = false)
   {
     $this->file_id = $file_id;
     $this->api = $api;
+    if ($data) {
+        $this->cached_data = $data;
+    }
   }
 
   public function __get($name)
