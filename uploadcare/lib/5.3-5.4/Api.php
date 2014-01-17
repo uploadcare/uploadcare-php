@@ -43,7 +43,7 @@ class Api
    *
    * @var string
    */
-  public $version = '1.0.5-dev/5.3';
+  public $version = '1.0.5/5.3';
 
   /**
    * Uploadcare rest API version
