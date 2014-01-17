@@ -47,7 +47,7 @@ class Group
   {
     if ($name == 'data') {
       if (!$this->cached_data) {
-        $this->cached_data = (array)$this->api->__preparedRequest(API_TYPE_GROUP, REQUEST_TYPE_GET, array('group_id' => $this->group_id));
+        $this->cached_data = (array)$this->api->__preparedRequest('group', 'GET', array('uuid' => $this->group_id));
       }
       return $this->cached_data;
     }
@@ -78,7 +78,7 @@ class Group
    */
   public function store()
   {
-    return $this->api->__preparedRequest(API_TYPE_GROUP_STORE, REQUEST_TYPE_POST, array('group_id' => $this->group_id));
+    return $this->api->__preparedRequest('group_storage', 'POST', array('uuid' => $this->group_id));
   }
 
   /**

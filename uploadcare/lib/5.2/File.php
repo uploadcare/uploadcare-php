@@ -67,7 +67,7 @@ class Uploadcare_File
   {
     if ($name == 'data') {
       if (!$this->cached_data) {
-        $this->cached_data = (array)$this->api->__preparedRequest(API_TYPE_FILE, REQUEST_TYPE_GET, array('file_id' => $this->file_id));
+        $this->cached_data = (array)$this->api->__preparedRequest('file', 'GET', array('uuid' => $this->file_id));
       }
       return $this->cached_data;
     }
@@ -99,12 +99,12 @@ class Uploadcare_File
    */
   public function store()
   {
-    return $this->api->__preparedRequest(API_TYPE_STORE, REQUEST_TYPE_POST, array('file_id' => $this->file_id));
+    return $this->api->__preparedRequest('file_storage', 'POST', array('uuid' => $this->file_id));
   }
-  
+
   /**
    * Copy the file.
-   * 
+   *
    * @param string $target Name of custom storage.
    */
   public function copy($target = null)
@@ -119,7 +119,7 @@ class Uploadcare_File
    */
   public function delete()
   {
-    return $this->api->__preparedRequest(API_TYPE_STORE, REQUEST_TYPE_DELETE, array('file_id' => $this->file_id));
+    return $this->api->__preparedRequest('file_storage', 'DELETE', array('uuid' => $this->file_id));
   }
 
   /**
