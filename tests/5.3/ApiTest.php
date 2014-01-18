@@ -22,27 +22,6 @@ class ApiTest extends PHPUnit_Framework_TestCase
   }
 
   /**
-   * Test for constants not to be misspelled
-   */
-  public function testConstantValid()
-  {
-    $this->assertTrue(API_TYPE_RAW == 'raw');
-    $this->assertTrue(API_TYPE_ACCOUNT == 'account');
-    $this->assertTrue(API_TYPE_STORE == 'store');
-    $this->assertTrue(API_TYPE_FILES == 'files');
-    $this->assertTrue(API_TYPE_FILE == 'file');
-
-    $this->assertTrue(REQUEST_TYPE_POST == 'post');
-    $this->assertTrue(REQUEST_TYPE_PUT == 'put');
-    $this->assertTrue(REQUEST_TYPE_DELETE == 'delete');
-    $this->assertTrue(REQUEST_TYPE_GET == 'get');
-    $this->assertTrue(REQUEST_TYPE_HEAD == 'head');
-    $this->assertTrue(REQUEST_TYPE_OPTIONS == 'options');
-
-    $this->assertTrue(UC_PARAM_FILE_ID == 'file_id');
-  }
-
-  /**
    * This is just some simple test to check that classes are right.
    */
   public function testChildObjectsValid()

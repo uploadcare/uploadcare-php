@@ -2,9 +2,12 @@
 
 This is a set of libraries to work with [Uploadcare][1].
 
-## Install
+## Requirements
 
-**Note**: `php-curl` must be installed.
+- `php-curl`
+- `php-json`
+
+## Install
 
 Just update your `composer.json` with:
 
@@ -181,13 +184,13 @@ To get group:
 
     $group_id = 'badfc9f7-f88f-4921-9cc0-22e2c08aa2da~12';
     $group = $api->getGroup($group_id);
-    
+
 To retrieve files for group:
   
     $files = $group->getFiles();
-    
+
 To store group:
-  
+
     $group->store();
 
 ## File operations
@@ -271,8 +274,8 @@ The result will be like this one:
 You can copy your file with all file operations like this:
 
     $new_file = $file->crop(200, 200)->effect('invert')->copy();
-    
-This will return a new Uploadcare\File object. This file will be cropped and 
+
+This will return a new Uploadcare\File object. This file will be cropped and
 invert effect will be already applied to it.
 
 You can also copy file like this:

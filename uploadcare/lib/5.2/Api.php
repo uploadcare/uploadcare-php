@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * 
+ *
  * Uploadcare_Api
  */
 
@@ -47,7 +47,7 @@ class Uploadcare_Api
    *
    * @var string
    **/
-  public $version = '1.0.4/5.2';
+  public $version = '1.0.5/5.2';
 
   /**
    * Uploadcare rest API version
@@ -61,14 +61,20 @@ class Uploadcare_Api
    *
    * @param string $public_key A public key given by Uploadcare.com
    * @param string $secret_key A private (secret) key given by Uploadcare.com
+   * @param string $ua Custom User-Agent to report
    * @return void
    **/
-  public function __construct($public_key, $secret_key)
+  public function __construct($public_key, $secret_key, $ua = false)
   {
     $this->public_key = $public_key;
     $this->secret_key = $secret_key;
     $this->widget = new Uploadcare_Widget($this);
     $this->uploader = new Uploadcare_Uploader($this);
+    if($ua) {
+      $this->ua = $ua;
+    } else {
+      $this->ua = 'PHP Uploadcare Module ' . $this->version;
+    }
   }
 
   /**
@@ -89,11 +95,11 @@ class Uploadcare_Api
    **/
   public function getFileList($page = 1)
   {
-    $data = $this->__preparedRequest(API_TYPE_FILES, REQUEST_TYPE_GET, array('page' => $page));
+    $data = $this->__preparedRequest('file_list', 'GET', array('page' => $page));
     $files_raw = (array)$data->results;
     $result = array();
     foreach ($files_raw as $file_raw) {
-      $result[] = new Uploadcare_File($file_raw->file_id, $this);
+      $result[] = new Uploadcare_File($file_raw->file_id, $this, $file_raw);
     }
     return $result;
   }
@@ -106,7 +112,7 @@ class Uploadcare_Api
    */
   public function getGroupList($from = null)
   {
-    $data = $this->__preparedRequest(API_TYPE_GROUPS, REQUEST_TYPE_GET, array('from' => $from));
+    $data = $this->__preparedRequest('group_list', 'GET', array('from' => $from));
     $groups = (array)$data->results;
     $result = array();
     foreach ($groups as $group) {
@@ -114,7 +120,7 @@ class Uploadcare_Api
     }
     return $result;
   }
-  
+
   /**
    * Get group.
    *
@@ -123,8 +129,8 @@ class Uploadcare_Api
   public function getGroup($group_id)
   {
     return new Uploadcare_Group($group_id, $this);
-  }  
-  
+  }
+
   /**
    * Get info about pagination.
    *
@@ -133,21 +139,21 @@ class Uploadcare_Api
    **/
   public function getFilePaginationInfo($page = 1)
   {
-    $data = (array)$this->__preparedRequest(API_TYPE_FILES, REQUEST_TYPE_GET, array('page' => $page));
+    $data = (array)$this->__preparedRequest('file_list', 'GET', array('page' => $page));
     unset($data['results']);
     return $data;
   }
-  
+
   /**
    * Copy file
-   * 
+   *
    * @param string $source CDN URL or file's uuid you need to copy.
    * @param string $target Name of custom storage connected to your project. Uploadcare storage is used if target is absent.
    * @return File|string
    */
   public function copyFile($source, $target = null)
   {
-    $data = $this->__preparedRequest(API_TYPE_FILES, REQUEST_TYPE_POST, array(), array('source' => $source, 'target' => $target));
+    $data = $this->__preparedRequest('file_list', 'POST', array(), array('source' => $source, 'target' => $target));
     if (key_exists('result', (array)$data) == true) {
       return new Uploadcare_File((string)$data->result->uuid, $this);
     } else {
@@ -175,7 +181,7 @@ class Uploadcare_Api
       throw new Exception(curl_error($ch));
     }
     $ch_info = curl_getinfo($ch);
-    if ($method == REQUEST_TYPE_DELETE) {
+    if ($method == 'DELETE') {
       if ($ch_info['http_code'] != 302) {
         throw new Exception('Request returned unexpected http code '.$ch_info['http_code'].'. '.$data);
       }
@@ -203,7 +209,7 @@ class Uploadcare_Api
    * @throws Exception
    * @return array
    **/
-  public function __preparedRequest($type, $request_type = REQUEST_TYPE_GET, $params = array(), $data = array())
+  public function __preparedRequest($type, $request_type = 'GET', $params = array(), $data = array())
   {
     $path = $this->__getPath($type, $params);
     return $this->request($request_type, $path, $data);
@@ -221,31 +227,34 @@ class Uploadcare_Api
   private function __getPath($type, $params = array())
   {
       switch ($type) {
-      case API_TYPE_RAW:
+      case 'root':
         return '/';
-      case API_TYPE_ACCOUNT:
+      case 'account':
         return '/account/';
-      case API_TYPE_FILES:
+      case 'file_list':
         return sprintf('/files/?page=%s', $params['page']);
-      case API_TYPE_STORE:
-        if (array_key_exists(UC_PARAM_FILE_ID, $params) == false) {
-          throw new Exception('Please provide "store_id" param for request');
+      case 'file_storage':
+        if (array_key_exists('uuid', $params) == false) {
+          throw new Exception('Please provide "uuid" param for request');
         }
-        return sprintf('/files/%s/storage/', $params['file_id']);
-      case API_TYPE_FILE:
-        if (array_key_exists(UC_PARAM_FILE_ID, $params) == false) {
-          throw new Exception('Please provide "store_id" param for request');
+        return sprintf('/files/%s/storage/', $params['uuid']);
+      case 'file':
+        if (array_key_exists('uuid', $params) == false) {
+          throw new Exception('Please provide "uuid" param for request');
         }
-        return sprintf('/files/%s/', $params['file_id']);
-      case API_TYPE_GROUPS:
+        return sprintf('/files/%s/', $params['uuid']);
+      case 'group_list':
         return sprintf('/groups/?from=%s', $params['from']);
-      case API_TYPE_GROUP:
-        return sprintf('/groups/%s/', $params['group_id']);
-      case API_TYPE_GROUP_STORE:
-          if (array_key_exists(UC_PARAM_GROUP_ID, $params) == false) {
-            throw new Exception('Please provide "group_id" param for request');
-          }
-          return sprintf('/groups/%s/storage/', $params['group_id']);  
+      case 'group':
+        if (array_key_exists('uuid', $params) == false) {
+          throw new Exception('Please provide "uuid" param for request');
+        }
+        return sprintf('/groups/%s/', $params['uuid']);
+      case 'group_storage':
+        if (array_key_exists('uuid', $params) == false) {
+          throw new Exception('Please provide "uuid" param for request');
+        }
+        return sprintf('/groups/%s/storage/', $params['uuid']);
       default:
         throw new Exception('No api url type is provided for request. Use store, or appropriate constants.');
     }
@@ -260,29 +269,24 @@ class Uploadcare_Api
    * @throws Exception
    * @return void
    **/
-  private function __setRequestType($ch, $type = REQUEST_TYPE_GET)
+  private function __setRequestType($ch, $type = 'GET')
   {
     switch ($type) {
-      case REQUEST_TYPE_GET:
       case 'GET':
         break;
-      case REQUEST_TYPE_POST:
       case 'POST':
         curl_setopt($ch, CURLOPT_POST, true);
         break;
-      case REQUEST_TYPE_PUT:
       case 'PUT':
         curl_setopt($ch, CURLOPT_PUT, true);
         break;
-      case REQUEST_TYPE_DELETE:
       case 'DELETE':
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'DELETE');
         break;
-      case REQUEST_TYPE_HEAD:
       case 'HEAD':
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'HEAD');
+        curl_setopt($ch, CURLOPT_NOBODY, true);
         break;
-      case REQUEST_TYPE_OPTIONS:
       case 'OPTIONS':
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'OPTIONS');
         break;
@@ -310,9 +314,9 @@ class Uploadcare_Api
         sprintf('Host: %s', $this->api_host),
         sprintf('Authorization: Uploadcare.Simple %s:%s', $this->public_key, $this->secret_key),
         'Content-Type: application/json',
-        'Content-Length: '.$content_length,
-        'User-Agent: PHP Uploadcare Module '.$this->version,
-        'Accept: application/vnd.uploadcare-v'.$this->api_version.'+json',
+        'Content-Length: ' . $content_length,
+        'User-Agent: ' . $this->ua,
+        'Accept: application/vnd.uploadcare-v' . $this->api_version . '+json',
         sprintf('Date: %s', date('Y-m-d H:i:s')),
     ) + $add_headers;
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);

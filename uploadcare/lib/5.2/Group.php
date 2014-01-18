@@ -45,7 +45,7 @@ class Uploadcare_Group
   {
     if ($name == 'data') {
       if (!$this->cached_data) {
-        $this->cached_data = (array)$this->api->__preparedRequest(API_TYPE_GROUP, REQUEST_TYPE_GET, array('group_id' => $this->group_id));
+        $this->cached_data = (array)$this->api->__preparedRequest('group', 'GET', array('uuid' => $this->group_id));
       }
       return $this->cached_data;
     }
@@ -76,7 +76,7 @@ class Uploadcare_Group
    */
   public function store()
   {
-    return $this->api->__preparedRequest(API_TYPE_GROUP_STORE, REQUEST_TYPE_POST, array('group_id' => $this->group_id));
+    return $this->api->__preparedRequest('group_storage', 'POST', array('uuid' => $this->group_id));
   }
 
   /**
@@ -88,10 +88,10 @@ class Uploadcare_Group
   {
     return $this->data['cdn_url'];
   }
-  
+
   /**
    * Get all Files
-   * 
+   *
    * @return array
    **/
   public function getFiles()

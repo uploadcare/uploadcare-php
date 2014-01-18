@@ -40,7 +40,7 @@ class File
    * Cached data
    *
    * @var array
-  */
+   */
   private $cached_data = null;
 
   /**
@@ -48,18 +48,22 @@ class File
    *
    * @param string $file_id Uploadcare file_id
    * @param Uploadcare $api Uploadcare class instance
+   * @param boolean|array $data prepopulate this->cached_data
    */
-  public function __construct($file_id, Api $api)
+  public function __construct($file_id, Api $api, $data = false)
   {
     $this->file_id = $file_id;
     $this->api = $api;
+    if ($data) {
+        $this->cached_data = $data;
+    }
   }
 
   public function __get($name)
   {
     if ($name == 'data') {
       if (!$this->cached_data) {
-        $this->cached_data = (array)$this->api->__preparedRequest(API_TYPE_FILE, REQUEST_TYPE_GET, array('file_id' => $this->file_id));
+        $this->cached_data = (array)$this->api->__preparedRequest('file', 'GET', array('uuid' => $this->file_id));
       }
       return $this->cached_data;
     }
@@ -91,7 +95,7 @@ class File
    */
   public function store()
   {
-    return $this->api->__preparedRequest(API_TYPE_STORE, REQUEST_TYPE_POST, array('file_id' => $this->file_id));
+    return $this->api->__preparedRequest('file_storage', 'POST', array('uuid' => $this->file_id));
   }
 
   /**
@@ -103,7 +107,7 @@ class File
   {
     return $this->api->copyFile($this->getUrl(), $target);
   }
-  
+
   /**
    * Delete file
    *
@@ -111,7 +115,7 @@ class File
    */
   public function delete()
   {
-    return $this->api->__preparedRequest(API_TYPE_STORE, REQUEST_TYPE_DELETE, array('file_id' => $this->file_id));
+    return $this->api->__preparedRequest('file_storage', 'DELETE', array('uuid' => $this->file_id));
   }
 
   /**
