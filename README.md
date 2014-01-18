@@ -2,8 +2,7 @@
 
 This is a set of libraries to work with [Uploadcare][1].
 
-[![Build Status](https://travis-ci.org/uploadcare/uploadcare-php.png?branch=master)](https://travis-ci.org/uploadcare/up
-loadcare-php)
+[![Build Status](https://travis-ci.org/uploadcare/uploadcare-php.png?branch=master)](https://travis-ci.org/uploadcare/uploadcare-php)
 
 ## Requirements
 
