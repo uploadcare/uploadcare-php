@@ -189,6 +189,23 @@ class ApiTest extends PHPUnit_Framework_TestCase
   }
 
   /**
+   * Test setting File with raw data
+   */
+  public function testFileFromJSON()
+  {
+    $api = new Uploadcare\Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
+
+    $result = $api->request('GET', '/files/');
+    $file_raw = (array)$result->results[0];
+
+    $file = new Uploadcare\File($file_raw['uuid'], $api);
+    $this->assertEquals($file_raw['uuid'], $file->data['uuid']);
+
+    $file = new Uploadcare\File($file_raw['uuid'], $api, $file_raw);
+    $this->assertEquals($file_raw['uuid'], $file->data['uuid']);
+  }
+
+  /**
    * Let's check the file operations and check for correct urls
    */
   public function testFile()

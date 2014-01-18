@@ -47,7 +47,7 @@ class Uploadcare_Api
    *
    * @var string
    **/
-  public $version = '1.0.5/5.2';
+  public $version = '1.0.6/5.2';
 
   /**
    * Uploadcare rest API version
@@ -99,7 +99,7 @@ class Uploadcare_Api
     $files_raw = (array)$data->results;
     $result = array();
     foreach ($files_raw as $file_raw) {
-      $result[] = new Uploadcare_File($file_raw->file_id, $this, $file_raw);
+      $result[] = new Uploadcare_File($file_raw->uuid, $this, $file_raw);
     }
     return $result;
   }

@@ -36,7 +36,7 @@ $data = $api->request('GET', '/');
  *  - made_public
  *  - url
  *  - is_image
- *  - file_id
+ *  - uuid
  *  - original_filename
  *  - removed
  *  - mime_type

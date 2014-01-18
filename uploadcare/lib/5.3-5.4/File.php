@@ -13,9 +13,17 @@ class File
   /**
    * Uploadcare file id
    *
+   * @deprecated
    * @var string
    */
   private $file_id = null;
+
+  /**
+   * Uploadcare file id
+   *
+   * @var string
+   */
+  private $uuid = null;
 
   /**
    * Operations and params for operations: crop, resize, scale_crop, effect.
@@ -46,16 +54,17 @@ class File
   /**
    * Constructs an object for CDN file with specified ID
    *
-   * @param string $file_id Uploadcare file_id
+   * @param string $uuid Uploadcare uuid
    * @param Uploadcare $api Uploadcare class instance
    * @param boolean|array $data prepopulate this->cached_data
    */
-  public function __construct($file_id, Api $api, $data = false)
+  public function __construct($uuid, Api $api, $data = false)
   {
-    $this->file_id = $file_id;
+    $this->file_id = $uuid;
+    $this->uuid = $uuid;
     $this->api = $api;
     if ($data) {
-        $this->cached_data = $data;
+      $this->cached_data = $data;
     }
   }
 
@@ -63,7 +72,7 @@ class File
   {
     if ($name == 'data') {
       if (!$this->cached_data) {
-        $this->cached_data = (array)$this->api->__preparedRequest('file', 'GET', array('uuid' => $this->file_id));
+        $this->cached_data = (array)$this->api->__preparedRequest('file', 'GET', array('uuid' => $this->uuid));
       }
       return $this->cached_data;
     }
@@ -78,13 +87,13 @@ class File
   }
 
   /**
-   * Return file_id for this file
+   * Return uuid for this file
    *
    * @return string
    */
   public function getFileId()
   {
-    return $this->file_id;
+    return $this->uuid;
   }
 
   /**
@@ -95,7 +104,7 @@ class File
    */
   public function store()
   {
-    return $this->api->__preparedRequest('file_storage', 'POST', array('uuid' => $this->file_id));
+    return $this->api->__preparedRequest('file_storage', 'POST', array('uuid' => $this->uuid));
   }
 
   /**
@@ -115,7 +124,7 @@ class File
    */
   public function delete()
   {
-    return $this->api->__preparedRequest('file_storage', 'DELETE', array('uuid' => $this->file_id));
+    return $this->api->__preparedRequest('file_storage', 'DELETE', array('uuid' => $this->uuid));
   }
 
   /**
@@ -126,7 +135,7 @@ class File
    */
   public function getUrl($postfix = null)
   {
-    $url = sprintf('http://%s/%s/', $this->cdn_host, $this->file_id);
+    $url = sprintf('http://%s/%s/', $this->cdn_host, $this->uuid);
 
     $operations = array();
 

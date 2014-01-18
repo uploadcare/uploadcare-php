@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.6
+
+- deprecate File->file_id, use File->uuid
+- fix Api->getFileList()
+
 ## 1.5
 
 - bump widget version to 0.17.1 (see [widget changelog][widget changelog])
