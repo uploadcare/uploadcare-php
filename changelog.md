@@ -1,11 +1,15 @@
 # Changelog
 
-## 1.6
+## 1.0.7
+
+- support 'limit' param in Api->getFileList() and Api->getFilePaginationInfo()
+
+## 1.0.6
 
 - deprecate File->file_id, use File->uuid
 - fix Api->getFileList()
 
-## 1.5
+## 1.0.5
 
 - bump widget version to 0.17.1 (see [widget changelog][widget changelog])
 - fix HEAD requests

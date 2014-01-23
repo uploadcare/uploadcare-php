@@ -43,7 +43,7 @@ class Api
    *
    * @var string
    */
-  public $version = '1.0.6/5.3';
+  public $version = '1.0.7/5.3';
 
   /**
    * Uploadcare rest API version
@@ -89,9 +89,9 @@ class Api
    * @param integer $page Page to be shown.
    * @return array
    */
-  public function getFileList($page = 1)
+  public function getFileList($page = 1, $limit = 20)
   {
-    $data = $this->__preparedRequest('file_list', 'GET', array('page' => $page));
+    $data = $this->__preparedRequest('file_list', 'GET', array('page' => $page, 'limit' => $limit));
     $files_raw = (array)$data->results;
     $result = array();
     foreach ($files_raw as $file_raw) {
@@ -133,9 +133,9 @@ class Api
    * @param integer $page
    * @return array
    */
-  public function getFilePaginationInfo($page = 1)
+  public function getFilePaginationInfo($page = 1, $limit = 20)
   {
-    $data = (array)$this->__preparedRequest('file_list', 'GET', array('page' => $page));
+    $data = (array)$this->__preparedRequest('file_list', 'GET', array('page' => $page, 'limit' => $limit));
     unset($data['results']);
     return $data;
   }
@@ -228,7 +228,7 @@ class Api
       case 'account':
         return '/account/';
       case 'file_list':
-        return sprintf('/files/?page=%s', $params['page']);
+        return sprintf('/files/?page=%s&limit=%s', $params['page'], $params['limit']);
       case 'file_storage':
         if (array_key_exists('uuid', $params) == false) {
           throw new \Exception('Please provide "uuid" param for request');

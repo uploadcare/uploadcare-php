@@ -41,18 +41,37 @@ class ApiTest extends PHPUnit_Framework_TestCase
   }
 
   /**
-   * Test that getFilesList mehtod returns array
+   * Test that getFilesList method returns array
    * and each item of array is an object of Uploadcare_File class
    */
   public function testFileList()
   {
     $api = new Uploadcare_Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
     $files = $api->getFileList();
-
     $this->assertTrue(is_array($files));
+    $this->assertEquals(20, count($files));
+
+    $files = $api->getFileList(1, 2);
+    $this->assertTrue(is_array($files));
+    $this->assertEquals(2, count($files));
+
     foreach ($files as $file) {
       $this->assertTrue(get_class($file) == 'Uploadcare_File');
     }
+  }
+
+  /**
+   * Test getFilePaginationInfo method
+   */
+  public function testFileListPaginationInfo()
+  {
+    $api = new Uploadcare_Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
+    $result = $api->getFilePaginationInfo();
+    $this->assertEquals(20, $result['per_page']);
+
+    $result = $api->getFilePaginationInfo(2, 1);
+    $this->assertEquals(1, $result['per_page']);
+    $this->assertEquals(2, $result['page']);
   }
 
   /**
