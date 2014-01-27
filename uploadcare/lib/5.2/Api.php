@@ -153,7 +153,7 @@ class Uploadcare_Api
    */
   public function copyFile($source, $target = null)
   {
-    $data = $this->__preparedRequest('file_list', 'POST', array(), array('source' => $source, 'target' => $target));
+    $data = $this->__preparedRequest('file_copy', 'POST', array(), array('source' => $source, 'target' => $target));
     if (key_exists('result', (array)$data) == true) {
       return new Uploadcare_File((string)$data->result->uuid, $this);
     } else {
@@ -232,12 +232,20 @@ class Uploadcare_Api
       case 'account':
         return '/account/';
       case 'file_list':
+        if (array_key_exists('page', $params) == false) {
+          $params['page'] = 1;
+        }
+        if (array_key_exists('limit', $params) == false) {
+          $params['limit'] = 25;
+        }
         return sprintf('/files/?page=%s&limit=%s', $params['page'], $params['limit']);
       case 'file_storage':
         if (array_key_exists('uuid', $params) == false) {
           throw new Exception('Please provide "uuid" param for request');
         }
         return sprintf('/files/%s/storage/', $params['uuid']);
+      case 'file_copy':
+        return '/files/';
       case 'file':
         if (array_key_exists('uuid', $params) == false) {
           throw new Exception('Please provide "uuid" param for request');
