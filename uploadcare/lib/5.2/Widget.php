@@ -17,7 +17,7 @@ class Uploadcare_Widget {
    * Uploadcare widget version
    * @var string
    */
-  private $version = '0.17.1';
+  private $version = '0.17.2';
 
   /**
    * Constructor

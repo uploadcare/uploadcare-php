@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.8
+
+- fix file copy request
+- bump widget version to 0.17.2 (see [widget changelog][widget changelog])
+
 ## 1.0.7
 
 - support 'limit' param in Api->getFileList() and Api->getFilePaginationInfo()

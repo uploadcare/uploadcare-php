@@ -47,7 +47,7 @@ class Uploadcare_Api
    *
    * @var string
    **/
-  public $version = '1.0.7/5.2';
+  public $version = '1.0.8/5.2';
 
   /**
    * Uploadcare rest API version
