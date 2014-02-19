@@ -1,8 +1,9 @@
 <?php
 error_reporting(E_ERROR);
 require_once dirname(__FILE__).'/config.php';
-require_once dirname(__FILE__).'/../../uploadcare/lib/5.3-5.4/Uploadcare.php';
-use \Uploadcare;
+require_once dirname(__FILE__).'/vendor/autoload.php';
+use Uploadcare\Api;
+use Uploadcare\File;
 
 
 class ApiTest extends PHPUnit_Framework_TestCase
@@ -26,7 +27,7 @@ class ApiTest extends PHPUnit_Framework_TestCase
    */
   public function testChildObjectsValid()
   {
-    $api = new Uploadcare\Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
+    $api = new Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
     $this->assertTrue(get_class($api->widget) == 'Uploadcare\Widget');
     $this->assertTrue(get_class($api->uploader) == 'Uploadcare\Uploader');
   }
@@ -36,7 +37,7 @@ class ApiTest extends PHPUnit_Framework_TestCase
    */
   public function testPublicKeyValid()
   {
-    $api = new Uploadcare\Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
+    $api = new Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
     $this->assertTrue($api->getPublicKey() == 'demopublickey', 'This is true');
   }
 
@@ -46,7 +47,7 @@ class ApiTest extends PHPUnit_Framework_TestCase
    */
   public function testFileList()
   {
-    $api = new Uploadcare\Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
+    $api = new Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
     $files = $api->getFileList();
     $this->assertTrue(is_array($files));
     $this->assertEquals(20, count($files));
@@ -65,7 +66,7 @@ class ApiTest extends PHPUnit_Framework_TestCase
    */
   public function testFileListPaginationInfo()
   {
-    $api = new Uploadcare\Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
+    $api = new Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
     $result = $api->getFilePaginationInfo();
     $this->assertEquals(20, $result['per_page']);
 
@@ -79,7 +80,7 @@ class ApiTest extends PHPUnit_Framework_TestCase
    */
   public function testRequestsRaw()
   {
-    $api = new Uploadcare\Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
+    $api = new Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
 
     // this are request to https://api.uploadcare.com/ url.
     // no exceptions should be thrown
@@ -120,7 +121,7 @@ class ApiTest extends PHPUnit_Framework_TestCase
    */
   public function testRequestsProject()
   {
-    $api = new Uploadcare\Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
+    $api = new Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
 
     // this are request to https://api.uploadcare.com/project/ url.
     // no exceptions should be thrown
@@ -163,7 +164,7 @@ class ApiTest extends PHPUnit_Framework_TestCase
    */
   public function testRequestsFiles()
   {
-    $api = new Uploadcare\Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
+    $api = new Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
 
     // this are request to https://api.uploadcare.com/files/ url.
     // no exceptions should be thrown
@@ -212,15 +213,15 @@ class ApiTest extends PHPUnit_Framework_TestCase
    */
   public function testFileFromJSON()
   {
-    $api = new Uploadcare\Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
+    $api = new Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
 
     $result = $api->request('GET', '/files/');
     $file_raw = (array)$result->results[0];
 
-    $file = new Uploadcare\File($file_raw['uuid'], $api);
+    $file = new File($file_raw['uuid'], $api);
     $this->assertEquals($file_raw['uuid'], $file->data['uuid']);
 
-    $file = new Uploadcare\File($file_raw['uuid'], $api, $file_raw);
+    $file = new File($file_raw['uuid'], $api, $file_raw);
     $this->assertEquals($file_raw['uuid'], $file->data['uuid']);
   }
 
@@ -229,7 +230,7 @@ class ApiTest extends PHPUnit_Framework_TestCase
    */
   public function testFile()
   {
-    $api = new Uploadcare\Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
+    $api = new Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
     $file = $api->getFile('4bd3a897-f489-4b9f-b643-961b1c9f657e');
 
     $this->assertEquals(get_class($file), 'Uploadcare\File');
@@ -263,7 +264,7 @@ class ApiTest extends PHPUnit_Framework_TestCase
    */
   public function testUploadAndDelete()
   {
-    $api = new Uploadcare\Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
+    $api = new Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
 
     // upload form url
     try {
