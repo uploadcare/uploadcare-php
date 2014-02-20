@@ -439,8 +439,7 @@ These tests are based on PHPUnit, so you must have PHPUnit installed on your sys
 
 To execute the tests, run the following commands:
 
-    cd tests
-    phpunit ApiTest.php
+    phpunit
 
 [1]: https://uploadcare.com/
 [2]: https://uploadcare.com/documentation/cdn/
