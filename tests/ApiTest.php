@@ -1,7 +1,8 @@
 <?php
-error_reporting(E_ERROR);
-require_once dirname(__FILE__).'/config.php';
-require_once dirname(__FILE__).'/vendor/autoload.php';
+error_reporting(E_ALL);
+require_once __DIR__.'/config.php';
+require_once __DIR__.'/../vendor/autoload.php';
+
 use Uploadcare\Api;
 use Uploadcare\File;
 
