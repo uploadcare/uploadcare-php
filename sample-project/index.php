@@ -1,8 +1,8 @@
 <?php
 require_once 'config.php';
-require_once '../uploadcare/lib/5.3-5.4/Uploadcare.php';
-use \Uploadcare;
-$uc_handler = new Uploadcare\Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
+require_once 'vendor/autoload.php';
+use Uploadcare\Api;
+$uc_handler = new Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
 ?>
 <!DOCTYPE html>
 <html>
@@ -10,13 +10,13 @@ $uc_handler = new Uploadcare\Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
 <meta encoding='utf-8'>
 <title>Uploadcare</title>
 <link
-	href="// ucarecdn.com/assets/application-68fbe95c430b7646b16aef33e1ad2824.css"
+	href="//ucarecdn.com/assets/application-68fbe95c430b7646b16aef33e1ad2824.css"
 	media="screen" rel="stylesheet" type="text/css" />
 <link
 	href="https://fonts.googleapis.com/css?family=PT+Sans:400,700,400italic|PT+Sans+Caption&amp;subset=latin,cyrillic"
 	media="screen" rel="stylesheet" type="text/css" />
 <script
-	src="// ucarecdn.com/assets/application-241564109602bb3ae298c344abff83a7.js"
+	src="//ucarecdn.com/assets/application-241564109602bb3ae298c344abff83a7.js"
 	type="text/javascript"></script>
 <?php echo $uc_handler->widget->getScriptTag(); ?>
 </head>
@@ -25,12 +25,12 @@ $uc_handler = new Uploadcare\Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
 		<header class='header'>
 			<div class='logo hide-till-loaded'>
 				<a href="/" class="pic"><img alt="Logo"
-					src="// ucarecdn.com/assets/logo-07ad940955c42489ffac0a2c2f0c5d62.png" />
+					src="//ucarecdn.com/assets/logo-07ad940955c42489ffac0a2c2f0c5d62.png" />
 				</a> <a href="/">Uploadcare</a>
 			</div>
 			<div class='logo logo-animated show-till-loaded'>
 				<a href="/" class="pic"><img alt="Loading"
-					src="// ucarecdn.com/assets/loading-04f291b2aa39cf277186c36d18d9217f.png" />
+					src="//ucarecdn.com/assets/loading-04f291b2aa39cf277186c36d18d9217f.png" />
 				</a> <a href="/">Uploadcare</a>
 			</div>
 		</header>

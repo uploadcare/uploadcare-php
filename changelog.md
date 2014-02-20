@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.0
+- drop 5.2 support
+- fix composer support
+
 ## 1.0.8
 
 - fix file copy request
