@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.9
+
+This is last uploadcare-php version that will support php 5.2. Expect no features added, only bugs fixed.
+- bump widget version to 0.18.1 (see [widget changelog][widget changelog])
+
 ## 1.0.8
 
 - fix file copy request
