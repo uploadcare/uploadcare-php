@@ -88,13 +88,28 @@ class Uploader
    * Upload file from local path.
    *
    * @param string $path
+   * @param string $mime_type
    * @return File
    */
-  public function fromPath($path)
+  public function fromPath($path, $mime_type = false)
   {
+    if (function_exists('curl_file_create')) {
+      if($mime_type) {
+        $f = curl_file_create($path, $mime_type);
+      } else {
+        $f = curl_file_create($path);
+      }
+    } else {
+      if($mime_type) {
+        $f = '@' . $path . ';type=' . $mime_type;
+    } else {
+        $f = '@' . $path;
+      }
+    }
+
     $data = array(
-        'UPLOADCARE_PUB_KEY' => $this->api->getPublicKey(),
-        'file' => '@'.$path,
+      'UPLOADCARE_PUB_KEY' => $this->api->getPublicKey(),
+      'file' => $f,
     );
     $ch = $this->__initRequest('base');
     $this->__setRequestType($ch);
@@ -122,18 +137,7 @@ class Uploader
     fclose($temp);
     fclose($fp);
 
-    $data = array(
-        'UPLOADCARE_PUB_KEY' => $this->api->getPublicKey(),
-        'file' => '@'.$tmpfile,
-    );
-    $ch = $this->__initRequest('base');
-    $this->__setRequestType($ch);
-    $this->__setData($ch, $data);
-    $this->__setHeaders($ch);
-
-    $data = $this->__runRequest($ch);
-    $file_id = $data->file;
-    return new File($file_id, $this->api);
+    return $this->fromPath($tmpfile);
   }
 
   /**
@@ -150,18 +154,7 @@ class Uploader
     fwrite($temp, $content);
     fclose($temp);
 
-    $data = array(
-        'UPLOADCARE_PUB_KEY' => $this->api->getPublicKey(),
-        'file' => sprintf('@%s;type=%s', $tmpfile, $mime_type),
-    );
-    $ch = $this->__initRequest('base');
-    $this->__setRequestType($ch);
-    $this->__setData($ch, $data);
-    $this->__setHeaders($ch);
-
-    $data = $this->__runRequest($ch);
-    $file_id = $data->file;
-    return new File($file_id, $this->api);
+    return $this->fromPath($tmpfile, $mime_type);
   }
 
   /**
@@ -189,7 +182,6 @@ class Uploader
   private function __setRequestType($ch)
   {
     curl_setopt($ch, CURLOPT_POST, true);
-    curl_setopt($ch, CURLOPT_SAFE_UPLOAD, true);
   }
 
   /**
