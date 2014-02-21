@@ -1,6 +1,8 @@
 <?php
 namespace Uploadcare;
 
+define('UPLOADCARE_LIB_VERSION', sprintf('1.1.0/%s.%s', PHP_MAJOR_VERSION, PHP_MINOR_VERSION));
+
 class Api
 {
   /**
@@ -43,7 +45,7 @@ class Api
    *
    * @var string
    */
-  public $version = '1.1.0/5.3';
+  public $version = UPLOADCARE_LIB_VERSION;
 
   /**
    * Uploadcare rest API version
