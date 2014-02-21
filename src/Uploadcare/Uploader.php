@@ -130,7 +130,7 @@ class Uploader
     $this->__setRequestType($ch);
     $this->__setData($ch, $data);
     $this->__setHeaders($ch);
-    	
+
     $data = $this->__runRequest($ch);
     $file_id = $data->file;
     return new File($file_id, $this->api);
@@ -158,7 +158,7 @@ class Uploader
     $this->__setRequestType($ch);
     $this->__setData($ch, $data);
     $this->__setHeaders($ch);
-    	
+
     $data = $this->__runRequest($ch);
     $file_id = $data->file;
     return new File($file_id, $this->api);
@@ -189,6 +189,7 @@ class Uploader
   private function __setRequestType($ch)
   {
     curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_SAFE_UPLOAD, true);
   }
 
   /**
@@ -201,7 +202,7 @@ class Uploader
   {
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-    'User-Agent: PHP Uploadcare Module '.$this->api->version,
+      'User-Agent: ' . $this->api->ua,
     ));
   }
 
