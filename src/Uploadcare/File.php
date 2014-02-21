@@ -72,7 +72,7 @@ class File
   {
     if ($name == 'data') {
       if (!$this->cached_data) {
-        $this->cached_data = (array)$this->api->__preparedRequest('file', 'GET', array('uuid' => $this->uuid));
+        $this->updateInfo();
       }
       return $this->cached_data;
     }
@@ -94,6 +94,17 @@ class File
   public function getFileId()
   {
     return $this->uuid;
+  }
+
+  /**
+   * Update File info
+   *
+   * @return array
+   */
+  public function updateInfo()
+  {
+    $this->cached_data = (array)$this->api->__preparedRequest('file', 'GET', array('uuid' => $this->uuid));
+    return $this->cached_data;
   }
 
   /**

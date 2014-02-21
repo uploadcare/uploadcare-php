@@ -261,13 +261,12 @@ class ApiTest extends PHPUnit_Framework_TestCase
   }
 
   /**
-   * Test uploading and deleting
+   * Test upload from URL
    */
-  public function testUploadAndDelete()
+  public function testUploadFromURL()
   {
     $api = new Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
 
-    // upload form url
     try {
       $file = $api->uploader->fromUrl('http://www.baysflowers.co.nz/Images/tangerine-delight.jpg');
     } catch (Exception $e) {
@@ -280,19 +279,42 @@ class ApiTest extends PHPUnit_Framework_TestCase
       $this->fail('We get an unexpected exception trying to store uploaded file from url: '.$e->getMessage());
     }
 
-    // upload from path
+    // test file delete
+    try {
+      $this->assertNull($file->data['datetime_removed']);
+      $file->delete();
+      $file->updateInfo();
+      $this->assertNotNull($file->data['datetime_removed']);
+
+    } catch (Exception $e) {
+      $this->fail('We get an unexpected exception trying to delete file: '.$e->getMessage());
+    }
+
+  }
+
+  /**
+   * Test uploading from path
+   */
+  public function testUploadFromPath()
+  {
+    $api = new Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
+
     try {
       $file = $api->uploader->fromPath(dirname(__FILE__).'/test.jpg');
     } catch (Exception $e) {
-      $this->fail('We get an unexpected exception trying to upload from path');
+      $this->fail('We get an unexpected exception trying to upload from path: '.$e->getMessage());
     }
+
     try {
       $file->store();
     } catch (Exception $e) {
       $this->fail('We get an unexpected exception trying to store uploaded file from path: '.$e->getMessage());
     }
+  }
 
-    // upload from resource
+  public function testUploadFromResource()
+  {
+    $api = new Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
     try {
       $fp = fopen(dirname(__FILE__).'/test.jpg', 'r');
       $file = $api->uploader->fromResource($fp);
@@ -304,8 +326,11 @@ class ApiTest extends PHPUnit_Framework_TestCase
     } catch (Exception $e) {
       $this->fail('We get an unexpected exception trying to store uploaded file from resource: '.$e->getMessage());
     }
+  }
 
-    // upload from raw
+  public function testUploadFromString()
+  {
+    $api = new Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
     try {
       $content = "This is some text I want to upload";
       $file = $api->uploader->fromContent($content, 'text/plain');
@@ -320,12 +345,5 @@ class ApiTest extends PHPUnit_Framework_TestCase
 
     $text = file_get_contents($file->getUrl());
     $this->assertEquals($text, "This is some text I want to upload");
-
-    // test file delete
-    try {
-      $file->delete();
-    } catch (Exception $e) {
-      $this->fail('We get an unexpected exception trying to delete file: '.$e->getMessage());
-    }
   }
 }
