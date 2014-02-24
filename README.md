@@ -6,6 +6,7 @@ This is a set of libraries to work with [Uploadcare][1].
 
 ## Requirements
 
+- `php5.3+`
 - `php-curl`
 - `php-json`
 
