@@ -11,7 +11,7 @@
     "minimum-stability": "dev",
     "autoload": {
         "psr-0": {
-            "Uploadcare": "uploadcare/lib/5.3-5.4"
+            "Uploadcare": "src"
         }
     }
 }

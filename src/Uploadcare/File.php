@@ -1,11 +1,7 @@
 <?php
-/**
- * @file
- *
- * Uploadcare_File
- */
+namespace Uploadcare;
 
-class Uploadcare_File
+class File
 {
   /**
    * Uploadcare cdn host
@@ -23,7 +19,7 @@ class Uploadcare_File
   private $file_id = null;
 
   /**
-   * Uploadcare file uuid
+   * Uploadcare file id
    *
    * @var string
    */
@@ -39,8 +35,8 @@ class Uploadcare_File
   /**
    * Uploadcare class instance.
    *
-   * @var Uploadcare_Api
-   */
+   * @var Api
+  */
   private $api = null;
 
   /**
@@ -59,13 +55,13 @@ class Uploadcare_File
    * Constructs an object for CDN file with specified ID
    *
    * @param string $uuid Uploadcare uuid
-   * @param Uploadcare_Uploadcare $api Uploadcare class instance
+   * @param Uploadcare $api Uploadcare class instance
    * @param boolean|array $data prepopulate this->cached_data
    */
-  public function __construct($uuid, Uploadcare_Api $api, $data = false)
+  public function __construct($uuid, Api $api, $data = false)
   {
-    $this->uuid = $uuid;
     $this->file_id = $uuid;
+    $this->uuid = $uuid;
     $this->api = $api;
     if ($data) {
       $this->cached_data = $data;
@@ -76,7 +72,7 @@ class Uploadcare_File
   {
     if ($name == 'data') {
       if (!$this->cached_data) {
-        $this->cached_data = (array)$this->api->__preparedRequest('file', 'GET', array('uuid' => $this->uuid));
+        $this->updateInfo();
       }
       return $this->cached_data;
     }
@@ -98,6 +94,17 @@ class Uploadcare_File
   public function getFileId()
   {
     return $this->uuid;
+  }
+
+  /**
+   * Update File info
+   *
+   * @return array
+   */
+  public function updateInfo()
+  {
+    $this->cached_data = (array)$this->api->__preparedRequest('file', 'GET', array('uuid' => $this->uuid));
+    return $this->cached_data;
   }
 
   /**
@@ -204,7 +211,7 @@ class Uploadcare_File
    * @param integer $height Crop height
    * @param boolean $center Center crop? true or false (default false).
    * @param string $fill_color Fill color. If nothig is provided just use false (default false).
-   * @return Uploadcare_File
+   * @return File
    */
   public function crop($width, $height, $center = false, $fill_color = false)
   {
@@ -225,14 +232,14 @@ class Uploadcare_File
    *
    * @param integer $width Resized image width. Provide false if you resize proportionally.
    * @param integer $height Resized image height. Provide false if you resize proportionally.
-   * @throws Exception
-   * @return Uploadcare_File
+   * @throws \Exception
+   * @return File
    */
   public function resize($width = false, $height = false)
   {
     $result = clone $this;
     if (!$width && !$height) {
-      throw new Exception('Please, provide at least width or height for resize');
+      throw new \Exception('Please, provide at least width or height for resize');
     }
     $result->operations[]['resize'] = array(
         'width' => $width,
@@ -247,7 +254,7 @@ class Uploadcare_File
    * @param integer $width Crop width
    * @param integer $height Crop height
    * @param boolean $center Center crop? true or false (default false).
-   * @return Uploadcare_File
+   * @return File
    */
   public function scaleCrop($width, $height, $center = false)
   {

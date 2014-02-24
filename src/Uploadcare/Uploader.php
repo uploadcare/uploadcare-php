@@ -1,11 +1,8 @@
 <?php
-/**
- * @file
- *
- * Uploadcare_Uploader
- */
+namespace Uploadcare;
 
-class Uploadcare_Uploader {
+class Uploader
+{
   /**
    * Base upload host
    *
@@ -16,14 +13,15 @@ class Uploadcare_Uploader {
   /**
    * Api instance
    *
-   * @var Uploadcare_Api
+   * @var Api
    */
   private $api = null;
 
   /**
    * Constructor
    */
-  public function __construct(Uploadcare_Api $api) {
+  public function __construct(Api $api)
+  {
     $this->api = $api;
   }
 
@@ -34,9 +32,10 @@ class Uploadcare_Uploader {
    * @param string $file_id
    * @return array
    */
-  public function status($token) {
+  public function status($token)
+  {
     $data = array(
-      'token' => $token,
+        'token' => $token,
     );
     $ch = $this->__initRequest('status', $data);
     $this->__setHeaders($ch);
@@ -45,16 +44,17 @@ class Uploadcare_Uploader {
   }
 
   /**
-   * Upload file from url and get Uploadcare_File instance
+   * Upload file from url and get File instance
    *
    * @param string $url An url of file to be uploaded.
-   * @return Uploadcare_File
+   * @return File
    */
-  public function fromUrl($url, $check_status = true, $timeout = 1, $max_attempts = 5) {
+  public function fromUrl($url, $check_status = true, $timeout = 1, $max_attempts = 5)
+  {
     $data = array(
-      '_' => time(),
-      'source_url' => $url,
-      'pub_key' => $this->api->getPublicKey(),
+        '_' => time(),
+        'source_url' => $url,
+        'pub_key' => $this->api->getPublicKey(),
     );
     $ch = $this->__initRequest('from_url', $data);
     $this->__setHeaders($ch);
@@ -71,7 +71,7 @@ class Uploadcare_Uploader {
           $success = true;
         }
         if ($attempts == $max_attempts) {
-          throw new Exception('Cannot store file, max attempts reached, upload is not successful');
+          throw new \Exception('Cannot store file, max attempts reached, upload is not successful');
         }
         sleep($timeout);
         $attempts++;
@@ -81,19 +81,35 @@ class Uploadcare_Uploader {
     }
     $file_id = $data->file_id;
 
-    return new Uploadcare_File($file_id, $this->api);
+    return new File($file_id, $this->api);
   }
 
   /**
    * Upload file from local path.
    *
    * @param string $path
-   * @return Uploadcare_File
+   * @param string $mime_type
+   * @return File
    */
-  public function fromPath($path) {
+  public function fromPath($path, $mime_type = false)
+  {
+    if (function_exists('curl_file_create')) {
+      if($mime_type) {
+        $f = curl_file_create($path, $mime_type);
+      } else {
+        $f = curl_file_create($path);
+      }
+    } else {
+      if($mime_type) {
+        $f = '@' . $path . ';type=' . $mime_type;
+    } else {
+        $f = '@' . $path;
+      }
+    }
+
     $data = array(
       'UPLOADCARE_PUB_KEY' => $this->api->getPublicKey(),
-      'file' => '@'.$path,
+      'file' => $f,
     );
     $ch = $this->__initRequest('base');
     $this->__setRequestType($ch);
@@ -102,16 +118,17 @@ class Uploadcare_Uploader {
 
     $data = $this->__runRequest($ch);
     $file_id = $data->file;
-    return new Uploadcare_File($file_id, $this->api);
+    return new File($file_id, $this->api);
   }
 
   /**
    * Upload file from file pointer
    *
    * @param resourse $fp
-   * @return Uploadcare_File
+   * @return File
    */
-  public function fromResource($fp) {
+  public function fromResource($fp)
+  {
     $tmpfile = tempnam(sys_get_temp_dir(), 'ucr');
     $temp = fopen($tmpfile, 'w');
     while (!feof($fp)) {
@@ -120,18 +137,7 @@ class Uploadcare_Uploader {
     fclose($temp);
     fclose($fp);
 
-    $data = array(
-      'UPLOADCARE_PUB_KEY' => $this->api->getPublicKey(),
-      'file' => '@'.$tmpfile,
-    );
-    $ch = $this->__initRequest('base');
-    $this->__setRequestType($ch);
-    $this->__setData($ch, $data);
-    $this->__setHeaders($ch);
-     
-    $data = $this->__runRequest($ch);
-    $file_id = $data->file;
-    return new Uploadcare_File($file_id, $this->api);
+    return $this->fromPath($tmpfile);
   }
 
   /**
@@ -139,26 +145,16 @@ class Uploadcare_Uploader {
    *
    * @param string $content
    * @param string $mime_type
-   * @return Uploadcare_File
+   * @return File
    */
-  public function fromContent($content, $mime_type) {
+  public function fromContent($content, $mime_type)
+  {
     $tmpfile = tempnam(sys_get_temp_dir(), 'ucr');
     $temp = fopen($tmpfile, 'w');
     fwrite($temp, $content);
     fclose($temp);
 
-    $data = array(
-      'UPLOADCARE_PUB_KEY' => $this->api->getPublicKey(),
-      'file' => sprintf('@%s;type=%s', $tmpfile, $mime_type),
-    );
-    $ch = $this->__initRequest('base');
-    $this->__setRequestType($ch);
-    $this->__setData($ch, $data);
-    $this->__setHeaders($ch);
-     
-    $data = $this->__runRequest($ch);
-    $file_id = $data->file;
-    return new Uploadcare_File($file_id, $this->api);
+    return $this->fromPath($tmpfile, $mime_type);
   }
 
   /**
@@ -167,7 +163,8 @@ class Uploadcare_Uploader {
    * @param array $data
    * @return resource
    */
-  private function __initRequest($type, $data = null) {
+  private function __initRequest($type, $data = null)
+  {
     $url = sprintf('https://%s/%s/', $this->host, $type);
     if (is_array($data)) {
       $url = sprintf('%s?%s', $url, http_build_query($data));
@@ -182,7 +179,8 @@ class Uploadcare_Uploader {
    * @param resource $ch
    * @return void
    */
-  private function __setRequestType($ch) {
+  private function __setRequestType($ch)
+  {
     curl_setopt($ch, CURLOPT_POST, true);
   }
 
@@ -192,10 +190,11 @@ class Uploadcare_Uploader {
    * @param resource $ch. Curl resource.
    * @return void
    */
-  private function __setHeaders($ch) {
+  private function __setHeaders($ch)
+  {
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-    'User-Agent: PHP Uploadcare Module '.$this->api->version,
+      'User-Agent: ' . $this->api->ua,
     ));
   }
 
@@ -206,7 +205,8 @@ class Uploadcare_Uploader {
    * @param array $data
    * @return void
    */
-  private function __setData($ch, $data = array()) {
+  private function __setData($ch, $data = array())
+  {
     curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
   }
 
@@ -218,11 +218,12 @@ class Uploadcare_Uploader {
    * @throws Exception
    * @return array
    */
-  private function __runRequest($ch) {
+  private function __runRequest($ch)
+  {
     $data = curl_exec($ch);
     $ch_info = curl_getinfo($ch);
     if ($ch_info['http_code'] != 200) {
-      throw new Exception('Request returned unexpected http code '.$ch_info['http_code'].'. '.$data);
+      throw new \Exception('Request returned unexpected http code '.$ch_info['http_code'].'. '.$data);
     }
     curl_close($ch);
     return json_decode($data);

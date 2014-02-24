@@ -1,53 +1,51 @@
 <?php
-/**
- * @file
- *
- * Uploadcare_Api
- */
+namespace Uploadcare;
 
-class Uploadcare_Api
+define('UPLOADCARE_LIB_VERSION', sprintf('1.1.0/%s.%s', PHP_MAJOR_VERSION, PHP_MINOR_VERSION));
+
+class Api
 {
   /**
    * Uploadcare public key
    *
    * @var string
-   **/
+   */
   private $public_key = null;
 
   /**
    * Uploadcare secret key
    *
    * @var string
-   **/
+   */
   private $secret_key = null;
 
   /**
    * API host for requests
    *
    * @var string
-   **/
+   */
   private $api_host = 'api.uploadcare.com';
 
   /**
-   * Uploadcare_Widget instance.
+   * Widget instance.
    *
-   * @var Uploadcare_Widget
-   **/
+   * @var Widget
+   */
   public $widget = null;
 
   /**
-   * Uploadcare_Uploader instance
+   * Uploader instance
    *
-   * @var Uploadcare_Uploader
-   **/
+   * @var Uploader
+   */
   public $uploader = null;
 
   /**
    * Uploadcare library version
    *
    * @var string
-   **/
-  public $version = '1.0.9/5.2';
+   */
+  public $version = UPLOADCARE_LIB_VERSION;
 
   /**
    * Uploadcare rest API version
@@ -63,13 +61,13 @@ class Uploadcare_Api
    * @param string $secret_key A private (secret) key given by Uploadcare.com
    * @param string $ua Custom User-Agent to report
    * @return void
-   **/
+   */
   public function __construct($public_key, $secret_key, $ua = false)
   {
     $this->public_key = $public_key;
     $this->secret_key = $secret_key;
-    $this->widget = new Uploadcare_Widget($this);
-    $this->uploader = new Uploadcare_Uploader($this);
+    $this->widget = new Widget($this);
+    $this->uploader = new Uploader($this);
     if($ua) {
       $this->ua = $ua;
     } else {
@@ -81,7 +79,7 @@ class Uploadcare_Api
    * Returns public key
    *
    * @return string
-   **/
+   */
   public function getPublicKey()
   {
     return $this->public_key;
@@ -92,14 +90,14 @@ class Uploadcare_Api
    *
    * @param integer $page Page to be shown.
    * @return array
-   **/
+   */
   public function getFileList($page = 1, $limit = 20)
   {
     $data = $this->__preparedRequest('file_list', 'GET', array('page' => $page, 'limit' => $limit));
     $files_raw = (array)$data->results;
     $result = array();
     foreach ($files_raw as $file_raw) {
-      $result[] = new Uploadcare_File($file_raw->uuid, $this, $file_raw);
+      $result[] = new File($file_raw->uuid, $this, $file_raw);
     }
     return $result;
   }
@@ -116,7 +114,7 @@ class Uploadcare_Api
     $groups = (array)$data->results;
     $result = array();
     foreach ($groups as $group) {
-      $result[] = new Uploadcare_Group($group->id, $this);
+      $result[] = new Group($group->id, $this);
     }
     return $result;
   }
@@ -128,7 +126,7 @@ class Uploadcare_Api
    */
   public function getGroup($group_id)
   {
-    return new Uploadcare_Group($group_id, $this);
+    return new Group($group_id, $this);
   }
 
   /**
@@ -136,7 +134,7 @@ class Uploadcare_Api
    *
    * @param integer $page
    * @return array
-   **/
+   */
   public function getFilePaginationInfo($page = 1, $limit = 20)
   {
     $data = (array)$this->__preparedRequest('file_list', 'GET', array('page' => $page, 'limit' => $limit));
@@ -155,7 +153,7 @@ class Uploadcare_Api
   {
     $data = $this->__preparedRequest('file_copy', 'POST', array(), array('source' => $source, 'target' => $target));
     if (key_exists('result', (array)$data) == true) {
-      return new Uploadcare_File((string)$data->result->uuid, $this);
+      return new File((string)$data->result->uuid, $this);
     } else {
       return (string)$data->detail;
     }
@@ -169,7 +167,7 @@ class Uploadcare_Api
    * @param string $data Array of data to send.
    * @param string $headers Additonal headers.
    * @return array
-   **/
+   */
   public function request($method, $path, $data = array(), $headers = array())
   {
     $ch = curl_init(sprintf('https://%s%s', $this->api_host, $path));
@@ -178,16 +176,16 @@ class Uploadcare_Api
 
     $data = curl_exec($ch);
     if ($data === false) {
-      throw new Exception(curl_error($ch));
+      throw new \Exception(curl_error($ch));
     }
     $ch_info = curl_getinfo($ch);
     if ($method == 'DELETE') {
       if ($ch_info['http_code'] != 302) {
-        throw new Exception('Request returned unexpected http code '.$ch_info['http_code'].'. '.$data);
+        throw new \Exception('Request returned unexpected http code '.$ch_info['http_code'].'. '.$data);
       }
     } else {
       if (!(($ch_info['http_code'] >= 200)&&($ch_info['http_code'] < 300))) {
-        throw new Exception('Request returned unexpected http code '.$ch_info['http_code'].'. '.$data);
+        throw new \Exception('Request returned unexpected http code '.$ch_info['http_code'].'. '.$data);
       }
     }
     curl_close($ch);
@@ -208,7 +206,7 @@ class Uploadcare_Api
    * @param array $data Data will be posted like json.
    * @throws Exception
    * @return array
-   **/
+   */
   public function __preparedRequest($type, $request_type = 'GET', $params = array(), $data = array())
   {
     $path = $this->__getPath($type, $params);
@@ -223,10 +221,10 @@ class Uploadcare_Api
    * @param array $params Additional parameters for requests as array.
    * @throws Exception
    * @return string
-   **/
+   */
   private function __getPath($type, $params = array())
   {
-      switch ($type) {
+    switch ($type) {
       case 'root':
         return '/';
       case 'account':
@@ -241,30 +239,30 @@ class Uploadcare_Api
         return sprintf('/files/?page=%s&limit=%s', $params['page'], $params['limit']);
       case 'file_storage':
         if (array_key_exists('uuid', $params) == false) {
-          throw new Exception('Please provide "uuid" param for request');
+          throw new \Exception('Please provide "uuid" param for request');
         }
         return sprintf('/files/%s/storage/', $params['uuid']);
       case 'file_copy':
         return '/files/';
       case 'file':
         if (array_key_exists('uuid', $params) == false) {
-          throw new Exception('Please provide "uuid" param for request');
+          throw new \Exception('Please provide "uuid" param for request');
         }
         return sprintf('/files/%s/', $params['uuid']);
       case 'group_list':
         return sprintf('/groups/?from=%s', $params['from']);
       case 'group':
         if (array_key_exists('uuid', $params) == false) {
-          throw new Exception('Please provide "uuid" param for request');
+          throw new \Exception('Please provide "uuid" param for request');
         }
         return sprintf('/groups/%s/', $params['uuid']);
       case 'group_storage':
         if (array_key_exists('uuid', $params) == false) {
-          throw new Exception('Please provide "uuid" param for request');
+          throw new \Exception('Please provide "uuid" param for request');
         }
         return sprintf('/groups/%s/storage/', $params['uuid']);
       default:
-        throw new Exception('No api url type is provided for request. Use store, or appropriate constants.');
+        throw new \Exception('No api url type is provided for request. Use store, or appropriate constants.');
     }
   }
 
@@ -276,7 +274,7 @@ class Uploadcare_Api
    * @param string $type Request type. Options: get, post, put, delete.
    * @throws Exception
    * @return void
-   **/
+   */
   private function __setRequestType($ch, $type = 'GET')
   {
     switch ($type) {
@@ -299,7 +297,7 @@ class Uploadcare_Api
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'OPTIONS');
         break;
       default:
-        throw new Exception('No request type is provided for request. Use post, put, delete, get or appropriate constants.');
+        throw new \Exception('No request type is provided for request. Use post, put, delete, get or appropriate constants.');
     }
   }
 
@@ -310,7 +308,7 @@ class Uploadcare_Api
    * @param array $headers additional headers.
    * @param array $data Data array.
    * @return void
-   **/
+   */
   private function __setHeaders($ch, $add_headers = array(), $data = array())
   {
     $content_length = 0;
@@ -332,13 +330,13 @@ class Uploadcare_Api
   }
 
   /**
-   * Get object of Uploadcare_File class by file_id
+   * Get object of File class by file_id
    *
    * @param string $file_id Uploadcare file_id
-   * @return Uploadcare_File
-   **/
+   * @return File
+   */
   public function getFile($file_id)
   {
-    return new Uploadcare_File($file_id, $this);
+    return new File($file_id, $this);
   }
 }

@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.0
+- drop 5.2 support
+- fix composer support
+
 ## 1.0.9
 
 This is last uploadcare-php version that will support php 5.2. Expect no features added, only bugs fixed.

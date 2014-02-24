@@ -4,13 +4,13 @@
  */
 // This is just some config with public and secret keys for UC.
 require_once 'config.php';
-// requesting lib for PHP 5.3/5.4
-require_once '../uploadcare/lib/5.3-5.4/Uploadcare.php';
-// using namespace
-use \Uploadcare;
+// requesting autoloader that got uploadcare in there
+require_once 'vendor/autoload.php';
+// using api
+use Uploadcare\Api;
 
 // create object istance for Api.
-$api = new Uploadcare\Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
+$api = new Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
 
 /**
  * Let's start with widgets.

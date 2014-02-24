@@ -1,0 +1,16 @@
+{
+    "name": "example/project",
+    "description": "",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "example",
+            "email": "example@project.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "uploadcare/uploadcare-php": "dev-master"
+    }
+}
+

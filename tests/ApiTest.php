@@ -1,8 +1,10 @@
 <?php
-error_reporting(E_ERROR);
-require_once dirname(__FILE__).'/config.php';
-require_once dirname(__FILE__).'/../../uploadcare/lib/5.3-5.4/Uploadcare.php';
-use \Uploadcare;
+error_reporting(E_ALL);
+require_once __DIR__.'/config.php';
+require_once __DIR__.'/../vendor/autoload.php';
+
+use Uploadcare\Api;
+use Uploadcare\File;
 
 
 class ApiTest extends PHPUnit_Framework_TestCase
@@ -26,7 +28,7 @@ class ApiTest extends PHPUnit_Framework_TestCase
    */
   public function testChildObjectsValid()
   {
-    $api = new Uploadcare\Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
+    $api = new Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
     $this->assertTrue(get_class($api->widget) == 'Uploadcare\Widget');
     $this->assertTrue(get_class($api->uploader) == 'Uploadcare\Uploader');
   }
@@ -36,7 +38,7 @@ class ApiTest extends PHPUnit_Framework_TestCase
    */
   public function testPublicKeyValid()
   {
-    $api = new Uploadcare\Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
+    $api = new Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
     $this->assertTrue($api->getPublicKey() == 'demopublickey', 'This is true');
   }
 
@@ -46,7 +48,7 @@ class ApiTest extends PHPUnit_Framework_TestCase
    */
   public function testFileList()
   {
-    $api = new Uploadcare\Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
+    $api = new Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
     $files = $api->getFileList();
     $this->assertTrue(is_array($files));
     $this->assertEquals(20, count($files));
@@ -65,7 +67,7 @@ class ApiTest extends PHPUnit_Framework_TestCase
    */
   public function testFileListPaginationInfo()
   {
-    $api = new Uploadcare\Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
+    $api = new Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
     $result = $api->getFilePaginationInfo();
     $this->assertEquals(20, $result['per_page']);
 
@@ -79,7 +81,7 @@ class ApiTest extends PHPUnit_Framework_TestCase
    */
   public function testRequestsRaw()
   {
-    $api = new Uploadcare\Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
+    $api = new Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
 
     // this are request to https://api.uploadcare.com/ url.
     // no exceptions should be thrown
@@ -120,7 +122,7 @@ class ApiTest extends PHPUnit_Framework_TestCase
    */
   public function testRequestsProject()
   {
-    $api = new Uploadcare\Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
+    $api = new Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
 
     // this are request to https://api.uploadcare.com/project/ url.
     // no exceptions should be thrown
@@ -163,7 +165,7 @@ class ApiTest extends PHPUnit_Framework_TestCase
    */
   public function testRequestsFiles()
   {
-    $api = new Uploadcare\Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
+    $api = new Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
 
     // this are request to https://api.uploadcare.com/files/ url.
     // no exceptions should be thrown
@@ -212,15 +214,15 @@ class ApiTest extends PHPUnit_Framework_TestCase
    */
   public function testFileFromJSON()
   {
-    $api = new Uploadcare\Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
+    $api = new Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
 
     $result = $api->request('GET', '/files/');
     $file_raw = (array)$result->results[0];
 
-    $file = new Uploadcare\File($file_raw['uuid'], $api);
+    $file = new File($file_raw['uuid'], $api);
     $this->assertEquals($file_raw['uuid'], $file->data['uuid']);
 
-    $file = new Uploadcare\File($file_raw['uuid'], $api, $file_raw);
+    $file = new File($file_raw['uuid'], $api, $file_raw);
     $this->assertEquals($file_raw['uuid'], $file->data['uuid']);
   }
 
@@ -229,7 +231,7 @@ class ApiTest extends PHPUnit_Framework_TestCase
    */
   public function testFile()
   {
-    $api = new Uploadcare\Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
+    $api = new Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
     $file = $api->getFile('4bd3a897-f489-4b9f-b643-961b1c9f657e');
 
     $this->assertEquals(get_class($file), 'Uploadcare\File');
@@ -259,13 +261,12 @@ class ApiTest extends PHPUnit_Framework_TestCase
   }
 
   /**
-   * Test uploading and deleting
+   * Test upload from URL
    */
-  public function testUploadAndDelete()
+  public function testUploadFromURL()
   {
-    $api = new Uploadcare\Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
+    $api = new Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
 
-    // upload form url
     try {
       $file = $api->uploader->fromUrl('http://www.baysflowers.co.nz/Images/tangerine-delight.jpg');
     } catch (Exception $e) {
@@ -278,19 +279,42 @@ class ApiTest extends PHPUnit_Framework_TestCase
       $this->fail('We get an unexpected exception trying to store uploaded file from url: '.$e->getMessage());
     }
 
-    // upload from path
+    // test file delete
+    try {
+      $this->assertNull($file->data['datetime_removed']);
+      $file->delete();
+      $file->updateInfo();
+      $this->assertNotNull($file->data['datetime_removed']);
+
+    } catch (Exception $e) {
+      $this->fail('We get an unexpected exception trying to delete file: '.$e->getMessage());
+    }
+
+  }
+
+  /**
+   * Test uploading from path
+   */
+  public function testUploadFromPath()
+  {
+    $api = new Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
+
     try {
       $file = $api->uploader->fromPath(dirname(__FILE__).'/test.jpg');
     } catch (Exception $e) {
-      $this->fail('We get an unexpected exception trying to upload from path');
+      $this->fail('We get an unexpected exception trying to upload from path: '.$e->getMessage());
     }
+
     try {
       $file->store();
     } catch (Exception $e) {
       $this->fail('We get an unexpected exception trying to store uploaded file from path: '.$e->getMessage());
     }
+  }
 
-    // upload from resource
+  public function testUploadFromResource()
+  {
+    $api = new Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
     try {
       $fp = fopen(dirname(__FILE__).'/test.jpg', 'r');
       $file = $api->uploader->fromResource($fp);
@@ -302,8 +326,11 @@ class ApiTest extends PHPUnit_Framework_TestCase
     } catch (Exception $e) {
       $this->fail('We get an unexpected exception trying to store uploaded file from resource: '.$e->getMessage());
     }
+  }
 
-    // upload from raw
+  public function testUploadFromString()
+  {
+    $api = new Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
     try {
       $content = "This is some text I want to upload";
       $file = $api->uploader->fromContent($content, 'text/plain');
@@ -318,12 +345,5 @@ class ApiTest extends PHPUnit_Framework_TestCase
 
     $text = file_get_contents($file->getUrl());
     $this->assertEquals($text, "This is some text I want to upload");
-
-    // test file delete
-    try {
-      $file->delete();
-    } catch (Exception $e) {
-      $this->fail('We get an unexpected exception trying to delete file: '.$e->getMessage());
-    }
   }
 }
