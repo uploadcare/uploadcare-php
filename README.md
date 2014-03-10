@@ -14,7 +14,7 @@ This is a set of libraries to work with [Uploadcare][1].
 
 Just update your `composer.json` with:
 
-```json
+```js
     "repositories": [
         {
             "type": "vcs",

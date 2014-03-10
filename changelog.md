@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.1.2
+- add preview operation
+
 ## 1.1.1
 - accept CDN URL in File's constructor
 - bump widget version to 0.18.3 (see [widget changelog][widget changelog])
