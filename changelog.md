@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.1
+- accept CDN URL in File's constructor
+- bump widget version to 0.18.3 (see [widget changelog][widget changelog])
+
 ## 1.1.0
 - drop 5.2 support
 - fix composer support

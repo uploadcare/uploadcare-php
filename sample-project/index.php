@@ -9,7 +9,7 @@ $uc_handler = new Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
 <head>
 <meta encoding='utf-8'>
 <title>Uploadcare</title>
-<?php echo $uc_handler->widget->getScriptTag('0.18.1'); ?>
+<?php echo $uc_handler->widget->getScriptTag(); ?>
 </head>
 <body class='welcome quick_start docs'>
 	<div class='wrap'>

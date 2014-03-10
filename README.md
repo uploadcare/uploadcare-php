@@ -195,13 +195,14 @@ Use "per_page" and "pages" information to create pagination inside your own proj
 $pagination_info = $api->getFilePaginationInfo();
 ```
 
-If you have a file_id (for example, it's saved in your database) you can create object for file easily.
-
-Just use request below:
+If you have a file's UUID or CDN URL (for example, it's saved in your database) you can create object for file easily:
 
 ```php
-$file_id = '5255b9dd-f790-425e-9fa9-8b49d4e64643';
-$file = $api->getFile($file_id);
+$uuid = '3c99da1d-ef05-4d79-81d8-d4f208d98beb';
+$file1 = $api->getFile($uuid);
+
+$cdnurl = 'http://www.ucarecdn.com/3c99da1d-ef05-4d79-81d8-d4f208d98beb/-/preview/100x100/-/effect/grayscale/bill.jpg';
+$file2 = $api->getFile($cdnurl);
 ```
 
 You can access raw data like this:

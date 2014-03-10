@@ -2,9 +2,11 @@
 require_once 'config.php';
 require_once 'vendor/autoload.php';
 use Uploadcare\Api;
+
 $file_id = $_POST['qs-file'];
 $uc_handler = new Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
 $file = $uc_handler->getFile($file_id);
+
 try {
   $file->store();
 } catch (Exception $e) {
@@ -13,6 +15,7 @@ try {
   die();
 }
 ?>
+
 <!DOCTYPE html>
 <html>
 <head>

@@ -1,8 +1,11 @@
 <?php
 namespace Uploadcare;
 
-class File
-{
+
+class File {
+
+  private $re_uuid_with_effects = '!/?(?P<uuid>[a-z0-9]{8}-(?:[a-z0-9]{4}-){3}[a-z0-9]{12})(?:/(?:-/(?P<effects>(?:[^/]+/)+)))?(?<filename>[^/]*)!';
+
   /**
    * Uploadcare cdn host
    *
@@ -54,14 +57,21 @@ class File
   /**
    * Constructs an object for CDN file with specified ID
    *
-   * @param string $uuid Uploadcare uuid
+   * @param string $uuid_or_url Uploadcare file UUID or CDN URL
    * @param Uploadcare $api Uploadcare class instance
    * @param boolean|array $data prepopulate this->cached_data
    */
-  public function __construct($uuid, Api $api, $data = false)
+  public function __construct($uuid_or_url, Api $api, $data = false)
   {
-    $this->file_id = $uuid;
-    $this->uuid = $uuid;
+    $matches = array();
+    if(!preg_match($this->re_uuid_with_effects, $uuid_or_url, $matches)) {
+      throw new \Exception('UUID not found');
+    }
+
+    $this->file_id = $matches['uuid'];
+    $this->uuid = $matches['uuid'];
+    $this->default_effects = $matches['effects'];
+    $this->filename = $matches['filename'];
     $this->api = $api;
     if ($data) {
       $this->cached_data = $data;
@@ -147,6 +157,13 @@ class File
   public function getUrl($postfix = null)
   {
     $url = sprintf('http://%s/%s/', $this->cdn_host, $this->uuid);
+    if($this->default_effects) {
+      $url = sprintf('%s-/%s', $url, $this->default_effects);
+    }
+    if($this->filename && $postfix === null) {
+      $postfix = $this->filename;
+    }
+
 
     $operations = array();
 
