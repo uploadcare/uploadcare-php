@@ -22,7 +22,7 @@ Just update your `composer.json` with:
         }
     ],
     "require": {
-        "uploadcare/uploadcare-php": ">=v1.0.3"
+        "uploadcare/uploadcare-php": ">=v1.1.0"
     }
 ```
 
