@@ -29,7 +29,7 @@ class File {
   private $uuid = null;
 
   /**
-   * Operations and params for operations: crop, resize, scale_crop, effect.
+   * Operations and params for operations.
    *
    * @var array
    */
@@ -45,7 +45,11 @@ class File {
   /**
    * Operations list
    */
-  private $operation_list = array('crop', 'resize', 'scale_crop', 'effect');
+  private $operation_list = array('crop',
+                                  'resize',
+                                  'scale_crop',
+                                  'effect',
+                                  'preview');
 
   /**
    * Cached data
@@ -188,6 +192,9 @@ class File {
           case 'effect':
             $part = $this->__addPartEffect($part, $operation_params);
             break;
+          case 'preview':
+            $part = $this->__addPartSize($part, $operation_params);
+            break;
           case 'custom':
             $part = array($operation_params);
             break;
@@ -259,6 +266,29 @@ class File {
       throw new \Exception('Please, provide at least width or height for resize');
     }
     $result->operations[]['resize'] = array(
+        'width' => $width,
+        'height' => $height,
+    );
+    return $result;
+  }
+
+  /**
+   * Get object with preview parameters.
+   * Provide both width and height.
+   * If no width and height are provided exceptions will be thrown!
+   *
+   * @param integer $width Preview image width.
+   * @param integer $height Preview image height.
+   * @throws \Exception
+   * @return File
+   */
+  public function preview($width, $height)
+  {
+    $result = clone $this;
+    if (!$width || !$height) {
+      throw new \Exception('Please, provide both width and height for preview');
+    }
+    $result->operations[]['preview'] = array(
         'width' => $width,
         'height' => $height,
     );
