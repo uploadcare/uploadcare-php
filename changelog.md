@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.1.3
+- allow setting custom CDN host
+
 ## 1.1.2
 - add preview operation
 

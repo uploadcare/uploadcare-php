@@ -2,16 +2,9 @@
 namespace Uploadcare;
 
 
-class File {
-
+class File
+{
   private $re_uuid_with_effects = '!/?(?P<uuid>[a-z0-9]{8}-(?:[a-z0-9]{4}-){3}[a-z0-9]{12})(?:/(?:-/(?P<effects>(?:[^/]+/)+)))?(?<filename>[^/]*)!';
-
-  /**
-   * Uploadcare cdn host
-   *
-   * @var string
-   */
-  private $cdn_host = 'www.ucarecdn.com';
 
   /**
    * Uploadcare file id
@@ -160,7 +153,7 @@ class File {
    */
   public function getUrl($postfix = null)
   {
-    $url = sprintf('http://%s/%s/', $this->cdn_host, $this->uuid);
+    $url = sprintf('http://%s/%s/', $this->api->cdn_host, $this->uuid);
     if($this->default_effects) {
       $url = sprintf('%s-/%s', $url, $this->default_effects);
     }

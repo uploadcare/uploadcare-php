@@ -263,6 +263,22 @@ class ApiTest extends PHPUnit_Framework_TestCase
   }
 
   /**
+   * Let's check that user can set custom CDN host
+   */
+  public function testCustomCDNHost()
+  {
+    $api = new Api(UC_PUBLIC_KEY, UC_SECRET_KEY, null, 'example.com');
+    $file = $api->getFile('3c99da1d-ef05-4d79-81d8-d4f208d98beb');
+
+    $this->assertEquals(get_class($file), 'Uploadcare\File');
+
+    $this->assertEquals($file->getUrl(), 'http://example.com/3c99da1d-ef05-4d79-81d8-d4f208d98beb/');
+    $this->assertEquals($file->resize(400, 400)->getUrl(), 'http://example.com/3c99da1d-ef05-4d79-81d8-d4f208d98beb/-/resize/400x400/');
+    $this->assertEquals($file->resize(400, false)->getUrl(), 'http://example.com/3c99da1d-ef05-4d79-81d8-d4f208d98beb/-/resize/400x/');
+    $this->assertEquals($file->resize(false, 400)->getUrl(), 'http://example.com/3c99da1d-ef05-4d79-81d8-d4f208d98beb/-/resize/x400/');
+  }
+
+  /**
    * Test upload from URL
    */
   public function testUploadFromURL()

@@ -433,6 +433,23 @@ If you want to delete file, just call delete() method on Uploadcare\File object.
 $file->delete();
 ```
 
+## Custom User-Agent and CDN host
+
+You can customize User-Agent reported during API requests (please do this if you're building a lib that is using uploadcare-php).
+To do that pass a string with user agent name as third argument to Api constructor:
+
+```php
+$api = new Uploadcare\Api(UC_PUBLIC_KEY, UC_SECRET_KEY, "Awesome Lib/1.2.3");
+```
+
+You may also change default CDN host. You need to do this when you're using custom CNAME or you want to explicitly set your
+[CDN provider](https://uploadcare.com/documentation/cdn/#alternative-domains).
+To do that pass a string with domain name as fourth argument to Api constructor:
+
+```php
+$api = new Uploadcare\Api(UC_PUBLIC_KEY, UC_SECRET_KEY, null, "kx.ucarecdn.com");
+```
+
 ## Tests
 
 Inside "tests" directory you can find tests for PHP 5.3 and up.

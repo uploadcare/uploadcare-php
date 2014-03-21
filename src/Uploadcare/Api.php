@@ -1,7 +1,7 @@
 <?php
 namespace Uploadcare;
 
-$uploadcare_version = '1.1.2';
+$uploadcare_version = '1.1.3';
 define('UPLOADCARE_LIB_VERSION', sprintf('%s/%s.%s', $uploadcare_version, PHP_MAJOR_VERSION, PHP_MINOR_VERSION));
 
 class Api
@@ -26,6 +26,13 @@ class Api
    * @var string
    */
   private $api_host = 'api.uploadcare.com';
+
+  /**
+   * Uploadcare CDN host
+   *
+   * @var string
+   */
+  public $cdn_host = 'www.ucarecdn.com';
 
   /**
    * Widget instance.
@@ -63,12 +70,15 @@ class Api
    * @param string $ua Custom User-Agent to report
    * @return void
    */
-  public function __construct($public_key, $secret_key, $ua = false)
+  public function __construct($public_key, $secret_key, $ua = null, $cdn_host = null)
   {
     $this->public_key = $public_key;
     $this->secret_key = $secret_key;
     $this->widget = new Widget($this);
     $this->uploader = new Uploader($this);
+    if($cdn_host) {
+      $this->cdn_host = $cdn_host;
+    }
     if($ua) {
       $this->ua = $ua;
     } else {
