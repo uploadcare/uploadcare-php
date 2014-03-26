@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.0
+- bump widget version to 1.0.0 (see [widget changelog][widget changelog])
+    major feature is reponsive behavior of widget dialog
+
 ## 1.1.3
 - allow setting custom CDN host
 
