@@ -32,10 +32,13 @@ class Widget
    * @param string $version Uploadcare version
    * @return string
    */
-  public function getScriptTag($version = null)
+  public function getScriptTag($version = null, $async = false)
   {
-    $result = sprintf('<script>UPLOADCARE_PUBLIC_KEY = "%s";</script>', $this->api->getPublicKey());
-    $result .= sprintf('<script async="async" src="%s"></script>', $this->getScriptSrc($version));
+    $async_attr = $async ? 'async="true"' : '';
+    $result = <<<EOT
+<script>UPLOADCARE_PUBLIC_KEY = "{$this->api->getPublicKey()}";</script>
+<script {$async_attr} src="{$this->getScriptSrc($version)}" charset="UTF-8"></script>
+EOT;
     return $result;
   }
 

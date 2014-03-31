@@ -161,7 +161,6 @@ class File
       $postfix = $this->filename;
     }
 
-
     $operations = array();
 
     foreach ($this->operations as $i => $operation_item) {

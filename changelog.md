@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.2.2
+- fix sample-project composer file
+- always write widget's charset
+- default to sync widget load
+- add optional $async argument to Widget->getScriptTag()
+
 ## 1.2.1
 - bump widget version to 1.0.1 (see [widget changelog][widget changelog])
 
