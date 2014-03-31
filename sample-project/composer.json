@@ -8,6 +8,10 @@
             "email": "example@project.com"
         }
     ],
+    "repositories": [{
+        "type": "vcs",
+        "url": "https://github.com/uploadcare/uploadcare-php"
+    }],
     "minimum-stability": "dev",
     "require": {
         "uploadcare/uploadcare-php": "dev-master"
