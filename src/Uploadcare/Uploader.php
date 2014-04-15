@@ -222,8 +222,11 @@ class Uploader
   {
     $data = curl_exec($ch);
     $ch_info = curl_getinfo($ch);
-    if ($ch_info['http_code'] != 200) {
-      throw new \Exception('Request returned unexpected http code '.$ch_info['http_code'].'. '.$data);
+    if ($data === false) {
+      throw new \Exception(curl_error($ch));
+    }
+    elseif ($ch_info['http_code'] != 200) {
+      throw new \Exception('Unexpected HTTP status code ' . $ch_info['http_code'] . '.' . curl_error($ch));
     }
     curl_close($ch);
     return json_decode($data);

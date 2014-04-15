@@ -377,5 +377,4 @@ class ApiTest extends PHPUnit_Framework_TestCase
     $this->assertEquals('preview/100x100/-/effect/grayscale/', $f->default_effects);
     $this->assertEquals('bill.jpg', $f->filename);
   }
-
 }

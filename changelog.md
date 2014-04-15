@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.2.3
+- be more explicit on cURL errors
+
 ## 1.2.2
 - fix sample-project composer file
 - always write widget's charset
