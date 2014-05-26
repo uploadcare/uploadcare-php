@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.2.4
+- bump widget version to 1.2.0 (see [widget changelog][widget changelog])
+
 ## 1.2.3
 - be more explicit on cURL errors
 
