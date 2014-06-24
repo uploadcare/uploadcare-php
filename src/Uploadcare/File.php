@@ -149,11 +149,12 @@ class File
    * Get url of original image
    *
    * @param string $postfix
+   * @param bool $https
    * @return string
    */
-  public function getUrl($postfix = null)
+  public function getUrl($postfix = null, $https = false)
   {
-    $url = sprintf('http://%s/%s/', $this->api->cdn_host, $this->uuid);
+    $url = sprintf('http%s://%s/%s/', $https ? 's' : null, $this->api->cdn_host, $this->uuid);
     if($this->default_effects) {
       $url = sprintf('%s-/%s', $url, $this->default_effects);
     }
