@@ -378,7 +378,7 @@ class Api
     
     $port = '';
     if (isset($url_parts['port'])) {
-      $port = ':' . $url_parts['port']. 
+      $port = ':' . $url_parts['port'];
     }
     
     $path = '';
