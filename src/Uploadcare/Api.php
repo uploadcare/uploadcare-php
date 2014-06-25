@@ -68,6 +68,7 @@ class Api
    * @param string $public_key A public key given by Uploadcare.com
    * @param string $secret_key A private (secret) key given by Uploadcare.com
    * @param string $ua Custom User-Agent to report
+   * @param string $cdn_host Custom CDN host to be used in file links
    * @return void
    */
   public function __construct($public_key, $secret_key, $ua = null, $cdn_host = null)
@@ -76,14 +77,14 @@ class Api
     $this->secret_key = $secret_key;
     $this->widget = new Widget($this);
     $this->uploader = new Uploader($this);
-    if($cdn_host) {
-      $this->cdn_host = $cdn_host;
-    }
+    
     if($ua) {
       $this->ua = $ua;
     } else {
       $this->ua = 'PHP Uploadcare Module ' . $this->version;
     }
+    
+    $this->setCdnHost($cdn_host ?: $this->cdn_host);
   }
 
   /**
@@ -338,6 +339,51 @@ class Api
     ) + $add_headers;
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+  }
+  
+  /**
+   * Cdn_host setter
+   * 
+   * @param string $cdn_host
+   * @return void
+   */
+  public function setCdnHost($cdn_host)
+  {
+    $url_parts = parse_url($cdn_host) + ['scheme' => 'http'];
+    
+    // if no scheme was presented in $cdn_host
+    if (!isset($url_parts['host'])) {
+      // attempt to fix $cdn_url using the default scheme
+      if (isset($url_parts['path'])) {
+        $url_parts = parse_url('http://' . $cdn_host);
+      } else {
+        throw new \InvalidArgumentException('Invalid cdn_host value');
+      }
+    }
+    
+    $url = $url_parts['scheme'] . '://';
+    
+    // there is basic HTTP auth
+    if (isset($url_parts['user'])) {
+      $basic_auth = $url_parts['user'];
+      
+      // password presented
+      if (isset($url_parts['pass'])) {
+        $basic_auth .= ':' . $url_parts['pass'];
+      }
+      
+      $basic_auth .= '@';
+    } else {
+      $basic_auth = '';
+    }
+    
+    $path = '';
+    
+    if (isset($url_scheme['path'])) {
+      $path = rtrim($url_scheme['path']);
+    }
+    
+    $this->cdn_host = $url_parts['scheme'] . '://' . $basic_auth . $url_parts['host'] . $path;
   }
 
   /**
