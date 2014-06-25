@@ -363,7 +363,8 @@ class Api
     
     $url = $url_parts['scheme'] . '://';
     
-    // there is basic HTTP auth
+    $basic_auth = '';
+    // check if there is a basic HTTP auth
     if (isset($url_parts['user'])) {
       $basic_auth = $url_parts['user'];
       
@@ -373,17 +374,19 @@ class Api
       }
       
       $basic_auth .= '@';
-    } else {
-      $basic_auth = '';
+    }
+    
+    $port = '';
+    if (isset($url_parts['port'])) {
+      $port = ':' . $url_parts['port']. 
     }
     
     $path = '';
-    
     if (isset($url_scheme['path'])) {
       $path = rtrim($url_scheme['path']);
     }
     
-    $this->cdn_host = $url_parts['scheme'] . '://' . $basic_auth . $url_parts['host'] . $path;
+    $this->cdn_host = $url_parts['scheme'] . '://' . $basic_auth . $url_parts['host'] . $port . $path;
   }
 
   /**
