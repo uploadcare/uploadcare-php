@@ -349,7 +349,7 @@ class Api
    */
   public function setCdnHost($cdn_host)
   {
-    $url_parts = parse_url($cdn_host) + ['scheme' => 'http'];
+    $url_parts = parse_url($cdn_host) + array('scheme' => 'http');
     
     // if no scheme was presented in $cdn_host
     if (!isset($url_parts['host'])) {
