@@ -383,7 +383,7 @@ class Api
     
     $path = '';
     if (isset($url_parts['path'])) {
-      $path = rtrim($url_parts['path']);
+      $path = rtrim($url_parts['path'], '/');
     }
     
     $this->cdn_host = $url_parts['scheme'] . '://' . $basic_auth . $url_parts['host'] . $port . $path;
