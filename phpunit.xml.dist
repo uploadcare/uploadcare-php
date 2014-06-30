@@ -10,6 +10,9 @@
          stopOnFailure="false"
          syntaxCheck="false"
 >
+    <php>
+        <const name="PHPUNIT_UPLOADCARE_TESTSUITE" value="true"/>
+    </php>
     <testsuites>
         <testsuite name="Package Test Suite">
             <directory suffix=".php">./tests/</directory>

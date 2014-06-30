@@ -200,7 +200,7 @@ class Api
       }
     }
     curl_close($ch);
-    if ($this->public_key == 'demopublickey' || $this->secret_key == 'demoprivatekey') {
+    if (!defined('PHPUNIT_UPLOADCARE_TESTSUITE') && ($this->public_key == 'demopublickey' || $this->secret_key == 'demoprivatekey')) {
       trigger_error('You are using the demo account. Please get an Uploadcare account at https://uploadcare.com/accounts/create/', E_USER_WARNING);
     }
     return json_decode($data);
