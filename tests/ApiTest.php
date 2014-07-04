@@ -361,6 +361,7 @@ class ApiTest extends PHPUnit_Framework_TestCase
       $this->fail('We get an unexpected exception trying to store uploaded file from contents: '.$e->getMessage());
     }
 
+    usleep(500);
     $text = file_get_contents($file->getUrl());
     $this->assertEquals($text, "This is some text I want to upload");
   }
