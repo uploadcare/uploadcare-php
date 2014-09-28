@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.5
+- bump widget version to 1.4.2 (see [widget changelog][widget changelog])
+- add AUTHORS.txt
+
 ## 1.2.4
 - bump widget version to 1.2.0 (see [widget changelog][widget changelog])
 
