@@ -36,7 +36,7 @@ class Widget
   {
     $async_attr = $async ? 'async="true"' : '';
     $result = <<<EOT
-<script>UPLOADCARE_PUBLIC_KEY = "{$this->api->getPublicKey()}";</script>
+<script>UPLOADCARE_PUBLIC_KEY = "{$this->api->getPublicKey()}"; UPLOADCARE_LOCALE = "{$this->api->getLocale()}";</script>
 <script {$async_attr} src="{$this->getScriptSrc($version)}" charset="UTF-8"></script>
 EOT;
     return $result;
