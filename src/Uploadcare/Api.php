@@ -21,13 +21,6 @@ class Api
   private $secret_key = null;
 
   /**
-   * Uploadcare locale
-   *
-   * @var string
-   */
-  private $locale = null;
-
-  /**
    * API host for requests
    *
    * @var string
@@ -101,16 +94,6 @@ class Api
   public function getPublicKey()
   {
     return $this->public_key;
-  }
-
-  /**
-   * Returns locale
-   *
-   * @return string
-   */
-  public function getLocale()
-  {
-    return $this->locale;
   }
 
   /**
