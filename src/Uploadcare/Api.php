@@ -164,7 +164,11 @@ class Api
   {
     $data = $this->__preparedRequest('file_copy', 'POST', array(), array('source' => $source, 'target' => $target));
     if (key_exists('result', (array)$data) == true) {
-      return new File((string)$data->result->uuid, $this);
+      if ($data->type == 'file') {
+        return new File((string)$data->result->uuid, $this);
+      } else {
+        return (string)$data->result;
+      }
     } else {
       return (string)$data->detail;
     }

@@ -129,10 +129,22 @@ class File
    * Copy the file.
    *
    * @param string $target Name of custom storage.
+   * @return File|string
    */
   public function copy($target = null)
   {
     return $this->api->copyFile($this->getUrl(), $target);
+  }
+
+  /**
+   * Copy the file to custom storage.
+   *
+   * @param string $target Name of custom storage.
+   * @return string
+   */
+  public function copyTo($target)
+  {
+    return (string)$this->copy($target);
   }
 
   /**
