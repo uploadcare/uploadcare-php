@@ -330,6 +330,16 @@ class File
     $result->operations[]['custom'] = $operation;
     return $result;
   }
+  
+  /**
+   * Get UUID
+   * 
+   * @returns string
+   */
+  public function getUuid()
+  {
+    return $this->uuid;
+  }
 
   /**
    * Adds part with size for operations
