@@ -1,7 +1,7 @@
 <?php
 namespace Uploadcare;
 
-$uploadcare_version = '1.2.5';
+$uploadcare_version = '1.2.6';
 define('UPLOADCARE_LIB_VERSION', sprintf('%s/%s.%s', $uploadcare_version, PHP_MAJOR_VERSION, PHP_MINOR_VERSION));
 
 class Api
@@ -341,13 +341,13 @@ class Api
   }
 
   /**
-   * Get object of File class by file_id
+   * Get object of File class by id
    *
-   * @param string $file_id Uploadcare file_id
+   * @param string $uuidd Uploadcare file id
    * @return File
    */
-  public function getFile($file_id)
+  public function getFile($uuid)
   {
-    return new File($file_id, $this);
+    return new File($uuid, $this);
   }
 }

@@ -371,10 +371,10 @@ class ApiTest extends PHPUnit_Framework_TestCase
     $api = new Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
 
     $f = $api->getFile('3c99da1d-ef05-4d79-81d8-d4f208d98beb');
-    $this->assertEquals('3c99da1d-ef05-4d79-81d8-d4f208d98beb', $f->getFileId());
+    $this->assertEquals('3c99da1d-ef05-4d79-81d8-d4f208d98beb', $f->getUuid());
 
     $f = $api->getFile('http://www.ucarecdn.com/3c99da1d-ef05-4d79-81d8-d4f208d98beb/-/preview/100x100/-/effect/grayscale/bill.jpg');
-    $this->assertEquals('3c99da1d-ef05-4d79-81d8-d4f208d98beb', $f->getFileId());
+    $this->assertEquals('3c99da1d-ef05-4d79-81d8-d4f208d98beb', $f->getUuid());
     $this->assertEquals('preview/100x100/-/effect/grayscale/', $f->default_effects);
     $this->assertEquals('bill.jpg', $f->filename);
   }

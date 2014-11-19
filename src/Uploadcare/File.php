@@ -9,14 +9,6 @@ class File
   /**
    * Uploadcare file id
    *
-   * @deprecated
-   * @var string
-   */
-  private $file_id = null;
-
-  /**
-   * Uploadcare file id
-   *
    * @var string
    */
   private $uuid = null;
@@ -65,7 +57,6 @@ class File
       throw new \Exception('UUID not found');
     }
 
-    $this->file_id = $matches['uuid'];
     $this->uuid = $matches['uuid'];
     $this->default_effects = $matches['effects'];
     $this->filename = $matches['filename'];
@@ -94,8 +85,19 @@ class File
   }
 
   /**
+   * Get UUID
+   *
+   * @returns string
+   */
+  public function getUuid()
+  {
+    return $this->uuid;
+  }
+
+  /**
    * Return uuid for this file
    *
+   * @deprecated
    * @return string
    */
   public function getFileId()
@@ -331,16 +333,6 @@ class File
     return $result;
   }
   
-  /**
-   * Get UUID
-   * 
-   * @returns string
-   */
-  public function getUuid()
-  {
-    return $this->uuid;
-  }
-
   /**
    * Adds part with size for operations
    *

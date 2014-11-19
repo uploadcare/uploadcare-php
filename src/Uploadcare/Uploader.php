@@ -29,7 +29,7 @@ class Uploader
    * Check file status.
    * Return array of json data
    *
-   * @param string $file_id
+   * @param string $token
    * @return array
    */
   public function status($token)
@@ -47,7 +47,10 @@ class Uploader
    * Upload file from url and get File instance
    *
    * @param string $url An url of file to be uploaded.
-   * @return File
+   * @param boolean $check_status Wait till upload is complete
+   * @param int $timeout Wait $timeout seconds between status checks
+   * @param int $max_attempts Check status no more than $max_attempts times
+   * @return File or string
    */
   public function fromUrl($url, $check_status = true, $timeout = 1, $max_attempts = 5)
   {
@@ -70,8 +73,11 @@ class Uploader
         if ($data->status == 'success') {
           $success = true;
         }
+        if ($data->status == 'error') {
+          throw new \Exception('Upload is not successful: ' . $data->error);
+        }
         if ($attempts == $max_attempts) {
-          throw new \Exception('Cannot store file, max attempts reached, upload is not successful');
+          throw new \Exception('Max attempts reached, upload is not successful');
         }
         sleep($timeout);
         $attempts++;
@@ -79,9 +85,9 @@ class Uploader
     } else {
       return $token;
     }
-    $file_id = $data->file_id;
+    $uuid = $data->uuid;
 
-    return new File($file_id, $this->api);
+    return new File($uuid, $this->api);
   }
 
   /**
@@ -117,8 +123,8 @@ class Uploader
     $this->__setHeaders($ch);
 
     $data = $this->__runRequest($ch);
-    $file_id = $data->file;
-    return new File($file_id, $this->api);
+    $uuid = $data->file;
+    return new File($uuid, $this->api);
   }
 
   /**
