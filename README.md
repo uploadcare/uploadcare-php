@@ -15,14 +15,8 @@ This is a set of libraries to work with [Uploadcare][1].
 Just update your `composer.json` with:
 
 ```js
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "git://github.com/uploadcare/uploadcare-php.git"
-        }
-    ],
     "require": {
-        "uploadcare/uploadcare-php": ">=v1.1.0"
+        "uploadcare/uploadcare-php": ">=v1.1.0,<2.0"
     }
 ```
 

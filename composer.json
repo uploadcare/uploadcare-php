@@ -5,13 +5,24 @@
     "authors": [
         {
             "name": "Uploadcare, LLC",
-            "email": "support@uploadcare.com"
+            "email": "hello@uploadcare.com"
         }
     ],
+    "require": {
+        "php": ">=5.3" //,
+        // "lib-curl": "",
+        // "lib-json": ""
+    },
     "minimum-stability": "dev",
     "autoload": {
         "psr-0": {
             "Uploadcare": "src"
         }
+    },
+    "keywords": ["files", "upload", "CDN"],
+    "homepage": "https://uploadcare.com",
+    "support": {
+        "email": "support@uploadcare.com",
+        "issues": "https://github.com/uploadcare/uploadcare-php/issues"
     }
 }
