@@ -9,9 +9,7 @@
         }
     ],
     "require": {
-        "php": ">=5.3" //,
-        // "lib-curl": "",
-        // "lib-json": ""
+        "php": ">=5.3"
     },
     "minimum-stability": "dev",
     "autoload": {
