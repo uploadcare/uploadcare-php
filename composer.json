@@ -9,7 +9,9 @@
         }
     ],
     "require": {
-        "php": ">=5.3"
+        "php": ">=5.3",
+        "ext-curl": "*",
+        "ext-json": "*"
     },
     "minimum-stability": "dev",
     "autoload": {
@@ -17,7 +19,14 @@
             "Uploadcare": "src"
         }
     },
-    "keywords": ["files", "upload", "CDN"],
+    "keywords": [
+        "files",
+        "upload",
+        "cdn",
+        "uploadcare",
+        "image management",
+        "cloud"
+    ],
     "homepage": "https://uploadcare.com",
     "support": {
         "email": "support@uploadcare.com",

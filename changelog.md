@@ -1,7 +1,7 @@
 # Changelog
 
 ## 1.2.6
-- bump widget version to 1.4.5 (see [widget changelog][widget changelog])
+- bump widget version to 1.4.6 (see [widget changelog][widget changelog])
 - fix Api->copyFile() when copying to custom storage
 - add File->copyTo() shortcut
 
