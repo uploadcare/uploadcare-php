@@ -191,6 +191,21 @@ try {
 }
 
 /**
+ * Sometimes storing the file in Uploadcare storage is not needed,
+ * and we want to copy it directly to our custom S3 bucket. Here is how to
+ * do it:
+ *   1. Setup S3 storage from Dashboard -> Projet -> Custom Storage -> Connect S3 Bucket
+ *      (as described here: https://uploadcare.com/documentation/storages/#setup)
+ *   2. Run the following command:
+ **/
+try {
+  $file->copy("target_storage_name");
+} catch (Exception $e) {
+  echo $e->getMessage()."\n";
+  echo nl2br($e->getTraceAsString())."\n";
+}
+
+/**
  * We can do any operations with this file now.
  **/
 echo $file->effect('flip')->getUrl()."\n";
