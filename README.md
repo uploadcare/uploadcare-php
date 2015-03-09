@@ -356,6 +356,22 @@ You can also copy file like this:
 $new_file = $api->copyFile('http://www.ucarecdn.com/3ace4d6d-6ff8-4b2e-9c37-9d1cd0559527/-/resize/200x200/');
 ```
 
+Sometimes storing the file in Uploadcare storage is not needed,
+and we want to copy it directly to our custom S3 bucket. Here is how to
+do it:
+  1. Setup S3 storage from Dashboard -> Projet -> Custom Storage -> Connect S3 Bucket
+     (as described here: https://uploadcare.com/documentation/storages/#setup)
+  2. Run the following command:
+
+```php
+try {
+  $file->copy("target_storage_name");
+} catch (Exception $e) {
+  echo $e->getMessage()."\n";
+  echo nl2br($e->getTraceAsString())."\n";
+}
+```
+
 ## Uploading files
 Let's have some fun with uploading files.
 
