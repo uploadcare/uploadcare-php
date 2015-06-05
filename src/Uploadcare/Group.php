@@ -34,12 +34,12 @@ class Group
   /**
    * Constructs an object with specified ID
    *
-   * @param string $group_id Uploadcare group_id
+   * @param string $group_id_or_url Uploadcare group_id or CDN URL
    * @param Uploadcare $api Uploadcare class instance
    */
-  public function __construct($group_id, Api $api)
+  public function __construct($group_id_or_url, Api $api)
   {
-    $this->group_id = $group_id;
+    $this->group_id = pathinfo($group_id_or_url, PATHINFO_BASENAME);
     $this->api = $api;
   }
 
