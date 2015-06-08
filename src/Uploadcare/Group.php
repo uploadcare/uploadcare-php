@@ -4,6 +4,11 @@ namespace Uploadcare;
 class Group
 {
   /**
+   * @var string
+   */
+  private $re_uuid = '!/?(?P<uuid>[a-z0-9]{8}-(?:[a-z0-9]{4}-){3}[a-z0-9]{12}~(?P<files_qty>\d+))!';
+
+  /**
    * Uploadcare cdn host
    *
    * @var string
@@ -16,6 +21,13 @@ class Group
    * @var string
    */
   private $group_id = null;
+
+  /**
+   * Total files in group
+   *
+   * @var int
+   */
+  private $files_qty = null;
 
   /**
    * Uploadcare class instance.
@@ -34,12 +46,19 @@ class Group
   /**
    * Constructs an object with specified ID
    *
-   * @param string $group_id_or_url Uploadcare group_id or CDN URL
-   * @param Uploadcare $api Uploadcare class instance
+   * @param string $uuid_or_url Uploadcare group_id or CDN URL
+   * @param Api $api Uploadcare class instance
+   * @throws \Exception
    */
-  public function __construct($group_id_or_url, Api $api)
+  public function __construct($uuid_or_url, Api $api)
   {
-    $this->group_id = pathinfo($group_id_or_url, PATHINFO_BASENAME);
+    $matches = array();
+    if (!preg_match($this->re_uuid, $uuid_or_url, $matches)) {
+      throw new \Exception('UUID not found');
+    }
+
+    $this->group_id = $matches['uuid'];
+    $this->files_qty = (int)$matches['files_qty'];
     $this->api = $api;
   }
 
@@ -69,6 +88,16 @@ class Group
   public function getGroupId()
   {
     return $this->group_id;
+  }
+
+  /**
+   * Return files_qty
+   *
+   * @return int
+   */
+  public function getFilesQty()
+  {
+    return $this->files_qty;
   }
 
   /**
