@@ -117,9 +117,8 @@ class File
   }
 
   /**
-   * Try to store file.
+   * Store file.
    *
-   * @param boolean $check_status Check upload status?
    * @return array
    */
   public function store()
