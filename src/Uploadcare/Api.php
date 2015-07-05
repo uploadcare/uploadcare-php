@@ -195,11 +195,11 @@ class Api
     }
     $ch_info = curl_getinfo($ch);
     if ($method == 'DELETE') {
-      if ($ch_info['http_code'] != 302) {
+      if ($ch_info['http_code'] != 302 && $ch_info['http_code'] != 200) {
         throw new \Exception('Request returned unexpected http code '.$ch_info['http_code'] . '. ' . curl_error($ch));
       }
     } else {
-      if (!(($ch_info['http_code'] >= 200)&&($ch_info['http_code'] < 300))) {
+      if (!(($ch_info['http_code'] > 200)&&($ch_info['http_code'] < 300))) {
         throw new \Exception('Request returned unexpected http code '.$ch_info['http_code'] . '. ' . curl_error($ch));
       }
     }
