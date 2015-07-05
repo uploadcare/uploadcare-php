@@ -90,7 +90,7 @@ class ApiTest extends PHPUnit_Framework_TestCase
       $api->request('HEAD', '/');
       $api->request('OPTIONS', '/');
     } catch (Exception $e) {
-      $this->fail('An unexpected exception thrown');
+      $this->fail('An unexpected exception thrown: ' . $e->getMessage());
     }
 
     // let's check we have a "resources"
@@ -174,7 +174,7 @@ class ApiTest extends PHPUnit_Framework_TestCase
       // $api->request('HEAD', '/files/');
       $api->request('OPTIONS', '/files/');
     } catch (Exception $e) {
-      $this->fail('An unexpected exception thrown: '.$e->getMessage());
+      $this->fail('An unexpected exception thrown: ' . $e->getMessage());
     }
 
     // let's check we have an array of raw file data

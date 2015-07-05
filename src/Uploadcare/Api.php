@@ -1,7 +1,7 @@
 <?php
 namespace Uploadcare;
 
-$uploadcare_version = '1.2.6';
+$uploadcare_version = '1.3.0';
 define('UPLOADCARE_LIB_VERSION', sprintf('%s/%s.%s', $uploadcare_version, PHP_MAJOR_VERSION, PHP_MINOR_VERSION));
 
 class Api
@@ -196,11 +196,11 @@ class Api
     $ch_info = curl_getinfo($ch);
     if ($method == 'DELETE') {
       if ($ch_info['http_code'] != 302 && $ch_info['http_code'] != 200) {
-        throw new \Exception('Request returned unexpected http code '.$ch_info['http_code'] . '. ' . curl_error($ch));
+        throw new \Exception('Request returned unexpected http code '. $ch_info['http_code'] . '. ' . curl_error($ch));
       }
     } else {
-      if (!(($ch_info['http_code'] > 200)&&($ch_info['http_code'] < 300))) {
-        throw new \Exception('Request returned unexpected http code '.$ch_info['http_code'] . '. ' . curl_error($ch));
+      if (!(($ch_info['http_code'] >= 200) && ($ch_info['http_code'] < 300))) {
+        throw new \Exception('Request returned unexpected http code '. $ch_info['http_code'] . '. ' . curl_error($ch));
       }
     }
     curl_close($ch);

@@ -14,7 +14,7 @@ class Widget
    * Uploadcare widget version
    * @var string
    */
-  private $version = '1.4.6';
+  private $version = '2.3.4';
 
   /**
    * Constructor
@@ -54,7 +54,7 @@ EOT;
     if (!$version) {
       $version = $this->version;
     }
-    return sprintf('https://ucarecdn.com/widget/%s/uploadcare/uploadcare-%s.min.js', $version, $version);
+    return sprintf('https://ucarecdn.com/widget/%s/uploadcare/uploadcare.full.min.js', $version);
   }
 
   /**

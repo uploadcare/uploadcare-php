@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.3.0
+- bump widget version to 2.3.4 (see [widget changelog][widget changelog])
+- **Important** backward incompatible changes in widget behavior introduced in 2.0.0, please read
+  [changelog entry](https://github.com/uploadcare/uploadcare-widget/blob/master/HISTORY.markdown#200-20022015)
+  carefully
+- allow CDN URLs in Group constructor
+
 ## 1.2.6
 - bump widget version to 1.4.6 (see [widget changelog][widget changelog])
 - fix Api->copyFile() when copying to custom storage
