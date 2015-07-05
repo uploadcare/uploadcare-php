@@ -133,11 +133,12 @@ class Api
   /**
    * Get group.
    *
-   * @param $group_id string Group ID.
+   * @param string $uuid_or_url Uploadcare group UUID or CDN URL
+   * @return Group
    */
-  public function getGroup($group_id)
+  public function getGroup($uuid_or_url)
   {
-    return new Group($group_id, $this);
+    return new Group($uuid_or_url, $this);
   }
 
   /**
@@ -347,11 +348,11 @@ class Api
   /**
    * Get object of File class by id
    *
-   * @param string $uuidd Uploadcare file id
+   * @param string $uuid_or_url Uploadcare file UUID or CDN URL
    * @return File
    */
-  public function getFile($uuid)
+  public function getFile($uuid_or_url)
   {
-    return new File($uuid, $this);
+    return new File($uuid_or_url, $this);
   }
 }

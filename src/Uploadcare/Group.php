@@ -20,7 +20,7 @@ class Group
    *
    * @var string
    */
-  private $group_id = null;
+  private $uuid = null;
 
   /**
    * Total files in group
@@ -57,7 +57,7 @@ class Group
       throw new \Exception('UUID not found');
     }
 
-    $this->group_id = $matches['uuid'];
+    $this->uuid = $matches['uuid'];
     $this->files_qty = (int)$matches['files_qty'];
     $this->api = $api;
   }
@@ -66,7 +66,7 @@ class Group
   {
     if ($name == 'data') {
       if (!$this->cached_data) {
-        $this->cached_data = (array)$this->api->__preparedRequest('group', 'GET', array('uuid' => $this->group_id));
+        $this->cached_data = (array)$this->api->__preparedRequest('group', 'GET', array('uuid' => $this->getUuid()));
       }
       return $this->cached_data;
     }
@@ -81,13 +81,24 @@ class Group
   }
 
   /**
+   * Get UUID
+   *
+   * @returns string
+   */
+  public function getUuid()
+  {
+    return $this->uuid;
+  }
+
+  /**
    * Return group_id for this file
    *
    * @return string
+   * @deprecated
    */
   public function getGroupId()
   {
-    return $this->group_id;
+    return $this->getUuid();
   }
 
   /**
@@ -130,7 +141,7 @@ class Group
     $result = array();
     foreach ($this->data['files'] as $file) {
       if ($file) {
-        $result[] = new File($file->uuid, $this->api);
+        $result[] = new File($file->getUuid(), $this->api);
       }
     }
     return $result;

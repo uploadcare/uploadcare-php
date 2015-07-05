@@ -378,4 +378,17 @@ class ApiTest extends PHPUnit_Framework_TestCase
     $this->assertEquals('preview/100x100/-/effect/grayscale/', $f->default_effects);
     $this->assertEquals('bill.jpg', $f->filename);
   }
+
+  public function testGroupConstructor()
+  {
+    $api = new Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
+
+    $g = $api->getGroup('cd334b26-c641-4393-bcce-b5041546430d~11');
+    $this->assertEquals('cd334b26-c641-4393-bcce-b5041546430d~11', $g->getUuid());
+    $this->assertEquals(11, $g->getFilesQty());
+
+    $g = $api->getGroup('http://www.ucarecdn.com/cd334b26-c641-4393-bcce-b5041546430d~11/');
+    $this->assertEquals('cd334b26-c641-4393-bcce-b5041546430d~11', $g->getUuid());
+    $this->assertEquals(11, $g->getFilesQty());
+  }
 }

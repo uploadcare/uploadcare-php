@@ -18,3 +18,4 @@ before_script:
   - php composer.phar install --dev
 
 script: phpunit
+sudo: false

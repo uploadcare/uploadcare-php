@@ -95,14 +95,14 @@ class File
   }
 
   /**
-   * Return uuid for this file
+   * Get UUID
    *
    * @deprecated
    * @return string
    */
   public function getFileId()
   {
-    return $this->uuid;
+    return $this->getUuid();
   }
 
   /**
