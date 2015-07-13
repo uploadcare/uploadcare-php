@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.3.1
+- fix Group->store()
+
 ## 1.3.0
 - **IMPORTANT:** backward incompatible changes in widget behavior introduced in 2.0.0, please read
   [changelog entry](https://github.com/uploadcare/uploadcare-widget/blob/master/HISTORY.markdown#200-20022015)

@@ -46,7 +46,7 @@ class Group
   /**
    * Constructs an object with specified ID
    *
-   * @param string $uuid_or_url Uploadcare group_id or CDN URL
+   * @param string $uuid_or_url Uploadcare group UUID or CDN URL
    * @param Api $api Uploadcare class instance
    * @throws \Exception
    */
@@ -91,7 +91,7 @@ class Group
   }
 
   /**
-   * Return group_id for this file
+   * Return group UUID for this file
    *
    * @return string
    * @deprecated
@@ -118,7 +118,7 @@ class Group
    */
   public function store()
   {
-    return $this->api->__preparedRequest('group_storage', 'POST', array('uuid' => $this->group_id));
+    return $this->api->__preparedRequest('group_storage', 'POST', array('uuid' => $this->getUuid()));
   }
 
   /**
