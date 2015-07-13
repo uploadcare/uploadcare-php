@@ -2,6 +2,7 @@
 
 ## 1.3.1
 - fix Group->store()
+- bump widget version to 2.3.5 (see [widget changelog][widget changelog])
 
 ## 1.3.0
 - **IMPORTANT:** backward incompatible changes in widget behavior introduced in 2.0.0, please read
