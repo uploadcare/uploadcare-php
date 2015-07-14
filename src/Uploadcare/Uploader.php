@@ -164,6 +164,32 @@ class Uploader
   }
 
   /**
+   * Create group from array of File objects
+   *
+   * @param array $files
+   * @return Group
+   */
+  public function createGroup($files)
+  {
+    $data = array(
+      'pub_key' => $this->api->getPublicKey(),
+    );
+    foreach ($files as $i => $file) {
+      $data["files[$i]"] = $file->getUuid();
+    }
+
+
+    $ch = $this->__initRequest('group');
+    $this->__setRequestType($ch);
+    $this->__setData($ch, $data);
+    $this->__setHeaders($ch);
+
+    $resp = $this->__runRequest($ch);
+    $group = $this->api->getGroup($resp->id);
+    return $group;
+  }
+
+  /**
    * Init upload request and return curl resource
    *
    * @param array $data

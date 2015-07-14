@@ -14,6 +14,7 @@ class ApiTest extends PHPUnit_Framework_TestCase
    * @return void
    */
   public function setUp() {
+    $this->api = new Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
   }
 
   /**
@@ -28,9 +29,8 @@ class ApiTest extends PHPUnit_Framework_TestCase
    */
   public function testChildObjectsValid()
   {
-    $api = new Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
-    $this->assertTrue(get_class($api->widget) == 'Uploadcare\Widget');
-    $this->assertTrue(get_class($api->uploader) == 'Uploadcare\Uploader');
+    $this->assertTrue(get_class($this->api->widget) == 'Uploadcare\Widget');
+    $this->assertTrue(get_class($this->api->uploader) == 'Uploadcare\Uploader');
   }
 
   /**
@@ -38,8 +38,7 @@ class ApiTest extends PHPUnit_Framework_TestCase
    */
   public function testPublicKeyValid()
   {
-    $api = new Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
-    $this->assertTrue($api->getPublicKey() == 'demopublickey', 'This is true');
+    $this->assertTrue($this->api->getPublicKey() == 'demopublickey', 'This is true');
   }
 
   /**
@@ -48,12 +47,11 @@ class ApiTest extends PHPUnit_Framework_TestCase
    */
   public function testFileList()
   {
-    $api = new Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
-    $files = $api->getFileList();
+    $files = $this->api->getFileList();
     $this->assertTrue(is_array($files));
     $this->assertEquals(20, count($files));
 
-    $files = $api->getFileList(1, 2);
+    $files = $this->api->getFileList(1, 2);
     $this->assertTrue(is_array($files));
     $this->assertEquals(2, count($files));
 
@@ -67,11 +65,10 @@ class ApiTest extends PHPUnit_Framework_TestCase
    */
   public function testFileListPaginationInfo()
   {
-    $api = new Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
-    $result = $api->getFilePaginationInfo();
+    $result = $this->api->getFilePaginationInfo();
     $this->assertEquals(20, $result['per_page']);
 
-    $result = $api->getFilePaginationInfo(2, 1);
+    $result = $this->api->getFilePaginationInfo(2, 1);
     $this->assertEquals(1, $result['per_page']);
     $this->assertEquals(2, $result['page']);
   }
@@ -81,14 +78,12 @@ class ApiTest extends PHPUnit_Framework_TestCase
    */
   public function testRequestsRaw()
   {
-    $api = new Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
-
     // this are request to https://api.uploadcare.com/ url.
     // no exceptions should be thrown
     try {
-      $result = $api->request('GET', '/');
-      $api->request('HEAD', '/');
-      $api->request('OPTIONS', '/');
+      $result = $this->api->request('GET', '/');
+      $this->api->request('HEAD', '/');
+      $this->api->request('OPTIONS', '/');
     } catch (Exception $e) {
       $this->fail('An unexpected exception thrown: ' . $e->getMessage());
     }
@@ -99,19 +94,19 @@ class ApiTest extends PHPUnit_Framework_TestCase
     // this are requests to https://api.uploadcare.com/ url.
     // But this requests are now allowed but this url and we must have an exception
     try {
-      $api->request('POST', '/');
+      $this->api->request('POST', '/');
       $this->fail('We must get an exception but everything worked fine!');
     } catch (Exception $e) {
     }
 
     try {
-      $api->request('PUT', '/');
+      $this->api->request('PUT', '/');
       $this->fail('We must get an exception but everything worked fine!');
     } catch (Exception $e) {
     }
 
     try {
-      $api->request('DELETE', '/');
+      $this->api->request('DELETE', '/');
       $this->fail('We must get an exception but everything worked fine!');
     } catch (Exception $e) {
     }
@@ -122,14 +117,12 @@ class ApiTest extends PHPUnit_Framework_TestCase
    */
   public function testRequestsProject()
   {
-    $api = new Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
-
     // this are request to https://api.uploadcare.com/project/ url.
     // no exceptions should be thrown
     try {
-      $result = $api->request('GET', '/project/');
-      $api->request('HEAD', '/project/');
-      $api->request('OPTIONS', '/project/');
+      $result = $this->api->request('GET', '/project/');
+      $this->api->request('HEAD', '/project/');
+      $this->api->request('OPTIONS', '/project/');
     } catch (Exception $e) {
       $this->fail('An unexpected exception thrown');
     }
@@ -142,19 +135,19 @@ class ApiTest extends PHPUnit_Framework_TestCase
     // this are requests to https://api.uploadcare.com/project/ url.
     // But this requests are now allowed but this url and we must have an exception
     try {
-      $api->request('POST', '/project/');
+      $this->api->request('POST', '/project/');
       $this->fail('We must get an exception but everything worked fine!');
     } catch (Exception $e) {
     }
 
     try {
-      $api->request('PUT', '/project/');
+      $this->api->request('PUT', '/project/');
       $this->fail('We must get an exception but everything worked fine!');
     } catch (Exception $e) {
     }
 
     try {
-      $api->request('DELETE', '/project/');
+      $this->api->request('DELETE', '/project/');
       $this->fail('We must get an exception but everything worked fine!');
     } catch (Exception $e) {
     }
@@ -165,14 +158,12 @@ class ApiTest extends PHPUnit_Framework_TestCase
    */
   public function testRequestsFiles()
   {
-    $api = new Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
-
     // this are request to https://api.uploadcare.com/files/ url.
     // no exceptions should be thrown
     try {
-      $result = $api->request('GET', '/files/');
-      // $api->request('HEAD', '/files/');
-      $api->request('OPTIONS', '/files/');
+      $result = $this->api->request('GET', '/files/');
+      // $this->api->request('HEAD', '/files/');
+      $this->api->request('OPTIONS', '/files/');
     } catch (Exception $e) {
       $this->fail('An unexpected exception thrown: ' . $e->getMessage());
     }
@@ -191,19 +182,19 @@ class ApiTest extends PHPUnit_Framework_TestCase
     // this are requests to https://api.uploadcare.com/files/ url.
     // But this requests are now allowed but this url and we must have an exception
     try {
-      $api->request('POST', '/files/');
+      $this->api->request('POST', '/files/');
       $this->fail('We must get an exception but everything worked fine!');
     } catch (Exception $e) {
     }
 
     try {
-      $api->request('PUT', '/files/');
+      $this->api->request('PUT', '/files/');
       $this->fail('We must get an exception but everything worked fine!');
     } catch (Exception $e) {
     }
 
     try {
-      $api->request('DELETE', '/files/');
+      $this->api->request('DELETE', '/files/');
       $this->fail('We must get an exception but everything worked fine!');
     } catch (Exception $e) {
     }
@@ -214,15 +205,13 @@ class ApiTest extends PHPUnit_Framework_TestCase
    */
   public function testFileFromJSON()
   {
-    $api = new Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
-
-    $result = $api->request('GET', '/files/');
+    $result = $this->api->request('GET', '/files/');
     $file_raw = (array)$result->results[0];
 
-    $file = new File($file_raw['uuid'], $api);
+    $file = new File($file_raw['uuid'], $this->api);
     $this->assertEquals($file_raw['uuid'], $file->data['uuid']);
 
-    $file = new File($file_raw['uuid'], $api, $file_raw);
+    $file = new File($file_raw['uuid'], $this->api, $file_raw);
     $this->assertEquals($file_raw['uuid'], $file->data['uuid']);
   }
 
@@ -231,8 +220,7 @@ class ApiTest extends PHPUnit_Framework_TestCase
    */
   public function testFile()
   {
-    $api = new Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
-    $file = $api->getFile('3c99da1d-ef05-4d79-81d8-d4f208d98beb');
+    $file = $this->api->getFile('3c99da1d-ef05-4d79-81d8-d4f208d98beb');
 
     $this->assertEquals(get_class($file), 'Uploadcare\File');
 
@@ -267,8 +255,8 @@ class ApiTest extends PHPUnit_Framework_TestCase
    */
   public function testCustomCDNHost()
   {
-    $api = new Api(UC_PUBLIC_KEY, UC_SECRET_KEY, null, 'example.com');
-    $file = $api->getFile('3c99da1d-ef05-4d79-81d8-d4f208d98beb');
+    $this->api = new Api(UC_PUBLIC_KEY, UC_SECRET_KEY, null, 'example.com');
+    $file = $this->api->getFile('3c99da1d-ef05-4d79-81d8-d4f208d98beb');
 
     $this->assertEquals(get_class($file), 'Uploadcare\File');
 
@@ -283,10 +271,8 @@ class ApiTest extends PHPUnit_Framework_TestCase
    */
   public function testUploadFromURL()
   {
-    $api = new Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
-
     try {
-      $file = $api->uploader->fromUrl('http://www.baysflowers.co.nz/Images/tangerine-delight.jpg');
+      $file = $this->api->uploader->fromUrl('http://www.baysflowers.co.nz/Images/tangerine-delight.jpg');
     } catch (Exception $e) {
       $this->fail('We get an unexpected exception trying to upload from url: '.$e->getMessage());
     }
@@ -315,10 +301,8 @@ class ApiTest extends PHPUnit_Framework_TestCase
    */
   public function testUploadFromPath()
   {
-    $api = new Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
-
     try {
-      $file = $api->uploader->fromPath(dirname(__FILE__).'/test.jpg');
+      $file = $this->api->uploader->fromPath(dirname(__FILE__).'/test.jpg');
     } catch (Exception $e) {
       $this->fail('We get an unexpected exception trying to upload from path: '.$e->getMessage());
     }
@@ -332,10 +316,9 @@ class ApiTest extends PHPUnit_Framework_TestCase
 
   public function testUploadFromResource()
   {
-    $api = new Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
     try {
       $fp = fopen(dirname(__FILE__).'/test.jpg', 'r');
-      $file = $api->uploader->fromResource($fp);
+      $file = $this->api->uploader->fromResource($fp);
     } catch (Exception $e) {
       $this->fail('We get an unexpected exception trying to upload from resource: '.$e->getMessage());
     }
@@ -348,10 +331,9 @@ class ApiTest extends PHPUnit_Framework_TestCase
 
   public function testUploadFromString()
   {
-    $api = new Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
     try {
       $content = "This is some text I want to upload";
-      $file = $api->uploader->fromContent($content, 'text/plain');
+      $file = $this->api->uploader->fromContent($content, 'text/plain');
     } catch (Exception $e) {
       $this->fail('We get an unexpected exception trying to upload from contents: '.$e->getMessage());
     }
@@ -368,12 +350,10 @@ class ApiTest extends PHPUnit_Framework_TestCase
 
   public function testFileConstructor()
   {
-    $api = new Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
-
-    $f = $api->getFile('3c99da1d-ef05-4d79-81d8-d4f208d98beb');
+    $f = $this->api->getFile('3c99da1d-ef05-4d79-81d8-d4f208d98beb');
     $this->assertEquals('3c99da1d-ef05-4d79-81d8-d4f208d98beb', $f->getUuid());
 
-    $f = $api->getFile('http://www.ucarecdn.com/3c99da1d-ef05-4d79-81d8-d4f208d98beb/-/preview/100x100/-/effect/grayscale/bill.jpg');
+    $f = $this->api->getFile('http://www.ucarecdn.com/3c99da1d-ef05-4d79-81d8-d4f208d98beb/-/preview/100x100/-/effect/grayscale/bill.jpg');
     $this->assertEquals('3c99da1d-ef05-4d79-81d8-d4f208d98beb', $f->getUuid());
     $this->assertEquals('preview/100x100/-/effect/grayscale/', $f->default_effects);
     $this->assertEquals('bill.jpg', $f->filename);
@@ -381,14 +361,29 @@ class ApiTest extends PHPUnit_Framework_TestCase
 
   public function testGroupConstructor()
   {
-    $api = new Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
-
-    $g = $api->getGroup('cd334b26-c641-4393-bcce-b5041546430d~11');
+    $g = $this->api->getGroup('cd334b26-c641-4393-bcce-b5041546430d~11');
     $this->assertEquals('cd334b26-c641-4393-bcce-b5041546430d~11', $g->getUuid());
     $this->assertEquals(11, $g->getFilesQty());
 
-    $g = $api->getGroup('http://www.ucarecdn.com/cd334b26-c641-4393-bcce-b5041546430d~11/');
+    $g = $this->api->getGroup('http://www.ucarecdn.com/cd334b26-c641-4393-bcce-b5041546430d~11/');
     $this->assertEquals('cd334b26-c641-4393-bcce-b5041546430d~11', $g->getUuid());
     $this->assertEquals(11, $g->getFilesQty());
+  }
+
+  public function testGroupApi()
+  {
+    $f1 = $this->api->uploader->fromContent('1', 'text/plain');
+    $f2 = $this->api->uploader->fromContent('2', 'text/plain');
+
+    $g = $this->api->uploader->createGroup(array($f1, $f2));
+
+    $uuid = $g->getUuid();
+    $this->assertEquals(2, $g->getFilesQty());
+    $this->assertNull($g->data['datetime_stored']);
+
+    $g->store();
+    $g->updateInfo();
+
+    $this->assertNotNull($g->data['datetime_stored']);
   }
 }

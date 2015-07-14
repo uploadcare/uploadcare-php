@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.3.2
+- add Uploader->createGroup()
+- add Group->updateInfo()
+- add Group API tests
+
 ## 1.3.1
 - fix Group->store()
 - bump widget version to 2.3.5 (see [widget changelog][widget changelog])

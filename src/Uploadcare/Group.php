@@ -62,11 +62,17 @@ class Group
     $this->api = $api;
   }
 
+  public function updateInfo()
+  {
+    $this->cached_data = (array)$this->api->__preparedRequest('group', 'GET', array('uuid' => $this->getUuid()));
+  }
+
+
   public function __get($name)
   {
     if ($name == 'data') {
       if (!$this->cached_data) {
-        $this->cached_data = (array)$this->api->__preparedRequest('group', 'GET', array('uuid' => $this->getUuid()));
+        $this->updateInfo();
       }
       return $this->cached_data;
     }
