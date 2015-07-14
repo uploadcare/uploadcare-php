@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.3.3
+- fix Group->getFiles()
+
 ## 1.3.2
 - add Uploader->createGroup()
 - add Group->updateInfo()

@@ -385,5 +385,7 @@ class ApiTest extends PHPUnit_Framework_TestCase
     $g->updateInfo();
 
     $this->assertNotNull($g->data['datetime_stored']);
+
+    $g->getFiles();
   }
 }

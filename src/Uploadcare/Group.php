@@ -147,7 +147,7 @@ class Group
     $result = array();
     foreach ($this->data['files'] as $file) {
       if ($file) {
-        $result[] = new File($file->getUuid(), $this->api);
+        $result[] = new File($file->uuid, $this->api);
       }
     }
     return $result;
