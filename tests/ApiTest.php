@@ -264,6 +264,10 @@ class ApiTest extends PHPUnit_Framework_TestCase
     $this->assertEquals($file->resize(400, 400)->getUrl(), 'http://example.com/3c99da1d-ef05-4d79-81d8-d4f208d98beb/-/resize/400x400/');
     $this->assertEquals($file->resize(400, false)->getUrl(), 'http://example.com/3c99da1d-ef05-4d79-81d8-d4f208d98beb/-/resize/400x/');
     $this->assertEquals($file->resize(false, 400)->getUrl(), 'http://example.com/3c99da1d-ef05-4d79-81d8-d4f208d98beb/-/resize/x400/');
+    
+    // Check user can use full-featured CDN host
+    $api->setCdnHost('https://user:pass@example.com:4433/path/');
+    $this->assertEquals($file->getUrl(), 'https://user:pass@example.com:4433/path/3c99da1d-ef05-4d79-81d8-d4f208d98beb/');
   }
 
   /**
