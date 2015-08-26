@@ -34,12 +34,12 @@ class Api
    */
   public $cdn_host = 'ucarecdn.com';
 
-	/**
-	 * Uploadcare CDN protorcol
-	 *
-	 * @var string
-	 */
-	public $cdn_protocol = 'https';
+  /**
+    * Uploadcare CDN protorcol
+    *
+    * @var string
+    */
+  public $cdn_protocol = 'https';
 
   /**
    * Widget instance.
