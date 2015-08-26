@@ -9,13 +9,6 @@ class Group
   private $re_uuid = '!/?(?P<uuid>[a-z0-9]{8}-(?:[a-z0-9]{4}-){3}[a-z0-9]{12}~(?P<files_qty>\d+))!';
 
   /**
-   * Uploadcare cdn host
-   *
-   * @var string
-   */
-  private $cdn_host = 'www.ucarecdn.com';
-
-  /**
    * Uploadcare group id
    *
    * @var string

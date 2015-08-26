@@ -32,7 +32,14 @@ class Api
    *
    * @var string
    */
-  public $cdn_host = 'www.ucarecdn.com';
+  public $cdn_host = 'ucarecdn.com';
+
+	/**
+	 * Uploadcare CDN protorcol
+	 *
+	 * @var string
+	 */
+	public $cdn_protocol = 'https';
 
   /**
    * Widget instance.
@@ -94,6 +101,11 @@ class Api
   public function getPublicKey()
   {
     return $this->public_key;
+  }
+
+  public function getCdnUri()
+  {
+    return $this->cdn_protocol . '://' . $this->cdn_host;
   }
 
   /**
