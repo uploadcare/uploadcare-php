@@ -260,10 +260,10 @@ class ApiTest extends PHPUnit_Framework_TestCase
 
     $this->assertEquals(get_class($file), 'Uploadcare\File');
 
-    $this->assertEquals($file->getUrl(), 'http://example.com/3c99da1d-ef05-4d79-81d8-d4f208d98beb/');
-    $this->assertEquals($file->resize(400, 400)->getUrl(), 'http://example.com/3c99da1d-ef05-4d79-81d8-d4f208d98beb/-/resize/400x400/');
-    $this->assertEquals($file->resize(400, false)->getUrl(), 'http://example.com/3c99da1d-ef05-4d79-81d8-d4f208d98beb/-/resize/400x/');
-    $this->assertEquals($file->resize(false, 400)->getUrl(), 'http://example.com/3c99da1d-ef05-4d79-81d8-d4f208d98beb/-/resize/x400/');
+    $this->assertEquals($file->getUrl(), 'https://example.com/3c99da1d-ef05-4d79-81d8-d4f208d98beb/');
+    $this->assertEquals($file->resize(400, 400)->getUrl(), 'https://example.com/3c99da1d-ef05-4d79-81d8-d4f208d98beb/-/resize/400x400/');
+    $this->assertEquals($file->resize(400, false)->getUrl(), 'https://example.com/3c99da1d-ef05-4d79-81d8-d4f208d98beb/-/resize/400x/');
+    $this->assertEquals($file->resize(false, 400)->getUrl(), 'https://example.com/3c99da1d-ef05-4d79-81d8-d4f208d98beb/-/resize/x400/');
   }
 
   /**
