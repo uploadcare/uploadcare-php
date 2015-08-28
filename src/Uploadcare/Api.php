@@ -75,9 +75,11 @@ class Api
    * @param string $public_key A public key given by Uploadcare.com
    * @param string $secret_key A private (secret) key given by Uploadcare.com
    * @param string $ua Custom User-Agent to report
+   * @param string $cdn_host CDN Host
+   * @param string $cdn_protocol CDN Protocol
    * @return void
    */
-  public function __construct($public_key, $secret_key, $ua = null, $cdn_host = null)
+  public function __construct($public_key, $secret_key, $ua = null, $cdn_host = null, $cdn_protocol = null)
   {
     $this->public_key = $public_key;
     $this->secret_key = $secret_key;
@@ -85,6 +87,9 @@ class Api
     $this->uploader = new Uploader($this);
     if($cdn_host) {
       $this->cdn_host = $cdn_host;
+    }
+    if($cdn_protocol) {
+      $this->cdn_protocol = $cdn_protocol;
     }
     if($ua) {
       $this->ua = $ua;
