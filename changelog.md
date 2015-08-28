@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.3.4
+- add Api->cdn_protocol
+- add Api->getCdnUri()
+- change default CDN protocol to HTTPS
+
 ## 1.3.3
 - fix Group->getFiles()
 
