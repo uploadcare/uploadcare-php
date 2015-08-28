@@ -8,3 +8,4 @@ Valentin Golev <me@va1en0k.net>
 Philip Harvey @pmh1
 Paul @paul-blundell
 Tommaso Rossi @kurtommy
+Dmitry Petrov <dimaninc@gmail.com>

@@ -1,3 +1,4 @@
 /vendor/
 composer.lock
 /sample-project/vendor/
+/.idea/

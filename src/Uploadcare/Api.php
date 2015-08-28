@@ -1,7 +1,7 @@
 <?php
 namespace Uploadcare;
 
-$uploadcare_version = '1.3.2';
+$uploadcare_version = '1.3.4';
 define('UPLOADCARE_LIB_VERSION', sprintf('%s/%s.%s', $uploadcare_version, PHP_MAJOR_VERSION, PHP_MINOR_VERSION));
 
 class Api
@@ -32,7 +32,14 @@ class Api
    *
    * @var string
    */
-  public $cdn_host = 'www.ucarecdn.com';
+  public $cdn_host = 'ucarecdn.com';
+
+  /**
+    * Uploadcare CDN protorcol
+    *
+    * @var string
+    */
+  public $cdn_protocol = 'https';
 
   /**
    * Widget instance.
@@ -68,9 +75,11 @@ class Api
    * @param string $public_key A public key given by Uploadcare.com
    * @param string $secret_key A private (secret) key given by Uploadcare.com
    * @param string $ua Custom User-Agent to report
+   * @param string $cdn_host CDN Host
+   * @param string $cdn_protocol CDN Protocol
    * @return void
    */
-  public function __construct($public_key, $secret_key, $ua = null, $cdn_host = null)
+  public function __construct($public_key, $secret_key, $ua = null, $cdn_host = null, $cdn_protocol = null)
   {
     $this->public_key = $public_key;
     $this->secret_key = $secret_key;
@@ -78,6 +87,9 @@ class Api
     $this->uploader = new Uploader($this);
     if($cdn_host) {
       $this->cdn_host = $cdn_host;
+    }
+    if($cdn_protocol) {
+      $this->cdn_protocol = $cdn_protocol;
     }
     if($ua) {
       $this->ua = $ua;
@@ -94,6 +106,11 @@ class Api
   public function getPublicKey()
   {
     return $this->public_key;
+  }
+
+  public function getCdnUri()
+  {
+    return $this->cdn_protocol . '://' . $this->cdn_host;
   }
 
   /**

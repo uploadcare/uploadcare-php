@@ -54,7 +54,7 @@ EOT;
     if (!$version) {
       $version = $this->version;
     }
-    return sprintf('https://ucarecdn.com/widget/%s/uploadcare/uploadcare.full.min.js', $version);
+    return sprintf($this->api->getCdnUri() . '/widget/%s/uploadcare/uploadcare.full.min.js', $version);
   }
 
   /**

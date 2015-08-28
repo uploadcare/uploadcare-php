@@ -195,7 +195,7 @@ If you have a file's UUID or CDN URL (for example, it's saved in your database) 
 $uuid = '3c99da1d-ef05-4d79-81d8-d4f208d98beb';
 $file1 = $api->getFile($uuid);
 
-$cdnurl = 'http://www.ucarecdn.com/3c99da1d-ef05-4d79-81d8-d4f208d98beb/-/preview/100x100/-/effect/grayscale/bill.jpg';
+$cdnurl = 'https://ucarecdn.com/3c99da1d-ef05-4d79-81d8-d4f208d98beb/-/preview/100x100/-/effect/grayscale/bill.jpg';
 $file2 = $api->getFile($cdnurl);
 ```
 
@@ -335,7 +335,7 @@ echo $file->getUrl('image.jpg');
 
 The result will be like this one:
 
-    http://ucarecdn.com/85b5644f-e692-4855-9db0-8c5a83096e25/-/crop/970x500/center/he.jpg
+    https://ucarecdn.com/85b5644f-e692-4855-9db0-8c5a83096e25/-/crop/970x500/center/he.jpg
 
 [More information on file operations can be found here][2]
 
@@ -353,7 +353,7 @@ invert effect will be already applied to it.
 You can also copy file like this:
 
 ```php
-$new_file = $api->copyFile('http://www.ucarecdn.com/3ace4d6d-6ff8-4b2e-9c37-9d1cd0559527/-/resize/200x200/');
+$new_file = $api->copyFile('https://ucarecdn.com/3ace4d6d-6ff8-4b2e-9c37-9d1cd0559527/-/resize/200x200/');
 ```
 
 Sometimes storing the file in Uploadcare storage is not needed,

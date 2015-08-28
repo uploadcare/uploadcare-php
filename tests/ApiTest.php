@@ -224,30 +224,30 @@ class ApiTest extends PHPUnit_Framework_TestCase
 
     $this->assertEquals(get_class($file), 'Uploadcare\File');
 
-    $this->assertEquals($file->getUrl(), 'http://www.ucarecdn.com/3c99da1d-ef05-4d79-81d8-d4f208d98beb/');
-    $this->assertEquals($file->resize(400, 400)->getUrl(), 'http://www.ucarecdn.com/3c99da1d-ef05-4d79-81d8-d4f208d98beb/-/resize/400x400/');
-    $this->assertEquals($file->resize(400, false)->getUrl(), 'http://www.ucarecdn.com/3c99da1d-ef05-4d79-81d8-d4f208d98beb/-/resize/400x/');
-    $this->assertEquals($file->resize(false, 400)->getUrl(), 'http://www.ucarecdn.com/3c99da1d-ef05-4d79-81d8-d4f208d98beb/-/resize/x400/');
+    $this->assertEquals($file->getUrl(), 'https://ucarecdn.com/3c99da1d-ef05-4d79-81d8-d4f208d98beb/');
+    $this->assertEquals($file->resize(400, 400)->getUrl(), 'https://ucarecdn.com/3c99da1d-ef05-4d79-81d8-d4f208d98beb/-/resize/400x400/');
+    $this->assertEquals($file->resize(400, false)->getUrl(), 'https://ucarecdn.com/3c99da1d-ef05-4d79-81d8-d4f208d98beb/-/resize/400x/');
+    $this->assertEquals($file->resize(false, 400)->getUrl(), 'https://ucarecdn.com/3c99da1d-ef05-4d79-81d8-d4f208d98beb/-/resize/x400/');
 
-    $this->assertEquals($file->crop(400, 400)->getUrl(), 'http://www.ucarecdn.com/3c99da1d-ef05-4d79-81d8-d4f208d98beb/-/crop/400x400/');
-    $this->assertEquals($file->crop(400, 400, true)->getUrl(), 'http://www.ucarecdn.com/3c99da1d-ef05-4d79-81d8-d4f208d98beb/-/crop/400x400/center/');
-    $this->assertEquals($file->crop(400, 400, true, 'ff0000')->getUrl(), 'http://www.ucarecdn.com/3c99da1d-ef05-4d79-81d8-d4f208d98beb/-/crop/400x400/center/ff0000/');
-    $this->assertEquals($file->crop(400, 400, false, 'ff0000')->getUrl(), 'http://www.ucarecdn.com/3c99da1d-ef05-4d79-81d8-d4f208d98beb/-/crop/400x400/ff0000/');
+    $this->assertEquals($file->crop(400, 400)->getUrl(), 'https://ucarecdn.com/3c99da1d-ef05-4d79-81d8-d4f208d98beb/-/crop/400x400/');
+    $this->assertEquals($file->crop(400, 400, true)->getUrl(), 'https://ucarecdn.com/3c99da1d-ef05-4d79-81d8-d4f208d98beb/-/crop/400x400/center/');
+    $this->assertEquals($file->crop(400, 400, true, 'ff0000')->getUrl(), 'https://ucarecdn.com/3c99da1d-ef05-4d79-81d8-d4f208d98beb/-/crop/400x400/center/ff0000/');
+    $this->assertEquals($file->crop(400, 400, false, 'ff0000')->getUrl(), 'https://ucarecdn.com/3c99da1d-ef05-4d79-81d8-d4f208d98beb/-/crop/400x400/ff0000/');
 
-    $this->assertEquals($file->scaleCrop(400, 400)->getUrl(), 'http://www.ucarecdn.com/3c99da1d-ef05-4d79-81d8-d4f208d98beb/-/scale_crop/400x400/');
-    $this->assertEquals($file->scaleCrop(400, 400, true)->getUrl(), 'http://www.ucarecdn.com/3c99da1d-ef05-4d79-81d8-d4f208d98beb/-/scale_crop/400x400/center/');
+    $this->assertEquals($file->scaleCrop(400, 400)->getUrl(), 'https://ucarecdn.com/3c99da1d-ef05-4d79-81d8-d4f208d98beb/-/scale_crop/400x400/');
+    $this->assertEquals($file->scaleCrop(400, 400, true)->getUrl(), 'https://ucarecdn.com/3c99da1d-ef05-4d79-81d8-d4f208d98beb/-/scale_crop/400x400/center/');
 
-    $this->assertEquals($file->effect('flip')->getUrl(), 'http://www.ucarecdn.com/3c99da1d-ef05-4d79-81d8-d4f208d98beb/-/effect/flip/');
-    $this->assertEquals($file->effect('grayscale')->getUrl(), 'http://www.ucarecdn.com/3c99da1d-ef05-4d79-81d8-d4f208d98beb/-/effect/grayscale/');
-    $this->assertEquals($file->effect('invert')->getUrl(), 'http://www.ucarecdn.com/3c99da1d-ef05-4d79-81d8-d4f208d98beb/-/effect/invert/');
-    $this->assertEquals($file->effect('mirror')->getUrl(), 'http://www.ucarecdn.com/3c99da1d-ef05-4d79-81d8-d4f208d98beb/-/effect/mirror/');
+    $this->assertEquals($file->effect('flip')->getUrl(), 'https://ucarecdn.com/3c99da1d-ef05-4d79-81d8-d4f208d98beb/-/effect/flip/');
+    $this->assertEquals($file->effect('grayscale')->getUrl(), 'https://ucarecdn.com/3c99da1d-ef05-4d79-81d8-d4f208d98beb/-/effect/grayscale/');
+    $this->assertEquals($file->effect('invert')->getUrl(), 'https://ucarecdn.com/3c99da1d-ef05-4d79-81d8-d4f208d98beb/-/effect/invert/');
+    $this->assertEquals($file->effect('mirror')->getUrl(), 'https://ucarecdn.com/3c99da1d-ef05-4d79-81d8-d4f208d98beb/-/effect/mirror/');
 
-    $this->assertEquals($file->effect('flip')->effect('mirror')->getUrl(), 'http://www.ucarecdn.com/3c99da1d-ef05-4d79-81d8-d4f208d98beb/-/effect/flip/-/effect/mirror/');
-    $this->assertEquals($file->effect('mirror')->effect('flip')->getUrl(), 'http://www.ucarecdn.com/3c99da1d-ef05-4d79-81d8-d4f208d98beb/-/effect/mirror/-/effect/flip/');
+    $this->assertEquals($file->effect('flip')->effect('mirror')->getUrl(), 'https://ucarecdn.com/3c99da1d-ef05-4d79-81d8-d4f208d98beb/-/effect/flip/-/effect/mirror/');
+    $this->assertEquals($file->effect('mirror')->effect('flip')->getUrl(), 'https://ucarecdn.com/3c99da1d-ef05-4d79-81d8-d4f208d98beb/-/effect/mirror/-/effect/flip/');
 
-    $this->assertEquals($file->resize(400, 400)->scaleCrop(200, 200, true)->effect('mirror')->getUrl(), 'http://www.ucarecdn.com/3c99da1d-ef05-4d79-81d8-d4f208d98beb/-/resize/400x400/-/scale_crop/200x200/center/-/effect/mirror/');
+    $this->assertEquals($file->resize(400, 400)->scaleCrop(200, 200, true)->effect('mirror')->getUrl(), 'https://ucarecdn.com/3c99da1d-ef05-4d79-81d8-d4f208d98beb/-/resize/400x400/-/scale_crop/200x200/center/-/effect/mirror/');
 
-    $this->assertEquals($file->preview(400, 400)->getUrl(), 'http://www.ucarecdn.com/3c99da1d-ef05-4d79-81d8-d4f208d98beb/-/preview/400x400/');
+    $this->assertEquals($file->preview(400, 400)->getUrl(), 'https://ucarecdn.com/3c99da1d-ef05-4d79-81d8-d4f208d98beb/-/preview/400x400/');
   }
 
   /**
@@ -260,10 +260,10 @@ class ApiTest extends PHPUnit_Framework_TestCase
 
     $this->assertEquals(get_class($file), 'Uploadcare\File');
 
-    $this->assertEquals($file->getUrl(), 'http://example.com/3c99da1d-ef05-4d79-81d8-d4f208d98beb/');
-    $this->assertEquals($file->resize(400, 400)->getUrl(), 'http://example.com/3c99da1d-ef05-4d79-81d8-d4f208d98beb/-/resize/400x400/');
-    $this->assertEquals($file->resize(400, false)->getUrl(), 'http://example.com/3c99da1d-ef05-4d79-81d8-d4f208d98beb/-/resize/400x/');
-    $this->assertEquals($file->resize(false, 400)->getUrl(), 'http://example.com/3c99da1d-ef05-4d79-81d8-d4f208d98beb/-/resize/x400/');
+    $this->assertEquals($file->getUrl(), 'https://example.com/3c99da1d-ef05-4d79-81d8-d4f208d98beb/');
+    $this->assertEquals($file->resize(400, 400)->getUrl(), 'https://example.com/3c99da1d-ef05-4d79-81d8-d4f208d98beb/-/resize/400x400/');
+    $this->assertEquals($file->resize(400, false)->getUrl(), 'https://example.com/3c99da1d-ef05-4d79-81d8-d4f208d98beb/-/resize/400x/');
+    $this->assertEquals($file->resize(false, 400)->getUrl(), 'https://example.com/3c99da1d-ef05-4d79-81d8-d4f208d98beb/-/resize/x400/');
   }
 
   /**
@@ -353,7 +353,7 @@ class ApiTest extends PHPUnit_Framework_TestCase
     $f = $this->api->getFile('3c99da1d-ef05-4d79-81d8-d4f208d98beb');
     $this->assertEquals('3c99da1d-ef05-4d79-81d8-d4f208d98beb', $f->getUuid());
 
-    $f = $this->api->getFile('http://www.ucarecdn.com/3c99da1d-ef05-4d79-81d8-d4f208d98beb/-/preview/100x100/-/effect/grayscale/bill.jpg');
+    $f = $this->api->getFile('https://ucarecdn.com/3c99da1d-ef05-4d79-81d8-d4f208d98beb/-/preview/100x100/-/effect/grayscale/bill.jpg');
     $this->assertEquals('3c99da1d-ef05-4d79-81d8-d4f208d98beb', $f->getUuid());
     $this->assertEquals('preview/100x100/-/effect/grayscale/', $f->default_effects);
     $this->assertEquals('bill.jpg', $f->filename);
@@ -365,7 +365,7 @@ class ApiTest extends PHPUnit_Framework_TestCase
     $this->assertEquals('cd334b26-c641-4393-bcce-b5041546430d~11', $g->getUuid());
     $this->assertEquals(11, $g->getFilesQty());
 
-    $g = $this->api->getGroup('http://www.ucarecdn.com/cd334b26-c641-4393-bcce-b5041546430d~11/');
+    $g = $this->api->getGroup('https://ucarecdn.com/cd334b26-c641-4393-bcce-b5041546430d~11/');
     $this->assertEquals('cd334b26-c641-4393-bcce-b5041546430d~11', $g->getUuid());
     $this->assertEquals(11, $g->getFilesQty());
   }
