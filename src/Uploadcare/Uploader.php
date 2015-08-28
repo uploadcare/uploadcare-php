@@ -37,7 +37,7 @@ class Uploader
     $data = array(
         'token' => $token,
     );
-    $ch = $this->__initRequest('status', $data);
+    $ch = $this->__initRequest('from_url/status', $data);
     $this->__setHeaders($ch);
     $data = $this->__runRequest($ch);
     return $data;
