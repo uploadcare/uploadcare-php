@@ -313,7 +313,7 @@ class Api
    */
   private function __setRequestType($ch, $type = 'GET')
   {
-	$this->current_method = strtoupper($type);
+    $this->current_method = strtoupper($type);
 
     switch ($type) {
       case 'GET':
