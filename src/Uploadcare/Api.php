@@ -28,6 +28,13 @@ class Api
   private $api_host = 'api.uploadcare.com';
 
   /**
+   * Current request method
+   *
+   * @var string
+   */
+  private $current_method = null;
+
+  /**
    * Uploadcare CDN host
    *
    * @var string
@@ -35,7 +42,7 @@ class Api
   public $cdn_host = 'ucarecdn.com';
 
   /**
-    * Uploadcare CDN protorcol
+    * Uploadcare CDN protocol
     *
     * @var string
     */
@@ -91,11 +98,7 @@ class Api
     if($cdn_protocol) {
       $this->cdn_protocol = $cdn_protocol;
     }
-    if($ua) {
-      $this->ua = $ua;
-    } else {
-      $this->ua = 'PHP Uploadcare Module ' . $this->version;
-    }
+    $this->ua = $ua ?: 'PHP Uploadcare Module ' . $this->version;
   }
 
   /**
@@ -198,7 +201,7 @@ class Api
    * @param string $method Request method: GET, POST, HEAD, OPTIONS, PUT, etc
    * @param string $path Path to request
    * @param string $data Array of data to send.
-   * @param string $headers Additonal headers.
+   * @param string $headers Additional headers.
    * @return array
    */
   public function request($method, $path, $data = array(), $headers = array())
@@ -237,7 +240,7 @@ class Api
    * @param string $request_type Request type. Options: get, post, put, delete.
    * @param array $params Additional parameters for requests as array.
    * @param array $data Data will be posted like json.
-   * @throws Exception
+   * @throws \Exception
    * @return array
    */
   public function __preparedRequest($type, $request_type = 'GET', $params = array(), $data = array())
@@ -252,7 +255,7 @@ class Api
    *
    * @param string $type Construct type.
    * @param array $params Additional parameters for requests as array.
-   * @throws Exception
+   * @throws \Exception
    * @return string
    */
   private function __getPath($type, $params = array())
@@ -305,11 +308,13 @@ class Api
    *
    * @param resource $ch. Curl resource.
    * @param string $type Request type. Options: get, post, put, delete.
-   * @throws Exception
+   * @throws \Exception
    * @return void
    */
   private function __setRequestType($ch, $type = 'GET')
   {
+    $this->current_method = strtoupper($type);
+
     switch ($type) {
       case 'GET':
         break;
@@ -340,6 +345,7 @@ class Api
    * @param resource $ch. Curl resource.
    * @param array $headers additional headers.
    * @param array $data Data array.
+   * @throws \Exception
    * @return void
    */
   private function __setHeaders($ch, $add_headers = array(), $data = array())
@@ -349,15 +355,49 @@ class Api
       $content_length = strlen(json_encode($data));
       curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
     }
+
+    // path
+    $url = curl_getinfo($ch, CURLINFO_EFFECTIVE_URL);
+    $url_parts = parse_url($url);
+
+    if ($url_parts === false) {
+      throw new \Exception('Incorrect URL ' . $url);
+    }
+
+    $path = $url_parts['path'] . (!empty($url_parts['query']) ? '?' . $url_parts['query'] : '');
+
+    // content
+    $content_type = 'application/json';
+    $content = $data ? json_encode($data) : '';
+    $content_md5 = md5(utf8_encode($content));
+
+    // date
+    $date = gmdate('D, d M Y H:i:s \G\M\T');
+
+    // sign string
+    $sign_string = join("\n", array(
+      $this->current_method,
+      $content_md5,
+      $content_type,
+      $date,
+      $path,
+    ));
+    $sign_string_as_bytes = utf8_encode($sign_string);
+
+    $secret_as_bytes = utf8_encode($this->secret_key);
+
+    $sign = hash_hmac('sha1', $sign_string_as_bytes, $secret_as_bytes);
+
     $headers = array(
-        sprintf('Host: %s', $this->api_host),
-        sprintf('Authorization: Uploadcare.Simple %s:%s', $this->public_key, $this->secret_key),
-        'Content-Type: application/json',
-        'Content-Length: ' . $content_length,
-        'User-Agent: ' . $this->ua,
-        'Accept: application/vnd.uploadcare-v' . $this->api_version . '+json',
-        sprintf('Date: %s', date('Y-m-d H:i:s')),
+      sprintf('Host: %s', $this->api_host),
+      sprintf('Authorization: Uploadcare %s:%s', $this->public_key, $sign),
+      sprintf('Date: %s', $date),
+      sprintf('Content-Type: %s', $content_type),
+      sprintf('Content-Length: %d', $content_length),
+      sprintf('Accept: application/vnd.uploadcare-v%s+json', $this->api_version),
+      sprintf('User-Agent: %s', $this->ua),
     ) + $add_headers;
+
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
   }
