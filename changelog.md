@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.4.0
+- use proper authentication instead of simple
+- bump widget version to 2.5.0 (see [widget changelog][widget changelog])
+
 ## 1.3.4
 - add Api->cdn_protocol
 - add Api->getCdnUri()
