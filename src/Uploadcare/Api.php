@@ -139,7 +139,7 @@ class Api
    * @param $from string
    * @return array
    */
-  public function getGroupList($from = null)
+  public function getGroupList($from)
   {
     $data = $this->__preparedRequest('group_list', 'GET', array('from' => $from));
     $groups = (array)$data->results;
@@ -215,15 +215,25 @@ class Api
       throw new \Exception(curl_error($ch));
     }
     $ch_info = curl_getinfo($ch);
+
+    $error = false;
+
     if ($method == 'DELETE') {
       if ($ch_info['http_code'] != 302 && $ch_info['http_code'] != 200) {
-        throw new \Exception('Request returned unexpected http code '. $ch_info['http_code'] . '. ' . curl_error($ch));
+        $error = true;
       }
     } else {
       if (!(($ch_info['http_code'] >= 200) && ($ch_info['http_code'] < 300))) {
-        throw new \Exception('Request returned unexpected http code '. $ch_info['http_code'] . '. ' . curl_error($ch));
+        $error = true;
       }
     }
+
+    if ($error) {
+      $errorInfo = array_filter(array(curl_error($ch), $data));
+
+      throw new \Exception('Request returned unexpected http code '. $ch_info['http_code'] . '. ' . join(', ', $errorInfo));
+    }
+
     curl_close($ch);
     if (!defined('PHPUNIT_UPLOADCARE_TESTSUITE') && ($this->public_key == 'demopublickey' || $this->secret_key == 'demoprivatekey')) {
       trigger_error('You are using the demo account. Please get an Uploadcare account at https://uploadcare.com/accounts/create/', E_USER_WARNING);

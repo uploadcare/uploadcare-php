@@ -60,7 +60,6 @@ class Group
     $this->cached_data = (array)$this->api->__preparedRequest('group', 'GET', array('uuid' => $this->getUuid()));
   }
 
-
   public function __get($name)
   {
     if ($name == 'data') {
@@ -69,6 +68,8 @@ class Group
       }
       return $this->cached_data;
     }
+
+    return null;
   }
 
   /**
@@ -140,7 +141,7 @@ class Group
     $result = array();
     foreach ($this->data['files'] as $file) {
       if ($file) {
-        $result[] = new File($file->uuid, $this->api);
+        $result[] = new File($file->uuid, $this->api, $file);
       }
     }
     return $result;
