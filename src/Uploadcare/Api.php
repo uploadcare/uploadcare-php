@@ -141,7 +141,11 @@ class Api
    */
   public function getGroupList($from = null)
   {
-    $data = $this->__preparedRequest('group_list', 'GET', array('from' => $from));
+    $params = array();
+    if ($from !== null) {
+      $params['from'] = $from;
+    }
+    $data = $this->__preparedRequest('group_list', 'GET', $params);
     $groups = (array)$data->results;
     $result = array();
     foreach ($groups as $group) {
@@ -215,15 +219,25 @@ class Api
       throw new \Exception(curl_error($ch));
     }
     $ch_info = curl_getinfo($ch);
+
+    $error = false;
+
     if ($method == 'DELETE') {
       if ($ch_info['http_code'] != 302 && $ch_info['http_code'] != 200) {
-        throw new \Exception('Request returned unexpected http code '. $ch_info['http_code'] . '. ' . curl_error($ch));
+        $error = true;
       }
     } else {
       if (!(($ch_info['http_code'] >= 200) && ($ch_info['http_code'] < 300))) {
-        throw new \Exception('Request returned unexpected http code '. $ch_info['http_code'] . '. ' . curl_error($ch));
+        $error = true;
       }
     }
+
+    if ($error) {
+      $errorInfo = array_filter(array(curl_error($ch), $data));
+
+      throw new \Exception('Request returned unexpected http code '. $ch_info['http_code'] . '. ' . join(', ', $errorInfo));
+    }
+
     curl_close($ch);
     if (!defined('PHPUNIT_UPLOADCARE_TESTSUITE') && ($this->public_key == 'demopublickey' || $this->secret_key == 'demoprivatekey')) {
       trigger_error('You are using the demo account. Please get an Uploadcare account at https://uploadcare.com/accounts/create/', E_USER_WARNING);
@@ -286,7 +300,14 @@ class Api
         }
         return sprintf('/files/%s/', $params['uuid']);
       case 'group_list':
-        return sprintf('/groups/?from=%s', $params['from']);
+        $allowedParams = array('from');
+        $queryAr = array();
+        foreach ($allowedParams as $paramName) {
+          if (isset($params[$paramName])) {
+            $queryAr[] = sprintf('%s=%s', $paramName, $params[$paramName]);
+          }
+        }
+        return '/groups/' . ($queryAr ? '?' . join('&', $queryAr) : '');
       case 'group':
         if (array_key_exists('uuid', $params) == false) {
           throw new \Exception('Please provide "uuid" param for request');

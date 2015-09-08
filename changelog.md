@@ -3,6 +3,7 @@
 ## 1.4.0
 - use proper authentication instead of simple
 - bump widget version to 2.5.0 (see [widget changelog][widget changelog])
+- change logic of Api->getGroupList() and Api->__getPath()
 
 ## 1.3.4
 - add Api->cdn_protocol
