@@ -74,7 +74,7 @@ class Api
    *
    * @var string
    */
-  public $api_version = '0.3';
+  public $api_version = '0.4';
 
   /**
    * Constructor
@@ -119,12 +119,18 @@ class Api
   /**
    * Return an array of File objects to work with.
    *
-   * @param integer $page Page to be shown.
+   * @param string $from
+   * @param string $to
+   * @param integer $limit
    * @return array
    */
-  public function getFileList($page = 1, $limit = 20)
+  public function getFileList($from = null, $to = null, $limit = null)
   {
-    $data = $this->__preparedRequest('file_list', 'GET', array('page' => $page, 'limit' => $limit));
+    $data = $this->__preparedRequest('file_list', 'GET', array(
+      'limit' => $limit,
+      'from' => $from,
+      'to' => $to,
+    ));
     $files_raw = (array)$data->results;
     $result = array();
     foreach ($files_raw as $file_raw) {
@@ -168,12 +174,18 @@ class Api
   /**
    * Get info about pagination.
    *
-   * @param integer $page
+   * @param string $from
+   * @param string $to
+   * @param integer $limit
    * @return array
    */
-  public function getFilePaginationInfo($page = 1, $limit = 20)
+  public function getFilePaginationInfo($from = null, $to = null, $limit = null)
   {
-    $data = (array)$this->__preparedRequest('file_list', 'GET', array('page' => $page, 'limit' => $limit));
+    $data = (array)$this->__preparedRequest('file_list', 'GET', array(
+      'limit' => $limit,
+      'from' => $from,
+      'to' => $to,
+    ));
     unset($data['results']);
     return $data;
   }
@@ -280,13 +292,14 @@ class Api
       case 'account':
         return '/account/';
       case 'file_list':
-        if (array_key_exists('page', $params) == false) {
-          $params['page'] = 1;
+        if (!empty($params['from']) && !empty($params['to'])) {
+          throw new \Exception('Only one of "from" and "to" arguments is allowed');
         }
-        if (array_key_exists('limit', $params) == false) {
-          $params['limit'] = 25;
-        }
-        return sprintf('/files/?page=%s&limit=%s', $params['page'], $params['limit']);
+        $params = array_filter($params);
+        array_walk($params, function(&$val, $key) {
+          $val = urlencode($key) . '=' . urlencode($val);
+        });
+        return '/files/?' . join('&', $params);
       case 'file_storage':
         if (array_key_exists('uuid', $params) == false) {
           throw new \Exception('Please provide "uuid" param for request');
