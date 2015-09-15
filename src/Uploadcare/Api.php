@@ -275,6 +275,16 @@ class Api
     return $this->request($request_type, $path, $data);
   }
 
+  private function __getQueryString($queryAr = array())
+  {
+    $queryAr = array_filter($queryAr);
+    array_walk($queryAr, function(&$val, $key) {
+      $val = urlencode($key) . '=' . urlencode($val);
+    });
+
+    return join('&', $queryAr);
+  }
+
   /**
    * Return path to send request to.
    * Throws Exception if wrong type is provided or parameters missing.
@@ -295,11 +305,7 @@ class Api
         if (!empty($params['from']) && !empty($params['to'])) {
           throw new \Exception('Only one of "from" and "to" arguments is allowed');
         }
-        $params = array_filter($params);
-        array_walk($params, function(&$val, $key) {
-          $val = urlencode($key) . '=' . urlencode($val);
-        });
-        return '/files/?' . join('&', $params);
+        return '/files/?' . $this->__getQueryString($params);
       case 'file_storage':
         if (array_key_exists('uuid', $params) == false) {
           throw new \Exception('Please provide "uuid" param for request');

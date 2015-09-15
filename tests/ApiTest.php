@@ -9,6 +9,9 @@ use Uploadcare\File;
 
 class ApiTest extends PHPUnit_Framework_TestCase
 {
+  /** @var Uploadcare\Api */
+  private $api;
+
   /**
    * Setup test
    * @return void
@@ -47,11 +50,11 @@ class ApiTest extends PHPUnit_Framework_TestCase
    */
   public function testFileList()
   {
-    $files = $this->api->getFileList();
+    $files = $this->api->getFileList(null, null, 20);
     $this->assertTrue(is_array($files));
     $this->assertEquals(20, count($files));
 
-    $files = $this->api->getFileList(1, 2);
+    $files = $this->api->getFileList(null, null, 2);
     $this->assertTrue(is_array($files));
     $this->assertEquals(2, count($files));
 
@@ -65,12 +68,11 @@ class ApiTest extends PHPUnit_Framework_TestCase
    */
   public function testFileListPaginationInfo()
   {
-    $result = $this->api->getFilePaginationInfo();
+    $result = $this->api->getFilePaginationInfo(null, null, 20);
     $this->assertEquals(20, $result['per_page']);
 
-    $result = $this->api->getFilePaginationInfo(2, 1);
+    $result = $this->api->getFilePaginationInfo(null, null, 1);
     $this->assertEquals(1, $result['per_page']);
-    $this->assertEquals(2, $result['page']);
   }
 
   /**
