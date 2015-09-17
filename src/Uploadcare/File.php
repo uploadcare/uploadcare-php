@@ -62,7 +62,7 @@ class File
     $this->filename = $matches['filename'];
     $this->api = $api;
     if ($data) {
-      $this->cached_data = (array)$data;
+      $this->cached_data = $data;
     }
   }
 

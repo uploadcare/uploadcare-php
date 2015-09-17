@@ -177,7 +177,7 @@ class Api
    * @param array $options
    * @return array
    */
-  public function getFilesPortion($options = array())
+  public function getFilesChunk($options = array())
   {
     $data = $this->__preparedRequest('file_list', 'GET', $options);
 
@@ -217,8 +217,8 @@ class Api
    *   - $options['from'] - a DateTime object or string from which objects will be iterated;
    *   - $options['to'] - a DateTime object or string to which objects will be iterated;
    *   - $options['limit'] - a total number of objects to be iterated;
-   *   - $options['request_limit'] - a number of objects to be downloaded per request.
    *     If not specified, all available objects are iterated;
+   *   - $options['request_limit'] - a number of objects to be downloaded per request.
    *   - $options['stored'] - True to include only stored files,
    *     False to exclude, Null is default, will not exclude anything;
    *   - $options['removed'] - True to include only removed files,

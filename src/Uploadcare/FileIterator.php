@@ -96,7 +96,7 @@ class FileIterator implements \Iterator,\Countable,\ArrayAccess
   public function valid()
   {
     if (!$this->exists() && !$this->isFullyLoaded()) {
-      $this->loadPortion();
+      $this->loadChunk();
     }
 
     return $this->exists();
@@ -112,9 +112,9 @@ class FileIterator implements \Iterator,\Countable,\ArrayAccess
     return $this->fullyLoaded || ($this->limit && count($this->container) >= $this->limit);
   }
 
-  private function loadPortion()
+  private function loadChunk()
   {
-    $portion = $this->api->getFilesPortion($this->options);
+    $portion = $this->api->getFilesChunk($this->options);
 
     $this->options = $portion['params'];
     if ($portion['files']) {
@@ -142,7 +142,7 @@ class FileIterator implements \Iterator,\Countable,\ArrayAccess
   public function offsetExists($offset)
   {
     while (!$this->exists($offset) && !$this->isFullyLoaded()) {
-      $this->loadPortion();
+      $this->loadChunk();
     }
 
     return $this->exists($offset);
