@@ -50,29 +50,27 @@ class ApiTest extends PHPUnit_Framework_TestCase
    */
   public function testFileList()
   {
-    $files = $this->api->getFileList(null, null, 20);
-    $this->assertTrue(is_array($files));
+    $files = $this->api->getFileList(array(
+      'limit' => 20,
+    ));
+    $this->assertFalse(is_array($files));
+    $this->assertTrue(is_object($files));
+    $this->assertTrue($files instanceof \Iterator);
+    $this->assertTrue($files instanceof Uploadcare\FileIterator);
     $this->assertEquals(20, count($files));
 
-    $files = $this->api->getFileList(null, null, 2);
-    $this->assertTrue(is_array($files));
+    $files = $this->api->getFileList(array(
+      'limit' => 2,
+    ));
+    $this->assertFalse(is_array($files));
+    $this->assertTrue(is_object($files));
+    $this->assertTrue($files instanceof \Iterator);
+    $this->assertTrue($files instanceof Uploadcare\FileIterator);
     $this->assertEquals(2, count($files));
 
     foreach ($files as $file) {
       $this->assertTrue(get_class($file) == 'Uploadcare\File');
     }
-  }
-
-  /**
-   * Test getFilePaginationInfo method
-   */
-  public function testFileListPaginationInfo()
-  {
-    $result = $this->api->getFilePaginationInfo(null, null, 20);
-    $this->assertEquals(20, $result['per_page']);
-
-    $result = $this->api->getFilePaginationInfo(null, null, 1);
-    $this->assertEquals(1, $result['per_page']);
   }
 
   /**

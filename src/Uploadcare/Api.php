@@ -77,6 +77,18 @@ class Api
   public $api_version = '0.4';
 
   /**
+   * Default values of filters
+   *
+   * @var array
+   */
+  private $defaultFilters = array(
+    'file' => array(
+      'stored' => null,
+      'removed' => false,
+    ),
+  );
+
+  /**
    * Constructor
    *
    * @param string $public_key A public key given by Uploadcare.com
@@ -102,7 +114,7 @@ class Api
   }
 
   /**
-   * Returns public key
+   * Return public key
    *
    * @return string
    */
@@ -111,32 +123,136 @@ class Api
     return $this->public_key;
   }
 
+  /**
+   * Return CDN URI
+   *
+   * @return string
+   */
   public function getCdnUri()
   {
     return $this->cdn_protocol . '://' . $this->cdn_host;
   }
 
   /**
-   * Return an array of File objects to work with.
+   * Convert datetime from string or \DateTime object to ATOM string
    *
-   * @param string $from
-   * @param string $to
-   * @param integer $limit
+   * @param string|\DateTime $datetime
+   * @return null|string
+   * @throws \Exception
+   */
+  public static function dateTimeString($datetime)
+  {
+    if ($datetime === null)
+    {
+      return null;
+    }
+
+    if (is_object($datetime) && !($datetime instanceof \DateTime))
+    {
+      throw new \Exception('Only \DateTime objects allowed');
+    }
+
+    if (is_string($datetime))
+    {
+      $datetime = new \DateTime($datetime);
+    }
+
+    return $datetime->format(\DateTime::ATOM);
+  }
+
+  /**
+   * Convert boolean to string
+   *
+   * @param $bool
+   * @return string
+   */
+  public static function booleanString($bool)
+  {
+    return $bool ? 'true' : 'false';
+  }
+
+  /**
+   * Get portion of files from server respecting filters
+   *
+   * @param array $options
    * @return array
    */
-  public function getFileList($from = null, $to = null, $limit = null)
+  public function getFilesPortion($options = array())
   {
-    $data = $this->__preparedRequest('file_list', 'GET', array(
-      'limit' => $limit,
-      'from' => $from,
-      'to' => $to,
-    ));
+    $data = $this->__preparedRequest('file_list', 'GET', $options);
+
     $files_raw = (array)$data->results;
     $result = array();
     foreach ($files_raw as $file_raw) {
       $result[] = new File($file_raw->uuid, $this, $file_raw);
     }
-    return $result;
+
+    parse_str(parse_url($data->next, PHP_URL_QUERY), $params);
+
+    return array(
+      'params' => $params,
+      'files' => $result,
+    );
+  }
+
+  /**
+   * Return count of files respecting filters
+   *
+   * @param array $options
+   * @return mixed
+   */
+  public function getFilesCount($options = array())
+  {
+    $options['limit'] = 1;
+
+    $data = $this->__preparedRequest('file_list', 'GET', $options);
+
+    return $data->total;
+  }
+
+  /**
+   * Return an iterator of File objects to work with.
+   *
+   * This class provides iteration over all uploaded files. You can specify:
+   *   - $options['from'] - a DateTime object or string from which objects will be iterated;
+   *   - $options['to'] - a DateTime object or string to which objects will be iterated;
+   *   - $options['limit'] - a total number of objects to be iterated;
+   *   - $options['request_limit'] - a number of objects to be downloaded per request.
+   *     If not specified, all available objects are iterated;
+   *   - $options['stored'] - True to include only stored files,
+   *     False to exclude, Null is default, will not exclude anything;
+   *   - $options['removed'] - True to include only removed files,
+   *     False to exclude, Null will not exclude anything.
+   *     The default is False.
+   *
+   * @param array $options
+   * @return array
+   */
+  public function getFileList($options = array())
+  {
+    $options = array_replace(array(
+      'from' => null,
+      'to' => null,
+      'limit' => null,
+      'request_limit' => null,
+      'stored' => $this->defaultFilters['file']['stored'],
+      'removed' => $this->defaultFilters['file']['removed'],
+    ), $options);
+
+    if (!empty($options['from']) && !empty($options['to'])) {
+      throw new \Exception('Only one of "from" and "to" arguments is allowed');
+    }
+
+    $options['from'] = self::dateTimeString($options['from']);
+    $options['to'] = self::dateTimeString($options['to']);
+
+    foreach ($this->defaultFilters['file'] as $k => $v) {
+      if (!is_null($options[$k])) {
+        $options[$k] = self::booleanString($options[$k]);
+      }
+    }
+
+    return new \Uploadcare\FileIterator($this, $options);
   }
 
   /**
@@ -169,25 +285,6 @@ class Api
   public function getGroup($uuid_or_url)
   {
     return new Group($uuid_or_url, $this);
-  }
-
-  /**
-   * Get info about pagination.
-   *
-   * @param string $from
-   * @param string $to
-   * @param integer $limit
-   * @return array
-   */
-  public function getFilePaginationInfo($from = null, $to = null, $limit = null)
-  {
-    $data = (array)$this->__preparedRequest('file_list', 'GET', array(
-      'limit' => $limit,
-      'from' => $from,
-      'to' => $to,
-    ));
-    unset($data['results']);
-    return $data;
   }
 
   /**
@@ -275,14 +372,21 @@ class Api
     return $this->request($request_type, $path, $data);
   }
 
-  private function __getQueryString($queryAr = array())
+  /**
+   * Convert query array to encoded query string.
+   *
+   * @param array $queryAr
+   * @param string $prefixIfNotEmpty
+   * @return string
+   */
+  private function __getQueryString($queryAr = array(), $prefixIfNotEmpty = '')
   {
     $queryAr = array_filter($queryAr);
     array_walk($queryAr, function(&$val, $key) {
       $val = urlencode($key) . '=' . urlencode($val);
     });
 
-    return join('&', $queryAr);
+    return $queryAr ? $prefixIfNotEmpty . join('&', $queryAr) : '';
   }
 
   /**
@@ -299,25 +403,28 @@ class Api
     switch ($type) {
       case 'root':
         return '/';
+
       case 'account':
         return '/account/';
+
       case 'file_list':
-        if (!empty($params['from']) && !empty($params['to'])) {
-          throw new \Exception('Only one of "from" and "to" arguments is allowed');
-        }
-        return '/files/?' . $this->__getQueryString($params);
+        return '/files/' . $this->__getQueryString($params, '?');
+
       case 'file_storage':
         if (array_key_exists('uuid', $params) == false) {
           throw new \Exception('Please provide "uuid" param for request');
         }
         return sprintf('/files/%s/storage/', $params['uuid']);
+
       case 'file_copy':
         return '/files/';
+
       case 'file':
         if (array_key_exists('uuid', $params) == false) {
           throw new \Exception('Please provide "uuid" param for request');
         }
         return sprintf('/files/%s/', $params['uuid']);
+
       case 'group_list':
         $allowedParams = array('from');
         $queryAr = array();
@@ -327,18 +434,21 @@ class Api
           }
         }
         return '/groups/' . ($queryAr ? '?' . join('&', $queryAr) : '');
+
       case 'group':
         if (array_key_exists('uuid', $params) == false) {
           throw new \Exception('Please provide "uuid" param for request');
         }
         return sprintf('/groups/%s/', $params['uuid']);
+
       case 'group_storage':
         if (array_key_exists('uuid', $params) == false) {
           throw new \Exception('Please provide "uuid" param for request');
         }
         return sprintf('/groups/%s/storage/', $params['uuid']);
+
       default:
-        throw new \Exception('No api url type is provided for request. Use store, or appropriate constants.');
+        throw new \Exception('No api url type is provided for request "' . $type . '". Use store, or appropriate constants.');
     }
   }
 
