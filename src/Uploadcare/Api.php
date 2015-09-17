@@ -42,10 +42,10 @@ class Api
   public $cdn_host = 'ucarecdn.com';
 
   /**
-    * Uploadcare CDN protocol
-    *
-    * @var string
-    */
+   * Uploadcare CDN protocol
+   *
+   * @var string
+   */
   public $cdn_protocol = 'https';
 
   /**
@@ -84,7 +84,6 @@ class Api
    * @param string $ua Custom User-Agent to report
    * @param string $cdn_host CDN Host
    * @param string $cdn_protocol CDN Protocol
-   * @return void
    */
   public function __construct($public_key, $secret_key, $ua = null, $cdn_host = null, $cdn_protocol = null)
   {
@@ -119,7 +118,8 @@ class Api
   /**
    * Return an array of File objects to work with.
    *
-   * @param integer $page Page to be shown.
+   * @param int $page Page to be shown.
+   * @param int $limit
    * @return array
    */
   public function getFileList($page = 1, $limit = 20)
@@ -168,7 +168,8 @@ class Api
   /**
    * Get info about pagination.
    *
-   * @param integer $page
+   * @param int $page
+   * @param int $limit
    * @return array
    */
   public function getFilePaginationInfo($page = 1, $limit = 20)
@@ -204,9 +205,10 @@ class Api
    *
    * @param string $method Request method: GET, POST, HEAD, OPTIONS, PUT, etc
    * @param string $path Path to request
-   * @param string $data Array of data to send.
-   * @param string $headers Additional headers.
-   * @return array
+   * @param array $data Array of data to send.
+   * @param array $headers Additional headers.
+   * @return object
+   * @throws \Exception
    */
   public function request($method, $path, $data = array(), $headers = array())
   {
@@ -255,7 +257,7 @@ class Api
    * @param array $params Additional parameters for requests as array.
    * @param array $data Data will be posted like json.
    * @throws \Exception
-   * @return array
+   * @return object
    */
   public function __preparedRequest($type, $request_type = 'GET', $params = array(), $data = array())
   {
@@ -364,7 +366,7 @@ class Api
    * Set all the headers for request and set returntrasfer.
    *
    * @param resource $ch. Curl resource.
-   * @param array $headers additional headers.
+   * @param array $add_headers additional headers.
    * @param array $data Data array.
    * @throws \Exception
    * @return void
