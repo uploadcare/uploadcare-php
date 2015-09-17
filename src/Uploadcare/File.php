@@ -24,7 +24,7 @@ class File
    * Uploadcare class instance.
    *
    * @var Api
-  */
+   */
   private $api = null;
 
   /**
@@ -47,8 +47,9 @@ class File
    * Constructs an object for CDN file with specified ID
    *
    * @param string $uuid_or_url Uploadcare file UUID or CDN URL
-   * @param Uploadcare $api Uploadcare class instance
-   * @param boolean|array $data prepopulate this->cached_data
+   * @param Api $api Uploadcare class instance
+   * @param boolean|array|object $data prepopulate this->cached_data
+   * @throws \Exception
    */
   public function __construct($uuid_or_url, Api $api, $data = false)
   {
@@ -62,10 +63,14 @@ class File
     $this->filename = $matches['filename'];
     $this->api = $api;
     if ($data) {
-      $this->cached_data = $data;
+      $this->cached_data = (array)$data;
     }
   }
 
+  /**
+   * @param $name
+   * @return array|null
+   */
   public function __get($name)
   {
     if ($name == 'data') {
@@ -74,6 +79,7 @@ class File
       }
       return $this->cached_data;
     }
+    return null;
   }
 
   /**
@@ -181,25 +187,31 @@ class File
       foreach (array_keys($operation_item) as $operation_type) {
         $operation_params = $operation_item[$operation_type];
         $part[] = $operation_type;
+
         switch ($operation_type) {
           case 'crop':
             $part = $this->__addPartSize($part, $operation_params);
             $part = $this->__addPartCenter($part, $operation_params);
             $part = $this->__addPartFillColor($part, $operation_params);
             break;
+
           case 'resize':
             $part = $this->__addPartSize($part, $operation_params);
             break;
+
           case 'scale_crop':
             $part = $this->__addPartSize($part, $operation_params);
             $part = $this->__addPartCenter($part, $operation_params);
             break;
+
           case 'effect':
             $part = $this->__addPartEffect($part, $operation_params);
             break;
+
           case 'preview':
             $part = $this->__addPartSize($part, $operation_params);
             break;
+
           case 'custom':
             $part = array($operation_params);
             break;
@@ -221,7 +233,7 @@ class File
    * Get image tag
    *
    * @param string $postfix File path postfix
-   * @param array $attrs additional attributes
+   * @param array $attribs additional attributes
    * @return string
    */
   public function getImgTag($postfix = null, $attribs = array())
@@ -236,10 +248,10 @@ class File
   /**
    * Get object with cropped parameters.
    *
-   * @param integer $width Crop width
-   * @param integer $height Crop height
+   * @param int $width Crop width
+   * @param int $height Crop height
    * @param boolean $center Center crop? true or false (default false).
-   * @param string $fill_color Fill color. If nothig is provided just use false (default false).
+   * @param string|boolean $fill_color Fill color. If nothing is provided just use false (default false).
    * @return File
    */
   public function crop($width, $height, $center = false, $fill_color = false)
@@ -259,8 +271,8 @@ class File
    * Provide width or height or both.
    * If not width or height are provided exceptions will be thrown!
    *
-   * @param integer $width Resized image width. Provide false if you resize proportionally.
-   * @param integer $height Resized image height. Provide false if you resize proportionally.
+   * @param int|boolean $width Resized image width. Provide false if you resize proportionally.
+   * @param int|boolean $height Resized image height. Provide false if you resize proportionally.
    * @throws \Exception
    * @return File
    */
@@ -282,8 +294,8 @@ class File
    * Provide both width and height.
    * If no width and height are provided exceptions will be thrown!
    *
-   * @param integer $width Preview image width.
-   * @param integer $height Preview image height.
+   * @param int $width Preview image width.
+   * @param int $height Preview image height.
    * @throws \Exception
    * @return File
    */
@@ -303,8 +315,8 @@ class File
   /**
    * Get object with cropped parameters.
    *
-   * @param integer $width Crop width
-   * @param integer $height Crop height
+   * @param int $width Crop width
+   * @param int $height Crop height
    * @param boolean $center Center crop? true or false (default false).
    * @return File
    */
@@ -336,6 +348,7 @@ class File
    * Add any custom operation.
    *
    * @param string $operation
+   * @return File
    */
   public function op($operation)
   {

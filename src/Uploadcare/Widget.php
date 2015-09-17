@@ -30,6 +30,7 @@ class Widget
    * Returns <script> sections to include Uploadcare widget
    *
    * @param string $version Uploadcare version
+   * @param bool $async
    * @return string
    */
   public function getScriptTag($version = null, $async = false)

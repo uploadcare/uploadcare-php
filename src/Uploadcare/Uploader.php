@@ -19,6 +19,7 @@ class Uploader
 
   /**
    * Constructor
+   * @param Api $api
    */
   public function __construct(Api $api)
   {
@@ -30,7 +31,7 @@ class Uploader
    * Return array of json data
    *
    * @param string $token
-   * @return array
+   * @return object
    */
   public function status($token)
   {
@@ -50,7 +51,8 @@ class Uploader
    * @param boolean $check_status Wait till upload is complete
    * @param int $timeout Wait $timeout seconds between status checks
    * @param int $max_attempts Check status no more than $max_attempts times
-   * @return File or string
+   * @return File|string
+   * @throws \Exception
    */
   public function fromUrl($url, $check_status = true, $timeout = 1, $max_attempts = 5)
   {
@@ -94,7 +96,7 @@ class Uploader
    * Upload file from local path.
    *
    * @param string $path
-   * @param string $mime_type
+   * @param string|bool $mime_type
    * @return File
    */
   public function fromPath($path, $mime_type = false)
@@ -108,7 +110,7 @@ class Uploader
     } else {
       if($mime_type) {
         $f = '@' . $path . ';type=' . $mime_type;
-    } else {
+      } else {
         $f = '@' . $path;
       }
     }
@@ -130,7 +132,7 @@ class Uploader
   /**
    * Upload file from file pointer
    *
-   * @param resourse $fp
+   * @param resource $fp
    * @return File
    */
   public function fromResource($fp)
@@ -174,6 +176,9 @@ class Uploader
     $data = array(
       'pub_key' => $this->api->getPublicKey(),
     );
+    /**
+     * @var File $file
+     */
     foreach ($files as $i => $file) {
       $data["files[$i]"] = $file->getUuid();
     }
@@ -192,6 +197,7 @@ class Uploader
   /**
    * Init upload request and return curl resource
    *
+   * @param $type
    * @param array $data
    * @return resource
    */
@@ -206,7 +212,7 @@ class Uploader
   }
 
   /**
-   * Set request type for curl resrouce
+   * Set request type for curl resource
    *
    * @param resource $ch
    * @return void
@@ -217,7 +223,7 @@ class Uploader
   }
 
   /**
-   * Set all the headers for request and set returntrasfer.
+   * Set all the headers for request and set return transfer.
    *
    * @param resource $ch. Curl resource.
    * @return void
@@ -247,8 +253,8 @@ class Uploader
    * Throws Exception of not 200 http code
    *
    * @param resource $ch. Curl resource
-   * @throws Exception
-   * @return array
+   * @throws \Exception
+   * @return object
    */
   private function __runRequest($ch)
   {

@@ -56,10 +56,16 @@ class FileIterator implements \Iterator,\Countable,\ArrayAccess
   /**
    * Api object
    *
-   * @var \Uploadcare\Api
+   * @var Api
    */
   protected $api;
 
+  /**
+   * Constructor
+   *
+   * @param Api $api Uploadcare class instance
+   * @param array $options Request parameters and filters
+   */
   public function __construct(Api $api, $options = array())
   {
     $this->api = $api;
@@ -102,16 +108,30 @@ class FileIterator implements \Iterator,\Countable,\ArrayAccess
     return $this->exists();
   }
 
+  /**
+   * Check if element exists. Uses current position if no offset provided
+   *
+   * @param int $offset
+   * @return bool
+   */
   private function exists($offset = null)
   {
     return isset($this->container[$offset !== null ? $offset : $this->position]);
   }
 
+  /**
+   * Check if all elements are loaded into iterator
+   *
+   * @return bool
+   */
   private function isFullyLoaded()
   {
     return $this->fullyLoaded || ($this->limit && count($this->container) >= $this->limit);
   }
 
+  /**
+   * Load elements chunk from server
+   */
   private function loadChunk()
   {
     $portion = $this->api->getFilesChunk($this->options);
