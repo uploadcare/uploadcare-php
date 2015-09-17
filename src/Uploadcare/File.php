@@ -48,7 +48,7 @@ class File
    *
    * @param string $uuid_or_url Uploadcare file UUID or CDN URL
    * @param \Uploadcare\Api $api Uploadcare class instance
-   * @param boolean|array $data prepopulate this->cached_data
+   * @param boolean|array|object $data prepopulate this->cached_data
    */
   public function __construct($uuid_or_url, Api $api, $data = false)
   {
@@ -62,7 +62,7 @@ class File
     $this->filename = $matches['filename'];
     $this->api = $api;
     if ($data) {
-      $this->cached_data = $data;
+      $this->cached_data = (array)$data;
     }
   }
 
