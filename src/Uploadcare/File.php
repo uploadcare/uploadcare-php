@@ -47,7 +47,7 @@ class File
    * Constructs an object for CDN file with specified ID
    *
    * @param string $uuid_or_url Uploadcare file UUID or CDN URL
-   * @param Uploadcare $api Uploadcare class instance
+   * @param \Uploadcare\Api $api Uploadcare class instance
    * @param boolean|array $data prepopulate this->cached_data
    */
   public function __construct($uuid_or_url, Api $api, $data = false)
