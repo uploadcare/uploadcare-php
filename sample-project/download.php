@@ -29,6 +29,10 @@ chmod($folder, 0775);
 /** @var \Uploadcare\File $file */
 foreach ($files as $file) {
   $originalFilename = $file->data['original_filename'];
+
+  // if you see an error on this line like this: Unable to find the wrapper "https" - did you forget to enable it when you configured PHP?
+  // then you should enable openssl extension in php
+  // more info here: http://ru.stackoverflow.com/questions/222688/denwer-è-file-get-contents
   file_put_contents($folder . '/' . $originalFilename, fopen($file, 'r'));
 
   echo "downloaded {$originalFilename} (" . filesize($folder . '/' . $originalFilename) . " bytes)<br>";
