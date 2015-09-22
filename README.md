@@ -20,6 +20,12 @@ Just update your `composer.json` with:
     }
 ```
 
+and run [Composer](https://getcomposer.org):
+
+```bash
+php composer.phar update
+```
+
 If you like, define some constants with Public and Secret keys within your project:
 
 ```php
@@ -27,7 +33,7 @@ define('UC_PUBLIC_KEY', 'demopublickey');
 define('UC_SECRET_KEY', 'demoprivatekey');
 ```
 
-Just include one file to start using Uploadcare inside your PHP project and use namespace "\Uploadcare":
+Just include one file to start using Uploadcare inside your PHP project and use namespace `\Uploadcare`:
 
 ```php
 require_once 'vendor/autoload.php';
