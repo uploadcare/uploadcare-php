@@ -9,7 +9,7 @@ require_once 'vendor/autoload.php';
 // using api
 use Uploadcare\Api;
 
-// create object istance for Api.
+// create object instance for Api.
 $api = new Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
 
 /**
@@ -66,20 +66,6 @@ $files = $api->getFileList();
 */
 $page = 2;
 $files = $api->getFileList($page);
-
-/**
- * You can get some information about pagination.
- *
- * You will get an array with params:
- * - page: current page
- * - next: uri to request next page
- * - per_page: number of files per page
- * - pages: number of pages
- * - previous: uri to request previous page
- *
- * Use "per_page" and "pages" information to create pagination inside your own project
-*/
-$pagination_info = $api->getFilePaginationInfo();
 
 /**
  * If you have a file_id (for example, it's saved in your database) you can create object for file easily.

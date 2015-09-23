@@ -187,25 +187,31 @@ class File
       foreach (array_keys($operation_item) as $operation_type) {
         $operation_params = $operation_item[$operation_type];
         $part[] = $operation_type;
+
         switch ($operation_type) {
           case 'crop':
             $part = $this->__addPartSize($part, $operation_params);
             $part = $this->__addPartCenter($part, $operation_params);
             $part = $this->__addPartFillColor($part, $operation_params);
             break;
+
           case 'resize':
             $part = $this->__addPartSize($part, $operation_params);
             break;
+
           case 'scale_crop':
             $part = $this->__addPartSize($part, $operation_params);
             $part = $this->__addPartCenter($part, $operation_params);
             break;
+
           case 'effect':
             $part = $this->__addPartEffect($part, $operation_params);
             break;
+
           case 'preview':
             $part = $this->__addPartSize($part, $operation_params);
             break;
+
           case 'custom':
             $part = array($operation_params);
             break;
@@ -245,7 +251,7 @@ class File
    * @param int $width Crop width
    * @param int $height Crop height
    * @param boolean $center Center crop? true or false (default false).
-   * @param string|boolean $fill_color Fill color. If nothig is provided just use false (default false).
+   * @param string|boolean $fill_color Fill color. If nothing is provided just use false (default false).
    * @return File
    */
   public function crop($width, $height, $center = false, $fill_color = false)

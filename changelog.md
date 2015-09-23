@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.5.0
+- upgrade server api usage to v0.4, add new style pagination support 
+- add FileIterator
+- change logic of Api->getFileList(): it returns FileIterator object instead of array
+  and incoming parameters are now grouped in an array
+- remove Api->getFilePaginationInfo()
+
 ## 1.4.1
 - change logic of Api->getGroupList() and Api->__getPath()
 - fix [#41](https://github.com/uploadcare/uploadcare-php/issues/41)
