@@ -4,17 +4,16 @@ namespace Uploadcare;
 class Widget
 {
   /**
+   * Uploadcare widget version
+   */
+  const version = '2.5.5';
+
+  /**
    * Api instance
    *
    * @var Api
    */
   private $api = null;
-
-  /**
-   * Uploadcare widget version
-   * @var string
-   */
-  private $version = '2.5.5';
 
   /**
    * Constructor
@@ -53,7 +52,7 @@ EOT;
   public function getScriptSrc($version = null)
   {
     if (!$version) {
-      $version = $this->version;
+      $version = self::version;
     }
     return sprintf($this->api->getCdnUri() . '/widget/%s/uploadcare/uploadcare.full.min.js', $version);
   }
