@@ -1,7 +1,7 @@
 <?php
 namespace Uploadcare;
 
-$uploadcare_version = '1.5.0';
+$uploadcare_version = '1.5.1';
 define('UPLOADCARE_LIB_VERSION', sprintf('%s/%s.%s', $uploadcare_version, PHP_MAJOR_VERSION, PHP_MINOR_VERSION));
 
 class Api
@@ -47,6 +47,20 @@ class Api
    * @var string
    */
   public $cdn_protocol = 'https';
+
+  /**
+   * Retry throttled requests this number of times
+   *
+   * @var int
+   */
+  private $retryThrottled = 1;
+
+  /**
+   * Default timeout for requests throttling
+   *
+   * @var int
+   */
+  private $defaultThrottleTimeout = 1;
 
   /**
    * Widget instance.
@@ -96,8 +110,9 @@ class Api
    * @param string $ua Custom User-Agent to report
    * @param string $cdn_host CDN Host
    * @param string $cdn_protocol CDN Protocol
+   * @param integer $retryThrottled Retry throttled requests this number of times
    */
-  public function __construct($public_key, $secret_key, $ua = null, $cdn_host = null, $cdn_protocol = null)
+  public function __construct($public_key, $secret_key, $ua = null, $cdn_host = null, $cdn_protocol = null, $retryThrottled = null)
   {
     $this->public_key = $public_key;
     $this->secret_key = $secret_key;
@@ -108,6 +123,9 @@ class Api
     }
     if($cdn_protocol) {
       $this->cdn_protocol = $cdn_protocol;
+    }
+    if ($retryThrottled !== null) {
+      $this->retryThrottled = $retryThrottled;
     }
     $this->ua = $ua ?: 'PHP Uploadcare Module ' . $this->version;
   }
@@ -323,11 +341,15 @@ class Api
     $this->__setRequestType($ch, $method);
     $this->__setHeaders($ch, $headers, $data);
 
-    $data = curl_exec($ch);
-    if ($data === false) {
+    $response = curl_exec($ch);
+    if ($response === false) {
       throw new \Exception(curl_error($ch));
     }
     $ch_info = curl_getinfo($ch);
+
+    $headerSize = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
+    $header = substr($response, 0, $headerSize);
+    $body = substr($response, $headerSize);
 
     $error = false;
 
@@ -341,8 +363,14 @@ class Api
       }
     }
 
+    if ($ch_info['http_code'] == 429) {
+      $e = new \Uploadcare\ThrottledRequestException();
+      $e->setResponseHeaders($header);
+      throw $e;
+    }
+
     if ($error) {
-      $errorInfo = array_filter(array(curl_error($ch), $data));
+      $errorInfo = array_filter(array(curl_error($ch), $body));
 
       throw new \Exception('Request returned unexpected http code '. $ch_info['http_code'] . '. ' . join(', ', $errorInfo));
     }
@@ -366,10 +394,26 @@ class Api
    * @throws \Exception
    * @return object
    */
-  public function __preparedRequest($type, $request_type = 'GET', $params = array(), $data = array())
+  public function __preparedRequest($type, $request_type = 'GET', $params = array(), $data = array(), $retryThrottled = null)
   {
+    $retryThrottled = $retryThrottled ?: $this->retryThrottled;
     $path = $this->__getPath($type, $params);
-    return $this->request($request_type, $path, $data);
+
+    while (true) {
+      try {
+        return $this->request($request_type, $path, $data);
+      } catch (\Uploadcare\ThrottledRequestException $e) {
+        if ($retryThrottled) {
+          sleep($e->getTimeout() ?: $this->defaultThrottleTimeout);
+          $retryThrottled--;
+          continue;
+        } else {
+          throw $e;
+        }
+      }
+    }
+
+    return null;
   }
 
   /**
@@ -550,6 +594,8 @@ class Api
 
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+    curl_setopt($ch, CURLOPT_VERBOSE, 1);
+    curl_setopt($ch, CURLOPT_HEADER, 1);
   }
 
   /**
