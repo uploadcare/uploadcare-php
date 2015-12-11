@@ -3,6 +3,8 @@
 ## 1.5.1
 - add throttled requests handling
 - add customizable User Agent string
+- fix upload from url logical bug
+- bump widget to 2.5.9
 
 ## 1.5.0
 - upgrade server api usage to v0.4, add new style pagination support 
