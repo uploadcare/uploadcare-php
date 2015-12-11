@@ -232,7 +232,7 @@ class Uploader
   {
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-      'User-Agent: ' . $this->api->ua,
+      'User-Agent: ' . $this->api->getUserAgent(),
     ));
   }
 

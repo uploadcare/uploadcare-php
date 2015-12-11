@@ -63,6 +63,13 @@ class Api
   private $defaultThrottleTimeout = 1;
 
   /**
+   * User agent name for HTTP headers
+   *
+   * @var string
+   */
+  private $userAgentName = 'PHP Uploadcare Module';
+
+  /**
    * Widget instance.
    *
    * @var Widget
@@ -107,27 +114,29 @@ class Api
    *
    * @param string $public_key A public key given by Uploadcare.com
    * @param string $secret_key A private (secret) key given by Uploadcare.com
-   * @param string $ua Custom User-Agent to report
+   * @param string $userAgentName Custom User agent name to report
    * @param string $cdn_host CDN Host
    * @param string $cdn_protocol CDN Protocol
    * @param integer $retryThrottled Retry throttled requests this number of times
    */
-  public function __construct($public_key, $secret_key, $ua = null, $cdn_host = null, $cdn_protocol = null, $retryThrottled = null)
+  public function __construct($public_key, $secret_key, $userAgentName = null, $cdn_host = null, $cdn_protocol = null, $retryThrottled = null)
   {
     $this->public_key = $public_key;
     $this->secret_key = $secret_key;
     $this->widget = new Widget($this);
     $this->uploader = new Uploader($this);
-    if($cdn_host) {
+    if($cdn_host !== null) {
       $this->cdn_host = $cdn_host;
     }
-    if($cdn_protocol) {
+    if($cdn_protocol !== null) {
       $this->cdn_protocol = $cdn_protocol;
     }
     if ($retryThrottled !== null) {
       $this->retryThrottled = $retryThrottled;
     }
-    $this->ua = $ua ?: 'PHP Uploadcare Module ' . $this->version;
+    if ($userAgentName !== null) {
+      $this->userAgentName = $userAgentName;
+    }
   }
 
   /**
@@ -534,6 +543,16 @@ class Api
   }
 
   /**
+   * Returns full user agent string
+   *
+   * @return string
+   */
+  public function getUserAgent()
+  {
+    return sprintf('%s/%s/%s', $this->userAgentName, $this->version, $this->getPublicKey());
+  }
+
+  /**
    * Set all the headers for request and set returntrasfer.
    *
    * @param resource $ch. Curl resource.
@@ -589,7 +608,7 @@ class Api
       sprintf('Content-Type: %s', $content_type),
       sprintf('Content-Length: %d', $content_length),
       sprintf('Accept: application/vnd.uploadcare-v%s+json', $this->api_version),
-      sprintf('User-Agent: %s', $this->ua),
+      sprintf('User-Agent: %s', $this->getUserAgent()),
     ) + $add_headers;
 
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
