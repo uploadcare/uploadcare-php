@@ -550,7 +550,7 @@ class Api
    */
   public function getUserAgent()
   {
-    return sprintf('%s php ver%s/%s/%s', $this->userAgentName, phpversion(), $this->version, $this->getPublicKey());
+    return sprintf('%s/%s/%s', $this->userAgentName, $this->version, $this->getPublicKey());
   }
 
   /**
