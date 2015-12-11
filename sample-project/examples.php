@@ -162,7 +162,7 @@ echo $file->getUrl('image.jpg')."\n";
  * First of all, we can upload file from url. Just use construction below.
  * This will return File instance.
  */
-$file = $api->uploader->fromUrl('http://www.baysflowers.co.nz/Images/tangerine-delight.jpg');
+$file = $api->uploader->fromUrl('https://www.baysflowers.co.nz/wp-content/uploads/2015/06/IMG_9886_2.jpg');
 
 /**
  * File must be uploaded, but it's not stored yet.

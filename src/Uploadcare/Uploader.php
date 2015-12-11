@@ -56,12 +56,12 @@ class Uploader
    */
   public function fromUrl($url, $check_status = true, $timeout = 1, $max_attempts = 5)
   {
-    $data = array(
+    $requestData = array(
         '_' => time(),
         'source_url' => $url,
         'pub_key' => $this->api->getPublicKey(),
     );
-    $ch = $this->__initRequest('from_url', $data);
+    $ch = $this->__initRequest('from_url', $requestData);
     $this->__setHeaders($ch);
 
     $data = $this->__runRequest($ch);

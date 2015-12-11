@@ -272,7 +272,7 @@ class ApiTest extends PHPUnit_Framework_TestCase
   public function testUploadFromURL()
   {
     try {
-      $file = $this->api->uploader->fromUrl('http://www.baysflowers.co.nz/Images/tangerine-delight.jpg');
+      $file = $this->api->uploader->fromUrl('https://www.baysflowers.co.nz/wp-content/uploads/2015/06/IMG_9886_2.jpg');
     } catch (Exception $e) {
       $this->fail('We get an unexpected exception trying to upload from url: '.$e->getMessage());
     }
