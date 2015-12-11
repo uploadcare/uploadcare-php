@@ -65,7 +65,7 @@ $files = $api->getFileList();
  * But you can supply a page you want to see:
 */
 $page = 2;
-$files = $api->getFileList($page);
+$files = $api->getFileList();
 
 /**
  * If you have a file_id (for example, it's saved in your database) you can create object for file easily.

@@ -388,7 +388,8 @@ class Api
     if (!defined('PHPUNIT_UPLOADCARE_TESTSUITE') && ($this->public_key == 'demopublickey' || $this->secret_key == 'demoprivatekey')) {
       trigger_error('You are using the demo account. Please get an Uploadcare account at https://uploadcare.com/accounts/create/', E_USER_WARNING);
     }
-    return json_decode($data);
+
+    return json_decode($body);
   }
 
   /**
@@ -549,7 +550,7 @@ class Api
    */
   public function getUserAgent()
   {
-    return sprintf('%s/%s/%s', $this->userAgentName, $this->version, $this->getPublicKey());
+    return sprintf('%s php ver%s/%s/%s', $this->userAgentName, phpversion(), $this->version, $this->getPublicKey());
   }
 
   /**
