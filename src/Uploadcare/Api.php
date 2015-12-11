@@ -1,7 +1,7 @@
 <?php
 namespace Uploadcare;
 
-$uploadcare_version = '1.5.0';
+$uploadcare_version = '1.5.1';
 define('UPLOADCARE_LIB_VERSION', sprintf('%s/%s.%s', $uploadcare_version, PHP_MAJOR_VERSION, PHP_MINOR_VERSION));
 
 class Api
@@ -49,6 +49,27 @@ class Api
   public $cdn_protocol = 'https';
 
   /**
+   * Retry throttled requests this number of times
+   *
+   * @var int
+   */
+  private $retryThrottled = 1;
+
+  /**
+   * Default timeout for requests throttling
+   *
+   * @var int
+   */
+  private $defaultThrottleTimeout = 1;
+
+  /**
+   * User agent name for HTTP headers
+   *
+   * @var string
+   */
+  private $userAgentName = 'PHP Uploadcare Module';
+
+  /**
    * Widget instance.
    *
    * @var Widget
@@ -93,23 +114,29 @@ class Api
    *
    * @param string $public_key A public key given by Uploadcare.com
    * @param string $secret_key A private (secret) key given by Uploadcare.com
-   * @param string $ua Custom User-Agent to report
+   * @param string $userAgentName Custom User agent name to report
    * @param string $cdn_host CDN Host
    * @param string $cdn_protocol CDN Protocol
+   * @param integer $retryThrottled Retry throttled requests this number of times
    */
-  public function __construct($public_key, $secret_key, $ua = null, $cdn_host = null, $cdn_protocol = null)
+  public function __construct($public_key, $secret_key, $userAgentName = null, $cdn_host = null, $cdn_protocol = null, $retryThrottled = null)
   {
     $this->public_key = $public_key;
     $this->secret_key = $secret_key;
     $this->widget = new Widget($this);
     $this->uploader = new Uploader($this);
-    if($cdn_host) {
+    if($cdn_host !== null) {
       $this->cdn_host = $cdn_host;
     }
-    if($cdn_protocol) {
+    if($cdn_protocol !== null) {
       $this->cdn_protocol = $cdn_protocol;
     }
-    $this->ua = $ua ?: 'PHP Uploadcare Module ' . $this->version;
+    if ($retryThrottled !== null) {
+      $this->retryThrottled = $retryThrottled;
+    }
+    if ($userAgentName !== null) {
+      $this->userAgentName = $userAgentName;
+    }
   }
 
   /**
@@ -323,11 +350,15 @@ class Api
     $this->__setRequestType($ch, $method);
     $this->__setHeaders($ch, $headers, $data);
 
-    $data = curl_exec($ch);
-    if ($data === false) {
+    $response = curl_exec($ch);
+    if ($response === false) {
       throw new \Exception(curl_error($ch));
     }
     $ch_info = curl_getinfo($ch);
+
+    $headerSize = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
+    $header = substr($response, 0, $headerSize);
+    $body = substr($response, $headerSize);
 
     $error = false;
 
@@ -341,8 +372,14 @@ class Api
       }
     }
 
+    if ($ch_info['http_code'] == 429) {
+      $e = new \Uploadcare\ThrottledRequestException();
+      $e->setResponseHeaders($header);
+      throw $e;
+    }
+
     if ($error) {
-      $errorInfo = array_filter(array(curl_error($ch), $data));
+      $errorInfo = array_filter(array(curl_error($ch), $body));
 
       throw new \Exception('Request returned unexpected http code '. $ch_info['http_code'] . '. ' . join(', ', $errorInfo));
     }
@@ -351,7 +388,8 @@ class Api
     if (!defined('PHPUNIT_UPLOADCARE_TESTSUITE') && ($this->public_key == 'demopublickey' || $this->secret_key == 'demoprivatekey')) {
       trigger_error('You are using the demo account. Please get an Uploadcare account at https://uploadcare.com/accounts/create/', E_USER_WARNING);
     }
-    return json_decode($data);
+
+    return json_decode($body);
   }
 
   /**
@@ -366,10 +404,26 @@ class Api
    * @throws \Exception
    * @return object
    */
-  public function __preparedRequest($type, $request_type = 'GET', $params = array(), $data = array())
+  public function __preparedRequest($type, $request_type = 'GET', $params = array(), $data = array(), $retryThrottled = null)
   {
+    $retryThrottled = $retryThrottled ?: $this->retryThrottled;
     $path = $this->__getPath($type, $params);
-    return $this->request($request_type, $path, $data);
+
+    while (true) {
+      try {
+        return $this->request($request_type, $path, $data);
+      } catch (\Uploadcare\ThrottledRequestException $e) {
+        if ($retryThrottled) {
+          sleep($e->getTimeout() ?: $this->defaultThrottleTimeout);
+          $retryThrottled--;
+          continue;
+        } else {
+          throw $e;
+        }
+      }
+    }
+
+    return null;
   }
 
   /**
@@ -490,6 +544,16 @@ class Api
   }
 
   /**
+   * Returns full user agent string
+   *
+   * @return string
+   */
+  public function getUserAgent()
+  {
+    return sprintf('%s/%s/%s', $this->userAgentName, $this->version, $this->getPublicKey());
+  }
+
+  /**
    * Set all the headers for request and set returntrasfer.
    *
    * @param resource $ch. Curl resource.
@@ -545,11 +609,13 @@ class Api
       sprintf('Content-Type: %s', $content_type),
       sprintf('Content-Length: %d', $content_length),
       sprintf('Accept: application/vnd.uploadcare-v%s+json', $this->api_version),
-      sprintf('User-Agent: %s', $this->ua),
+      sprintf('User-Agent: %s', $this->getUserAgent()),
     ) + $add_headers;
 
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+    curl_setopt($ch, CURLOPT_VERBOSE, 1);
+    curl_setopt($ch, CURLOPT_HEADER, 1);
   }
 
   /**

@@ -65,7 +65,7 @@ $files = $api->getFileList();
  * But you can supply a page you want to see:
 */
 $page = 2;
-$files = $api->getFileList($page);
+$files = $api->getFileList();
 
 /**
  * If you have a file_id (for example, it's saved in your database) you can create object for file easily.
@@ -162,7 +162,7 @@ echo $file->getUrl('image.jpg')."\n";
  * First of all, we can upload file from url. Just use construction below.
  * This will return File instance.
  */
-$file = $api->uploader->fromUrl('http://www.baysflowers.co.nz/Images/tangerine-delight.jpg');
+$file = $api->uploader->fromUrl('https://www.baysflowers.co.nz/wp-content/uploads/2015/06/IMG_9886_2.jpg');
 
 /**
  * File must be uploaded, but it's not stored yet.
