@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.5.2
+- fix for throttled request exception
+
 ## 1.5.1
 - add throttled requests handling
 - add customizable User Agent string

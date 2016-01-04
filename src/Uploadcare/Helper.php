@@ -3,16 +3,16 @@ namespace Uploadcare;
 
 class Helper
 {
-  public static function parseHttpHeaders($rawHeaders)
+  public static function parseHttpHeaders($raw_headers)
   {
     if (function_exists('http_parse_headers')) {
-      return http_parse_headers($rawHeaders);
+      return http_parse_headers($raw_headers);
     }
 
     $headers = array();
     $key = '';
 
-    foreach(explode("\n", $rawHeaders) as $i => $h) {
+    foreach (explode("\n", $raw_headers) as $i => $h) {
       $h = explode(':', $h, 2);
 
       if (isset($h[1])) {
