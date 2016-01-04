@@ -23,7 +23,7 @@ class ApiTest extends PHPUnit_Framework_TestCase
     $this->api = new Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
     $this->apiMock = $this->getMockBuilder('\Uploadcare\Api')
       ->disableOriginalConstructor()
-      ->setMethods(['request'])
+      ->setMethods(array('request'))
       ->getMock();
   }
 
