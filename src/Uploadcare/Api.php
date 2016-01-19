@@ -203,7 +203,7 @@ class Api
    * @param array $options
    * @return array
    */
-  public function getFilesChunk($options = array())
+  public function getFilesChunk($options = array(), $reverse = false)
   {
     $data = $this->__preparedRequest('file_list', 'GET', $options);
 
@@ -213,7 +213,11 @@ class Api
       $result[] = new File($file_raw->uuid, $this, $file_raw);
     }
 
-    parse_str(parse_url($data->next, PHP_URL_QUERY), $params);
+    parse_str(parse_url(!$reverse ? $data->next : $data->previous, PHP_URL_QUERY), $params);
+
+    if ($reverse) {
+      $result = array_reverse($result);
+    }
 
     return array(
       'params' => $params,
@@ -614,7 +618,6 @@ class Api
 
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-    curl_setopt($ch, CURLOPT_VERBOSE, 1);
     curl_setopt($ch, CURLOPT_HEADER, 1);
   }
 

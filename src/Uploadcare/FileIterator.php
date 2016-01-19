@@ -54,6 +54,13 @@ class FileIterator implements \Iterator,\Countable,\ArrayAccess
   protected $fullyLoaded = false;
 
   /**
+   * Determines direction of file browsing and which URL param is used: 'from' or 'to'
+   *
+   * @var bool
+   */
+  protected $reverse = false;
+
+  /**
    * Api object
    *
    * @var Api
@@ -73,6 +80,8 @@ class FileIterator implements \Iterator,\Countable,\ArrayAccess
     $this->limit = $options['limit'];
     $this->requestLimit = $options['request_limit'] ?: $options['limit'];
     unset($options['request_limit']);
+
+    $this->reverse = $options['to'] && !$options['from'];
 
     $options['limit'] = $this->requestLimit;
 
@@ -134,7 +143,7 @@ class FileIterator implements \Iterator,\Countable,\ArrayAccess
    */
   private function loadChunk()
   {
-    $portion = $this->api->getFilesChunk($this->options);
+    $portion = $this->api->getFilesChunk($this->options, $this->reverse);
 
     $this->options = $portion['params'];
     if ($portion['files']) {

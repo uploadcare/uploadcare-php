@@ -59,13 +59,28 @@ $files_raw = $api->request('GET', '/files/');
 */
 $files = $api->getFileList();
 
+echo "We have ".count($files)." file(s)\n";
+
 /**
- * getFileList called without any params will return just an array of first 20 files objects (first page).
- *
- * But you can supply a page you want to see:
-*/
-$page = 2;
-$files = $api->getFileList();
+ * Listing all file ids
+ */
+
+/** @var Uploadcare\File $file */
+foreach ($files as $file)
+{
+  echo $file->getUuid()."\n";
+}
+
+/**
+ * Listing only first 4 file ids (if you want to use pagination)
+ */
+$page = 1;
+$per_page = 4;
+
+for ($i = ($page - 1) * $per_page; $i < min(count($files), $page * $per_page); $i++)
+{
+  echo $file->getUuid()."\n";
+}
 
 /**
  * If you have a file_id (for example, it's saved in your database) you can create object for file easily.
