@@ -1,7 +1,9 @@
 <?php
 namespace Uploadcare;
 
-$uploadcare_version = '1.5.1';
+use Uploadcare\Exceptions\ThrottledRequestException;
+
+$uploadcare_version = '1.5.2';
 define('UPLOADCARE_LIB_VERSION', sprintf('%s/%s.%s', $uploadcare_version, PHP_MAJOR_VERSION, PHP_MINOR_VERSION));
 
 class Api
@@ -53,14 +55,7 @@ class Api
    *
    * @var int
    */
-  private $retryThrottled = 1;
-
-  /**
-   * Default timeout for requests throttling
-   *
-   * @var int
-   */
-  private $defaultThrottleTimeout = 1;
+  private $retry_throttled = 1;
 
   /**
    * User agent name for HTTP headers
@@ -117,9 +112,9 @@ class Api
    * @param string $userAgentName Custom User agent name to report
    * @param string $cdn_host CDN Host
    * @param string $cdn_protocol CDN Protocol
-   * @param integer $retryThrottled Retry throttled requests this number of times
+   * @param integer $retry_throttled Retry throttled requests this number of times
    */
-  public function __construct($public_key, $secret_key, $userAgentName = null, $cdn_host = null, $cdn_protocol = null, $retryThrottled = null)
+  public function __construct($public_key, $secret_key, $userAgentName = null, $cdn_host = null, $cdn_protocol = null, $retry_throttled = null)
   {
     $this->public_key = $public_key;
     $this->secret_key = $secret_key;
@@ -131,8 +126,8 @@ class Api
     if($cdn_protocol !== null) {
       $this->cdn_protocol = $cdn_protocol;
     }
-    if ($retryThrottled !== null) {
-      $this->retryThrottled = $retryThrottled;
+    if ($retry_throttled !== null) {
+      $this->retry_throttled = $retry_throttled;
     }
     if ($userAgentName !== null) {
       $this->userAgentName = $userAgentName;
@@ -360,9 +355,9 @@ class Api
     }
     $ch_info = curl_getinfo($ch);
 
-    $headerSize = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
-    $header = substr($response, 0, $headerSize);
-    $body = substr($response, $headerSize);
+    $header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
+    $header = substr($response, 0, $header_size);
+    $body = substr($response, $header_size);
 
     $error = false;
 
@@ -377,9 +372,10 @@ class Api
     }
 
     if ($ch_info['http_code'] == 429) {
-      $e = new \Uploadcare\ThrottledRequestException();
-      $e->setResponseHeaders($header);
-      throw $e;
+      $exception = new ThrottledRequestException();
+      $response_headers = Helper::parseHttpHeaders($header);
+      $exception->setResponseHeaders($response_headers);
+      throw $exception;
     }
 
     if ($error) {
@@ -405,24 +401,26 @@ class Api
    * @param string $request_type Request type. Options: get, post, put, delete.
    * @param array $params Additional parameters for requests as array.
    * @param array $data Data will be posted like json.
-   * @throws \Exception
+   * @param null $retry_throttled
    * @return object
+   * @throws \Exception
+   * @throws \Uploadcare\Exceptions\ThrottledRequestException
    */
-  public function __preparedRequest($type, $request_type = 'GET', $params = array(), $data = array(), $retryThrottled = null)
+  public function __preparedRequest($type, $request_type = 'GET', $params = array(), $data = array(), $retry_throttled = null)
   {
-    $retryThrottled = $retryThrottled ?: $this->retryThrottled;
+    $retry_throttled = $retry_throttled ?: $this->retry_throttled;
     $path = $this->__getPath($type, $params);
 
     while (true) {
       try {
         return $this->request($request_type, $path, $data);
-      } catch (\Uploadcare\ThrottledRequestException $e) {
-        if ($retryThrottled) {
-          sleep($e->getTimeout() ?: $this->defaultThrottleTimeout);
-          $retryThrottled--;
+      } catch (ThrottledRequestException $exception) {
+        if ($retry_throttled > 0) {
+          sleep($exception->getTimeout());
+          $retry_throttled--;
           continue;
         } else {
-          throw $e;
+          throw $exception;
         }
       }
     }

@@ -5,12 +5,15 @@ require_once __DIR__.'/../vendor/autoload.php';
 
 use Uploadcare\Api;
 use Uploadcare\File;
+use Uploadcare\Exceptions\ThrottledRequestException;
 
 
 class ApiTest extends PHPUnit_Framework_TestCase
 {
   /** @var Uploadcare\Api */
   private $api;
+  /** @var \Uploadcare\Api | \PHPUnit_Framework_MockObject_MockObject */
+  private $apiMock;
 
   /**
    * Setup test
@@ -18,6 +21,10 @@ class ApiTest extends PHPUnit_Framework_TestCase
    */
   public function setUp() {
     $this->api = new Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
+    $this->apiMock = $this->getMockBuilder('\Uploadcare\Api')
+      ->disableOriginalConstructor()
+      ->setMethods(array('request'))
+      ->getMock();
   }
 
   /**
@@ -387,5 +394,47 @@ class ApiTest extends PHPUnit_Framework_TestCase
     $this->assertNotNull($g->data['datetime_stored']);
 
     $g->getFiles();
+  }
+
+  public function test__preparedRequestRespectsRetryThrottledProperty()
+  {
+    try {
+      $this->apiMock->expects($this->exactly(2))
+        ->method('request')
+        ->willThrowException($this->getThrottledRequestException());
+
+      $this->apiMock->__preparedRequest('root');
+    } catch (\Exception $e) {}
+  }
+
+  public function test__preparedRequestRespectsRetryThrottledArgument()
+  {
+    try {
+      $retry_throttled = 5;
+      $this->apiMock->expects($this->exactly($retry_throttled + 1))
+        ->method('request')
+        ->willThrowException($this->getThrottledRequestException());
+
+      $this->apiMock->__preparedRequest('root', 'GET', array(), array(), $retry_throttled);
+    } catch (\Exception $e) {}
+  }
+
+  public function test__preparedRequestThrowsThrottledRequestException()
+  {
+    $this->apiMock->expects($this->any())
+      ->method('request')
+      ->willThrowException($this->getThrottledRequestException());
+
+    $this->setExpectedException('\Uploadcare\Exceptions\ThrottledRequestException');
+
+    $this->apiMock->__preparedRequest('root');
+
+  }
+
+  private function getThrottledRequestException($wait = 0)
+  {
+    $exception = new ThrottledRequestException();
+    $exception->setResponseHeaders(array('x-throttle-wait-seconds' => $wait));
+    return $exception;
   }
 }
