@@ -1,7 +1,7 @@
 # Changelog
 
 ## 1.5.2
-- fix of throttled request exception
+- fix of throttled request exception (thanks to Alexey Scherbakov, https://github.com/lexabug)
 - fix of pagination logic
 
 ## 1.5.1
