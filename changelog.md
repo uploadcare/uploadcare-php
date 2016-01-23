@@ -1,7 +1,8 @@
 # Changelog
 
 ## 1.5.2
-- fix for throttled request exception
+- fix of throttled request exception
+- fix of pagination logic
 
 ## 1.5.1
 - add throttled requests handling
