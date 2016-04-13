@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.5.3
+- bump widget version to 2.8.2 (see [widget changelog][widget changelog])
+
 ## 1.5.2
 - fix of throttled request exception (thanks to Alexey Scherbakov, https://github.com/lexabug)
 - fix of pagination logic
@@ -8,7 +11,7 @@
 - add throttled requests handling
 - add customizable User Agent string
 - fix upload from url logical bug
-- bump widget to 2.5.9
+- bump widget to 2.5.9 (see [widget changelog][widget changelog])
 
 ## 1.5.0
 - upgrade server api usage to v0.4, add new style pagination support 
