@@ -403,7 +403,12 @@ class ApiTest extends PHPUnit_Framework_TestCase
 
     $g = $this->api->uploader->createGroup(array($f2));
 
-    $f3 = $g->getFiles()[0];
+    foreach ($g->getFiles() as $f) {
+      $this->assertEquals(
+        "https://ucarecdn.com/" . $f1->getUuid() . '/-/crop/2x2/',
+        $f->getUrl());
+    }
+
   }
 
   public function test__preparedRequestRespectsRetryThrottledProperty()
