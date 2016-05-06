@@ -396,6 +396,16 @@ class ApiTest extends PHPUnit_Framework_TestCase
     $g->getFiles();
   }
 
+  public function test_FileGroupHasCroppingInfo()
+  {
+    $f1 = $this->api->uploader->fromContent('1', 'text/plain');
+    $f2 = $this->api->getFile($f1->getUrl() . '-/crop/2x2/');
+
+    $g = $this->api->uploader->createGroup(array($f2));
+
+    $f3 = $g->getFiles()[0];
+  }
+
   public function test__preparedRequestRespectsRetryThrottledProperty()
   {
     try {
