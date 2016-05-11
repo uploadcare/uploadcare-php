@@ -16,8 +16,7 @@ matrix:
   fast_finish: false
 
 before_script:
-  - curl -s http://getcomposer.org/installer | php
-  - php composer.phar install --dev
+  - composer install --dev
 
 script: phpunit
 
