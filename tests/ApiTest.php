@@ -350,7 +350,7 @@ class ApiTest extends PHPUnit_Framework_TestCase
       $this->fail('We get an unexpected exception trying to store uploaded file from contents: '.$e->getMessage());
     }
 
-    usleep(500);
+    usleep(500000);
     $text = file_get_contents($file->getUrl());
     $this->assertEquals($text, "This is some text I want to upload");
   }
@@ -394,6 +394,21 @@ class ApiTest extends PHPUnit_Framework_TestCase
     $this->assertNotNull($g->data['datetime_stored']);
 
     $g->getFiles();
+  }
+
+  public function test_FileGroupHasCroppingInfo()
+  {
+    $f1 = $this->api->uploader->fromContent('1', 'text/plain');
+    $f2 = $this->api->getFile($f1->getUrl() . '-/crop/2x2/');
+
+    $g = $this->api->uploader->createGroup(array($f2));
+
+    foreach ($g->getFiles() as $f) {
+      $this->assertEquals(
+        "https://ucarecdn.com/" . $f1->getUuid() . '/-/crop/2x2/',
+        $f->getUrl());
+    }
+
   }
 
   public function test__preparedRequestRespectsRetryThrottledProperty()

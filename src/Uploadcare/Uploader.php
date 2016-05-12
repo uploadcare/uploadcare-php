@@ -180,7 +180,7 @@ class Uploader
      * @var File $file
      */
     foreach ($files as $i => $file) {
-      $data["files[$i]"] = $file->getUuid();
+      $data["files[$i]"] = $file->getUrl();
     }
 
 

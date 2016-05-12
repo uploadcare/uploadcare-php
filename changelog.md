@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.5.4
+- fix: File in a Group is not loosing default effects (cropping etc.)
+
 ## 1.5.3
 - bump widget version to 2.8.2 (see [widget changelog][widget changelog])
 

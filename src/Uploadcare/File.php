@@ -64,6 +64,10 @@ class File
     $this->api = $api;
     if ($data) {
       $this->cached_data = (array)$data;
+
+      if(array_key_exists('default_effects', $this->cached_data)) {
+        $this->default_effects = $this->cached_data['default_effects'];
+      }
     }
   }
 
