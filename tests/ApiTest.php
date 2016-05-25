@@ -443,7 +443,6 @@ class ApiTest extends PHPUnit_Framework_TestCase
     $this->setExpectedException('\Uploadcare\Exceptions\ThrottledRequestException');
 
     $this->apiMock->__preparedRequest('root');
-
   }
 
   private function getThrottledRequestException($wait = 0)

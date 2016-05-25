@@ -6,7 +6,7 @@ class Widget
   /**
    * Uploadcare widget version
    */
-  const version = '2.8.2';
+  const version = '2.9.0';
 
   /**
    * Api instance
@@ -32,12 +32,12 @@ class Widget
    * @param bool $async
    * @return string
    */
-  public function getScriptTag($version = null, $async = false)
+  public function getScriptTag($version = null, $async = false, $full = true)
   {
     $async_attr = $async ? 'async="true"' : '';
     $result = <<<EOT
 <script>UPLOADCARE_PUBLIC_KEY = "{$this->api->getPublicKey()}";</script>
-<script {$async_attr} src="{$this->getScriptSrc($version)}" charset="UTF-8"></script>
+<script {$async_attr} src="{$this->getScriptSrc($version, $full)}" charset="UTF-8"></script>
 EOT;
     return $result;
   }
@@ -49,12 +49,18 @@ EOT;
    * @param string $version Version of Uploadcare.com widget
    * @return string
    */
-  public function getScriptSrc($version = null)
+  public function getScriptSrc($version = null, $full = true)
   {
     if (!$version) {
       $version = self::version;
     }
-    return sprintf($this->api->getCdnUri() . '/widget/%s/uploadcare/uploadcare.full.min.js', $version);
+    if ($full) {
+      $tail = "uploadcare.full.min.js";
+    } else {
+      $tail = "uploadcare.min.js";
+    }
+
+    return sprintf($this->api->getCdnUri() . '/widget/%s/uploadcare/'. $tail, $version);
   }
 
   /**

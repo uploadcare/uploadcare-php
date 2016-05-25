@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.5.5
+- bump widget version to 2.9.0 (see [widget changelog][widget changelog])
+- add optional "full" argument to Widget->getScriptTag
+
 ## 1.5.4
 - fix: File in a Group is not loosing default effects (cropping etc.)
 
