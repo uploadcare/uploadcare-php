@@ -168,6 +168,18 @@ class File
     return $this->api->__preparedRequest('file_storage', 'DELETE', array('uuid' => $this->uuid));
   }
 
+  
+  /**
+   * Get url path of original file
+   *
+   * @param int $post_id
+   * @return string
+   */
+  public function getPath($post_id)
+  {
+    return $uploadcare_path = get_post_meta($post_id, 'uploadcare_path', true);
+  }
+  
   /**
    * Get url of original image
    *
