@@ -41,7 +41,7 @@ class Api
    *
    * @var string
    */
-  private $cdn_host = 'ucarecdn.com';
+  public $cdn_host = 'ucarecdn.com';
 
   /**
    * Uploadcare CDN protocol
@@ -118,10 +118,12 @@ class Api
   {
     $this->public_key = $public_key;
     $this->secret_key = $secret_key;
-	$this->cdn_host = $cdn_host;
     $this->widget = new Widget($this);
     $this->uploader = new Uploader($this);
 
+	if($cdn_host !== null) {
+      $this->cdn_host = $cdn_host;
+    }
     if($cdn_protocol !== null) {
       $this->cdn_protocol = $cdn_protocol;
     }

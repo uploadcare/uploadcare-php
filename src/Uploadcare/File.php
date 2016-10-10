@@ -177,7 +177,11 @@ class File
    */
   public function getPath($post_id)
   {
-    return $uploadcare_path = get_post_meta($post_id, 'uploadcare_path', true);
+    if ($this->default_effects) {
+      return $uploadcare_path = $this->default_effects . '/' . $this->uuid;
+    } else {
+      return $uploadcare_path = $this->uuid;
+    }
   }
   
   /**
@@ -188,7 +192,7 @@ class File
    */
   public function getUrl($postfix = null)
   {
-    $url = sprintf('%s/%s/', $this->api->getCdnUri(), $this->uuid);
+    $url = sprintf('%s/%s/', $this->api->getCdnUri(), $this->getPath());
     if($this->default_effects) {
       $url = sprintf('%s-/%s', $url, $this->default_effects);
     }
