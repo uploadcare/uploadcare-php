@@ -175,28 +175,13 @@ class File
    * @param int $post_id
    * @return string
    */
-  public function getPath($post_id)
+  public function getPath($postfix = null)
   {
+    $uuid = $this->uuid;
     if ($this->default_effects) {
-      return $uploadcare_path = $this->default_effects . '/' . $this->uuid;
-    } else {
-      return $uploadcare_path = $this->uuid;
+      $path = sprintf('%s/%s/', $uuid, $this->default_effects);
     }
-  }
-  
-  /**
-   * Get url of original image
-   *
-   * @param string $postfix
-   * @return string
-   */
-  public function getUrl($postfix = null)
-  {
-    $url = sprintf('%s/%s/', $this->api->getCdnUri(), $this->getPath());
-    if($this->default_effects) {
-      $url = sprintf('%s-/%s', $url, $this->default_effects);
-    }
-    if($this->filename && $postfix === null) {
+	if($this->filename && $postfix === null) {
       $postfix = $this->filename;
     }
 
@@ -243,10 +228,21 @@ class File
 
     if (count($operations)) {
       $operations_part = join('/-/', $operations);
-      return $url.'-/'.$operations_part.'/'.$postfix;
+      return $path.'-/'.$operations_part.'/'.$postfix;
     } else {
-      return $url.$postfix;
+      return $path.$postfix;
     }
+  }
+  
+  /**
+   * Get url of original image
+   *
+   * @param string $postfix
+   * @return string
+   */
+  public function getUrl($postfix = null)
+  {
+    $url = sprintf('%s/%s/', $this->api->getCdnUri(), $this->getPath());
   }
 
   /**

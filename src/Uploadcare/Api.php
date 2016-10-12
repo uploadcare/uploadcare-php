@@ -121,7 +121,7 @@ class Api
     $this->widget = new Widget($this);
     $this->uploader = new Uploader($this);
 
-	if($cdn_host !== null) {
+    if($cdn_host !== null) {
       $this->cdn_host = $cdn_host;
     }
     if($cdn_protocol !== null) {
