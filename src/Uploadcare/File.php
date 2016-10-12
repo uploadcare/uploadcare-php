@@ -172,7 +172,7 @@ class File
   /**
    * Get url path of original file
    *
-   * @param int $post_id
+   * @param string $postfix
    * @return string
    */
   public function getPath($postfix = null)
@@ -237,7 +237,6 @@ class File
   /**
    * Get url of original image
    *
-   * @param string $postfix
    * @return string
    */
   public function getUrl($postfix = null)
