@@ -68,6 +68,23 @@ class FileIterator implements \Iterator,\Countable,\ArrayAccess
   protected $api;
 
   /**
+   * Next page params array
+   *
+   * @var array
+   */
+
+  protected $nextPageParams = array();
+
+   /**
+   * Preview page params array
+   *
+   * @var array
+   */
+
+  protected $prevPageParams = array();
+
+
+  /**
    * Constructor
    *
    * @param Api $api Uploadcare class instance
@@ -81,7 +98,7 @@ class FileIterator implements \Iterator,\Countable,\ArrayAccess
     $this->requestLimit = $options['request_limit'] ?: $options['limit'];
     unset($options['request_limit']);
 
-    $this->reverse = $options['to'] && !$options['from'];
+//    $this->reverse = $options['to'] && !$options['from'];
 
     $options['limit'] = $this->requestLimit;
 
@@ -146,6 +163,9 @@ class FileIterator implements \Iterator,\Countable,\ArrayAccess
     $portion = $this->api->getFilesChunk($this->options, $this->reverse);
 
     $this->options = $portion['params'];
+    $this->nextPageParams = $portion['params'];
+    $this->prevPageParams = $portion['prevParams'];
+
     if ($portion['files']) {
       $this->container = array_merge($this->container, $portion['files']);
     }
@@ -194,5 +214,14 @@ class FileIterator implements \Iterator,\Countable,\ArrayAccess
   public function offsetUnset($offset)
   {
     unset($this->container[$offset]);
+  }
+
+  public function getNextPageParams()
+  {
+    return $this->nextPageParams;
+  }
+  public function getPrevPageParams()
+  {
+    return $this->prevPageParams;
   }
 }

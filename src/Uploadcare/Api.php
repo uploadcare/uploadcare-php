@@ -209,12 +209,14 @@ class Api
     }
 
     parse_str(parse_url(!$reverse ? $data->next : $data->previous, PHP_URL_QUERY), $params);
+    parse_str(parse_url( $reverse ? $data->next : $data->previous, PHP_URL_QUERY), $prevParams);
 
     if ($reverse) {
       $result = array_reverse($result);
     }
 
     return array(
+      'prevParams' => $prevParams,
       'params' => $params,
       'files' => $result,
     );
