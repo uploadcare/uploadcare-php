@@ -178,7 +178,7 @@ class Api
       $datetime = new \DateTime($datetime);
     }
 
-    return $datetime->format(\DateTime::ATOM);
+    return $datetime->format("Y-m-d\TH:i:s.uP");
   }
 
   /**
@@ -208,15 +208,21 @@ class Api
       $result[] = new File($file_raw->uuid, $this, $file_raw);
     }
 
+    $nextParamsArr = parse_url($data->next);
+    $prevParamsArr = parse_url($data->previous);
+
+    $nextParamsArr = array_replace(array('query' => null), $nextParamsArr);
+    $prevParamsArr = array_replace(array('query' => null), $prevParamsArr);
+
     parse_str(parse_url(!$reverse ? $data->next : $data->previous, PHP_URL_QUERY), $params);
-    parse_str(parse_url( $reverse ? $data->next : $data->previous, PHP_URL_QUERY), $prevParams);
 
     if ($reverse) {
       $result = array_reverse($result);
     }
 
     return array(
-      'prevParams' => $prevParams,
+      'nextParams' => $reverse ? $prevParamsArr : $nextParamsArr,
+      'prevParams' => !$reverse ? $prevParamsArr : $nextParamsArr,
       'params' => $params,
       'files' => $result,
     );

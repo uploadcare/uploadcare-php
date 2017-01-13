@@ -163,7 +163,7 @@ class FileIterator implements \Iterator,\Countable,\ArrayAccess
     $portion = $this->api->getFilesChunk($this->options, $this->reverse);
 
     $this->options = $portion['params'];
-    $this->nextPageParams = $portion['params'];
+    $this->nextPageParams = $portion['nextParams'];
     $this->prevPageParams = $portion['prevParams'];
 
     if ($portion['files']) {
@@ -216,12 +216,12 @@ class FileIterator implements \Iterator,\Countable,\ArrayAccess
     unset($this->container[$offset]);
   }
 
-  public function getNextPageParams()
+  public function getNextPageQuery()
   {
-    return $this->nextPageParams;
+    return $this->nextPageParams['query'];
   }
-  public function getPrevPageParams()
+  public function getPrevPageQuery()
   {
-    return $this->prevPageParams;
+    return $this->prevPageParams['query'];
   }
 }

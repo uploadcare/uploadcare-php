@@ -11,6 +11,7 @@ use Uploadcare\Api;
 
   $fromParam = "from";
   $toParam = "to";
+  $offset = 0;
   if(array_key_exists($fromParam, $_GET)) {
     $from = $_GET[$fromParam];
   }
@@ -21,7 +22,9 @@ use Uploadcare\Api;
   $files = $api->getFileList(array(
     'limit' => $pageLimit,
     'from' => $from,
-    'to' => $to
+    'to' => $to,
+    'removed' => false,
+    'offset' => 0
   ));
 
 ?>
@@ -47,7 +50,7 @@ use Uploadcare\Api;
             <tr>
               <th>GUID</th>
               <th>File name</th>
-              <th>Is image</th>
+              <th>Image</th>
               <th>Size</th>
             </tr>
           </thead>
@@ -57,14 +60,14 @@ use Uploadcare\Api;
               $uuid = $value->getUuid();
               $data = $value->__get('data');
               $fileName = $data["original_filename"];              
-              $isImage = $data["is_image"] == 1 ? 'true' : 'false';
+              $imageUrl = $value->preview(50, 50)->getUrl();
               $size = $data["size"];
 
               echo (<<<EOT
               <tr>
               <td>${uuid}</td>
               <td>${fileName}</td>
-              <td>${isImage}</td>
+              <td><img src="${imageUrl}"/></td>
               <td>${size}</td>
               <tr>
 EOT
@@ -80,8 +83,11 @@ EOT
         <nav aria-label="...">
           <ul class="pager">
             <li class="previous"><a href="
-            <?php echo("?".http_build_query($files->getPrevPageParams())) ?>">Previous</a></li>
-            <li class="next"><a href="<?php echo("?".http_build_query($files->getNextPageParams())) ?>">Next</a></li>
+              <?php echo("?".$files->getPrevPageQuery()) ?>
+            ">Previous</a></li>
+            <li class="next"><a href="
+              <?php echo("?".$files->getNextPageQuery()) ?>
+            ">Next</a></li>
           </ul>
         </nav>
       </div>
