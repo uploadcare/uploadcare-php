@@ -73,7 +73,7 @@ class FileIterator implements \Iterator,\Countable,\ArrayAccess
    * @var array
    */
 
-  protected $nextPageParams = array();
+  protected $nextPageParams = array('query' => null);
 
    /**
    * Preview page params array
@@ -81,7 +81,7 @@ class FileIterator implements \Iterator,\Countable,\ArrayAccess
    * @var array
    */
 
-  protected $prevPageParams = array();
+  protected $prevPageParams = array('query' => null);
 
 
   /**

@@ -73,6 +73,8 @@ use Uploadcare\Api;
 EOT
 );
             }
+            $prevPageQuery = $files->getPrevPageQuery();
+            $nextPageQuery = $files->getNextPageQuery();
           ?>
           </tboby>
         </table>
@@ -82,12 +84,16 @@ EOT
       <div class="col-md-12">
         <nav aria-label="...">
           <ul class="pager">
+          <?php if($prevPageQuery) { ?>
             <li class="previous"><a href="
-              <?php echo("?".$files->getPrevPageQuery()) ?>
+              <?php echo("?".$prevPageQuery) ?>
             ">Previous</a></li>
+          <?php } ?>
+          <?php if($nextPageQuery) { ?>
             <li class="next"><a href="
-              <?php echo("?".$files->getNextPageQuery()) ?>
+              <?php echo("?".$nextPageQuery) ?>
             ">Next</a></li>
+          <?php } ?>
           </ul>
         </nav>
       </div>
