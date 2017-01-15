@@ -270,6 +270,7 @@ class Api
       'request_limit' => null,
       'stored' => $this->defaultFilters['file']['stored'],
       'removed' => $this->defaultFilters['file']['removed'],
+      'reversed' => false
     ), $options);
 
     if (!empty($options['from']) && !empty($options['to'])) {

@@ -6,17 +6,24 @@ use Uploadcare\Api;
   $pageLimit = 10;
   $from = null;
   $to = null;
+  $reversed = false;
 
   $api = new Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
 
   $fromParam = "from";
   $toParam = "to";
+  $reversedParam = "reversed";
   $offset = 0;
+  $reversed = false;
   if(array_key_exists($fromParam, $_GET)) {
     $from = $_GET[$fromParam];
   }
   if(array_key_exists($toParam, $_GET)) {
     $to = $_GET[$toParam];
+  }
+
+  if(array_key_exists($reversedParam, $_GET)) {
+    $reversed = $_GET[$reversedParam] == "1" ? true : false;
   }
   
   $files = $api->getFileList(array(
@@ -24,7 +31,8 @@ use Uploadcare\Api;
     'from' => $from,
     'to' => $to,
     'removed' => false,
-    'offset' => 0
+    'offset' => 0,
+    'reversed' => $reversed
   ));
 
 ?>

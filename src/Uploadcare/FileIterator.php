@@ -98,7 +98,7 @@ class FileIterator implements \Iterator,\Countable,\ArrayAccess
     $this->requestLimit = $options['request_limit'] ?: $options['limit'];
     unset($options['request_limit']);
 
-//    $this->reverse = $options['to'] && !$options['from'];
+    $this->reverse = $options['reversed'];
 
     $options['limit'] = $this->requestLimit;
 
