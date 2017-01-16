@@ -6,7 +6,7 @@ class Widget
   /**
    * Uploadcare widget version
    */
-  const version = '2.10.2';
+  const version = '2.x';
 
   /**
    * Api instance
@@ -60,7 +60,7 @@ EOT;
       $tail = "uploadcare.min.js";
     }
 
-    return sprintf($this->api->getCdnUri() . '/widget/%s/uploadcare/'. $tail, $version);
+    return sprintf($this->api->getCdnUri() . '/libs/widget/%s/'. $tail, $version);
   }
 
   /**
