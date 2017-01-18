@@ -1,5 +1,10 @@
 # Changelog
 
+## x.x.x
+
+- Update CDN link to the widget
+- Use wildcard for get latest `2.x.x` version of widget
+
 ## 1.5.5
 - bump widget version to 2.9.0 (see [widget changelog][widget changelog])
 - add optional "full" argument to Widget->getScriptTag
