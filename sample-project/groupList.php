@@ -3,7 +3,7 @@ require_once 'config.php';
 require_once '../vendor/autoload.php';
 use Uploadcare\Api;
   
-  $pageLimit = 10;
+  $pageLimit = 5;
   $from = null;
   $to = null;
   $reversed = false;
@@ -26,7 +26,7 @@ use Uploadcare\Api;
     $reversed = $_GET[$reversedParam] == "1" ? true : false;
   }
   
-  $files = $api->getFileList(array(
+  $groups = $api->getGroupList(array(
     'limit' => $pageLimit,
     'from' => $from,
     'to' => $to,
@@ -34,7 +34,8 @@ use Uploadcare\Api;
     'offset' => 0,
     'reversed' => $reversed
   ));
-  $cnt = $files->count();
+  $cnt = $groups->count();
+  
 
 ?>
 <!DOCTYPE html>
@@ -48,7 +49,7 @@ use Uploadcare\Api;
   <div class="container">
     <div class="row">
       <div class="col-md-12">
-        <h3>File list</h3>
+        <h3>Group list</h3>
       </div>
     </div>
     <div class="row">
@@ -58,32 +59,25 @@ use Uploadcare\Api;
           <thead>
             <tr>
               <th>GUID</th>
-              <th>File name</th>
-              <th>Image</th>
-              <th>Size</th>
+              <th>Files Count</th>
             </tr>
           </thead>
           <tboby>
           <?php 
-            foreach ($files as $key => $value) {
-              $uuid = $value->getUuid();
-              $data = $value->__get('data');
-              $fileName = $data["original_filename"];              
-              $imageUrl = $value->preview(50, 50)->getUrl();
-              $size = $data["size"];
+          foreach ($groups as $key => $value) {
+              $uuid = $value->getGroupId();
+              $filesCnt = $value->getFilesQty();
 
               echo (<<<EOT
               <tr>
               <td>${uuid}</td>
-              <td>${fileName}</td>
-              <td><img src="${imageUrl}"/></td>
-              <td>${size}</td>
+              <td>${filesCnt}</td>
               <tr>
 EOT
-);
+              );
             }
-            $prevPageQuery = $files->getPrevPageQuery();
-            $nextPageQuery = $files->getNextPageQuery();
+            $prevPageQuery = $groups->getPrevPageQuery();
+            $nextPageQuery = $groups->getNextPageQuery();
           ?>
           </tboby>
         </table>
