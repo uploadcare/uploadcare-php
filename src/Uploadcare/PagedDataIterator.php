@@ -243,10 +243,17 @@ abstract class PagedDataIterator implements \Iterator,\Countable,\ArrayAccess
 
   public function getNextPageQuery()
   {
-    return $this->nextPageParams['query'];
+    if($this->limit) {
+      return $this->nextPageParams['query'];
+    }
+    return null;
   }
+
   public function getPrevPageQuery()
   {
-    return $this->prevPageParams['query'];
+    if($this->limit) {
+      return $this->prevPageParams['query'];
+    }
+    return null;
   }
 }
