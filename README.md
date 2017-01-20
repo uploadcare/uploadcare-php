@@ -15,6 +15,7 @@ This repo holds a set of libraries to work with
 
 Prior to installing `uploadcare-php` check if you're using
 the [Composer](getcomposer.org) dependency manager for PHP.
+If not, we well recommend you considering it.
 
 Install is quite simple and requires you to take the following
 steps.
@@ -186,13 +187,13 @@ methods like resize, crop, etc.
 $files = $api->getFileList();
 ```
 
-`getFileList` called with no params returns an array of first 20
-`\File` objects. We use pagination, so if you'd like to request another
-page, try this,
+`getFileList()` called with no params returns an array of 100 `\File` objects.
+We use pagination. Accessing next and previous pages (chunks) is performed
+as follows:
 
 ```php
-$page = 2;
-$files = $api->getFileList($page);
+$files = $api->getNextPageQuery();
+$files = $api->getPrevPageQuery();
 ```
 
 To learn more about stuff like page count and number of files per page,
