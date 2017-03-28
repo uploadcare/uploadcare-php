@@ -203,7 +203,7 @@ abstract class PagedDataIterator implements \Iterator,\Countable,\ArrayAccess
 
   
   /**
-   * This method should be overriten! Returns the total count of the records.
+   * This method should be overridden/implemented! Returns the total count of the records.
    *
    * @param Api $api
    * @param array $ptions
