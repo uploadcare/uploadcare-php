@@ -90,7 +90,7 @@ class Api
    *
    * @var string
    */
-  public $api_version = '0.4';
+  public $api_version = '0.5';
 
   /**
    * Default values of filters
@@ -172,7 +172,7 @@ class Api
     {
       throw new \Exception('Only \DateTime objects allowed');
     }
-    
+
     if (is_string($datetime))
     {
       $datetime = new \DateTime($datetime);
@@ -310,6 +310,7 @@ class Api
    *   - $options['removed'] - True to include only removed files,
    *     False to exclude, Null will not exclude anything.
    *     The default is False.
+   *   - $options['reversed'] - If True then result list will be reversed
    *
    * @param array $options
    * @return FileIterator
@@ -343,10 +344,23 @@ class Api
   }
 
   /**
-   * Return an array of groups
+   * Return an iterator of Group objects to work with.
    *
-   * @param $from string
-   * @return array
+   * This class provides iteration over all uploaded file groups. You can specify:
+   *   - $options['from'] - a DateTime object or string from which objects will be iterated;
+   *   - $options['to'] - a DateTime object or string to which objects will be iterated;
+   *   - $options['limit'] - a total number of objects to be iterated;
+   *     If not specified, all available objects are iterated;
+   *   - $options['request_limit'] - a number of objects to be downloaded per request.
+   *   - $options['stored'] - True to include only stored objects,
+   *     False to exclude, Null is default, will not exclude anything;
+   *   - $options['removed'] - True to include only removed file groups,
+   *     False to exclude, Null will not exclude anything.
+   *     The default is False.
+   *   - $options['reversed'] - If True then result list will be reversed
+   *
+   * @param array $options
+   * @return FileIterator
    */
   public function getGroupList($options = array())
   {
@@ -551,7 +565,7 @@ class Api
         return sprintf('/files/%s/', $params['uuid']);
 
       case 'group_list':
-        return '/groups/'.$this->__getQueryString($params, '?');
+        return '/groups/' . $this->__getQueryString($params, '?');
 
       case 'group':
         if (array_key_exists('uuid', $params) == false) {

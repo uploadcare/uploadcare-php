@@ -34,6 +34,7 @@ use Uploadcare\Api;
     'offset' => 0,
     'reversed' => $reversed
   ));
+
   $cnt = $files->count();
 
 ?>

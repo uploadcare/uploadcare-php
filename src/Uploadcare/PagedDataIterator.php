@@ -176,7 +176,7 @@ abstract class PagedDataIterator implements \Iterator,\Countable,\ArrayAccess
   }
 
   /**
-   * This method should be overriten! Uses to get next data chunk from server.
+   * This method should be overridden/implemented is used to get next data chunk from REST API.
    *
    * @param Api $api
    * @param array $ptions
