@@ -69,14 +69,16 @@ use Uploadcare\Api;
             foreach ($files as $key => $value) {
               $uuid = $value->getUuid();
               $data = $value->__get('data');
-              $fileName = $data["original_filename"];              
+              $fileName = $data["original_filename"];
               $imageUrl = $value->preview(50, 50)->getUrl();
               $size = $data["size"];
 
               echo (<<<EOT
               <tr>
               <td>${uuid}</td>
-              <td>${fileName}</td>
+              <td>
+                <a href="editFile.php?fileId=${uuid}&message=Edit file">${fileName}</a>
+              </td>
               <td><img src="${imageUrl}"/></td>
               <td>${size}</td>
               <tr>

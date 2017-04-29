@@ -2,7 +2,7 @@
 // This is just some config with public and secret keys for UC.
 require_once 'config.php';
 // requesting autoloader that got uploadcare in there
-require_once 'vendor/autoload.php';
+require_once '../vendor/autoload.php';
 // using api
 use Uploadcare\Api;
 
