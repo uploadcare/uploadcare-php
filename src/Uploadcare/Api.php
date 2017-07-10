@@ -415,27 +415,6 @@ class Api
       return (string)$data->detail;
     }
   }
-  
-  /**
-   * Create local copy
-   *
-   * @param string $source CDN URL or file's uuid you need to copy.
-   * @param boolean $store (Optional) true to store files while copying. If stored, files won’t be automatically deleted within 24 hours after copying. false to not store files, default.
-   * @return File|string
-   */
-  public function createLocalCopy($source, $store = false )
-  {
-    $data = $this->__preparedRequest('file_copy', 'POST', array(), array('source' => $source, 'store' => $store));
-    if (array_key_exists('result', (array)$data) == true) {
-      if ($data->type == 'file') {
-        return new File((string)$data->result->uuid, $this);
-      } else {
-        return (string)$data->result;
-      }
-    } else {
-      return (string)$data->detail;
-    }
-  }
 
   /**
    * Run raw request to REST.
