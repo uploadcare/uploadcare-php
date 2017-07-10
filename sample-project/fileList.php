@@ -76,9 +76,7 @@ use Uploadcare\Api;
               echo (<<<EOT
               <tr>
               <td>${uuid}</td>
-              <td>
-                <a href="editFile.php?fileId=${uuid}&message=Edit file">${fileName}</a>
-              </td>
+              <td>${fileName}</td>
               <td><img src="${imageUrl}"/></td>
               <td>${size}</td>
               <tr>
