@@ -4,8 +4,10 @@ require_once __DIR__.'/../config.php';
 require_once __DIR__.'/../../vendor/autoload.php';
 
 use Uploadcare\Exceptions\ThrottledRequestException;
+use PHPUnit\Framework\TestCase;
 
-class ThrottledRequestExceptionTest extends \PHPUnit_Framework_TestCase
+
+class ThrottledRequestExceptionTest extends TestCase
 {
   /** @var ThrottledRequestException */
   private $throttled_request_exception;

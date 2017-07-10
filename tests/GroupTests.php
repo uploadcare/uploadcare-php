@@ -6,9 +6,10 @@ require_once __DIR__.'/../vendor/autoload.php';
 use Uploadcare\Api;
 use Uploadcare\File;
 use Uploadcare\Exceptions\ThrottledRequestException;
+use PHPUnit\Framework\TestCase;
 
 
-class GroupTest extends PHPUnit_Framework_TestCase
+class GroupTest extends TestCase
 {
   /** @var Uploadcare\Api */
   private $api;
