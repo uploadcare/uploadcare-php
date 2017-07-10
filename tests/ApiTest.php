@@ -6,9 +6,10 @@ require_once __DIR__.'/../vendor/autoload.php';
 use Uploadcare\Api;
 use Uploadcare\File;
 use Uploadcare\Exceptions\ThrottledRequestException;
+use PHPUnit\Framework\TestCase;
 
 
-class ApiTest extends PHPUnit_Framework_TestCase
+class ApiTest extends TestCase
 {
   /** @var Uploadcare\Api */
   private $api;
@@ -440,7 +441,7 @@ class ApiTest extends PHPUnit_Framework_TestCase
       ->method('request')
       ->willThrowException($this->getThrottledRequestException());
 
-    $this->setExpectedException('\Uploadcare\Exceptions\ThrottledRequestException');
+    $this->expectException('\Uploadcare\Exceptions\ThrottledRequestException');
 
     $this->apiMock->__preparedRequest('root');
   }
