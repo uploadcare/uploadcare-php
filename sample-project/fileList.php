@@ -26,6 +26,26 @@ use Uploadcare\Api;
     $reversed = $_GET[$reversedParam] == "1" ? true : false;
   }
   
+// Reading Post params
+  $action = null;
+
+  $actionParam = 'action';
+  if(array_key_exists($actionParam, $_POST)) {
+    $action = $_POST[$actionParam];
+  }
+  
+  $dataParam = 'data';
+  if(array_key_exists($dataParam, $_POST)) {
+    $data = json_decode($_POST[$dataParam]);
+  }
+  
+  if($action == 'store') {
+    $processedFiles = $api->StoreMultipleFiles($data);
+  }
+  if($action == 'delete') {
+    $processedFiles = $api->DeleteMultipleFiles($data);
+  }
+
   $files = $api->getFileList(array(
     'limit' => $pageLimit,
     'from' => $from,
@@ -34,7 +54,7 @@ use Uploadcare\Api;
     'offset' => 0,
     'reversed' => $reversed
   ));
-
+  
   $cnt = $files->count();
 
 ?>
@@ -54,14 +74,27 @@ use Uploadcare\Api;
     </div>
     <div class="row">
       <div class="col-md-12">
-   
-        <table class="table table-striped">
+        <div class="row">
+          <div class="col-md-12">
+            <button class="btn btn-success" id="storeBtn">Store</button>
+            <button class="btn btn-danger" id="deleteBtn">Delete</button>
+          </div>
+        </div>
+        <form action="" method="POST" id="storeForm">
+          <input type="hidden" name="action" value="store">
+        </form>
+        <form action="" method="POST" id="deleteForm">
+          <input type="hidden" name="action" value="delete">
+        </form>
+        <table class="table table-striped" id="fileListTable">
           <thead>
             <tr>
+              <th></th>
               <th>GUID</th>
               <th>File name</th>
               <th>Image</th>
               <th>Size</th>
+              <th>State</th>
             </tr>
           </thead>
           <tboby>
@@ -72,13 +105,22 @@ use Uploadcare\Api;
               $fileName = $data["original_filename"];
               $imageUrl = $value->preview(50, 50)->getUrl();
               $size = $data["size"];
+              $state = $data["datetime_removed"] ?
+                '<span class="label label-danger">Removed</span>' :
+                  ($data["datetime_stored"] ?
+                    '<span class="label label-success">Stored</span>' :
+                    '<span class="label label-primary">Uploaded</span>');
 
               echo (<<<EOT
               <tr>
+              <td>
+                <input type="checkbox" data-fileId="${uuid}"/>
+              </td>
               <td>${uuid}</td>
               <td>${fileName}</td>
               <td><img src="${imageUrl}"/></td>
               <td>${size}</td>
+              <td>${state}</td>
               <tr>
 EOT
 );
@@ -110,6 +152,38 @@ EOT
     </div>
   </div>
   <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script> 
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <script type="text/javascript">
+  $(function() {
+    console.log('page loaded');
+    var storeForm = $('#storeForm');
+    var deleteForm = $('#deleteForm');
+    var submitfunc = function() {
+      var checkedData = $('input[type="checkbox"]:checked');
+      var formData = [];
+      checkedData.toArray().forEach(function(el) {
+        formData.push($(el).attr('data-fileId'));
+      });
+      formData = JSON.stringify(formData);
+      jQuery('<input/>', {
+        type: 'hidden',
+        name: 'data',
+        value: formData
+      }).appendTo(this);
+      return true;
+    };
+
+    storeForm.submit(submitfunc);
+    deleteForm.submit(submitfunc);
+
+    $('#storeBtn').click(function(ev){
+      storeForm.submit();
+    });
+    
+    $('#deleteBtn').click(function(ev){
+      deleteForm.submit();
+    });
+  });
+  </script>
 </body>
 </html>
