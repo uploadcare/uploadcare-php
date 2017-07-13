@@ -436,17 +436,12 @@ class Api
     $ch = curl_init(sprintf('https://%s%s', $this->api_host, $path));
     $this->__setRequestType($ch, $method);
     $this->__setHeaders($ch, $headers, $data);
-
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLINFO_HEADER_OUT, true);
-    curl_setopt($ch, CURLOPT_VERBOSE, true);
     
     $response = curl_exec($ch);
     if ($response === false) {
       throw new \Exception(curl_error($ch));
     }
     $ch_info = curl_getinfo($ch);
-    $sentHdr = $ch_info['request_header'];
 
     $header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
     $header = substr($response, 0, $header_size);

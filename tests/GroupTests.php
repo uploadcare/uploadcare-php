@@ -49,8 +49,7 @@ class GroupTest extends TestCase
     $this->assertTrue(is_object($groups));
     $this->assertTrue($groups instanceof \Iterator);
     $this->assertTrue($groups instanceof Uploadcare\GroupIterator);
-    $this->assertEquals(20, count($groups));
-
+    
     $groups = $this->api->getGroupList(array(
       'limit' => 2,
     ));
@@ -58,8 +57,7 @@ class GroupTest extends TestCase
     $this->assertTrue(is_object($groups));
     $this->assertTrue($groups instanceof \Iterator);
     $this->assertTrue($groups instanceof Uploadcare\GroupIterator);
-    $this->assertEquals(2, count($groups));
-
+    
     foreach ($groups as $g) {
       $this->assertTrue(get_class($g) == 'Uploadcare\Group');
     }
