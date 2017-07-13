@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.5.6
+- added batch files methods into api: `$api->StoreMultipleFiles` and `$api->DeleteMultipleFiles`
+
 ## 1.5.5
 - bump widget version to 2.9.0 (see [widget changelog][widget changelog])
 - add optional "full" argument to Widget->getScriptTag
