@@ -470,7 +470,7 @@ $api = new Uploadcare\Api(UC_PUBLIC_KEY, UC_SECRET_KEY, null, "kx.ucarecdn.com")
 
 Inside "tests" directory you can find tests for PHP 5.3 and up.
 
-These tests are based on PHPUnit, so you must have PHPUnit installed on your system to use them.
+These tests are based on PHPUnit, so you must have PHPUnit v4.8.36 installed on your system to use them.
 
 To execute the tests, run the following commands:
 
