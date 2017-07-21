@@ -19,7 +19,8 @@ before_script:
   - composer install --dev
   - wget -O phpunit.phar -q https://phar.phpunit.de/phpunit-4.8.phar
 
-script: php ./phpunit.phar
+script: 
+  - php ./phpunit.phar
 
 notifications:
   email:
