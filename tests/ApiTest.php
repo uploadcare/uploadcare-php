@@ -441,7 +441,7 @@ class ApiTest extends TestCase
       ->method('request')
       ->willThrowException($this->getThrottledRequestException());
 
-    $this->expectException('\Uploadcare\Exceptions\ThrottledRequestException');
+    $this->setExpectedException('\Uploadcare\Exceptions\ThrottledRequestException');
 
     $this->apiMock->__preparedRequest('root');
   }
