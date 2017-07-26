@@ -417,6 +417,59 @@ class Api
   }
   
   /**
+   * Copy file to the Uploadcare storage
+   *
+   * @param string $source CDN URL or file's uuid you need to copy.
+   * @param boolean $store MUST be either true or false. true to store files while copying. If stored, files won’t be automatically deleted within 24 hours after copying. false * to not store files, default.
+   * @return File|string
+   */
+  public function createLocalCopy($source, $store = true) {
+    $data = $this->__preparedRequest('file_copy', 'POST', array(), array('source' => $source, 'store' => $store));
+    if (array_key_exists('result', (array)$data) == true) {
+      if ($data->type == 'file') {
+        return new File((string)$data->result->uuid, $this);
+      } else {
+        return (string)$data->result;
+      }
+    } else {
+      return (string)$data->detail;
+    }    
+  }
+
+  /**
+   * Copy file to the external storage
+   *
+   * @param string $source CDN URL or file's uuid you need to copy.
+   * @param string $target Name of custom storage connected to your project. Uploadcare storage is used if target is absent.
+   * @param boolean $make_public (Optional) MUST be either true or false. true to make copied files available via public links. false to reverse the behavior.
+   * @param string $pattern (Optional) Applies to custom storage usage scenario only. The parameter is used to specify file names Uploadcare passes to custom storages. In case parameter is omitted, custom storage pattern is used.
+   *
+   * Allowed values:
+   *
+   * ${default} = ${uuid}/${auto_filename}
+   * ${auto_filename} = ${filename} ${effects} ${ext}
+   * ${effects} = CDN operations put into a URL
+   * ${filename} = original filename, no extension
+   * ${uuid} = file UUID
+   * ${ext} = file extension, leading dot, e.g. .jpg
+   *
+   * @return File|string
+   */
+  public function createRemoteCopy($source, $target, $make_public = true, $pattern = '${default}') {
+    if(!$target) {
+      throw new \Exception('$target parameter should not be empty. If you want to make a copy within Uploadcare storage use `createLocalCopy` instead.');
+    }
+    $data = $this->__preparedRequest('file_copy', 'POST', array(), array('source' => $source, 'target' => $target, 
+      'make_public' => $make_public, 'pattern' => $pattern));
+    if (array_key_exists('result', (array)$data) == true) {
+      return (string)$data->result;
+    } else {
+      return (string)$data->detail;
+    }
+  }
+  
+  
+  /**
    * Store multiple files
    *
    * @param string $filesUuidArr uploaded file's uuid array you need to store.
