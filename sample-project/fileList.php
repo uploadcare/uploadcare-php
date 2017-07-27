@@ -2,7 +2,7 @@
 require_once 'config.php';
 require_once '../vendor/autoload.php';
 use Uploadcare\Api;
-  
+
   $pageLimit = 10;
   $from = null;
   $to = null;
@@ -16,7 +16,7 @@ use Uploadcare\Api;
   $reversedParam = "reversed";
   $limitParam = "limit";
   $removedParam = "removed";
-  
+
   $offset = 0;
   $reversed = false;
   if(array_key_exists($fromParam, $_GET)) {
@@ -34,7 +34,7 @@ use Uploadcare\Api;
   if(array_key_exists($reversedParam, $_GET)) {
     $reversed = $_GET[$reversedParam] == "1" ? true : false;
   }
-  
+
 // Reading Post params
   $action = null;
 
@@ -42,12 +42,12 @@ use Uploadcare\Api;
   if(array_key_exists($actionParam, $_POST)) {
     $action = $_POST[$actionParam];
   }
-  
+
   $dataParam = 'data';
   if(array_key_exists($dataParam, $_POST)) {
     $data = json_decode($_POST[$dataParam]);
   }
-  
+
   if($action == 'store') {
     $processedFiles = $api->storeMultipleFiles($data);
   }
@@ -63,7 +63,7 @@ use Uploadcare\Api;
     'offset' => 0,
     'reversed' => $reversed
   ));
-  
+
   $cnt = $files->count();
 
 ?>
