@@ -5,7 +5,7 @@
 - Use wildcard for get latest `2.x.x` version of widget
 
 ## 1.5.6
-- added batch files methods into api: `$api->StoreMultipleFiles` and `$api->DeleteMultipleFiles`
+- added batch files methods into api: `$api->storeMultipleFiles` and `$api->deleteMultipleFiles`
 - added new copy methods into api: `$api->createLocalCopy` and `$api->createRemoteCopy`
 
 ## 1.5.5
