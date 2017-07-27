@@ -90,7 +90,7 @@ class Api
    *
    * @var string
    */
-  public $api_version = '0.4';
+  public $api_version = '0.5';
 
   /**
    * Default values of filters
@@ -178,7 +178,7 @@ class Api
       $datetime = new \DateTime($datetime);
     }
 
-    return $datetime->format(\DateTime::ATOM);
+    return $datetime->format("Y-m-d\TH:i:s.uP");
   }
 
   /**
@@ -193,6 +193,23 @@ class Api
   }
 
   /**
+   * Get portion of groups from server respecting filters
+   *
+   * @param array $options
+   * @return array
+   */
+  public function getGroupsChunk($options = array(), $reverse = false)
+  {
+    $data = $this->__preparedRequest('group_list', 'GET', $options);
+    $groups_raw = (array)$data->results;
+    $resultArr = array();
+    foreach ($groups_raw as $group_raw) {
+      $resultArr[] = new Group($group_raw->id, $this);
+    }
+    return $this->__preparePagedParams($data, $reverse, $resultArr);
+  }
+
+  /**
    * Get portion of files from server respecting filters
    *
    * @param array $options
@@ -201,24 +218,14 @@ class Api
   public function getFilesChunk($options = array(), $reverse = false)
   {
     $data = $this->__preparedRequest('file_list', 'GET', $options);
-
     $files_raw = (array)$data->results;
-    $result = array();
+    $resultArr = array();
     foreach ($files_raw as $file_raw) {
-      $result[] = new File($file_raw->uuid, $this, $file_raw);
+      $resultArr[] = new File($file_raw->uuid, $this, $file_raw);
     }
-
-    parse_str(parse_url(!$reverse ? $data->next : $data->previous, PHP_URL_QUERY), $params);
-
-    if ($reverse) {
-      $result = array_reverse($result);
-    }
-
-    return array(
-      'params' => $params,
-      'files' => $result,
-    );
+    return $this->__preparePagedParams($data, $reverse, $resultArr);
   }
+
 
   /**
    * Return count of files respecting filters
@@ -231,6 +238,21 @@ class Api
     $options['limit'] = 1;
 
     $data = $this->__preparedRequest('file_list', 'GET', $options);
+
+    return $data->total;
+  }
+
+  /**
+   * Return count of groups respecting filters
+   *
+   * @param array $options
+   * @return mixed
+   */
+  public function getGroupsCount($options = array())
+  {
+    $options['limit'] = 1;
+
+    $data = $this->__preparedRequest('group_list', 'GET', $options);
 
     return $data->total;
   }
@@ -249,6 +271,7 @@ class Api
    *   - $options['removed'] - True to include only removed files,
    *     False to exclude, Null will not exclude anything.
    *     The default is False.
+   *   - $options['reversed'] - If True then result list will be reversed
    *
    * @param array $options
    * @return FileIterator
@@ -262,6 +285,7 @@ class Api
       'request_limit' => null,
       'stored' => $this->defaultFilters['file']['stored'],
       'removed' => $this->defaultFilters['file']['removed'],
+      'reversed' => false
     ), $options);
 
     if (!empty($options['from']) && !empty($options['to'])) {
@@ -281,24 +305,44 @@ class Api
   }
 
   /**
-   * Return an array of groups
+   * Return an iterator of Group objects to work with.
    *
-   * @param $from string
-   * @return array
+   * This class provides iteration over all uploaded file groups. You can specify:
+   *   - $options['from'] - a DateTime object or string from which objects will be iterated;
+   *   - $options['to'] - a DateTime object or string to which objects will be iterated;
+   *   - $options['limit'] - a total number of objects to be iterated;
+   *     If not specified, all available objects are iterated;
+   *   - $options['request_limit'] - a number of objects to be downloaded per request.
+   *   - $options['stored'] - True to include only stored objects,
+   *     False to exclude, Null is default, will not exclude anything;
+   *   - $options['removed'] - True to include only removed file groups,
+   *     False to exclude, Null will not exclude anything.
+   *     The default is False.
+   *   - $options['reversed'] - If True then result list will be reversed
+   *
+   * @param array $options
+   * @return FileIterator
    */
-  public function getGroupList($from = null)
+  public function getGroupList($options = array())
   {
-    $params = array();
-    if ($from !== null) {
-      $params['from'] = $from;
+    $options = array_replace(array(
+      'from' => null,
+      'to' => null,
+      'limit' => null,
+      'request_limit' => null,
+      'stored' => $this->defaultFilters['file']['stored'],
+      'removed' => $this->defaultFilters['file']['removed'],
+      'reversed' => false
+    ), $options);
+
+    if (!empty($options['from']) && !empty($options['to'])) {
+      throw new \Exception('Only one of "from" and "to" arguments is allowed');
     }
-    $data = $this->__preparedRequest('group_list', 'GET', $params);
-    $groups = (array)$data->results;
-    $result = array();
-    foreach ($groups as $group) {
-      $result[] = new Group($group->id, $this);
-    }
-    return $result;
+
+    $options['from'] = self::dateTimeString($options['from']);
+    $options['to'] = self::dateTimeString($options['to']);
+
+    return  new \Uploadcare\GroupIterator($this, $options);;
   }
 
   /**
@@ -427,6 +471,34 @@ class Api
 
     return null;
   }
+  
+  /**
+   * Prepares paged params array from chunk request result.
+   *
+   * @param object $data
+   * @param boolean $reverse
+   * @param array $resultArr
+   * @return array
+   */
+  private function __preparePagedParams($data, $reverse, $resultArr) {
+    $nextParamsArr = parse_url($data->next);
+    $prevParamsArr = parse_url($data->previous);
+    $nextParamsArr = array_replace(array('query' => null), $nextParamsArr);
+    $prevParamsArr = array_replace(array('query' => null), $prevParamsArr);
+
+    parse_str(parse_url(!$reverse ? $data->next : $data->previous, PHP_URL_QUERY), $params);
+
+    if ($reverse) {
+      $resultArr = array_reverse($resultArr);
+    }
+
+    return array(
+      'nextParams' => $reverse ? $prevParamsArr : $nextParamsArr,
+      'prevParams' => !$reverse ? $prevParamsArr : $nextParamsArr,
+      'params' => $params,
+      'data' => $resultArr,
+    );
+  }
 
   /**
    * Convert query array to encoded query string.
@@ -482,14 +554,7 @@ class Api
         return sprintf('/files/%s/', $params['uuid']);
 
       case 'group_list':
-        $allowedParams = array('from');
-        $queryAr = array();
-        foreach ($allowedParams as $paramName) {
-          if (isset($params[$paramName])) {
-            $queryAr[] = sprintf('%s=%s', $paramName, $params[$paramName]);
-          }
-        }
-        return '/groups/' . ($queryAr ? '?' . join('&', $queryAr) : '');
+        return '/groups/' . $this->__getQueryString($params, '?');
 
       case 'group':
         if (array_key_exists('uuid', $params) == false) {
