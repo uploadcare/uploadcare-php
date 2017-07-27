@@ -65,6 +65,13 @@ class Api
   private $userAgentName = 'PHP Uploadcare Module';
 
   /**
+   * Maximum files number can be processed in file batch operaions
+   *
+   * @var int
+   */
+  private $batchFilesChunkSize = 100;
+
+  /**
    * Widget instance.
    *
    * @var Widget
@@ -400,7 +407,7 @@ class Api
   }
   
   /**
-   * Run request to process multiple files
+   * Process multiple files with chunk support
    *
    * @param string $filesUuidArr uploaded file's uuid array you need to process.
    * @param string $request_type request type, could be PUT or DELETE .
@@ -408,6 +415,42 @@ class Api
    */
   public function __batchProcessFiles($filesUuidArr, $request_type)
   {
+    $filesChunkedArr = array_chunk($filesUuidArr, $this->batchFilesChunkSize);
+    $filesArr = array();
+    $problemsArr = array();
+    $lastStatus = '';
+    foreach ($filesChunkedArr as $chunk) {
+      $res = $this->__batchProcessFilesChunk($chunk, $request_type);
+      $lastStatus = $res['status'];
+      if($lastStatus == "ok") {
+        $problemsObj = $res['problems'];
+        if(count(get_object_vars($problemsObj)) > 0) {
+          $problemsArr [] = $problemsObj;
+        }
+        $filesArr = array_merge($filesArr, $res['files']);
+      } else {
+        throw new \Exception('Error process multiple files', $res);
+      }
+    }
+    return array(
+      'status' => $lastStatus,
+      'files' => $filesArr,
+      'problems' => $problemsArr
+    );
+  }
+
+  /**
+   * Run request to process multiple files
+   *
+   * @param string $filesUuidArr uploaded file's uuid array you need to process.
+   * @param string $request_type request type, could be PUT or DELETE .
+   * @return array with processed files and problems if any
+   */
+  public function __batchProcessFilesChunk($filesUuidArr, $request_type)
+  {
+    if(count($filesUuidArr) > $this->batchFilesChunkSize ) {
+      throw new \Exception('Files number should not exceed '.$this->batchFilesChunkSize.' items per request.');
+    }
     $data = $this->__preparedRequest('files_storage', $request_type, array(), $filesUuidArr);
     $files_raw = (array)$data->result;
     $result = array();
