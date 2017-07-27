@@ -3,16 +3,20 @@ require_once 'config.php';
 require_once '../vendor/autoload.php';
 use Uploadcare\Api;
   
-  $pageLimit = 5;
+  $pageLimit = 10;
   $from = null;
   $to = null;
   $reversed = false;
+  $removed = false;
 
   $api = new Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
 
   $fromParam = "from";
   $toParam = "to";
   $reversedParam = "reversed";
+  $limitParam = "limit";
+  $removedParam = "removed";
+  
   $offset = 0;
   $reversed = false;
   if(array_key_exists($fromParam, $_GET)) {
@@ -21,7 +25,12 @@ use Uploadcare\Api;
   if(array_key_exists($toParam, $_GET)) {
     $to = $_GET[$toParam];
   }
-
+  if(array_key_exists($limitParam, $_GET)) {
+    $pageLimit = $_GET[$limitParam];
+  }
+  if(array_key_exists($removedParam, $_GET)) {
+    $removed = $_GET[$removedParam];
+  }
   if(array_key_exists($reversedParam, $_GET)) {
     $reversed = $_GET[$reversedParam] == "1" ? true : false;
   }
@@ -30,7 +39,7 @@ use Uploadcare\Api;
     'limit' => $pageLimit,
     'from' => $from,
     'to' => $to,
-    'removed' => false,
+    'removed' => $removed,
     'offset' => 0,
     'reversed' => $reversed
   ));

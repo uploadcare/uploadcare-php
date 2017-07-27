@@ -200,32 +200,13 @@ class Api
    */
   public function getGroupsChunk($options = array(), $reverse = false)
   {
-        $data = $this->__preparedRequest('group_list', 'GET', $options);
-   
+    $data = $this->__preparedRequest('group_list', 'GET', $options);
     $groups_raw = (array)$data->results;
-    $result = array();
+    $resultArr = array();
     foreach ($groups_raw as $group_raw) {
-      $result[] = new Group($group_raw->id, $this);
+      $resultArr[] = new Group($group_raw->id, $this);
     }
-
-    $nextParamsArr = parse_url($data->next);
-    $prevParamsArr = parse_url($data->previous);
-
-    $nextParamsArr = array_replace(array('query' => null), $nextParamsArr);
-    $prevParamsArr = array_replace(array('query' => null), $prevParamsArr);
-
-    parse_str(parse_url(!$reverse ? $data->next : $data->previous, PHP_URL_QUERY), $params);
-
-    if ($reverse) {
-      $result = array_reverse($result);
-    }
-
-    return array(
-      'nextParams' => $reverse ? $prevParamsArr : $nextParamsArr,
-      'prevParams' => !$reverse ? $prevParamsArr : $nextParamsArr,
-      'params' => $params,
-      'data' => $result,
-    );
+    return $this->__preparePagedParams($data, $reverse, $resultArr);
   }
 
   /**
@@ -236,33 +217,13 @@ class Api
    */
   public function getFilesChunk($options = array(), $reverse = false)
   {
-
     $data = $this->__preparedRequest('file_list', 'GET', $options);
-   
     $files_raw = (array)$data->results;
-    $result = array();
+    $resultArr = array();
     foreach ($files_raw as $file_raw) {
-      $result[] = new File($file_raw->uuid, $this, $file_raw);
+      $resultArr[] = new File($file_raw->uuid, $this, $file_raw);
     }
-
-    $nextParamsArr = parse_url($data->next);
-    $prevParamsArr = parse_url($data->previous);
-
-    $nextParamsArr = array_replace(array('query' => null), $nextParamsArr);
-    $prevParamsArr = array_replace(array('query' => null), $prevParamsArr);
-
-    parse_str(parse_url(!$reverse ? $data->next : $data->previous, PHP_URL_QUERY), $params);
-
-    if ($reverse) {
-      $result = array_reverse($result);
-    }
-
-    return array(
-      'nextParams' => $reverse ? $prevParamsArr : $nextParamsArr,
-      'prevParams' => !$reverse ? $prevParamsArr : $nextParamsArr,
-      'params' => $params,
-      'data' => $result,
-    );
+    return $this->__preparePagedParams($data, $reverse, $resultArr);
   }
 
 
@@ -509,6 +470,34 @@ class Api
     }
 
     return null;
+  }
+  
+  /**
+   * Prepares paged params array from chunk request result.
+   *
+   * @param object $data
+   * @param boolean $reverse
+   * @param array $resultArr
+   * @return array
+   */
+  private function __preparePagedParams($data, $reverse, $resultArr) {
+    $nextParamsArr = parse_url($data->next);
+    $prevParamsArr = parse_url($data->previous);
+    $nextParamsArr = array_replace(array('query' => null), $nextParamsArr);
+    $prevParamsArr = array_replace(array('query' => null), $prevParamsArr);
+
+    parse_str(parse_url(!$reverse ? $data->next : $data->previous, PHP_URL_QUERY), $params);
+
+    if ($reverse) {
+      $resultArr = array_reverse($resultArr);
+    }
+
+    return array(
+      'nextParams' => $reverse ? $prevParamsArr : $nextParamsArr,
+      'prevParams' => !$reverse ? $prevParamsArr : $nextParamsArr,
+      'params' => $params,
+      'data' => $resultArr,
+    );
   }
 
   /**
