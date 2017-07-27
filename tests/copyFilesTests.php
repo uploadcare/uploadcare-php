@@ -41,6 +41,7 @@ class CopyFilesTest extends TestCase
     try {
       $f1 = $this->api->uploader->fromPath(dirname(__FILE__).'/test.jpg');
       $fileUuid = $f1->getUuid();
+      usleep(3000000); // wait 3 sec to give a time to prepare file and avoid error: "File is not ready yet."
       $fRes = $this->api->createLocalCopy($fileUuid, true);
       $f1->delete();
       $this->assertTrue(get_class($fRes) == 'Uploadcare\File');
