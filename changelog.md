@@ -6,6 +6,7 @@
 
 ## 1.5.6
 - added batch files methods into api: `$api->storeMultipleFiles` and `$api->deleteMultipleFiles`
+- added new copy methods into api: `$api->createLocalCopy` and `$api->createRemoteCopy`
 
 ## 1.5.5
 - bump widget version to 2.9.0 (see [widget changelog][widget changelog])
