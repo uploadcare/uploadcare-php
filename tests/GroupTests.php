@@ -6,9 +6,10 @@ require_once __DIR__.'/../vendor/autoload.php';
 use Uploadcare\Api;
 use Uploadcare\File;
 use Uploadcare\Exceptions\ThrottledRequestException;
+use PHPUnit\Framework\TestCase;
 
 
-class GroupTest extends PHPUnit_Framework_TestCase
+class GroupTest extends TestCase
 {
   /** @var Uploadcare\Api */
   private $api;
@@ -48,8 +49,7 @@ class GroupTest extends PHPUnit_Framework_TestCase
     $this->assertTrue(is_object($groups));
     $this->assertTrue($groups instanceof \Iterator);
     $this->assertTrue($groups instanceof Uploadcare\GroupIterator);
-    $this->assertEquals(20, count($groups));
-
+    
     $groups = $this->api->getGroupList(array(
       'limit' => 2,
     ));
@@ -57,8 +57,7 @@ class GroupTest extends PHPUnit_Framework_TestCase
     $this->assertTrue(is_object($groups));
     $this->assertTrue($groups instanceof \Iterator);
     $this->assertTrue($groups instanceof Uploadcare\GroupIterator);
-    $this->assertEquals(2, count($groups));
-
+    
     foreach ($groups as $g) {
       $this->assertTrue(get_class($g) == 'Uploadcare\Group');
     }

@@ -1,6 +1,6 @@
 <?php
 require_once 'config.php';
-require_once 'vendor/autoload.php';
+require_once '../vendor/autoload.php';
 use Uploadcare\Api;
 
 $file_id = $_POST['qs-file'];

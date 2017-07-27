@@ -1,6 +1,6 @@
 <?php
 require_once 'config.php';
-require_once 'vendor/autoload.php';
+require_once '../vendor/autoload.php';
 use Uploadcare\Api;
 $uc_handler = new Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
 ?>

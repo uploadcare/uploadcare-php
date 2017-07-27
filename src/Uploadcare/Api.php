@@ -376,6 +376,50 @@ class Api
       return (string)$data->detail;
     }
   }
+  
+  /**
+   * Store multiple files
+   *
+   * @param string $filesUuidArr uploaded file's uuid array you need to store.
+   * @return array with stored files and problems if any
+   */
+  public function storeMultipleFiles($filesUuidArr)
+  {
+    return $this->__batchProcessFiles($filesUuidArr, 'PUT');
+  }
+  
+  /**
+   * Delete multiple files
+   *
+   * @param string $filesUuidArr uploaded or stored file's uuid array you need to delete.
+   * @return array with deleted files and problems if any
+   */
+  public function deleteMultipleFiles($filesUuidArr)
+  {
+    return $this->__batchProcessFiles($filesUuidArr, 'DELETE');
+  }
+  
+  /**
+   * Run request to process multiple files
+   *
+   * @param string $filesUuidArr uploaded file's uuid array you need to process.
+   * @param string $request_type request type, could be PUT or DELETE .
+   * @return array with processed files and problems if any
+   */
+  public function __batchProcessFiles($filesUuidArr, $request_type)
+  {
+    $data = $this->__preparedRequest('files_storage', $request_type, array(), $filesUuidArr);
+    $files_raw = (array)$data->result;
+    $result = array();
+    foreach ($files_raw as $file_raw) {
+      $result[] = new File($file_raw->uuid, $this, $file_raw);
+    }
+    return array(
+      'status' => (string)$data->status,
+      'files' => $result,
+      'problems' => $data->problems
+    );
+  }
 
   /**
    * Run raw request to REST.
@@ -392,7 +436,7 @@ class Api
     $ch = curl_init(sprintf('https://%s%s', $this->api_host, $path));
     $this->__setRequestType($ch, $method);
     $this->__setHeaders($ch, $headers, $data);
-
+    
     $response = curl_exec($ch);
     if ($response === false) {
       throw new \Exception(curl_error($ch));
@@ -547,6 +591,9 @@ class Api
       case 'file_copy':
         return '/files/';
 
+      case 'files_storage':
+        return '/files/storage/';
+
       case 'file':
         if (array_key_exists('uuid', $params) == false) {
           throw new \Exception('Please provide "uuid" param for request');
@@ -593,7 +640,7 @@ class Api
         curl_setopt($ch, CURLOPT_POST, true);
         break;
       case 'PUT':
-        curl_setopt($ch, CURLOPT_PUT, true);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PUT');
         break;
       case 'DELETE':
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'DELETE');
@@ -632,9 +679,11 @@ class Api
   private function __setHeaders($ch, $add_headers = array(), $data = array())
   {
     $content_length = 0;
+    $rawContent = '';
     if (count($data)) {
-      $content_length = strlen(json_encode($data));
-      curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+      $rawContent = utf8_encode(json_encode($data));
+      $content_length = strlen($rawContent);
+      curl_setopt($ch, CURLOPT_POSTFIELDS, $rawContent);
     }
 
     // path
@@ -649,8 +698,7 @@ class Api
 
     // content
     $content_type = 'application/json';
-    $content = $data ? json_encode($data) : '';
-    $content_md5 = md5(utf8_encode($content));
+    $content_md5 = md5($rawContent);
 
     // date
     $date = gmdate('D, d M Y H:i:s \G\M\T');
