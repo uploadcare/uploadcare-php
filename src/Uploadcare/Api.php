@@ -383,7 +383,7 @@ class Api
    * @param string $filesUuidArr uploaded file's uuid array you need to store.
    * @return array with stored files and problems if any
    */
-  public function StoreMultipleFiles($filesUuidArr)
+  public function storeMultipleFiles($filesUuidArr)
   {
     return $this->__batchProcessFiles($filesUuidArr, 'PUT');
   }
@@ -394,7 +394,7 @@ class Api
    * @param string $filesUuidArr uploaded or stored file's uuid array you need to delete.
    * @return array with deleted files and problems if any
    */
-  public function DeleteMultipleFiles($filesUuidArr)
+  public function deleteMultipleFiles($filesUuidArr)
   {
     return $this->__batchProcessFiles($filesUuidArr, 'DELETE');
   }

@@ -5,7 +5,7 @@
 - Use wildcard for get latest `2.x.x` version of widget
 
 ## 1.5.6
-- added batch files methods into api: `$api->StoreMultipleFiles` and `$api->DeleteMultipleFiles`
+- added batch files methods into api: `$api->storeMultipleFiles` and `$api->deleteMultipleFiles`
 
 ## 1.5.5
 - bump widget version to 2.9.0 (see [widget changelog][widget changelog])

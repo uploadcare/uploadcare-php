@@ -44,7 +44,7 @@ class ProcessMultipleFilesTest extends TestCase
       $filesArray [] = $f1->getUuid();
       $f2 = $this->api->uploader->fromPath(dirname(__FILE__).'/test.jpg');
       $filesArray [] = $f2->getUuid();
-      $fRes = $this->api->StoreMultipleFiles($filesArray);
+      $fRes = $this->api->storeMultipleFiles($filesArray);
       $this->assertTrue(is_array($fRes));
       $this->assertTrue(is_array($fRes['files']));
       foreach ($fRes['files'] as $f) {
@@ -66,7 +66,7 @@ class ProcessMultipleFilesTest extends TestCase
       $filesArray[] = $f1->getUuid();
       $f2 = $this->api->uploader->fromPath(dirname(__FILE__).'/test.jpg');
       $filesArray[] = $f2->getUuid();
-      $fRes = $this->api->DeleteMultipleFiles($filesArray);
+      $fRes = $this->api->deleteMultipleFiles($filesArray);
       $this->assertTrue(is_array($fRes));
       $this->assertTrue(is_array($fRes['files']));
       foreach ($fRes['files'] as $f) {

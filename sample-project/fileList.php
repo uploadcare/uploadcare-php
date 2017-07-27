@@ -49,10 +49,10 @@ use Uploadcare\Api;
   }
   
   if($action == 'store') {
-    $processedFiles = $api->StoreMultipleFiles($data);
+    $processedFiles = $api->storeMultipleFiles($data);
   }
   if($action == 'delete') {
-    $processedFiles = $api->DeleteMultipleFiles($data);
+    $processedFiles = $api->deleteMultipleFiles($data);
   }
 
   $files = $api->getFileList(array(
