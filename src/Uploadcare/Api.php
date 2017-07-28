@@ -425,7 +425,7 @@ class Api
    */
   public function createRemoteCopy($source, $target, $make_public = true, $pattern = '${default}') {
     if(!$target) {
-      throw new \Exception('$target parameter should not be empty. If you want to make a copy within Uploadcare storage use `createLocalCopy` instead.');
+      throw new \Exception('$target parameter should not be empty.');
     }
     $data = $this->__preparedRequest('file_copy', 'POST', array(), array('source' => $source, 'target' => $target, 
       'make_public' => $make_public, 'pattern' => $pattern));
