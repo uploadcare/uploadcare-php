@@ -115,7 +115,7 @@ use Uploadcare\Api;
               $imageUrl = $value->preview(50, 50)->getUrl();
               $size = $data["size"];
               $state = $data["datetime_removed"] ?
-                '<span class="label label-danger">Removed</span>' :
+                '<span class="label label-danger">Deleted</span>' :
                   ($data["datetime_stored"] ?
                     '<span class="label label-success">Stored</span>' :
                     '<span class="label label-primary">Uploaded</span>');
@@ -126,7 +126,9 @@ use Uploadcare\Api;
                 <input type="checkbox" data-fileId="${uuid}"/>
               </td>
               <td>${uuid}</td>
-              <td>${fileName}</td>
+              <td>
+                <a href="editFile.php?fileId=${uuid}">${fileName}</a>
+              </td>
               <td><img src="${imageUrl}"/></td>
               <td>${size}</td>
               <td>${state}</td>
