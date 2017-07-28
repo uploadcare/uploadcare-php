@@ -61,6 +61,7 @@
     $size = $data["size"];
     $actionResult = null;
     $actionError = null;
+    $isImage = $data['is_image'];
     $state = $data["datetime_removed"] ?
                 '<span class="label label-danger">Deleted</span>' :
                   ($data["datetime_stored"] ?
@@ -129,6 +130,7 @@
     <div class="row">
 <?php 
   if(!!$uuid) {
+    if($isImage) {
 ?>
       <div class="col-md-6">
       <center>
@@ -141,7 +143,9 @@ EOT
         <p>Image resized to fit 400x400</p>
         </center>
       </div>
-      
+<?php
+    }
+?>
       <div class="col-md-6">
         <table class="table table-striped">
           <tbody>
