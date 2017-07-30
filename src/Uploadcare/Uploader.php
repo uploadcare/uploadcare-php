@@ -54,7 +54,7 @@ class Uploader
    * @return File|string
    * @throws \Exception
    */
-  public function fromUrl($url, $fileName = null, $store = true, $check_status = true, $timeout = 1, $max_attempts = 5)
+  public function fromUrl($url, $check_status = true, $timeout = 1, $max_attempts = 5, $fileName = null, $store = 'auto')
   {
     $requestData = array(
         '_' => time(),

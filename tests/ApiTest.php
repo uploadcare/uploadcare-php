@@ -281,7 +281,7 @@ class ApiTest extends TestCase
   {
     $destFileName = 'IMG_1.jpg';
     try {
-      $file = $this->api->uploader->fromUrl('https://www.baysflowers.co.nz/wp-content/uploads/2015/06/IMG_9886_2.jpg', $destFileName);
+      $file = $this->api->uploader->fromUrl('https://www.baysflowers.co.nz/wp-content/uploads/2015/06/IMG_9886_2.jpg', true, 1, 5,$destFileName);
     } catch (Exception $e) {
       $this->fail('We get an unexpected exception trying to upload from url: '.$e->getMessage());
     }
@@ -293,7 +293,7 @@ class ApiTest extends TestCase
     $file->delete();
 
     try {
-      $file = $this->api->uploader->fromUrl('https://www.baysflowers.co.nz/wp-content/uploads/2015/06/IMG_9886_2.jpg', $destFileName, false);
+      $file = $this->api->uploader->fromUrl('https://www.baysflowers.co.nz/wp-content/uploads/2015/06/IMG_9886_2.jpg', true, 1, 5,$destFileName, false);
     } catch (Exception $e) {
       $this->fail('We get an unexpected exception trying to upload from url: '.$e->getMessage());
     }
