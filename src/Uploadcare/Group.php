@@ -93,11 +93,13 @@ class Group
   /**
    * Return group UUID for this file
    *
+   * @deprecated 1.0.6 Use getUuid instead.
    * @return string
    * @deprecated
    */
   public function getGroupId()
   {
+    Helper::deprecate('1.0.6', '3.0.0', 'Use getUuid() instead');
     return $this->getUuid();
   }
 

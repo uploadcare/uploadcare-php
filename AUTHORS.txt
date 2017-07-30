@@ -1,11 +1,20 @@
-Amos <amos@boaideas.com>
-Dmitry Mukhin <dmitry.s.mukhin@gmail.com>
+# git log --format='%aN <%aE>' | sort -u
+
+Adam Engebretson <adam@enge.me>
+Alexander Karpinsky <homm86@gmail.com>
+Alexey Scherbakov <alexey.sche@gmail.com>
+David Avsajanishvili <david@davidavs.com>
+Dmitry Mukhin <dm@uploadcare.com>
+Dmitry Petrov <dimaninc@gmail.com>
 Gray Hound <admin@devilmaydie.name>
 Koen Schmeets <k.schmeets@gmail.com>
-RiderSx <alexridersx@gmail.com>
+Nikolay Zherdev <nickzherdev@gmail.com>
+Paul Blundell <pblundell.1989@gmail.com>
+Philip Harvey <philip@activeingredients.com>
 Trevor Fitzgerald <fitztrev@gmail.com>
 Valentin Golev <me@va1en0k.net>
-Philip Harvey @pmh1
-Paul @paul-blundell
-Tommaso Rossi @kurtommy
-Dmitry Petrov <dimaninc@gmail.com>
+Viacheslav Panin <slawap@users.noreply.github.com>
+Zarema Khalilova <zarema.khalilova@gmail.com>
+Amos <amos@boaideas.com>
+anaxamaxan <max@neptunewebworks.com>
+kurtommy <kurtommy@gmail.com>

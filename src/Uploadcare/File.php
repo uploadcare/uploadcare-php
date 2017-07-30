@@ -107,11 +107,12 @@ class File
   /**
    * Get UUID
    *
-   * @deprecated
+   * @deprecated 1.0.6 Use getUuid() instead.
    * @return string
    */
   public function getFileId()
   {
+    Helper::deprecate('1.0.6', '3.0.0', 'Use getUuid() instead');
     return $this->getUuid();
   }
 
@@ -139,22 +140,26 @@ class File
   /**
    * Copy the file.
    *
+   * @deprecated 2.0.0 Use createLocalCopy or createRemoteCopy() instead.
    * @param string $target Name of custom storage.
    * @return File|string
    */
   public function copy($target = null)
   {
+    Helper::deprecate('2.0.0', '3.0.0', 'Use createLocalCopy or createRemoteCopy() instead');
     return $this->api->copyFile($this->getUrl(), $target);
   }
 
   /**
    * Copy the file to custom storage.
    *
+   * @deprecated 2.0.0 Use createRemoteCopy() instead.
    * @param string $target Name of custom storage.
    * @return string
    */
   public function copyTo($target)
   {
+    Helper::deprecate('2.0.0', '3.0.0', 'Use createRemoteCopy() instead');
     return (string)$this->copy($target);
   }
 
@@ -360,7 +365,7 @@ class File
     $result->operations[]['custom'] = $operation;
     return $result;
   }
-  
+
   /**
    * Adds part with size for operations
    *

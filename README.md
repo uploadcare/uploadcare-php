@@ -16,14 +16,14 @@ Just update your `composer.json` with:
 
 ```js
     "require": {
-        "uploadcare/uploadcare-php": ">=v1.1.0,<2.0"
+        "uploadcare/uploadcare-php": ">=v2.0,<3.0"
     }
 ```
 
 and run [Composer](https://getcomposer.org):
 
 ```bash
-php composer.phar update
+php composer.phar install --no-dev
 ```
 
 If you like, define some constants with Public and Secret keys within your project:
@@ -234,7 +234,7 @@ $group = $api->getGroup($group_id);
 
 To retrieve files for group:
 
-```php  
+```php
 $files = $group->getFiles();
 ```
 
