@@ -54,13 +54,18 @@ class Uploader
    * @return File|string
    * @throws \Exception
    */
-  public function fromUrl($url, $check_status = true, $timeout = 1, $max_attempts = 5)
+  public function fromUrl($url, $fileName = null, $store = true, $check_status = true, $timeout = 1, $max_attempts = 5)
   {
     $requestData = array(
         '_' => time(),
         'source_url' => $url,
         'pub_key' => $this->api->getPublicKey(),
+        'store' => $store,
     );
+    if(!!$fileName) {
+      $requestData['filename'] = $fileName;
+    }
+
     $ch = $this->__initRequest('from_url', $requestData);
     $this->__setHeaders($ch);
 
