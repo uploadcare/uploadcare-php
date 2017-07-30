@@ -51,19 +51,28 @@ class Uploader
    * @param boolean $check_status Wait till upload is complete
    * @param int $timeout Wait $timeout seconds between status checks
    * @param int $max_attempts Check status no more than $max_attempts times
+   * @param array $uploadParams Optioanal dictionary with additional params. Available keys are follwing:
+   * 'store' - can be true, false or 'auto'. This flag indicates should file be stored automatically after upload.
+   * 'filename' - should be a string, Sets explicitly file name of uploaded file.
    * @return File|string
    * @throws \Exception
    */
-  public function fromUrl($url, $check_status = true, $timeout = 1, $max_attempts = 5, $fileName = null, $store = 'auto')
+  public function fromUrl($url, $check_status = true, $timeout = 1, $max_attempts = 5, $uploadParams = array())
   {
+    $defParams = array(
+      'store' => 'auto',
+      'filename' => null,
+    );
+    $params = array_merge($defParams, $uploadParams);
+    
     $requestData = array(
         '_' => time(),
         'source_url' => $url,
         'pub_key' => $this->api->getPublicKey(),
-        'store' => $store,
+        'store' => $params['store'],
     );
-    if(!!$fileName) {
-      $requestData['filename'] = $fileName;
+    if($params['filename']) {
+      $requestData['filename'] = $params['filename'];
     }
 
     $ch = $this->__initRequest('from_url', $requestData);

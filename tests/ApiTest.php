@@ -279,21 +279,25 @@ class ApiTest extends TestCase
    */
   public function testUploadFromURL()
   {
-    $destFileName = 'IMG_1.jpg';
+    $params = array(
+      'filename' => 'IMG_1.jpg',
+      'store' => true,
+    );
     try {
-      $file = $this->api->uploader->fromUrl('https://www.baysflowers.co.nz/wp-content/uploads/2015/06/IMG_9886_2.jpg', true, 1, 5,$destFileName);
+      $file = $this->api->uploader->fromUrl('https://www.baysflowers.co.nz/wp-content/uploads/2015/06/IMG_9886_2.jpg', true, 1, 5, $params);
     } catch (Exception $e) {
       $this->fail('We get an unexpected exception trying to upload from url: '.$e->getMessage());
     }
     $data = $file->__get('data');
     $fileName = $data["original_filename"];
     $this->assertEquals(get_class($file), 'Uploadcare\File');
-    $this->assertEquals($fileName, $destFileName);
+    $this->assertEquals($fileName, $params['filename']);
     $this->assertTrue(!!$data["datetime_stored"]);
     $file->delete();
 
     try {
-      $file = $this->api->uploader->fromUrl('https://www.baysflowers.co.nz/wp-content/uploads/2015/06/IMG_9886_2.jpg', true, 1, 5,$destFileName, false);
+      $params['store'] = false;
+      $file = $this->api->uploader->fromUrl('https://www.baysflowers.co.nz/wp-content/uploads/2015/06/IMG_9886_2.jpg', true, 1, 5, $params);
     } catch (Exception $e) {
       $this->fail('We get an unexpected exception trying to upload from url: '.$e->getMessage());
     }
