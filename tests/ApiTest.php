@@ -365,7 +365,7 @@ class ApiTest extends TestCase
       $this->fail('We get an unexpected exception trying to store uploaded file from contents: '.$e->getMessage());
     }
 
-    usleep(500000);
+    usleep(2000000); // wait 2 sec to give a time to prepare file and avoid 404 error.
     $text = file_get_contents($file->getUrl());
     $this->assertEquals($text, "This is some text I want to upload");
   }
