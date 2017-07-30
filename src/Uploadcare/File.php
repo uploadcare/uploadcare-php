@@ -140,13 +140,13 @@ class File
   /**
    * Copy the file.
    *
-   * @deprecated 2.0.0 Use createLocalCopy or createRemoteCopy() instead.
+   * @deprecated 2.0.0 Use createLocalCopy() or createRemoteCopy() instead.
    * @param string $target Name of custom storage.
    * @return File|string
    */
   public function copy($target = null)
   {
-    Helper::deprecate('2.0.0', '3.0.0', 'Use createLocalCopy or createRemoteCopy() instead');
+    Helper::deprecate('2.0.0', '3.0.0', 'Use createLocalCopy() or createRemoteCopy() instead');
     return $this->api->copyFile($this->getUrl(), $target);
   }
 
