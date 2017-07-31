@@ -6,7 +6,7 @@ class Widget
   /**
    * Uploadcare widget version
    */
-  const version = '2.x';
+  const version = '3.x';
 
   /**
    * Api instance

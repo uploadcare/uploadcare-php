@@ -40,4 +40,17 @@ class Helper
 
     return $headers;
   }
+
+  public static function deprecate($deprecated_ver, $removed_ver = null, $message = null)
+  {
+    $msg = sprintf('This method is deprecated since version %s.', $deprecated_ver);
+    if ($removed_ver != null) {
+      $msg .= sprintf(' It will be completely removed in version %s.', $removed_ver);
+    }
+    if ($message != null) {
+      $msg .= sprintf(' %s.', $message);
+    }
+
+    trigger_error($msg, E_USER_WARNING);
+  }
 }

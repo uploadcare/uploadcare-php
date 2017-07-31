@@ -3,8 +3,9 @@ namespace Uploadcare;
 
 use Uploadcare\Exceptions\ThrottledRequestException;
 
-$uploadcare_version = '1.5.5';
+$uploadcare_version = '2.0.0-rc';
 define('UPLOADCARE_LIB_VERSION', sprintf('%s/%s.%s', $uploadcare_version, PHP_MAJOR_VERSION, PHP_MINOR_VERSION));
+
 
 class Api
 {
@@ -366,12 +367,14 @@ class Api
   /**
    * Copy file
    *
+   * @deprecated 2.0.0 Use createLocalCopy() or createRemoteCopy() instead.
    * @param string $source CDN URL or file's uuid you need to copy.
    * @param string $target Name of custom storage connected to your project. Uploadcare storage is used if target is absent.
    * @return File|string
    */
   public function copyFile($source, $target = null)
   {
+    Helper::deprecate('2.0.0', '3.0.0', 'Use createLocalCopy() or createRemoteCopy() instead');
     $data = $this->__preparedRequest('file_copy', 'POST', array(), array('source' => $source, 'target' => $target));
     if (array_key_exists('result', (array)$data) == true) {
       if ($data->type == 'file') {
@@ -383,7 +386,7 @@ class Api
       return (string)$data->detail;
     }
   }
-  
+
   /**
    * Copy file to the Uploadcare storage
    *
@@ -401,7 +404,7 @@ class Api
       }
     } else {
       return (string)$data->detail;
-    }    
+    }
   }
 
   /**
@@ -427,7 +430,7 @@ class Api
     if(!$target) {
       throw new \Exception('$target parameter should not be empty.');
     }
-    $data = $this->__preparedRequest('file_copy', 'POST', array(), array('source' => $source, 'target' => $target, 
+    $data = $this->__preparedRequest('file_copy', 'POST', array(), array('source' => $source, 'target' => $target,
       'make_public' => $make_public, 'pattern' => $pattern));
     if (array_key_exists('result', (array)$data) == true) {
       return (string)$data->result;
@@ -435,8 +438,8 @@ class Api
       return (string)$data->detail;
     }
   }
-  
-  
+
+
   /**
    * Store multiple files
    *
@@ -447,7 +450,7 @@ class Api
   {
     return $this->__batchProcessFiles($filesUuidArr, 'PUT');
   }
-  
+
   /**
    * Delete multiple files
    *
@@ -458,7 +461,7 @@ class Api
   {
     return $this->__batchProcessFiles($filesUuidArr, 'DELETE');
   }
-  
+
   /**
    * Process multiple files with chunk support
    *
@@ -532,7 +535,7 @@ class Api
     $ch = curl_init(sprintf('https://%s%s', $this->api_host, $path));
     $this->__setRequestType($ch, $method);
     $this->__setHeaders($ch, $headers, $data);
-    
+
     $response = curl_exec($ch);
     if ($response === false) {
       throw new \Exception(curl_error($ch));
@@ -611,7 +614,7 @@ class Api
 
     return null;
   }
-  
+
   /**
    * Prepares paged params array from chunk request result.
    *

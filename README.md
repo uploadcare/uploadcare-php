@@ -2,7 +2,12 @@
 
 This is a set of libraries to work with [Uploadcare][1].
 
-[![Build Status](https://travis-ci.org/uploadcare/uploadcare-php.png?branch=master)](https://travis-ci.org/uploadcare/uploadcare-php)
+[![Build Status][travis-img]][travis] [![Uploadcare stack on StackShare][stack-img]][stack]
+
+[travis-img]: https://api.travis-ci.org/uploadcare/uploadcare-php.svg?branch=master
+[travis]: https://travis-ci.org/uploadcare/uploadcare-php
+[stack-img]: http://img.shields.io/badge/tech-stack-0690fa.svg?style=flat
+[stack]: https://stackshare.io/uploadcare/stacks/
 
 ## Requirements
 
@@ -16,14 +21,14 @@ Just update your `composer.json` with:
 
 ```js
     "require": {
-        "uploadcare/uploadcare-php": ">=v1.1.0,<2.0"
+        "uploadcare/uploadcare-php": ">=v2.0,<3.0"
     }
 ```
 
 and run [Composer](https://getcomposer.org):
 
 ```bash
-php composer.phar update
+php composer.phar install --no-dev
 ```
 
 If you like, define some constants with Public and Secret keys within your project:
@@ -234,7 +239,7 @@ $group = $api->getGroup($group_id);
 
 To retrieve files for group:
 
-```php  
+```php
 $files = $group->getFiles();
 ```
 
