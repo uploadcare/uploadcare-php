@@ -48,10 +48,10 @@ class Uploader
    * Upload file from url and get File instance
    *
    * @param string $url An url of file to be uploaded.
-   * @param boolean $check_status Wait till upload is complete
-   * @param int $timeout Wait $timeout seconds between status checks
-   * @param int $max_attempts Check status no more than $max_attempts times
-   * @param array $upload_params Optioanal dictionary with additional params. Available keys are follwing:
+   * @deprecated 2.0.0 boolean $check_status Wait till upload is complete, pass this parameter in the $options array
+   * @deprecated 2.0.0 int $timeout Wait $timeout seconds between status checks, pass this parameter in the $options array
+   * @deprecated 2.0.0 int $max_attempts Check status no more than $max_attempts times, pass this parameter in the $options array
+   * @param array $options Optioanal dictionary with additional params. Available keys are following:
    * 'store' - can be true, false or 'auto'. This flag indicates should file be stored automatically after upload.
    * 'filename' - should be a string, Sets explicitly file name of uploaded file.
    * 'check_status' - Wait till upload is complete
@@ -60,34 +60,34 @@ class Uploader
    * @return File|string
    * @throws \Exception
    */
-  public function fromUrl($url, $check_status = true, $timeout = 1, $max_attempts = 5, $upload_params = array())
+  public function fromUrl($url, $check_status = true, $timeout = 1, $max_attempts = 5, $options = array())
   {
-    $defParams = array(
+    $default_options = array(
       'store' => 'auto',
       'filename' => null,
       'check_status' => true,
       'timeout' => 1,
       'max_attempts' => 5
     );
-    $params = array_merge($defParams, $upload_params);
+    $params = array_merge($default_options, $options);
     
     if(!$check_status) {
-      Helper::deprecate('2.0.0', '3.0.0', '$check_status input variable is deprecated, now it`s moved to the $upload_params with key `check_status`');
+      Helper::deprecate('2.0.0', '3.0.0', '$check_status input variable is deprecated, now it`s moved to the $options with key `check_status`');
     }
     if($timeout != 1) {
-      Helper::deprecate('2.0.0', '3.0.0', '$timeout input variable is deprecated, it`s moved to the $upload_params with key `timeout`');
+      Helper::deprecate('2.0.0', '3.0.0', '$timeout input variable is deprecated, it`s moved to the $options with key `timeout`');
     }
     if($max_attempts != 5) {
-      Helper::deprecate('2.0.0', '3.0.0', '$timeout input variable is deprecated, it`s moved to the $upload_params with key `max_attempts`');
+      Helper::deprecate('2.0.0', '3.0.0', '$timeout input variable is deprecated, it`s moved to the $options with key `max_attempts`');
     }
     if(!$check_status && !$$params['check_status']) {
-      trigger_error('input parameter `check_status` declared multiple times, as input variable and in the `$upload_params` array', E_USER_ERROR);
+      trigger_error('input parameter `check_status` declared multiple times, as input variable and in the `$options` array', E_USER_ERROR);
     }
     if($timeout != 1 && $params['timeout'] != 1) {
-      trigger_error('input parameter `timeout` declared multiple times, as input variable and in the `$upload_params` array', E_USER_ERROR);
+      trigger_error('input parameter `timeout` declared multiple times, as input variable and in the `$options` array', E_USER_ERROR);
     }
     if($max_attempts != 5 && $params['max_attempts'] != 5) {
-      trigger_error('input parameter `max_attempts` declared multiple times, as input variable and in the `$upload_params` array', E_USER_ERROR);
+      trigger_error('input parameter `max_attempts` declared multiple times, as input variable and in the `$options` array', E_USER_ERROR);
     }
     if($check_status && !$params['check_status']) {
       $check_status = $params['check_status'];
