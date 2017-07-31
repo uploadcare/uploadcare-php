@@ -279,12 +279,30 @@ class ApiTest extends TestCase
    */
   public function testUploadFromURL()
   {
+    $params = array(
+      'filename' => 'IMG_1.jpg',
+      'store' => true,
+    );
     try {
-      $file = $this->api->uploader->fromUrl('https://www.baysflowers.co.nz/wp-content/uploads/2015/06/IMG_9886_2.jpg');
+      $file = $this->api->uploader->fromUrl('https://www.baysflowers.co.nz/wp-content/uploads/2015/06/IMG_9886_2.jpg', true, 1, 5, $params);
     } catch (Exception $e) {
       $this->fail('We get an unexpected exception trying to upload from url: '.$e->getMessage());
     }
+    $data = $file->__get('data');
+    $fileName = $data["original_filename"];
     $this->assertEquals(get_class($file), 'Uploadcare\File');
+    $this->assertEquals($fileName, $params['filename']);
+    $this->assertTrue(!!$data["datetime_stored"]);
+    $file->delete();
+
+    try {
+      $params['store'] = false;
+      $file = $this->api->uploader->fromUrl('https://www.baysflowers.co.nz/wp-content/uploads/2015/06/IMG_9886_2.jpg', true, 1, 5, $params);
+    } catch (Exception $e) {
+      $this->fail('We get an unexpected exception trying to upload from url: '.$e->getMessage());
+    }
+    $data = $file->__get('data');
+    $this->assertTrue(!$data["datetime_stored"]);
     try {
       $file->store();
     } catch (Exception $e) {
@@ -351,7 +369,7 @@ class ApiTest extends TestCase
       $this->fail('We get an unexpected exception trying to store uploaded file from contents: '.$e->getMessage());
     }
 
-    usleep(500000);
+    usleep(2000000); // wait 2 sec to give a time to prepare file and avoid 404 error.
     $text = file_get_contents($file->getUrl());
     $this->assertEquals($text, "This is some text I want to upload");
   }

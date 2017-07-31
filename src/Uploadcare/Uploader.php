@@ -51,16 +51,64 @@ class Uploader
    * @param boolean $check_status Wait till upload is complete
    * @param int $timeout Wait $timeout seconds between status checks
    * @param int $max_attempts Check status no more than $max_attempts times
+   * @param array $uploadParams Optioanal dictionary with additional params. Available keys are follwing:
+   * 'store' - can be true, false or 'auto'. This flag indicates should file be stored automatically after upload.
+   * 'filename' - should be a string, Sets explicitly file name of uploaded file.
+   * 'check_status' - Wait till upload is complete
+   * 'timeout' - Wait number of seconds between status checks
+   * 'max_attempts' - Check status no more than $max_attempts times
    * @return File|string
    * @throws \Exception
    */
-  public function fromUrl($url, $check_status = true, $timeout = 1, $max_attempts = 5)
+  public function fromUrl($url, $check_status = true, $timeout = 1, $max_attempts = 5, $upload_params = array())
   {
+    $defParams = array(
+      'store' => 'auto',
+      'filename' => null,
+      'check_status' => true,
+      'timeout' => 1,
+      'max_attempts' => 5
+    );
+    $params = array_merge($defParams, $upload_params);
+    
+    if(!$check_status) {
+      Helper::deprecate('2.0.0', '3.0.0', '$check_status input variable is deprecated, now it`s moved to the $upload_params with key `check_status`');
+    }
+    if($timeout != 1) {
+      Helper::deprecate('2.0.0', '3.0.0', '$timeout input variable is deprecated, it`s moved to the $upload_params with key `timeout`');
+    }
+    if($max_attempts != 5) {
+      Helper::deprecate('2.0.0', '3.0.0', '$timeout input variable is deprecated, it`s moved to the $upload_params with key `max_attempts`');
+    }
+    if(!$check_status && !$$params['check_status']) {
+      trigger_error('input parameter `check_status` declared multiple times, as input variable and in the `$upload_params` array', E_USER_ERROR);
+    }
+    if($timeout != 1 && $params['timeout'] != 1) {
+      trigger_error('input parameter `timeout` declared multiple times, as input variable and in the `$upload_params` array', E_USER_ERROR);
+    }
+    if($max_attempts != 5 && $params['max_attempts'] != 5) {
+      trigger_error('input parameter `max_attempts` declared multiple times, as input variable and in the `$upload_params` array', E_USER_ERROR);
+    }
+    if($check_status && !$params['check_status']) {
+      $check_status = $params['check_status'];
+    }
+    if($timeout == 1 && $params['timeout'] != 1) {
+      $timeout = $params['timeout'];
+    }
+    if($max_attempts == 5 && $params['max_attempts'] != 5) {
+      $max_attempts = $params['max_attempts'];
+    }
+
     $requestData = array(
         '_' => time(),
         'source_url' => $url,
         'pub_key' => $this->api->getPublicKey(),
+        'store' => $params['store'],
     );
+    if($params['filename']) {
+      $requestData['filename'] = $params['filename'];
+    }
+
     $ch = $this->__initRequest('from_url', $requestData);
     $this->__setHeaders($ch);
 
