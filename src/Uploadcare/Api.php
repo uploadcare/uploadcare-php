@@ -3,7 +3,7 @@ namespace Uploadcare;
 
 use Uploadcare\Exceptions\ThrottledRequestException;
 
-$uploadcare_version = '2.0.0';
+$uploadcare_version = '2.0.0-rc';
 define('UPLOADCARE_LIB_VERSION', sprintf('%s/%s.%s', $uploadcare_version, PHP_MAJOR_VERSION, PHP_MINOR_VERSION));
 
 
@@ -367,12 +367,14 @@ class Api
   /**
    * Copy file
    *
+   * @deprecated 2.0.0 Use createLocalCopy() or createRemoteCopy() instead.
    * @param string $source CDN URL or file's uuid you need to copy.
    * @param string $target Name of custom storage connected to your project. Uploadcare storage is used if target is absent.
    * @return File|string
    */
   public function copyFile($source, $target = null)
   {
+    Helper::deprecate('2.0.0', '3.0.0', 'Use createLocalCopy() or createRemoteCopy() instead');
     $data = $this->__preparedRequest('file_copy', 'POST', array(), array('source' => $source, 'target' => $target));
     if (array_key_exists('result', (array)$data) == true) {
       if ($data->type == 'file') {

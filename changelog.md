@@ -8,6 +8,7 @@
 - add new copy methods: `Api->createLocalCopy()` and `Api->createRemoteCopy()`
 - add `Helper->deprecate()` method
 - deprecate `File->copy()` and `File->copyTo()`
+- deprecate `Api->copyFile()`
 
 ## 1.5.5
 - bump widget version to 2.9.0 (see [widget changelog][widget changelog])

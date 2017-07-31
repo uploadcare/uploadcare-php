@@ -2,7 +2,10 @@
 
 This is a set of libraries to work with [Uploadcare][1].
 
-[![Build Status](https://travis-ci.org/uploadcare/uploadcare-php.png?branch=master)](https://travis-ci.org/uploadcare/uploadcare-php)
+[![Build Status](https://travis-ci.org/uploadcare/uploadcare-php.png?branch=master)][travis] [![Uploadcare stack on StackShare][stack-img]][stack]
+
+[travis]: https://travis-ci.org/uploadcare/uploadcare-php
+[stack]: https://stackshare.io/uploadcare/stacks/
 
 ## Requirements
 
