@@ -51,12 +51,12 @@ class Uploader
    * @param boolean $check_status Wait till upload is complete
    * @param int $timeout Wait $timeout seconds between status checks
    * @param int $max_attempts Check status no more than $max_attempts times
-   * @param array $uploadParams Optioanal dictionary with additional params. Available keys are follwing:
+   * @param array $upload_params Optioanal dictionary with additional params. Available keys are follwing:
    * 'store' - can be true, false or 'auto'. This flag indicates should file be stored automatically after upload.
    * 'filename' - should be a string, Sets explicitly file name of uploaded file.
    * 'check_status' - Wait till upload is complete
    * 'timeout' - Wait number of seconds between status checks
-   * 'max_attempts' - Check status no more than $max_attempts times
+   * 'max_attempts' - Check status no more than passed number of times
    * @return File|string
    * @throws \Exception
    */
