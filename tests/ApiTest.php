@@ -282,6 +282,9 @@ class ApiTest extends TestCase
     $options = array(
       'filename' => 'IMG_1.jpg',
       'store' => true,
+      'check_status' => true,
+      'timeout' => 3,
+      'max_attempts' => 6,
     );
     try {
       $file = $this->api->uploader->fromUrl('https://www.baysflowers.co.nz/wp-content/uploads/2015/06/IMG_9886_2.jpg', true, 1, 5, $options);
