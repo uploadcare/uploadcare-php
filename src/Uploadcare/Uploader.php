@@ -44,6 +44,24 @@ class Uploader
     return $data;
   }
 
+  public function __call($method, $arguments) {
+    if($method == 'fromUrl') {
+      if(count($arguments) == 1) {
+        return call_user_func_array(array($this,'fromUrlNew'), $arguments);
+      }
+      if(count($arguments) == 2) {
+        if(is_array($arguments[1]) ) {
+          return call_user_func_array(array($this,'fromUrlNew'), $arguments);
+        } else {
+          return call_user_func_array(array($this,'fromUrlOld'), $arguments);
+        }
+      }
+      else if(count($arguments) >= 3) {
+        return call_user_func_array(array($this,'fromUrlOld'), $arguments);
+      }
+    }
+  }
+
   /**
    * Upload file from url and get File instance
    *
@@ -60,7 +78,17 @@ class Uploader
    * @return File|string
    * @throws \Exception
    */
-  public function fromUrl($url, $check_status = true, $timeout = 1, $max_attempts = 5, $options = array())
+  private function fromUrlOld($url, $check_status = true, $timeout = 1, $max_attempts = 5)
+  {
+    Helper::deprecate('2.0.0', '3.0.0', 'This version of method `fromUrl($url, $check_status, $timeout, $max_attempts)` is deprecated please use `fromUrl($url, $options)` instead');
+    return $this->fromUrlNew($url, array(
+      'check_status' => $check_status,
+      'timeout' => $timeout,
+      'max_attempts' => $max_attempts,
+    ));
+  }
+
+  private function fromUrlNew($url, $options = array())
   {
     $default_options = array(
       'store' => 'auto',
@@ -70,34 +98,9 @@ class Uploader
       'max_attempts' => 5
     );
     $params = array_merge($default_options, $options);
-    
-    if(!$check_status) {
-      Helper::deprecate('2.0.0', '3.0.0', '$check_status input variable is deprecated, now it`s moved to the $options with key `check_status`');
-    }
-    if($timeout != 1) {
-      Helper::deprecate('2.0.0', '3.0.0', '$timeout input variable is deprecated, it`s moved to the $options with key `timeout`');
-    }
-    if($max_attempts != 5) {
-      Helper::deprecate('2.0.0', '3.0.0', '$timeout input variable is deprecated, it`s moved to the $options with key `max_attempts`');
-    }
-    if(!$check_status && !$$params['check_status']) {
-      trigger_error('input parameter `check_status` declared multiple times, as input variable and in the `$options` array', E_USER_ERROR);
-    }
-    if($timeout != 1 && $params['timeout'] != 1) {
-      trigger_error('input parameter `timeout` declared multiple times, as input variable and in the `$options` array', E_USER_ERROR);
-    }
-    if($max_attempts != 5 && $params['max_attempts'] != 5) {
-      trigger_error('input parameter `max_attempts` declared multiple times, as input variable and in the `$options` array', E_USER_ERROR);
-    }
-    if($check_status && !$params['check_status']) {
-      $check_status = $params['check_status'];
-    }
-    if($timeout == 1 && $params['timeout'] != 1) {
-      $timeout = $params['timeout'];
-    }
-    if($max_attempts == 5 && $params['max_attempts'] != 5) {
-      $max_attempts = $params['max_attempts'];
-    }
+    $check_status = $params['check_status'];
+    $timeout = $params['timeout'];
+    $max_attempts = $params['max_attempts'];
 
     $requestData = array(
         '_' => time(),
