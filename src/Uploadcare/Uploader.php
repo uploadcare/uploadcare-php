@@ -65,16 +65,11 @@ class Uploader
   /**
    * Upload file from url and get File instance
    *
+   * @deprecated 2.0.0 please use fromUrlNewfromUrlNew($url, $options) instead
    * @param string $url An url of file to be uploaded.
-   * @deprecated 2.0.0 boolean $check_status Wait till upload is complete, pass this parameter in the $options array
-   * @deprecated 2.0.0 int $timeout Wait $timeout seconds between status checks, pass this parameter in the $options array
-   * @deprecated 2.0.0 int $max_attempts Check status no more than $max_attempts times, pass this parameter in the $options array
-   * @param array $options Optioanal dictionary with additional params. Available keys are following:
-   * 'store' - can be true, false or 'auto'. This flag indicates should file be stored automatically after upload.
-   * 'filename' - should be a string, Sets explicitly file name of uploaded file.
-   * 'check_status' - Wait till upload is complete
-   * 'timeout' - Wait number of seconds between status checks
-   * 'max_attempts' - Check status no more than passed number of times
+   * @param boolean $check_status Wait till upload is complete
+   * @param int $timeout Wait $timeout seconds between status checks
+   * @param int $max_attempts Check status no more than $max_attempts times
    * @return File|string
    * @throws \Exception
    */
@@ -88,6 +83,19 @@ class Uploader
     ));
   }
 
+  /**
+   * Upload file from url and get File instance
+   *
+   * @param string $url An url of file to be uploaded.
+   * @param array $options Optioanal dictionary with additional params. Available keys are following:
+   * 'store' - can be true, false or 'auto'. This flag indicates should file be stored automatically after upload.
+   * 'filename' - should be a string, Sets explicitly file name of uploaded file.
+   * 'check_status' - Wait till upload is complete
+   * 'timeout' - Wait number of seconds between status checks
+   * 'max_attempts' - Check status no more than passed number of times
+   * @return File|string
+   * @throws \Exception
+   */
   private function fromUrlNew($url, $options = array())
   {
     $default_options = array(
