@@ -6,6 +6,7 @@ matrix:
     - stage: style checks
       script: php vendor/bin/phpcs --standard=PSR2 src
 
+    - stage: tests
     - php: 5.3
     - php: 5.4
     - php: 5.5
