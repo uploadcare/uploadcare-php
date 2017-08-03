@@ -63,10 +63,10 @@ class Uploader
   }
 
   /**
-   * Upload file from url and get File instance
+   * Upload file from a URL and get File instance
    *
-   * @deprecated 2.0.0 please use fromUrlNewfromUrlNew($url, $options) instead
-   * @param string $url An url of file to be uploaded.
+   * @deprecated 2.0.0 please use fromUrl($url, $options) instead
+   * @param string $url A URL of file to be uploaded.
    * @param boolean $check_status Wait till upload is complete
    * @param int $timeout Wait $timeout seconds between status checks
    * @param int $max_attempts Check status no more than $max_attempts times
@@ -84,15 +84,15 @@ class Uploader
   }
 
   /**
-   * Upload file from url and get File instance
+   * Upload file from a URL and get File instance
    *
-   * @param string $url An url of file to be uploaded.
+   * @param string $url A URL of file to be uploaded.
    * @param array $options Optioanal dictionary with additional params. Available keys are following:
-   * 'store' - can be true, false or 'auto'. This flag indicates should file be stored automatically after upload.
-   * 'filename' - should be a string, Sets explicitly file name of uploaded file.
-   * 'check_status' - Wait till upload is complete
-   * 'timeout' - Wait number of seconds between status checks
-   * 'max_attempts' - Check status no more than passed number of times
+   *   'store' - can be true, false or 'auto'. This flag indicates should file be stored automatically after upload.
+   *   'filename' - should be a string, Sets explicitly file name of uploaded file.
+   *   'check_status' - Wait till upload is complete
+   *   'timeout' - Wait number of seconds between status checks
+   *   'max_attempts' - Check status no more than passed number of times
    * @return File|string
    * @throws \Exception
    */

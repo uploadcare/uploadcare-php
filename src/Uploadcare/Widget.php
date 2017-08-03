@@ -43,7 +43,7 @@ EOT;
   }
 
   /**
-   * Return url for javascript widget.
+   * Return URL for javascript widget.
    * If no version is provided method will use default(current) version
    *
    * @param string $version Version of Uploadcare.com widget

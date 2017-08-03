@@ -174,7 +174,7 @@ class File
   }
 
   /**
-   * Get url of original image
+   * Get URL of original image
    *
    * @param string $postfix
    * @return string

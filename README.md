@@ -57,7 +57,7 @@ This is a main object your should work with. It has everything you need.
 
 Let's start with widgets.
 
-If you want to get Javascript's url for widget, just call:
+If you want to get Javascript's URL for widget, just call:
 
 ```php
 print $api->widget->getScriptSrc()
@@ -117,13 +117,13 @@ You can do any simple request if you like by calling:
 $api->request($method, $path, $data = array(), $headers = array());
 ```
 
-Don't forget, that each API url has it's own allowed methods.
+Don't forget, that each API URI has it's own allowed methods.
 
 If method is not allowed exceptions will be thrown.
 
 Ok, lets do some requests. This is request to index (https://api.uploadcare.com).
 
-This will return an stdClass with information about urls you can request.
+This will return an stdClass with information about URLs you can request.
 
 This is not really valuable data.
 
@@ -175,7 +175,7 @@ This objects provide ways to display the file and to use methods such as resize,
 $files = $api->getFileList();
 ```
 
-getFileList called without any params will return just an array of first 20 files objects (first page).
+`getFileList` called without any params will return just an array of first 20 files objects (first page).
 
 But you can supply a page you want to see:
 
@@ -189,10 +189,10 @@ You can get some information about pagination.
 You will get an array with params:
 
 - page: current page
-- next: uri to request next page
+- next: URI to request next page
 - per_page: number of files per page
 - pages: number of pages
-- previous: uri to request previous page
+- previous: URI to request previous page
 
 Use "per_page" and "pages" information to create pagination inside your own project
 
@@ -224,7 +224,7 @@ It will be a cached array if you will try to access "data" parameter again.
 To get list of groups:
 
 ```php
-$from = '2013-10-10';
+$from = '2017-10-10';
 $api->getGroupList($from);
 ```
 
@@ -251,7 +251,7 @@ $group->store();
 
 ## File operations
 
-Using object of \Uploadcare\File class we can get url for the file
+Using object of \Uploadcare\File class we can get a URL for the file
 
 ```php
 echo $file->getUrl();
@@ -364,7 +364,7 @@ invert effect will be already applied to it.
 You can also copy file like this:
 
 ```php
-$new_file = $api->copyFile('https://ucarecdn.com/3ace4d6d-6ff8-4b2e-9c37-9d1cd0559527/-/resize/200x200/');
+$new_file = $api->createLocalCopy('https://ucarecdn.com/3ace4d6d-6ff8-4b2e-9c37-9d1cd0559527/-/resize/200x200/');
 ```
 
 Sometimes storing the file in Uploadcare storage is not needed,
@@ -386,7 +386,7 @@ try {
 ## Uploading files
 Let's have some fun with uploading files.
 
-First of all, we can upload file from url. Just use construction below.
+First of all, we can upload file from a URL. Just use construction below.
 
 This will return Uploadcare\File instance.
 
@@ -400,7 +400,13 @@ By using default params of "fromUrl" method you tell Uploader to check file to b
 By default, Uploader will make 5 checks max with 1 second wait. You can change these params:
 
 ```php
-$file = $api->uploader->fromUrl('http://www.baysflowers.co.nz/Images/tangerine-delight.jpg', true, $timeout, $max_attempts);
+$file = $api->uploader->fromUrl('http://www.baysflowers.co.nz/Images/tangerine-delight.jpg',
+                                array(
+                                  'filename' => 'image.jpeg,
+                                  'check_status' => true,
+                                  'timeout' => $timeout,
+                                  'max_attempts' => $max_attempts
+                                ));
 ```
 
 If file is not uploaded an Exception will be thrown.
@@ -408,7 +414,8 @@ If file is not uploaded an Exception will be thrown.
 You can just get token and check status manually later any time:
 
 ```php
-$token = $api->uploader->fromUrl('http://www.baysflowers.co.nz/Images/tangerine-delight.jpg', false);
+$token = $api->uploader->fromUrl('http://www.baysflowers.co.nz/Images/tangerine-delight.jpg',
+                                 array('check_status' => false));
 $data = $api->uploader->status($token);
 if ($data->status == 'success') {
   $file_id = $data->file_id
@@ -468,7 +475,7 @@ You may also change default CDN host. You need to do this when you're using cust
 To do that pass a string with domain name as fourth argument to Api constructor:
 
 ```php
-$api = new Uploadcare\Api(UC_PUBLIC_KEY, UC_SECRET_KEY, null, "kx.ucarecdn.com");
+$api = new Uploadcare\Api(UC_PUBLIC_KEY, UC_SECRET_KEY, null, "cdn.example.com");
 ```
 
 ## Tests
