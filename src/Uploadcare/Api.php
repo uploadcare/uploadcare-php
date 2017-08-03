@@ -584,7 +584,7 @@ class Api
    * Throws Exception if not http code 200 was returned.
    * If http code 200 it will parse returned data form request as JSON.
    *
-   * @param string $type Construct type. Url will be generated using this params. Options: store
+   * @param string $type Construct type. URL will be generated using this params. Options: store
    * @param string $request_type Request type. Options: get, post, put, delete.
    * @param array $params Additional parameters for requests as array.
    * @param array $data Data will be posted like json.

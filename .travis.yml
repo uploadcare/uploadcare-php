@@ -1,19 +1,25 @@
 language: php
 sudo: false
 
-php:
-  - 5.3
-  - 5.4
-  - 5.5
-  - 5.6
-  - 7.0
-  - hhvm
-
 matrix:
+  include:
+    - php: 5.3
+    - php: 5.4
+    - php: 5.5
+    - php: 5.6
+    - php: 7.0
+    - php: hhvm
+
+    - stage: style checks
+      script: php vendor/bin/phpcs --standard=PSR2 src
+
   allow_failures:
     - php: 7.0
     - php: hhvm
+    - stage: style checks
+
   fast_finish: false
+
 
 before_script:
   - composer install
