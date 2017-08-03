@@ -44,9 +44,28 @@ class Uploader
     return $data;
   }
 
+  public function __call($method, $arguments) {
+    if($method == 'fromUrl') {
+      if(count($arguments) == 1) {
+        return call_user_func_array(array($this,'fromUrlNew'), $arguments);
+      }
+      if(count($arguments) == 2) {
+        if(is_array($arguments[1]) ) {
+          return call_user_func_array(array($this,'fromUrlNew'), $arguments);
+        } else {
+          return call_user_func_array(array($this,'fromUrlOld'), $arguments);
+        }
+      }
+      else if(count($arguments) >= 3) {
+        return call_user_func_array(array($this,'fromUrlOld'), $arguments);
+      }
+    }
+  }
+
   /**
    * Upload file from url and get File instance
    *
+   * @deprecated 2.0.0 please use fromUrlNewfromUrlNew($url, $options) instead
    * @param string $url An url of file to be uploaded.
    * @param boolean $check_status Wait till upload is complete
    * @param int $timeout Wait $timeout seconds between status checks
@@ -54,13 +73,53 @@ class Uploader
    * @return File|string
    * @throws \Exception
    */
-  public function fromUrl($url, $check_status = true, $timeout = 1, $max_attempts = 5)
+  private function fromUrlOld($url, $check_status = true, $timeout = 1, $max_attempts = 5)
   {
+    Helper::deprecate('2.0.0', '3.0.0', 'This version of method `fromUrl($url, $check_status, $timeout, $max_attempts)` is deprecated please use `fromUrl($url, $options)` instead');
+    return $this->fromUrlNew($url, array(
+      'check_status' => $check_status,
+      'timeout' => $timeout,
+      'max_attempts' => $max_attempts,
+    ));
+  }
+
+  /**
+   * Upload file from url and get File instance
+   *
+   * @param string $url An url of file to be uploaded.
+   * @param array $options Optioanal dictionary with additional params. Available keys are following:
+   * 'store' - can be true, false or 'auto'. This flag indicates should file be stored automatically after upload.
+   * 'filename' - should be a string, Sets explicitly file name of uploaded file.
+   * 'check_status' - Wait till upload is complete
+   * 'timeout' - Wait number of seconds between status checks
+   * 'max_attempts' - Check status no more than passed number of times
+   * @return File|string
+   * @throws \Exception
+   */
+  private function fromUrlNew($url, $options = array())
+  {
+    $default_options = array(
+      'store' => 'auto',
+      'filename' => null,
+      'check_status' => true,
+      'timeout' => 1,
+      'max_attempts' => 5
+    );
+    $params = array_merge($default_options, $options);
+    $check_status = $params['check_status'];
+    $timeout = $params['timeout'];
+    $max_attempts = $params['max_attempts'];
+
     $requestData = array(
         '_' => time(),
         'source_url' => $url,
         'pub_key' => $this->api->getPublicKey(),
+        'store' => $params['store'],
     );
+    if($params['filename']) {
+      $requestData['filename'] = $params['filename'];
+    }
+
     $ch = $this->__initRequest('from_url', $requestData);
     $this->__setHeaders($ch);
 
