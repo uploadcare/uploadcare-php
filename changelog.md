@@ -7,6 +7,7 @@
 - add batch files methods: `Api->storeMultipleFiles()` and `Api->deleteMultipleFiles()`
 - add new copy methods: `Api->createLocalCopy()` and `Api->createRemoteCopy()`
 - add `Helper->deprecate()` method
+- change the signature of `Uploader->fromUrl()`, old signature is deprecated but will work until 3.0
 - deprecate `File->copy()` and `File->copyTo()`
 - deprecate `Api->copyFile()`
 
