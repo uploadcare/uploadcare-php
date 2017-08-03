@@ -173,19 +173,20 @@ class File
     return $this->api->__preparedRequest('file_storage', 'DELETE', array('uuid' => $this->uuid));
   }
 
+  
   /**
-   * Get url of original image
+   * Get url path of original file
    *
    * @param string $postfix
    * @return string
    */
-  public function getUrl($postfix = null)
+  public function getPath($postfix = null)
   {
-    $url = sprintf('%s/%s/', $this->api->getCdnUri(), $this->uuid);
-    if($this->default_effects) {
-      $url = sprintf('%s-/%s', $url, $this->default_effects);
+    $uuid = $this->uuid;
+    if ($this->default_effects) {
+      $path = sprintf('%s/%s/', $uuid, $this->default_effects);
     }
-    if($this->filename && $postfix === null) {
+	if($this->filename && $postfix === null) {
       $postfix = $this->filename;
     }
 
@@ -232,10 +233,20 @@ class File
 
     if (count($operations)) {
       $operations_part = join('/-/', $operations);
-      return $url.'-/'.$operations_part.'/'.$postfix;
+      return $path.'-/'.$operations_part.'/'.$postfix;
     } else {
-      return $url.$postfix;
+      return $path.$postfix;
     }
+  }
+  
+  /**
+   * Get url of original image
+   *
+   * @return string
+   */
+  public function getUrl($postfix = null)
+  {
+    $url = sprintf('%s/%s/', $this->api->getCdnUri(), $this->getPath());
   }
 
   /**

@@ -128,6 +128,7 @@ class Api
     $this->secret_key = $secret_key;
     $this->widget = new Widget($this);
     $this->uploader = new Uploader($this);
+
     if($cdn_host !== null) {
       $this->cdn_host = $cdn_host;
     }
