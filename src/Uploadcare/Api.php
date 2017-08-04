@@ -375,15 +375,10 @@ class Api
   public function copyFile($source, $target = null)
   {
     Helper::deprecate('2.0.0', '3.0.0', 'Use createLocalCopy() or createRemoteCopy() instead');
-    $data = $this->__preparedRequest('file_copy', 'POST', array(), array('source' => $source, 'target' => $target));
-    if (array_key_exists('result', (array)$data) == true) {
-      if ($data->type == 'file') {
-        return new File((string)$data->result->uuid, $this);
-      } else {
-        return (string)$data->result;
-      }
+    if (!$target) {
+      return $this->createLocalCopy($source);
     } else {
-      return (string)$data->detail;
+      return $this->createRemoteCopy($source, $target);
     }
   }
 
