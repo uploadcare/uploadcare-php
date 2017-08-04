@@ -35,9 +35,8 @@ class CopyFilesTest extends TestCase
   /**
    * Test that createLocalCopy method returns instanse of Uploadcare\File
    */
-  public function testCreateLocalCopy()
+  public function testCreateLocalCopyFromApi()
   {
-    $filesArray = array();
     try {
       $f1 = $this->api->uploader->fromPath(dirname(__FILE__).'/test.jpg');
       $fileUuid = $f1->getUuid();
@@ -46,14 +45,14 @@ class CopyFilesTest extends TestCase
       $f1->delete();
       $this->assertTrue(get_class($fRes) == 'Uploadcare\File');
     } catch (Exception $e) {
-      $this->fail('We got an unexpected exception trying to create local copy of file: '.$e->getMessage());
+      $this->fail('We got an unexpected exception at `Api::createLocalCopy` trying to create local copy of file: '.$e->getMessage());
     }
   }
 
   /**
    * Test that createRemoteCopy method returns string
    */
-  public function testCreateRemoteCopy()
+  public function testCreateRemoteCopyFromApi()
   {
     $apiMock = $this->getMockBuilder('\Uploadcare\Api')
       ->disableOriginalConstructor()
@@ -71,7 +70,23 @@ class CopyFilesTest extends TestCase
       $f1->delete();
       $this->assertTrue($fRes == $mockRes->result);
     } catch (Exception $e) {
-      $this->fail('We got an unexpected exception trying to create remote copy of file: '.$e->getMessage());
+      $this->fail('We got an unexpected exception at `Api::createRemoteCopy` trying to create remote copy of file: '.$e->getMessage());
+    }
+  }
+  /**
+   * Test that createLocalCopy method returns instanse of Uploadcare\File
+   */
+  public function testCreateLocalCopyFromFile()
+  {
+    try {
+      $f1 = $this->api->uploader->fromPath(dirname(__FILE__).'/test.jpg');
+      usleep(3000000); // wait 3 sec to give a time to prepare file and avoid error: "File is not ready yet."
+      $fRes = $f1->createLocalCopy(true);
+      $f1->delete();
+      $this->assertTrue(get_class($fRes) == 'Uploadcare\File');
+      $fRes->delete();
+    } catch (Exception $e) {
+      $this->fail('We got an unexpected exception at: `File::createLocalCopy` trying to create local copy of file in: '.$e->getMessage());
     }
   }
 }
