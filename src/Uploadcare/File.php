@@ -176,9 +176,9 @@ class File
   /**
    * Copy file to the external storage
    *
-   * @param string $target Name of custom storage connected to your project. Uploadcare storage is used if target is absent.
+   * @param string $target Name of custom storage connected to your project.
    * @param boolean $make_public (Optional) MUST be either true or false. true to make copied files available via public links. false to reverse the behavior.
-   * @param string $pattern (Optional) Applies to custom storage usage scenario only. The parameter is used to specify file names Uploadcare passes to custom storages. In case parameter is omitted, custom storage pattern is used.
+   * @param string $pattern (Optional) The parameter is used to specify file names Uploadcare passes to custom storages. In case parameter is omitted, custom storage pattern is used.
    *
    * Allowed values:
    *
