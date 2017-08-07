@@ -164,6 +164,38 @@ class File
   }
 
   /**
+   * Copy file to the Uploadcare storage
+   *
+   * @param boolean $store MUST be either true or false. true to store files while copying. If stored, files won’t be automatically deleted within 24 hours after copying. false * to not store files, default.
+   * @return File|string
+   */
+  public function createLocalCopy($store = true) {
+    return $this->api->createLocalCopy($this->getUrl(), $store);
+  }
+
+  /**
+   * Copy file to the external storage
+   *
+   * @param string $target Name of custom storage connected to your project.
+   * @param boolean $make_public (Optional) MUST be either true or false. true to make copied files available via public links. false to reverse the behavior.
+   * @param string $pattern (Optional) The parameter is used to specify file names Uploadcare passes to custom storages. In case parameter is omitted, custom storage pattern is used.
+   *
+   * Allowed values:
+   *
+   * ${default} = ${uuid}/${auto_filename}
+   * ${auto_filename} = ${filename} ${effects} ${ext}
+   * ${effects} = CDN operations put into a URL
+   * ${filename} = original filename, no extension
+   * ${uuid} = file UUID
+   * ${ext} = file extension, leading dot, e.g. .jpg
+   *
+   * @return File|string
+   */
+  public function createRemoteCopy($target, $make_public = true, $pattern = '${default}') {
+    return $this->api->createRemoteCopy($this->getUrl(), $target, $make_public, $pattern);
+  }
+
+  /**
    * Delete file
    *
    * @return array
