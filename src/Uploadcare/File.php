@@ -380,6 +380,7 @@ class File
    */
   public function effect($effect)
   {
+    if (!$effect) return $this;
     $result = clone $this;
     $result->operations[]['effect'] = $effect;
     return $result;
@@ -393,6 +394,7 @@ class File
    */
   public function op($operation)
   {
+    if (!$operation) return $this;
     $result = clone $this;
     $result->operations[]['custom'] = $operation;
     return $result;
