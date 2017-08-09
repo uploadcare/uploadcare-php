@@ -10,6 +10,7 @@
 - change the signature of `Uploader->fromUrl()`, old signature is deprecated but will work until 3.0
 - deprecate `File->copy()` and `File->copyTo()`
 - deprecate `Api->copyFile()`
+- methods: File::crop & File::scaleCrop throws exceptions if parameters $width or $height are 0 or not provided.
 
 ## 1.5.5
 - bump widget version to 2.9.0 (see [widget changelog][widget changelog])
