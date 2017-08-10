@@ -237,14 +237,23 @@ class ApiTest extends TestCase
     $this->assertEquals($file->resize(400, false)->getUrl(), 'https://ucarecdn.com/3c99da1d-ef05-4d79-81d8-d4f208d98beb/-/resize/400x/');
     $this->assertEquals($file->resize(false, 400)->getUrl(), 'https://ucarecdn.com/3c99da1d-ef05-4d79-81d8-d4f208d98beb/-/resize/x400/');
 
+    try {
+      $file->crop(400, 0);
+      $this->fail('Expected exception with incorrect params');
+    } catch (Exception $e) {}
     $this->assertEquals($file->crop(400, 400)->getUrl(), 'https://ucarecdn.com/3c99da1d-ef05-4d79-81d8-d4f208d98beb/-/crop/400x400/');
     $this->assertEquals($file->crop(400, 400, true)->getUrl(), 'https://ucarecdn.com/3c99da1d-ef05-4d79-81d8-d4f208d98beb/-/crop/400x400/center/');
     $this->assertEquals($file->crop(400, 400, true, 'ff0000')->getUrl(), 'https://ucarecdn.com/3c99da1d-ef05-4d79-81d8-d4f208d98beb/-/crop/400x400/center/ff0000/');
     $this->assertEquals($file->crop(400, 400, false, 'ff0000')->getUrl(), 'https://ucarecdn.com/3c99da1d-ef05-4d79-81d8-d4f208d98beb/-/crop/400x400/ff0000/');
 
+    try {
+      $file->scaleCrop(400, 0);
+      $this->fail('Expected exception with incorrect params');
+    } catch (Exception $e) {}
     $this->assertEquals($file->scaleCrop(400, 400)->getUrl(), 'https://ucarecdn.com/3c99da1d-ef05-4d79-81d8-d4f208d98beb/-/scale_crop/400x400/');
     $this->assertEquals($file->scaleCrop(400, 400, true)->getUrl(), 'https://ucarecdn.com/3c99da1d-ef05-4d79-81d8-d4f208d98beb/-/scale_crop/400x400/center/');
 
+    $this->assertEquals($file->effect(null)->getUrl(), 'https://ucarecdn.com/3c99da1d-ef05-4d79-81d8-d4f208d98beb/');
     $this->assertEquals($file->effect('flip')->getUrl(), 'https://ucarecdn.com/3c99da1d-ef05-4d79-81d8-d4f208d98beb/-/effect/flip/');
     $this->assertEquals($file->effect('grayscale')->getUrl(), 'https://ucarecdn.com/3c99da1d-ef05-4d79-81d8-d4f208d98beb/-/effect/grayscale/');
     $this->assertEquals($file->effect('invert')->getUrl(), 'https://ucarecdn.com/3c99da1d-ef05-4d79-81d8-d4f208d98beb/-/effect/invert/');

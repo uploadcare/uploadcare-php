@@ -297,6 +297,9 @@ class File
    */
   public function crop($width, $height, $center = false, $fill_color = false)
   {
+    if (!$width || !$height) {
+      throw new \Exception('Please provide both $width and $height');
+    }
     $result = clone $this;
     $result->operations[]['crop'] = array(
         'width' => $width,
@@ -319,10 +322,10 @@ class File
    */
   public function resize($width = false, $height = false)
   {
-    $result = clone $this;
     if (!$width && !$height) {
-      throw new \Exception('Please, provide at least width or height for resize');
+      throw new \Exception('Please, provide at least $width or $height for resize');
     }
+    $result = clone $this;
     $result->operations[]['resize'] = array(
         'width' => $width,
         'height' => $height,
@@ -342,10 +345,10 @@ class File
    */
   public function preview($width, $height)
   {
-    $result = clone $this;
     if (!$width || !$height) {
       throw new \Exception('Please, provide both width and height for preview');
     }
+    $result = clone $this;
     $result->operations[]['preview'] = array(
         'width' => $width,
         'height' => $height,
@@ -363,6 +366,9 @@ class File
    */
   public function scaleCrop($width, $height, $center = false)
   {
+    if (!$width || !$height) {
+      throw new \Exception('Please, provide both $width and $height');
+    }
     $result = clone $this;
     $result->operations[]['scale_crop'] = array(
         'width' => $width,
@@ -380,6 +386,7 @@ class File
    */
   public function effect($effect)
   {
+    if (!$effect) return $this;
     $result = clone $this;
     $result->operations[]['effect'] = $effect;
     return $result;
@@ -393,6 +400,7 @@ class File
    */
   public function op($operation)
   {
+    if (!$effect) return $this;
     $result = clone $this;
     $result->operations[]['custom'] = $operation;
     return $result;
