@@ -213,7 +213,19 @@ class File
    */
   public function getUrl($postfix = null)
   {
-    $url = sprintf('%s/%s/', $this->api->getCdnUri(), $this->uuid);
+    $url = sprintf('%s/%s', $this->api->getCdnUri(), $this->getPath($postfix));
+    return $url;
+  }
+
+  /**
+   * Get local URL path of original image
+   *
+   * @param string $postfix
+   * @return string
+   */
+  public function getPath($postfix = null)
+  {
+    $url = sprintf('%s/', $this->uuid);
     if($this->default_effects) {
       $url = sprintf('%s-/%s', $url, $this->default_effects);
     }
