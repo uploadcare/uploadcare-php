@@ -213,7 +213,7 @@ class File
    */
   public function getUrl($postfix = null)
   {
-    $url = sprintf('%s/%s', $this->api->getCdnUri(), $this->getPath($postfix));
+    $url = sprintf('%s%s', $this->api->getCdnUri(), $this->getPath($postfix));
     return $url;
   }
 
@@ -225,7 +225,7 @@ class File
    */
   public function getPath($postfix = null)
   {
-    $url = sprintf('%s/', $this->uuid);
+    $url = sprintf('/%s/', $this->uuid);
     if($this->default_effects) {
       $url = sprintf('%s-/%s', $url, $this->default_effects);
     }

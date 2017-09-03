@@ -232,7 +232,7 @@ class ApiTest extends TestCase
 
     $this->assertEquals(get_class($file), 'Uploadcare\File');
 
-    $this->assertEquals($file->getPath(), '3c99da1d-ef05-4d79-81d8-d4f208d98beb/');
+    $this->assertEquals($file->getPath(), '/3c99da1d-ef05-4d79-81d8-d4f208d98beb/');
     $this->assertEquals($file->getUrl(), 'https://ucarecdn.com/3c99da1d-ef05-4d79-81d8-d4f208d98beb/');
     $this->assertEquals($file->resize(400, 400)->getUrl(), 'https://ucarecdn.com/3c99da1d-ef05-4d79-81d8-d4f208d98beb/-/resize/400x400/');
     $this->assertEquals($file->resize(400, false)->getUrl(), 'https://ucarecdn.com/3c99da1d-ef05-4d79-81d8-d4f208d98beb/-/resize/400x/');
@@ -242,13 +242,13 @@ class ApiTest extends TestCase
       $file->crop(400, 0);
       $this->fail('Expected exception with incorrect params');
     } catch (Exception $e) {}
-    $this->assertEquals($file->crop(400, 400)->getPath(), '3c99da1d-ef05-4d79-81d8-d4f208d98beb/-/crop/400x400/');
+    $this->assertEquals($file->crop(400, 400)->getPath(), '/3c99da1d-ef05-4d79-81d8-d4f208d98beb/-/crop/400x400/');
     $this->assertEquals($file->crop(400, 400)->getUrl(), 'https://ucarecdn.com/3c99da1d-ef05-4d79-81d8-d4f208d98beb/-/crop/400x400/');
-    $this->assertEquals($file->crop(400, 400, true)->getPath(), '3c99da1d-ef05-4d79-81d8-d4f208d98beb/-/crop/400x400/center/');
+    $this->assertEquals($file->crop(400, 400, true)->getPath(), '/3c99da1d-ef05-4d79-81d8-d4f208d98beb/-/crop/400x400/center/');
     $this->assertEquals($file->crop(400, 400, true)->getUrl(), 'https://ucarecdn.com/3c99da1d-ef05-4d79-81d8-d4f208d98beb/-/crop/400x400/center/');
-    $this->assertEquals($file->crop(400, 400, true, 'ff0000')->getPath(), '3c99da1d-ef05-4d79-81d8-d4f208d98beb/-/crop/400x400/center/ff0000/');
+    $this->assertEquals($file->crop(400, 400, true, 'ff0000')->getPath(), '/3c99da1d-ef05-4d79-81d8-d4f208d98beb/-/crop/400x400/center/ff0000/');
     $this->assertEquals($file->crop(400, 400, true, 'ff0000')->getUrl(), 'https://ucarecdn.com/3c99da1d-ef05-4d79-81d8-d4f208d98beb/-/crop/400x400/center/ff0000/');
-    $this->assertEquals($file->crop(400, 400, false, 'ff0000')->getPath(), '3c99da1d-ef05-4d79-81d8-d4f208d98beb/-/crop/400x400/ff0000/');
+    $this->assertEquals($file->crop(400, 400, false, 'ff0000')->getPath(), '/3c99da1d-ef05-4d79-81d8-d4f208d98beb/-/crop/400x400/ff0000/');
     $this->assertEquals($file->crop(400, 400, false, 'ff0000')->getUrl(), 'https://ucarecdn.com/3c99da1d-ef05-4d79-81d8-d4f208d98beb/-/crop/400x400/ff0000/');
 
     try {
