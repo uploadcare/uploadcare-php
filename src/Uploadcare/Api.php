@@ -421,12 +421,16 @@ class Api
    *
    * @return File|string
    */
-  public function createRemoteCopy($source, $target, $make_public = true, $pattern = '${default}') {
+  public function createRemoteCopy($source, $target, $make_public = true, $pattern = null) {
     if(!$target) {
       throw new \Exception('$target parameter should not be empty.');
     }
-    $data = $this->__preparedRequest('file_copy', 'POST', array(), array('source' => $source, 'target' => $target,
-      'make_public' => $make_public, 'pattern' => $pattern));
+    $paramArr = array('source' => $source, 'target' => $target,
+    'make_public' => $make_public);
+    if($pattern) {
+      $paramArr['pattern'] = $pattern;
+    }
+    $data = $this->__preparedRequest('file_copy', 'POST', array(), $paramArr);
     if (array_key_exists('result', (array)$data) == true) {
       return (string)$data->result;
     } else {
