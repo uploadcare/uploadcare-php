@@ -425,8 +425,7 @@ class Api
     if(!$target) {
       throw new \Exception('$target parameter should not be empty.');
     }
-    $paramArr = array('source' => $source, 'target' => $target,
-    'make_public' => $make_public);
+    $paramArr = array('source' => $source, 'target' => $target, 'make_public' => $make_public);
     if($pattern) {
       $paramArr['pattern'] = $pattern;
     }
