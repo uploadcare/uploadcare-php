@@ -66,7 +66,7 @@ class CopyFilesTest extends TestCase
     try {
       $f1 = $this->api->uploader->fromPath(dirname(__FILE__).'/test.jpg');
       $fileUuid = $f1->getUuid();
-      $fRes = $apiMock->createRemoteCopy($fileUuid, "mybucket");
+      $fRes = $apiMock->createRemoteCopy($fileUuid, "mybucket", true, '${default}');
       $f1->delete();
       $this->assertTrue($fRes == $mockRes->result);
     } catch (Exception $e) {
