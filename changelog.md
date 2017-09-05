@@ -2,7 +2,11 @@
 
 ## 2.1.0-pre
 - methods: `File->crop()` and `File->scaleCrop()` throws exceptions if parameters `$width` or `$height` are 0 or not provided.
+<<<<<<< HEAD
 - added methods: `File->getPath()`.
+=======
+- fixed `Api->createRemoteCopy()` default behaviour and ship
+>>>>>>> master
 
 ## 2.0.0
 - use latest stable build of version 3 (see [widget changelog][widget changelog])
