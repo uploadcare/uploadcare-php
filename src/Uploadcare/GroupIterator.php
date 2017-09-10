@@ -8,7 +8,7 @@ class GroupIterator extends PagedDataIterator
         return $api->getGroupsChunk($options, $reverse);
     }
 
-    public function _pd_GetCount($api, $options) 
+    public function _pd_GetCount($api, $options)
     {
         return $api->getGroupsCount($options);
     }

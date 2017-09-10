@@ -1,7 +1,6 @@
 <?php
 namespace Uploadcare;
 
-
 class File
 {
     private $re_uuid_with_effects = '!/?(?P<uuid>[a-z0-9]{8}-(?:[a-z0-9]{4}-){3}[a-z0-9]{12})(?:/(?:-/(?P<effects>(?:[^/]+/)+)))?(?<filename>[^/]*)!';
@@ -54,7 +53,7 @@ class File
     public function __construct($uuid_or_url, Api $api, $data = false)
     {
         $matches = array();
-        if(!preg_match($this->re_uuid_with_effects, $uuid_or_url, $matches)) {
+        if (!preg_match($this->re_uuid_with_effects, $uuid_or_url, $matches)) {
             throw new \Exception('UUID not found');
         }
 
@@ -65,7 +64,7 @@ class File
         if ($data) {
             $this->cached_data = (array)$data;
 
-            if(array_key_exists('default_effects', $this->cached_data)) {
+            if (array_key_exists('default_effects', $this->cached_data)) {
                 $this->default_effects = $this->cached_data['default_effects'];
             }
         }
@@ -229,10 +228,10 @@ class File
     public function getPath($postfix = null)
     {
         $url = sprintf('/%s/', $this->uuid);
-        if($this->default_effects) {
+        if ($this->default_effects) {
             $url = sprintf('%s-/%s', $url, $this->default_effects);
         }
-        if($this->filename && $postfix === null) {
+        if ($this->filename && $postfix === null) {
             $postfix = $this->filename;
         }
 
@@ -245,32 +244,32 @@ class File
                 $part[] = $operation_type;
 
                 switch ($operation_type) {
-                case 'crop':
-                    $part = $this->__addPartSize($part, $operation_params);
-                    $part = $this->__addPartCenter($part, $operation_params);
-                    $part = $this->__addPartFillColor($part, $operation_params);
-                    break;
+                    case 'crop':
+                        $part = $this->__addPartSize($part, $operation_params);
+                        $part = $this->__addPartCenter($part, $operation_params);
+                        $part = $this->__addPartFillColor($part, $operation_params);
+                        break;
 
-                case 'resize':
-                    $part = $this->__addPartSize($part, $operation_params);
-                    break;
+                    case 'resize':
+                        $part = $this->__addPartSize($part, $operation_params);
+                        break;
 
-                case 'scale_crop':
-                    $part = $this->__addPartSize($part, $operation_params);
-                    $part = $this->__addPartCenter($part, $operation_params);
-                    break;
+                    case 'scale_crop':
+                        $part = $this->__addPartSize($part, $operation_params);
+                        $part = $this->__addPartCenter($part, $operation_params);
+                        break;
 
-                case 'effect':
-                    $part = $this->__addPartEffect($part, $operation_params);
-                    break;
+                    case 'effect':
+                        $part = $this->__addPartEffect($part, $operation_params);
+                        break;
 
-                case 'preview':
-                    $part = $this->__addPartSize($part, $operation_params);
-                    break;
+                    case 'preview':
+                        $part = $this->__addPartSize($part, $operation_params);
+                        break;
 
-                case 'custom':
-                    $part = array($operation_params);
-                    break;
+                    case 'custom':
+                        $part = array($operation_params);
+                        break;
                 }
                 $part_str = join('/', $part);
                 $operations[] = $part_str;
@@ -401,7 +400,8 @@ class File
      */
     public function effect($effect)
     {
-        if (!$effect) { return $this;
+        if (!$effect) {
+            return $this;
         }
         $result = clone $this;
         $result->operations[]['effect'] = $effect;
@@ -416,7 +416,8 @@ class File
      */
     public function op($operation)
     {
-        if (!$effect) { return $this;
+        if (!$effect) {
+            return $this;
         }
         $result = clone $this;
         $result->operations[]['custom'] = $operation;

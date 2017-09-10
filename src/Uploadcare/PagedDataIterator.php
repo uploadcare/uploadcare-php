@@ -1,8 +1,7 @@
 <?php
 namespace Uploadcare;
 
-
-abstract class PagedDataIterator implements \Iterator,\Countable,\ArrayAccess
+abstract class PagedDataIterator implements \Iterator, \Countable, \ArrayAccess
 {
     /**
      * Current iterator position
@@ -209,7 +208,7 @@ abstract class PagedDataIterator implements \Iterator,\Countable,\ArrayAccess
      * @param  array $ptions
      * @return int
      */
-    public function _pd_GetCount($api, $options) 
+    public function _pd_GetCount($api, $options)
     {
         return 0;
     }
@@ -244,7 +243,7 @@ abstract class PagedDataIterator implements \Iterator,\Countable,\ArrayAccess
 
     public function getNextPageQuery()
     {
-        if($this->limit) {
+        if ($this->limit) {
             return $this->nextPageParams['query'];
         }
         return null;
@@ -252,7 +251,7 @@ abstract class PagedDataIterator implements \Iterator,\Countable,\ArrayAccess
 
     public function getPrevPageQuery()
     {
-        if($this->limit) {
+        if ($this->limit) {
             return $this->prevPageParams['query'];
         }
         return null;

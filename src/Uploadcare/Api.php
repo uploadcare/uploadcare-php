@@ -128,10 +128,10 @@ class Api
         $this->secret_key = $secret_key;
         $this->widget = new Widget($this);
         $this->uploader = new Uploader($this);
-        if($cdn_host !== null) {
+        if ($cdn_host !== null) {
             $this->cdn_host = $cdn_host;
         }
-        if($cdn_protocol !== null) {
+        if ($cdn_protocol !== null) {
             $this->cdn_protocol = $cdn_protocol;
         }
         if ($retry_throttled !== null) {
@@ -292,7 +292,8 @@ class Api
             'stored' => $this->defaultFilters['file']['stored'],
             'removed' => $this->defaultFilters['file']['removed'],
             'reversed' => false
-            ), $options
+            ),
+            $options
         );
 
         if (!empty($options['from']) && !empty($options['to'])) {
@@ -341,7 +342,8 @@ class Api
             'stored' => $this->defaultFilters['file']['stored'],
             'removed' => $this->defaultFilters['file']['removed'],
             'reversed' => false
-            ), $options
+            ),
+            $options
         );
 
         if (!empty($options['from']) && !empty($options['to'])) {
@@ -351,7 +353,7 @@ class Api
         $options['from'] = self::dateTimeString($options['from']);
         $options['to'] = self::dateTimeString($options['to']);
 
-        return  new \Uploadcare\GroupIterator($this, $options);;
+        return new \Uploadcare\GroupIterator($this, $options);
     }
 
     /**
@@ -391,7 +393,7 @@ class Api
      *                         default.
      * @return File|string
      */
-    public function createLocalCopy($source, $store = true) 
+    public function createLocalCopy($source, $store = true)
     {
         $data = $this->__preparedRequest('file_copy', 'POST', array(), array('source' => $source, 'store' => $store));
         if (array_key_exists('result', (array)$data) == true) {
@@ -413,17 +415,17 @@ class Api
      * @param boolean $make_public (Optional) MUST be either true or false. true to make copied files available via public links. false to reverse the behavior.
      * @param string  $pattern     (Optional) Applies to custom storage usage scenario only. The parameter is used to specify file names Uploadcare passes to custom storages. In case parameter is omitted, custom storage pattern is used.
      *                             Allowed values: ${default} = ${uuid}/${auto_filename} ${auto_filename} = ${filename} ${effects} ${ext} ${effects} = CDN operations put into a URL ${filename} = original filename, no extension ${uuid} =
-     *                             file UUID ${ext} = file extension, leading dot, e.g. .jpg          
+     *                             file UUID ${ext} = file extension, leading dot, e.g. .jpg
      *
      * @return File|string
      */
-    public function createRemoteCopy($source, $target, $make_public = true, $pattern = null) 
+    public function createRemoteCopy($source, $target, $make_public = true, $pattern = null)
     {
-        if(!$target) {
+        if (!$target) {
             throw new \Exception('$target parameter should not be empty.');
         }
         $paramArr = array('source' => $source, 'target' => $target, 'make_public' => $make_public);
-        if($pattern) {
+        if ($pattern) {
             $paramArr['pattern'] = $pattern;
         }
         $data = $this->__preparedRequest('file_copy', 'POST', array(), $paramArr);
@@ -473,9 +475,9 @@ class Api
         foreach ($filesChunkedArr as $chunk) {
             $res = $this->__batchProcessFilesChunk($chunk, $request_type);
             $lastStatus = $res['status'];
-            if($lastStatus == "ok") {
+            if ($lastStatus == "ok") {
                 $problemsObj = $res['problems'];
-                if(count(get_object_vars($problemsObj)) > 0) {
+                if (count(get_object_vars($problemsObj)) > 0) {
                     $problemsArr [] = $problemsObj;
                 }
                 $filesArr = array_merge($filesArr, $res['files']);
@@ -499,7 +501,7 @@ class Api
      */
     public function __batchProcessFilesChunk($filesUuidArr, $request_type)
     {
-        if(count($filesUuidArr) > $this->batchFilesChunkSize ) {
+        if (count($filesUuidArr) > $this->batchFilesChunkSize) {
             throw new \Exception('Files number should not exceed '.$this->batchFilesChunkSize.' items per request.');
         }
         $data = $this->__preparedRequest('files_storage', $request_type, array(), $filesUuidArr);
@@ -618,7 +620,7 @@ class Api
      * @param  array   $resultArr
      * @return array
      */
-    private function __preparePagedParams($data, $reverse, $resultArr) 
+    private function __preparePagedParams($data, $reverse, $resultArr)
     {
         $nextParamsArr = parse_url($data->next);
         $prevParamsArr = parse_url($data->previous);
@@ -650,7 +652,8 @@ class Api
     {
         $queryAr = array_filter($queryAr);
         array_walk(
-            $queryAr, function (&$val, $key) {
+            $queryAr,
+            function (&$val, $key) {
                 $val = urlencode($key) . '=' . urlencode($val);
             }
         );
@@ -670,50 +673,50 @@ class Api
     private function __getPath($type, $params = array())
     {
         switch ($type) {
-        case 'root':
-            return '/';
+            case 'root':
+                return '/';
 
-        case 'account':
-            return '/account/';
+            case 'account':
+                return '/account/';
 
-        case 'file_list':
-            return '/files/' . $this->__getQueryString($params, '?');
+            case 'file_list':
+                return '/files/' . $this->__getQueryString($params, '?');
 
-        case 'file_storage':
-            if (array_key_exists('uuid', $params) == false) {
-                throw new \Exception('Please provide "uuid" param for request');
-            }
-            return sprintf('/files/%s/storage/', $params['uuid']);
+            case 'file_storage':
+                if (array_key_exists('uuid', $params) == false) {
+                    throw new \Exception('Please provide "uuid" param for request');
+                }
+                return sprintf('/files/%s/storage/', $params['uuid']);
 
-        case 'file_copy':
-            return '/files/';
+            case 'file_copy':
+                return '/files/';
 
-        case 'files_storage':
-            return '/files/storage/';
+            case 'files_storage':
+                return '/files/storage/';
 
-        case 'file':
-            if (array_key_exists('uuid', $params) == false) {
-                throw new \Exception('Please provide "uuid" param for request');
-            }
-            return sprintf('/files/%s/', $params['uuid']);
+            case 'file':
+                if (array_key_exists('uuid', $params) == false) {
+                    throw new \Exception('Please provide "uuid" param for request');
+                }
+                return sprintf('/files/%s/', $params['uuid']);
 
-        case 'group_list':
-            return '/groups/' . $this->__getQueryString($params, '?');
+            case 'group_list':
+                return '/groups/' . $this->__getQueryString($params, '?');
 
-        case 'group':
-            if (array_key_exists('uuid', $params) == false) {
-                throw new \Exception('Please provide "uuid" param for request');
-            }
-            return sprintf('/groups/%s/', $params['uuid']);
+            case 'group':
+                if (array_key_exists('uuid', $params) == false) {
+                    throw new \Exception('Please provide "uuid" param for request');
+                }
+                return sprintf('/groups/%s/', $params['uuid']);
 
-        case 'group_storage':
-            if (array_key_exists('uuid', $params) == false) {
-                throw new \Exception('Please provide "uuid" param for request');
-            }
-            return sprintf('/groups/%s/storage/', $params['uuid']);
+            case 'group_storage':
+                if (array_key_exists('uuid', $params) == false) {
+                    throw new \Exception('Please provide "uuid" param for request');
+                }
+                return sprintf('/groups/%s/storage/', $params['uuid']);
 
-        default:
-            throw new \Exception('No api url type is provided for request "' . $type . '". Use store, or appropriate constants.');
+            default:
+                throw new \Exception('No api url type is provided for request "' . $type . '". Use store, or appropriate constants.');
         }
     }
 
@@ -731,26 +734,26 @@ class Api
         $this->current_method = strtoupper($type);
 
         switch ($type) {
-        case 'GET':
-            break;
-        case 'POST':
-            curl_setopt($ch, CURLOPT_POST, true);
-            break;
-        case 'PUT':
-            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PUT');
-            break;
-        case 'DELETE':
-            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'DELETE');
-            break;
-        case 'HEAD':
-            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'HEAD');
-            curl_setopt($ch, CURLOPT_NOBODY, true);
-            break;
-        case 'OPTIONS':
-            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'OPTIONS');
-            break;
-        default:
-            throw new \Exception('No request type is provided for request. Use post, put, delete, get or appropriate constants.');
+            case 'GET':
+                break;
+            case 'POST':
+                curl_setopt($ch, CURLOPT_POST, true);
+                break;
+            case 'PUT':
+                curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PUT');
+                break;
+            case 'DELETE':
+                curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'DELETE');
+                break;
+            case 'HEAD':
+                curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'HEAD');
+                curl_setopt($ch, CURLOPT_NOBODY, true);
+                break;
+            case 'OPTIONS':
+                curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'OPTIONS');
+                break;
+            default:
+                throw new \Exception('No request type is provided for request. Use post, put, delete, get or appropriate constants.');
         }
     }
 
@@ -802,7 +805,8 @@ class Api
 
         // sign string
         $sign_string = join(
-            "\n", array(
+            "\n",
+            array(
             $this->current_method,
             $content_md5,
             $content_type,

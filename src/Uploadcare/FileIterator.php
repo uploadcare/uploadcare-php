@@ -1,7 +1,6 @@
 <?php
 namespace Uploadcare;
 
-
 class FileIterator extends PagedDataIterator
 {
     public function _pd_getDataChunk($api, $options, $reverse)

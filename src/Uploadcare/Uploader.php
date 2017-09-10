@@ -47,18 +47,17 @@ class Uploader
 
     public function __call($method, $arguments)
     {
-        if($method == 'fromUrl') {
-            if(count($arguments) == 1) {
+        if ($method == 'fromUrl') {
+            if (count($arguments) == 1) {
                 return call_user_func_array(array($this,'fromUrlNew'), $arguments);
             }
-            if(count($arguments) == 2) {
-                if(is_array($arguments[1]) ) {
+            if (count($arguments) == 2) {
+                if (is_array($arguments[1])) {
                     return call_user_func_array(array($this,'fromUrlNew'), $arguments);
                 } else {
                     return call_user_func_array(array($this,'fromUrlOld'), $arguments);
                 }
-            }
-            else if(count($arguments) >= 3) {
+            } elseif (count($arguments) >= 3) {
                 return call_user_func_array(array($this,'fromUrlOld'), $arguments);
             }
         }
@@ -80,7 +79,8 @@ class Uploader
         Helper::deprecate('2.0.0', '3.0.0', 'This version of method `fromUrl($url, $check_status, $timeout, ' .
                           '$max_attempts)` is deprecated please use `fromUrl($url, $options)` instead');
         return $this->fromUrlNew(
-            $url, array(
+            $url,
+            array(
             'check_status' => $check_status,
             'timeout' => $timeout,
             'max_attempts' => $max_attempts,
@@ -122,7 +122,7 @@ class Uploader
         'pub_key' => $this->api->getPublicKey(),
         'store' => $params['store'],
         );
-        if($params['filename']) {
+        if ($params['filename']) {
             $requestData['filename'] = $params['filename'];
         }
 
@@ -167,13 +167,13 @@ class Uploader
     public function fromPath($path, $mime_type = false)
     {
         if (function_exists('curl_file_create')) {
-            if($mime_type) {
+            if ($mime_type) {
                 $f = curl_file_create($path, $mime_type);
             } else {
                 $f = curl_file_create($path);
             }
         } else {
-            if($mime_type) {
+            if ($mime_type) {
                 $f = '@' . $path . ';type=' . $mime_type;
             } else {
                 $f = '@' . $path;
@@ -297,7 +297,9 @@ class Uploader
     {
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt(
-            $ch, CURLOPT_HTTPHEADER, array(
+            $ch,
+            CURLOPT_HTTPHEADER,
+            array(
             'User-Agent: ' . $this->api->getUserAgent(),
             )
         );
@@ -329,8 +331,7 @@ class Uploader
         $ch_info = curl_getinfo($ch);
         if ($data === false) {
             throw new \Exception(curl_error($ch));
-        }
-        elseif ($ch_info['http_code'] != 200) {
+        } elseif ($ch_info['http_code'] != 200) {
             throw new \Exception('Unexpected HTTP status code ' . $ch_info['http_code'] . '.' . curl_error($ch));
         }
         curl_close($ch);

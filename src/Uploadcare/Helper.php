@@ -25,13 +25,10 @@ class Helper
                 }
 
                 $key = $h[0];
-            }
-            else
-            {
+            } else {
                 if (substr($h[0], 0, 1) == "\t") {
                     $headers[$key] .= "\r\n\t" . trim($h[0]);
-                }
-                elseif (!$key) {
+                } elseif (!$key) {
                     $headers[0] = trim($h[0]);
                     trim($h[0]);
                 }
