@@ -122,8 +122,14 @@ class Api
      * @param string  $cdn_protocol    CDN Protocol
      * @param integer $retry_throttled Retry throttled requests this number of times
      */
-    public function __construct($public_key, $secret_key, $userAgentName = null, $cdn_host = null, $cdn_protocol = null, $retry_throttled = null)
-    {
+    public function __construct(
+        $public_key,
+        $secret_key,
+        $userAgentName = null,
+        $cdn_host = null,
+        $cdn_protocol = null,
+        $retry_throttled = null
+    ) {
         $this->public_key = $public_key;
         $this->secret_key = $secret_key;
         $this->widget = new Widget($this);
@@ -372,7 +378,8 @@ class Api
      *
      * @deprecated 2.0.0 Use createLocalCopy() or createRemoteCopy() instead.
      * @param      string $source CDN URL or file's uuid you need to copy.
-     * @param      string $target Name of custom storage connected to your project. Uploadcare storage is used if target is absent.
+     * @param      string $target Name of custom storage connected to your project. Uploadcare storage is used if target
+     *                            is absent.
      * @return     File|string
      */
     public function copyFile($source, $target = null)
@@ -389,8 +396,8 @@ class Api
      * Copy file to the Uploadcare storage
      *
      * @param  string  $source CDN URL or file's uuid you need to copy.
-     * @param  boolean $store  MUST be either true or false. true to store files while copying. If stored, files won’t be automatically deleted within 24 hours after copying. false * to not store files,
-     *                         default.
+     * @param  boolean $store  MUST be either true or false. `true` to store files while copying. If stored, files won’t
+     *                         be automatically deleted within 24 hours after copying.
      * @return File|string
      */
     public function createLocalCopy($source, $store = true)
@@ -411,11 +418,20 @@ class Api
      * Copy file to the external storage
      *
      * @param string  $source      CDN URL or file's uuid you need to copy.
-     * @param string  $target      Name of custom storage connected to your project. Uploadcare storage is used if target is absent.
-     * @param boolean $make_public (Optional) MUST be either true or false. true to make copied files available via public links. false to reverse the behavior.
-     * @param string  $pattern     (Optional) Applies to custom storage usage scenario only. The parameter is used to specify file names Uploadcare passes to custom storages. In case parameter is omitted, custom storage pattern is used.
-     *                             Allowed values: ${default} = ${uuid}/${auto_filename} ${auto_filename} = ${filename} ${effects} ${ext} ${effects} = CDN operations put into a URL ${filename} = original filename, no extension ${uuid} =
-     *                             file UUID ${ext} = file extension, leading dot, e.g. .jpg
+     * @param string  $target      Name of custom storage connected to your project. Uploadcare storage is used if
+     *                              target is absent.
+     * @param boolean $make_public (Optional) MUST be either `true` or `false`. `true` to make copied files available
+     *                              via public links. `false` to reverse the behavior.
+     * @param string  $pattern     (Optional) Applies to custom storage usage scenario only. The parameter is used to
+     *                              specify file names Uploadcare passes to custom storages. In case parameter is
+     *                              omitted, custom storage pattern is used.
+     *                             Allowed values:
+     *                              ${default} = ${uuid}/${auto_filename}
+     *                              ${auto_filename} = ${filename}${effects}${ext}
+     *                              ${effects} = CDN operations put into a URL
+     *                              ${filename} = original filename, no extension
+     *                              ${uuid} = file UUID
+     *                              ${ext} = file extension, leading dot, e.g. ".jpg"
      *
      * @return File|string
      */
@@ -565,12 +581,15 @@ class Api
         if ($error) {
             $errorInfo = array_filter(array(curl_error($ch), $body));
 
-            throw new \Exception('Request returned unexpected http code '. $ch_info['http_code'] . '. ' . join(', ', $errorInfo));
+            throw new \Exception('Request returned unexpected http code '. $ch_info['http_code'] . '. ' .
+                                 join(', ', $errorInfo));
         }
 
         curl_close($ch);
-        if (!defined('PHPUNIT_UPLOADCARE_TESTSUITE') && ($this->public_key == 'demopublickey' || $this->secret_key == 'demoprivatekey')) {
-            trigger_error('You are using the demo account. Please get an Uploadcare account at https://uploadcare.com/accounts/create/', E_USER_WARNING);
+        if (!defined('PHPUNIT_UPLOADCARE_TESTSUITE') && ($this->public_key == 'demopublickey'
+            || $this->secret_key == 'demoprivatekey')) {
+            trigger_error('You are using the demo account. Please get an Uploadcare account at ' .
+                          'https://uploadcare.com/accounts/create/', E_USER_WARNING);
         }
 
         return json_decode($body);
@@ -590,8 +609,13 @@ class Api
      * @throws \Exception
      * @throws \Uploadcare\Exceptions\ThrottledRequestException
      */
-    public function __preparedRequest($type, $request_type = 'GET', $params = array(), $data = array(), $retry_throttled = null)
-    {
+    public function __preparedRequest(
+        $type,
+        $request_type = 'GET',
+        $params = array(),
+        $data = array(),
+        $retry_throttled = null
+    ) {
         $retry_throttled = $retry_throttled ?: $this->retry_throttled;
         $path = $this->__getPath($type, $params);
 
@@ -716,7 +740,8 @@ class Api
                 return sprintf('/groups/%s/storage/', $params['uuid']);
 
             default:
-                throw new \Exception('No api url type is provided for request "' . $type . '". Use store, or appropriate constants.');
+                throw new \Exception('No api url type is provided for request "' . $type .
+                                     '". Use store, or appropriate constants.');
         }
     }
 
@@ -753,7 +778,8 @@ class Api
                 curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'OPTIONS');
                 break;
             default:
-                throw new \Exception('No request type is provided for request. Use post, put, delete, get or appropriate constants.');
+                throw new \Exception('No request method is provided for request. Use POST, PUT, DELETE, get or ' .
+                                     'appropriate constants.');
         }
     }
 

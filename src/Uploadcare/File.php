@@ -3,7 +3,8 @@ namespace Uploadcare;
 
 class File
 {
-    private $re_uuid_with_effects = '!/?(?P<uuid>[a-z0-9]{8}-(?:[a-z0-9]{4}-){3}[a-z0-9]{12})(?:/(?:-/(?P<effects>(?:[^/]+/)+)))?(?<filename>[^/]*)!';
+    private $re_uuid_with_effects = '!/?(?P<uuid>[a-z0-9]{8}-(?:[a-z0-9]{4}-){3}[a-z0-9]{12})' .
+                                     '(?:/(?:-/(?P<effects>(?:[^/]+/)+)))?(?<filename>[^/]*)!';
 
     /**
      * Uploadcare file id

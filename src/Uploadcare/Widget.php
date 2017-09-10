@@ -6,7 +6,7 @@ class Widget
     /**
    * Uploadcare widget version
    */
-    const version = '3.x';
+    const VERSION = '3.x';
 
     /**
      * Api instance
@@ -52,7 +52,7 @@ EOT;
     public function getScriptSrc($version = null, $full = true)
     {
         if (!$version) {
-            $version = self::version;
+            $version = self::VERSION;
         }
         if ($full) {
             $tail = "uploadcare.full.min.js";
@@ -76,6 +76,10 @@ EOT;
         foreach ($attribs as $key => $value) {
             $to_compile[] = sprintf('%s="%s"', $key, $value);
         }
-        return sprintf('<input type="hidden" role="uploadcare-uploader" name="%s" data-upload-url-base="" %s />', $name, join(' ', $to_compile));
+        return sprintf(
+            '<input type="hidden" role="uploadcare-uploader" name="%s" data-upload-url-base="" %s />',
+            $name,
+            join(' ', $to_compile)
+        );
     }
 }
