@@ -37,7 +37,7 @@ class Uploader
     public function status($token)
     {
         $data = array(
-        'token' => $token,
+            'token' => $token,
         );
         $ch = $this->__initRequest('from_url/status', $data);
         $this->__setHeaders($ch);
@@ -81,9 +81,9 @@ class Uploader
         return $this->fromUrlNew(
             $url,
             array(
-            'check_status' => $check_status,
-            'timeout' => $timeout,
-            'max_attempts' => $max_attempts,
+                'check_status' => $check_status,
+                'timeout' => $timeout,
+                'max_attempts' => $max_attempts,
             )
         );
     }
@@ -300,7 +300,7 @@ class Uploader
             $ch,
             CURLOPT_HTTPHEADER,
             array(
-            'User-Agent: ' . $this->api->getUserAgent(),
+                'User-Agent: ' . $this->api->getUserAgent(),
             )
         );
     }

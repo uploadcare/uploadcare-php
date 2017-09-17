@@ -3,8 +3,7 @@ namespace Uploadcare;
 
 class File
 {
-    private $re_uuid_with_effects = '!/?(?P<uuid>[a-z0-9]{8}-(?:[a-z0-9]{4}-){3}[a-z0-9]{12})' .
-                                     '(?:/(?:-/(?P<effects>(?:[^/]+/)+)))?(?<filename>[^/]*)!';
+    private $re_uuid_with_effects = '!/?(?P<uuid>[a-z0-9]{8}-(?:[a-z0-9]{4}-){3}[a-z0-9]{12})(?:/(?:-/(?P<effects>(?:[^/]+/)+)))?(?<filename>[^/]*)!';
 
     /**
      * Uploadcare file id
@@ -31,10 +30,10 @@ class File
      * Operations list
      */
     private $operation_list = array('crop',
-                                  'resize',
-                                  'scale_crop',
-                                  'effect',
-                                  'preview');
+                                    'resize',
+                                    'scale_crop',
+                                    'effect',
+                                    'preview');
 
     /**
      * Cached data
@@ -317,10 +316,10 @@ class File
         }
         $result = clone $this;
         $result->operations[]['crop'] = array(
-        'width' => $width,
-        'height' => $height,
-        'center' => $center,
-        'fill_color' => $fill_color,
+            'width' => $width,
+            'height' => $height,
+            'center' => $center,
+            'fill_color' => $fill_color,
         );
         return $result;
     }
@@ -342,8 +341,8 @@ class File
         }
         $result = clone $this;
         $result->operations[]['resize'] = array(
-        'width' => $width,
-        'height' => $height,
+            'width' => $width,
+            'height' => $height,
         );
         return $result;
     }
@@ -365,8 +364,8 @@ class File
         }
         $result = clone $this;
         $result->operations[]['preview'] = array(
-        'width' => $width,
-        'height' => $height,
+            'width' => $width,
+            'height' => $height,
         );
         return $result;
     }
@@ -386,9 +385,9 @@ class File
         }
         $result = clone $this;
         $result->operations[]['scale_crop'] = array(
-        'width' => $width,
-        'height' => $height,
-        'center' => $center,
+            'width' => $width,
+            'height' => $height,
+            'center' => $center,
         );
         return $result;
     }

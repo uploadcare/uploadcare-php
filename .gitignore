@@ -3,3 +3,4 @@ composer.lock
 /sample-project/vendor/
 /.idea/
 /.vscode/
+composer.phar

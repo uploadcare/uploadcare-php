@@ -291,13 +291,13 @@ class Api
     {
         $options = array_replace(
             array(
-            'from' => null,
-            'to' => null,
-            'limit' => null,
-            'request_limit' => null,
-            'stored' => $this->defaultFilters['file']['stored'],
-            'removed' => $this->defaultFilters['file']['removed'],
-            'reversed' => false
+                'from' => null,
+                'to' => null,
+                'limit' => null,
+                'request_limit' => null,
+                'stored' => $this->defaultFilters['file']['stored'],
+                'removed' => $this->defaultFilters['file']['removed'],
+                'reversed' => false
             ),
             $options
         );
@@ -341,13 +341,13 @@ class Api
     {
         $options = array_replace(
             array(
-            'from' => null,
-            'to' => null,
-            'limit' => null,
-            'request_limit' => null,
-            'stored' => $this->defaultFilters['file']['stored'],
-            'removed' => $this->defaultFilters['file']['removed'],
-            'reversed' => false
+                'from' => null,
+                'to' => null,
+                'limit' => null,
+                'request_limit' => null,
+                'stored' => $this->defaultFilters['file']['stored'],
+                'removed' => $this->defaultFilters['file']['removed'],
+                'reversed' => false
             ),
             $options
         );
@@ -833,11 +833,11 @@ class Api
         $sign_string = join(
             "\n",
             array(
-            $this->current_method,
-            $content_md5,
-            $content_type,
-            $date,
-            $path,
+                $this->current_method,
+                $content_md5,
+                $content_type,
+                $date,
+                $path,
             )
         );
         $sign_string_as_bytes = utf8_encode($sign_string);
