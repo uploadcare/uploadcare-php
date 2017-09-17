@@ -105,11 +105,11 @@ class Uploader
     private function fromUrlNew($url, $options = array())
     {
         $default_options = array(
-        'store' => 'auto',
-        'filename' => null,
-        'check_status' => true,
-        'timeout' => 1,
-        'max_attempts' => 5
+            'store' => 'auto',
+            'filename' => null,
+            'check_status' => true,
+            'timeout' => 1,
+            'max_attempts' => 5
         );
         $params = array_merge($default_options, $options);
         $check_status = $params['check_status'];
@@ -117,10 +117,10 @@ class Uploader
         $max_attempts = $params['max_attempts'];
 
         $requestData = array(
-        '_' => time(),
-        'source_url' => $url,
-        'pub_key' => $this->api->getPublicKey(),
-        'store' => $params['store'],
+            '_' => time(),
+            'source_url' => $url,
+            'pub_key' => $this->api->getPublicKey(),
+            'store' => $params['store'],
         );
         if ($params['filename']) {
             $requestData['filename'] = $params['filename'];
@@ -181,8 +181,8 @@ class Uploader
         }
 
         $data = array(
-        'UPLOADCARE_PUB_KEY' => $this->api->getPublicKey(),
-        'file' => $f,
+            'UPLOADCARE_PUB_KEY' => $this->api->getPublicKey(),
+            'file' => $f,
         );
         $ch = $this->__initRequest('base');
         $this->__setRequestType($ch);
@@ -239,7 +239,7 @@ class Uploader
     public function createGroup($files)
     {
         $data = array(
-        'pub_key' => $this->api->getPublicKey(),
+            'pub_key' =>  $this->api->getPublicKey(),
         );
         /**
      * @var File $file
@@ -262,8 +262,8 @@ class Uploader
     /**
      * Init upload request and return curl resource
      *
-     * @param  $type
-     * @param  array $data
+     * @param  string   $type
+     * @param  array    $data
      * @return resource
      */
     private function __initRequest($type, $data = null)

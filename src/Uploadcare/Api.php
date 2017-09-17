@@ -3,8 +3,8 @@ namespace Uploadcare;
 
 use Uploadcare\Exceptions\ThrottledRequestException;
 
-$uploadcare_version = '2.1.0';
-define('UPLOADCARE_LIB_VERSION', sprintf('%s/%s.%s', $uploadcare_version, PHP_MAJOR_VERSION, PHP_MINOR_VERSION));
+define('UPLOADCARE_VERSION', '2.1.0');
+define('UPLOADCARE_FULL_VERSION', sprintf('%s/%s.%s', UPLOADCARE_VERSION, PHP_MAJOR_VERSION, PHP_MINOR_VERSION));
 
 
 class Api
@@ -91,7 +91,7 @@ class Api
      *
      * @var string
      */
-    public $version = UPLOADCARE_LIB_VERSION;
+    public $version = UPLOADCARE_FULL_VERSION;
 
     /**
      * Uploadcare rest API version
