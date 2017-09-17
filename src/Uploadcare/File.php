@@ -165,8 +165,8 @@ class File
     /**
      * Copy file to the Uploadcare storage
      *
-     * @param  boolean $store MUST be either true or false. true to store files while copying. If stored, files won’t be
-                              automatically deleted within 24 hours after copying. false * to not store files, default.
+     * @param  boolean $store MUST be either `true` or `false`. `true` to store files while copying.
+     *                        Stored files won’t be automatically deleted within 24 hours after copying.
      * @return File|string
      */
     public function createLocalCopy($store = true)
