@@ -412,7 +412,7 @@ class File
    */
   public function op($operation)
   {
-    if (!$effect) return $this;
+    if (!$operation) return $this;
     $result = clone $this;
     $result->operations[]['custom'] = $operation;
     return $result;
