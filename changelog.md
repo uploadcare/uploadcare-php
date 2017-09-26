@@ -1,5 +1,8 @@
 # Changelog
 
+## 2.1.1
+- fix `File->op()`
+
 ## 2.1.0
 - change `File->crop()` and `File->scaleCrop()` behaviou, now they throw exceptions if parameters `$width` or `$height` are 0 or not provided
 - add `File->getPath()` method
