@@ -376,7 +376,7 @@ do it:
 
 ```php
 try {
-  $file->copy("target_storage_name");
+  $file->createRemoteCopy("target_storage_name");
 } catch (Exception $e) {
   echo $e->getMessage()."\n";
   echo nl2br($e->getTraceAsString())."\n";
