@@ -55,7 +55,7 @@ class File
   {
     $matches = array();
     if(!preg_match($this->re_uuid_with_effects, $uuid_or_url, $matches)) {
-      throw new \Exception('UUID not found');
+      throw new \Exception(sprintf('UUID "%s" not found', $uuid_or_url));
     }
 
     $this->uuid = $matches['uuid'];
