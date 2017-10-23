@@ -55,15 +55,16 @@ if ($action == 'delete') {
     $processedFiles = $api->deleteMultipleFiles($data);
 }
 
-$files = $api->getFileList(array(
-'limit' => $pageLimit,
-'from' => $from,
-'to' => $to,
-'removed' => !!$removed,
-'offset' => 0,
-'reversed' => $reversed,
-));
-
+$files = $api->getFileList(
+    array(
+        'limit' => $pageLimit,
+        'from' => $from,
+        'to' => $to,
+        'removed' => !!$removed,
+        'offset' => 0,
+        'reversed' => $reversed,
+    )
+);
 $cnt = $files->count();
 ?>
 <!DOCTYPE html>

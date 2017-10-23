@@ -37,8 +37,8 @@ class Uploader
     public function status($token)
     {
         $data = array(
-        'token' => $token,
-    );
+            'token' => $token,
+        );
         $ch = $this->__initRequest('from_url/status', $data);
         $this->__setHeaders($ch);
         $data = $this->__runRequest($ch);
@@ -78,10 +78,10 @@ class Uploader
     {
         Helper::deprecate('2.0.0', '3.0.0', 'This version of method `fromUrl($url, $check_status, $timeout, $max_attempts)` is deprecated please use `fromUrl($url, $options)` instead');
         return $this->fromUrlNew($url, array(
-      'check_status' => $check_status,
-      'timeout' => $timeout,
-      'max_attempts' => $max_attempts,
-    ));
+            'check_status' => $check_status,
+            'timeout' => $timeout,
+            'max_attempts' => $max_attempts,
+        ));
     }
 
     /**
@@ -100,23 +100,23 @@ class Uploader
     private function fromUrlNew($url, $options = array())
     {
         $default_options = array(
-      'store' => 'auto',
-      'filename' => null,
-      'check_status' => true,
-      'timeout' => 1,
-      'max_attempts' => 5,
-    );
+            'store' => 'auto',
+            'filename' => null,
+            'check_status' => true,
+            'timeout' => 1,
+            'max_attempts' => 5,
+        );
         $params = array_merge($default_options, $options);
         $check_status = $params['check_status'];
         $timeout = $params['timeout'];
         $max_attempts = $params['max_attempts'];
 
         $requestData = array(
-        '_' => time(),
-        'source_url' => $url,
-        'pub_key' => $this->api->getPublicKey(),
-        'store' => $params['store'],
-    );
+            '_' => time(),
+            'source_url' => $url,
+            'pub_key' => $this->api->getPublicKey(),
+            'store' => $params['store'],
+        );
         if ($params['filename']) {
             $requestData['filename'] = $params['filename'];
         }
@@ -176,9 +176,9 @@ class Uploader
         }
 
         $data = array(
-      'UPLOADCARE_PUB_KEY' => $this->api->getPublicKey(),
-      'file' => $f,
-    );
+            'UPLOADCARE_PUB_KEY' => $this->api->getPublicKey(),
+            'file' => $f,
+        );
         $ch = $this->__initRequest('base');
         $this->__setRequestType($ch);
         $this->__setData($ch, $data);
@@ -234,8 +234,8 @@ class Uploader
     public function createGroup($files)
     {
         $data = array(
-      'pub_key' => $this->api->getPublicKey(),
-    );
+            'pub_key' => $this->api->getPublicKey(),
+        );
         /**
          * @var File $file
          */
@@ -292,8 +292,8 @@ class Uploader
     {
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-      'User-Agent: ' . $this->api->getUserAgent(),
-    ));
+            'User-Agent: ' . $this->api->getUserAgent(),
+        ));
     }
 
     /**

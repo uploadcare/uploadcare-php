@@ -321,11 +321,11 @@ class File
         }
         $result = clone $this;
         $result->operations[]['crop'] = array(
-        'width' => $width,
-        'height' => $height,
-        'center' => $center,
-        'fill_color' => $fill_color,
-    );
+            'width' => $width,
+            'height' => $height,
+            'center' => $center,
+            'fill_color' => $fill_color,
+        );
         return $result;
     }
 
@@ -346,9 +346,9 @@ class File
         }
         $result = clone $this;
         $result->operations[]['resize'] = array(
-        'width' => $width,
-        'height' => $height,
-    );
+            'width' => $width,
+            'height' => $height,
+        );
         return $result;
     }
 
@@ -369,9 +369,9 @@ class File
         }
         $result = clone $this;
         $result->operations[]['preview'] = array(
-        'width' => $width,
-        'height' => $height,
-    );
+            'width' => $width,
+            'height' => $height,
+        );
         return $result;
     }
 
@@ -390,10 +390,10 @@ class File
         }
         $result = clone $this;
         $result->operations[]['scale_crop'] = array(
-        'width' => $width,
-        'height' => $height,
-        'center' => $center,
-    );
+            'width' => $width,
+            'height' => $height,
+            'center' => $center,
+        );
         return $result;
     }
 

@@ -23,9 +23,9 @@ class ApiTest extends TestCase
     {
         $this->api = new Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
         $this->apiMock = $this->getMockBuilder('\Uploadcare\Api')
-      ->disableOriginalConstructor()
-      ->setMethods(array('request'))
-      ->getMock();
+            ->disableOriginalConstructor()
+            ->setMethods(array('request'))
+            ->getMock();
     }
 
     /**
@@ -60,8 +60,8 @@ class ApiTest extends TestCase
     public function testFileList()
     {
         $files = $this->api->getFileList(array(
-      'limit' => 20,
-    ));
+            'limit' => 20,
+        ));
         $this->assertFalse(is_array($files));
         $this->assertTrue(is_object($files));
         $this->assertTrue($files instanceof \Iterator);
@@ -69,8 +69,8 @@ class ApiTest extends TestCase
         $this->assertEquals(20, count($files));
 
         $files = $this->api->getFileList(array(
-      'limit' => 2,
-    ));
+            'limit' => 2,
+        ));
         $this->assertFalse(is_array($files));
         $this->assertTrue(is_object($files));
         $this->assertTrue($files instanceof \Iterator);
@@ -297,12 +297,12 @@ class ApiTest extends TestCase
     public function testUploadFromURL()
     {
         $options = array(
-      'filename' => 'IMG_1.jpg',
-      'store' => true,
-      'check_status' => true,
-      'timeout' => 3,
-      'max_attempts' => 6,
-    );
+            'filename' => 'IMG_1.jpg',
+            'store' => true,
+            'check_status' => true,
+            'timeout' => 3,
+            'max_attempts' => 6,
+        );
         try {
             $file = $this->api->uploader->fromUrl('https://www.baysflowers.co.nz/wp-content/uploads/2015/06/IMG_9886_2.jpg', $options);
         } catch (Exception $e) {
@@ -441,10 +441,7 @@ class ApiTest extends TestCase
         $g = $this->api->uploader->createGroup(array($f2));
 
         foreach ($g->getFiles() as $f) {
-            $this->assertEquals(
-        "https://ucarecdn.com/" . $f1->getUuid() . '/-/crop/2x2/',
-        $f->getUrl()
-      );
+            $this->assertEquals('https://ucarecdn.com/' . $f1->getUuid() . '/-/crop/2x2/', $f->getUrl());
         }
     }
 
@@ -452,8 +449,8 @@ class ApiTest extends TestCase
     {
         try {
             $this->apiMock->expects($this->exactly(2))
-        ->method('request')
-        ->willThrowException($this->getThrottledRequestException());
+                ->method('request')
+                ->willThrowException($this->getThrottledRequestException());
 
             $this->apiMock->__preparedRequest('root');
         } catch (\Exception $e) {
@@ -465,8 +462,8 @@ class ApiTest extends TestCase
         try {
             $retry_throttled = 5;
             $this->apiMock->expects($this->exactly($retry_throttled + 1))
-        ->method('request')
-        ->willThrowException($this->getThrottledRequestException());
+                ->method('request')
+                ->willThrowException($this->getThrottledRequestException());
 
             $this->apiMock->__preparedRequest('root', 'GET', array(), array(), $retry_throttled);
         } catch (\Exception $e) {
@@ -476,9 +473,8 @@ class ApiTest extends TestCase
     public function test__preparedRequestThrowsThrottledRequestException()
     {
         $this->apiMock->expects($this->any())
-      ->method('request')
-      ->willThrowException($this->getThrottledRequestException());
-
+            ->method('request')
+            ->willThrowException($this->getThrottledRequestException());
         $this->setExpectedException('\Uploadcare\Exceptions\ThrottledRequestException');
 
         $this->apiMock->__preparedRequest('root');

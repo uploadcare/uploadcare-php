@@ -23,9 +23,9 @@ class GroupTest extends TestCase
     {
         $this->api = new Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
         $this->apiMock = $this->getMockBuilder('\Uploadcare\Api')
-      ->disableOriginalConstructor()
-      ->setMethods(array('request'))
-      ->getMock();
+            ->disableOriginalConstructor()
+            ->setMethods(array('request'))
+            ->getMock();
     }
 
     /**
@@ -36,7 +36,7 @@ class GroupTest extends TestCase
     {
     }
 
-  
+
     /**
      * Test that testFileGroupList method returns array
      * and each item of array is an object of Uploadcare\Group class
@@ -44,21 +44,21 @@ class GroupTest extends TestCase
     public function testFileGroupList()
     {
         $groups = $this->api->getGroupList(array(
-      'limit' => 20,
-    ));
+            'limit' => 20,
+        ));
         $this->assertFalse(is_array($groups));
         $this->assertTrue(is_object($groups));
         $this->assertTrue($groups instanceof \Iterator);
         $this->assertTrue($groups instanceof Uploadcare\GroupIterator);
-    
+
         $groups = $this->api->getGroupList(array(
-      'limit' => 2,
-    ));
+            'limit' => 2,
+        ));
         $this->assertFalse(is_array($groups));
         $this->assertTrue(is_object($groups));
         $this->assertTrue($groups instanceof \Iterator);
         $this->assertTrue($groups instanceof Uploadcare\GroupIterator);
-    
+
         foreach ($groups as $g) {
             $this->assertTrue(get_class($g) == 'Uploadcare\Group');
         }

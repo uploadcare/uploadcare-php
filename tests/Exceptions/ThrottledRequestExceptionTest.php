@@ -41,8 +41,8 @@ class ThrottledRequestExceptionTest extends TestCase
     public function headersProvider()
     {
         return array(
-      'no headers set' => array(null),
-      'wait header is not set' => array(array('allow' => 'GET, HEAD, OPTIONS')),
-    );
+            'no headers set' => array(null),
+            'wait header is not set' => array(array('allow' => 'GET, HEAD, OPTIONS')),
+        );
     }
 }

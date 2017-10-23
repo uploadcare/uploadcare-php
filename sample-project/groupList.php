@@ -35,14 +35,16 @@ if (array_key_exists($reversedParam, $_GET)) {
     $reversed = $_GET[$reversedParam] == "1" ? true : false;
 }
 
-$groups = $api->getGroupList(array(
-'limit' => $pageLimit,
-'from' => $from,
-'to' => $to,
-'removed' => $removed,
-'offset' => 0,
-'reversed' => $reversed,
-));
+$groups = $api->getGroupList(
+    array(
+        'limit' => $pageLimit,
+        'from' => $from,
+        'to' => $to,
+        'removed' => $removed,
+        'offset' => 0,
+        'reversed' => $reversed,
+    )
+);
 $cnt = $groups->count();
 ?>
 <!DOCTYPE html>

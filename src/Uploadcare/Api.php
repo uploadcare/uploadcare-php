@@ -106,11 +106,11 @@ class Api
      * @var array
      */
     private $defaultFilters = array(
-    'file' => array(
-      'stored' => null,
-      'removed' => false,
-    ),
-  );
+        'file' => array(
+            'stored' => null,
+            'removed' => false,
+        ),
+    );
 
     /**
      * Constructor
@@ -284,14 +284,14 @@ class Api
     public function getFileList($options = array())
     {
         $options = array_replace(array(
-      'from' => null,
-      'to' => null,
-      'limit' => null,
-      'request_limit' => null,
-      'stored' => $this->defaultFilters['file']['stored'],
-      'removed' => $this->defaultFilters['file']['removed'],
-      'reversed' => false,
-    ), $options);
+            'from' => null,
+            'to' => null,
+            'limit' => null,
+            'request_limit' => null,
+            'stored' => $this->defaultFilters['file']['stored'],
+            'removed' => $this->defaultFilters['file']['removed'],
+            'reversed' => false,
+        ), $options);
 
         if (!empty($options['from']) && !empty($options['to'])) {
             throw new \Exception('Only one of "from" and "to" arguments is allowed');
@@ -331,14 +331,14 @@ class Api
     public function getGroupList($options = array())
     {
         $options = array_replace(array(
-      'from' => null,
-      'to' => null,
-      'limit' => null,
-      'request_limit' => null,
-      'stored' => $this->defaultFilters['file']['stored'],
-      'removed' => $this->defaultFilters['file']['removed'],
-      'reversed' => false,
-    ), $options);
+            'from' => null,
+            'to' => null,
+            'limit' => null,
+            'request_limit' => null,
+            'stored' => $this->defaultFilters['file']['stored'],
+            'removed' => $this->defaultFilters['file']['removed'],
+            'reversed' => false,
+        ), $options);
 
         if (!empty($options['from']) && !empty($options['to'])) {
             throw new \Exception('Only one of "from" and "to" arguments is allowed');
@@ -348,7 +348,6 @@ class Api
         $options['to'] = self::dateTimeString($options['to']);
 
         return  new \Uploadcare\GroupIterator($this, $options);
-        ;
     }
 
     /**
@@ -487,10 +486,10 @@ class Api
             }
         }
         return array(
-      'status' => $lastStatus,
-      'files' => $filesArr,
-      'problems' => $problemsArr,
-    );
+            'status' => $lastStatus,
+            'files' => $filesArr,
+            'problems' => $problemsArr,
+        );
     }
 
     /**
@@ -512,10 +511,10 @@ class Api
             $result[] = new File($file_raw->uuid, $this, $file_raw);
         }
         return array(
-      'status' => (string)$data->status,
-      'files' => $result,
-      'problems' => $data->problems,
-    );
+            'status' => (string)$data->status,
+            'files' => $result,
+            'problems' => $data->problems,
+        );
     }
 
     /**
@@ -635,11 +634,11 @@ class Api
         }
 
         return array(
-      'nextParams' => $reverse ? $prevParamsArr : $nextParamsArr,
-      'prevParams' => !$reverse ? $prevParamsArr : $nextParamsArr,
-      'params' => $params,
-      'data' => $resultArr,
-    );
+            'nextParams' => $reverse ? $prevParamsArr : $nextParamsArr,
+            'prevParams' => !$reverse ? $prevParamsArr : $nextParamsArr,
+            'params' => $params,
+            'data' => $resultArr,
+        );
     }
 
     /**
@@ -671,51 +670,41 @@ class Api
     private function __getPath($type, $params = array())
     {
         switch ($type) {
-      case 'root':
-        return '/';
-
-      case 'account':
-        return '/account/';
-
-      case 'file_list':
-        return '/files/' . $this->__getQueryString($params, '?');
-
-      case 'file_storage':
-        if (array_key_exists('uuid', $params) == false) {
-            throw new \Exception('Please provide "uuid" param for request');
+            case 'root':
+                return '/';
+            case 'account':
+                return '/account/';
+            case 'file_list':
+                return '/files/' . $this->__getQueryString($params, '?');
+            case 'file_storage':
+                if (array_key_exists('uuid', $params) == false) {
+                    throw new \Exception('Please provide "uuid" param for request');
+                }
+                return sprintf('/files/%s/storage/', $params['uuid']);
+            case 'file_copy':
+                return '/files/';
+            case 'files_storage':
+                return '/files/storage/';
+            case 'file':
+                if (array_key_exists('uuid', $params) == false) {
+                    throw new \Exception('Please provide "uuid" param for request');
+                }
+                return sprintf('/files/%s/', $params['uuid']);
+            case 'group_list':
+                return '/groups/' . $this->__getQueryString($params, '?');
+            case 'group':
+                if (array_key_exists('uuid', $params) == false) {
+                    throw new \Exception('Please provide "uuid" param for request');
+                }
+                return sprintf('/groups/%s/', $params['uuid']);
+            case 'group_storage':
+                if (array_key_exists('uuid', $params) == false) {
+                    throw new \Exception('Please provide "uuid" param for request');
+                }
+                return sprintf('/groups/%s/storage/', $params['uuid']);
+            default:
+                throw new \Exception('No api url type is provided for request "' . $type . '". Use store, or appropriate constants.');
         }
-        return sprintf('/files/%s/storage/', $params['uuid']);
-
-      case 'file_copy':
-        return '/files/';
-
-      case 'files_storage':
-        return '/files/storage/';
-
-      case 'file':
-        if (array_key_exists('uuid', $params) == false) {
-            throw new \Exception('Please provide "uuid" param for request');
-        }
-        return sprintf('/files/%s/', $params['uuid']);
-
-      case 'group_list':
-        return '/groups/' . $this->__getQueryString($params, '?');
-
-      case 'group':
-        if (array_key_exists('uuid', $params) == false) {
-            throw new \Exception('Please provide "uuid" param for request');
-        }
-        return sprintf('/groups/%s/', $params['uuid']);
-
-      case 'group_storage':
-        if (array_key_exists('uuid', $params) == false) {
-            throw new \Exception('Please provide "uuid" param for request');
-        }
-        return sprintf('/groups/%s/storage/', $params['uuid']);
-
-      default:
-        throw new \Exception('No api url type is provided for request "' . $type . '". Use store, or appropriate constants.');
-    }
     }
 
     /**
@@ -732,27 +721,27 @@ class Api
         $this->current_method = strtoupper($type);
 
         switch ($type) {
-      case 'GET':
-        break;
-      case 'POST':
-        curl_setopt($ch, CURLOPT_POST, true);
-        break;
-      case 'PUT':
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PUT');
-        break;
-      case 'DELETE':
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'DELETE');
-        break;
-      case 'HEAD':
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'HEAD');
-        curl_setopt($ch, CURLOPT_NOBODY, true);
-        break;
-      case 'OPTIONS':
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'OPTIONS');
-        break;
-      default:
-        throw new \Exception('No request type is provided for request. Use post, put, delete, get or appropriate constants.');
-    }
+            case 'GET':
+                break;
+            case 'POST':
+                curl_setopt($ch, CURLOPT_POST, true);
+                break;
+            case 'PUT':
+                curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PUT');
+                break;
+            case 'DELETE':
+                curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'DELETE');
+                break;
+            case 'HEAD':
+                curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'HEAD');
+            curl_setopt($ch, CURLOPT_NOBODY, true);
+                break;
+            case 'OPTIONS':
+                curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'OPTIONS');
+                break;
+            default:
+                throw new \Exception('No request type is provided for request. Use post, put, delete, get or appropriate constants.');
+        }
     }
 
     /**
@@ -803,12 +792,12 @@ class Api
 
         // sign string
         $sign_string = join("\n", array(
-      $this->current_method,
-      $content_md5,
-      $content_type,
-      $date,
-      $path,
-    ));
+            $this->current_method,
+            $content_md5,
+            $content_type,
+            $date,
+            $path,
+        ));
         $sign_string_as_bytes = utf8_encode($sign_string);
 
         $secret_as_bytes = utf8_encode($this->secret_key);
@@ -816,14 +805,14 @@ class Api
         $sign = hash_hmac('sha1', $sign_string_as_bytes, $secret_as_bytes);
 
         $headers = array(
-      sprintf('Host: %s', $this->api_host),
-      sprintf('Authorization: Uploadcare %s:%s', $this->public_key, $sign),
-      sprintf('Date: %s', $date),
-      sprintf('Content-Type: %s', $content_type),
-      sprintf('Content-Length: %d', $content_length),
-      sprintf('Accept: application/vnd.uploadcare-v%s+json', $this->api_version),
-      sprintf('User-Agent: %s', $this->getUserAgent()),
-    ) + $add_headers;
+            sprintf('Host: %s', $this->api_host),
+            sprintf('Authorization: Uploadcare %s:%s', $this->public_key, $sign),
+            sprintf('Date: %s', $date),
+            sprintf('Content-Type: %s', $content_type),
+            sprintf('Content-Length: %d', $content_length),
+            sprintf('Accept: application/vnd.uploadcare-v%s+json', $this->api_version),
+            sprintf('User-Agent: %s', $this->getUserAgent()),
+        ) + $add_headers;
 
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);

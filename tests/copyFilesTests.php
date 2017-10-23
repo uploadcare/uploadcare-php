@@ -32,7 +32,7 @@ class CopyFilesTest extends TestCase
     {
     }
 
-  
+
     /**
      * Test that createLocalCopy method returns instanse of Uploadcare\File
      */
@@ -56,9 +56,9 @@ class CopyFilesTest extends TestCase
     public function testCreateRemoteCopyFromApi()
     {
         $apiMock = $this->getMockBuilder('\Uploadcare\Api')
-      ->disableOriginalConstructor()
-      ->setMethods(array('request'))
-      ->getMock();
+            ->disableOriginalConstructor()
+            ->setMethods(array('request'))
+            ->getMock();
         $mockRes = json_decode('{
       "type": "url",
       "result": "s3://mybucket/03ccf9ab-f266-43fb-973d-a6529c55c2ae/image.resize_20x.png"
