@@ -12,14 +12,14 @@ $api = new Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
 // get all files iterator
 // using filter: only files uploaded earlier than 14 days ago
 $files = $api->getFileList(array(
-  'to' => new \DateTime('-14 days')
+  'to' => new \DateTime('-14 days'),
 ));
 
 /** @var \Uploadcare\File $file */
 foreach ($files as $file) {
-  $originalFilename = $file->data['original_filename'];
+    $originalFilename = $file->data['original_filename'];
 
-  $file->delete();
+    $file->delete();
 
-  echo "{$originalFilename} (" . $file . ") removed<br>";
+    echo "{$originalFilename} (" . $file . ") removed<br>";
 }

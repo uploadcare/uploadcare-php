@@ -3,69 +3,68 @@ require_once 'config.php';
 require_once '../vendor/autoload.php';
 use Uploadcare\Api;
 
-  $pageLimit = 10;
-  $from = null;
-  $to = null;
-  $reversed = false;
-  $removed = false;
+$pageLimit = 10;
+$from = null;
+$to = null;
+$reversed = false;
+$removed = false;
 
-  $api = new Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
+$api = new Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
 
-  $fromParam = "from";
-  $toParam = "to";
-  $reversedParam = "reversed";
-  $limitParam = "limit";
-  $removedParam = "removed";
+$fromParam = "from";
+$toParam = "to";
+$reversedParam = "reversed";
+$limitParam = "limit";
+$removedParam = "removed";
 
-  $offset = 0;
-  $reversed = false;
-  if(array_key_exists($fromParam, $_GET)) {
+$offset = 0;
+$reversed = false;
+if (array_key_exists($fromParam, $_GET)) {
     $from = $_GET[$fromParam];
-  }
-  if(array_key_exists($limitParam, $_GET)) {
+}
+if (array_key_exists($limitParam, $_GET)) {
     $pageLimit = $_GET[$limitParam];
-  }
-  if(array_key_exists($toParam, $_GET)) {
+}
+if (array_key_exists($toParam, $_GET)) {
     $to = $_GET[$toParam];
-  }
-  if(array_key_exists($removedParam, $_GET)) {
+}
+if (array_key_exists($removedParam, $_GET)) {
     $removed = $_GET[$removedParam];
-  }
-  if(array_key_exists($reversedParam, $_GET)) {
+}
+if (array_key_exists($reversedParam, $_GET)) {
     $reversed = $_GET[$reversedParam] == "1" ? true : false;
-  }
+}
 
 // Reading Post params
-  $action = null;
+$action = null;
 
-  $actionParam = 'action';
-  if(array_key_exists($actionParam, $_POST)) {
+$actionParam = 'action';
+if (array_key_exists($actionParam, $_POST)) {
     $action = $_POST[$actionParam];
-  }
+}
 
-  $dataParam = 'data';
-  if(array_key_exists($dataParam, $_POST)) {
+$dataParam = 'data';
+if (array_key_exists($dataParam, $_POST)) {
     $data = json_decode($_POST[$dataParam]);
-  }
+}
 
-  if($action == 'store') {
+if ($action == 'store') {
     $processedFiles = $api->storeMultipleFiles($data);
-  }
-  if($action == 'delete') {
+}
+if ($action == 'delete') {
     $processedFiles = $api->deleteMultipleFiles($data);
-  }
+}
 
-  $files = $api->getFileList(array(
-    'limit' => $pageLimit,
-    'from' => $from,
-    'to' => $to,
-    'removed' => !!$removed,
-    'offset' => 0,
-    'reversed' => $reversed
-  ));
+$files = $api->getFileList(array(
+'limit' => $pageLimit,
+'from' => $from,
+'to' => $to,
+'removed' => !!$removed,
+'offset' => 0,
+'reversed' => $reversed,
+));
 
-  $cnt = $files->count();
-
+$cnt = $files->count();
 ?>
 <!DOCTYPE html>
 <html>
@@ -107,20 +106,20 @@ use Uploadcare\Api;
             </tr>
           </thead>
           <tboby>
-          <?php 
+          <?php
             foreach ($files as $key => $value) {
-              $uuid = $value->getUuid();
-              $data = $value->__get('data');
-              $fileName = $data["original_filename"];
-              $imageUrl = $value->preview(50, 50)->getUrl();
-              $size = $data["size"];
-              $state = $data["datetime_removed"] ?
+                $uuid = $value->getUuid();
+                $data = $value->__get('data');
+                $fileName = $data["original_filename"];
+                $imageUrl = $value->preview(50, 50)->getUrl();
+                $size = $data["size"];
+                $state = $data["datetime_removed"] ?
                 '<span class="label label-danger">Deleted</span>' :
                   ($data["datetime_stored"] ?
                     '<span class="label label-success">Stored</span>' :
                     '<span class="label label-primary">Uploaded</span>');
 
-              echo (<<<EOT
+                echo(<<<EOT
               <tr>
               <td>
                 <input type="checkbox" data-fileId="${uuid}"/>
@@ -147,16 +146,20 @@ EOT
       <div class="col-md-12">
         <nav aria-label="...">
           <ul class="pager">
-          <?php if($prevPageQuery) { ?>
+          <?php if ($prevPageQuery) {
+              ?>
             <li class="previous"><a href="
               <?php echo("?".$prevPageQuery) ?>
             ">Previous</a></li>
-          <?php } ?>
-          <?php if($nextPageQuery) { ?>
+          <?php
+          } ?>
+          <?php if ($nextPageQuery) {
+              ?>
             <li class="next"><a href="
               <?php echo("?".$nextPageQuery) ?>
             ">Next</a></li>
-          <?php } ?>
+          <?php
+          } ?>
           </ul>
         </nav>
       </div>
@@ -190,7 +193,7 @@ EOT
     $('#storeBtn').click(function(ev){
       storeForm.submit();
     });
-    
+
     $('#deleteBtn').click(function(ev){
       deleteForm.submit();
     });

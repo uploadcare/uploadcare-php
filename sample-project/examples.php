@@ -66,9 +66,8 @@ echo "We have ".count($files)." file(s)\n";
  */
 
 /** @var Uploadcare\File $file */
-foreach ($files as $file)
-{
-  echo $file->getUuid()."\n";
+foreach ($files as $file) {
+    echo $file->getUuid()."\n";
 }
 
 /**
@@ -77,9 +76,8 @@ foreach ($files as $file)
 $page = 1;
 $per_page = 4;
 
-for ($i = ($page - 1) * $per_page; $i < min(count($files), $page * $per_page); $i++)
-{
-  echo $file->getUuid()."\n";
+for ($i = ($page - 1) * $per_page; $i < min(count($files), $page * $per_page); $i++) {
+    echo $file->getUuid()."\n";
 }
 
 /**
@@ -185,10 +183,10 @@ $file = $api->uploader->fromUrl('https://www.baysflowers.co.nz/wp-content/upload
  * We user true flag to be sure that file is uploaded.
 **/
 try {
-  $file->store(true);
+    $file->store(true);
 } catch (Exception $e) {
-  echo $e->getMessage()."\n";
-  echo nl2br($e->getTraceAsString())."\n";
+    echo $e->getMessage()."\n";
+    echo nl2br($e->getTraceAsString())."\n";
 }
 
 /**
@@ -200,10 +198,10 @@ try {
  *   2. Run the following command:
  **/
 try {
-  $file->copy("target_storage_name");
+    $file->copy("target_storage_name");
 } catch (Exception $e) {
-  echo $e->getMessage()."\n";
-  echo nl2br($e->getTraceAsString())."\n";
+    echo $e->getMessage()."\n";
+    echo nl2br($e->getTraceAsString())."\n";
 }
 
 /**

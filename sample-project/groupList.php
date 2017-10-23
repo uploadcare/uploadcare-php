@@ -2,50 +2,48 @@
 require_once 'config.php';
 require_once '../vendor/autoload.php';
 use Uploadcare\Api;
-  
-  $pageLimit = 10;
-  $from = null;
-  $to = null;
-  $reversed = false;
-  $removed = false;
 
-  $api = new Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
+$pageLimit = 10;
+$from = null;
+$to = null;
+$reversed = false;
+$removed = false;
 
-  $fromParam = "from";
-  $toParam = "to";
-  $reversedParam = "reversed";
-  $limitParam = "limit";
-  $removedParam = "removed";
-  
-  $offset = 0;
-  $reversed = false;
-  if(array_key_exists($fromParam, $_GET)) {
+$api = new Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
+
+$fromParam = "from";
+$toParam = "to";
+$reversedParam = "reversed";
+$limitParam = "limit";
+$removedParam = "removed";
+
+$offset = 0;
+$reversed = false;
+if (array_key_exists($fromParam, $_GET)) {
     $from = $_GET[$fromParam];
-  }
-  if(array_key_exists($toParam, $_GET)) {
+}
+if (array_key_exists($toParam, $_GET)) {
     $to = $_GET[$toParam];
-  }
-  if(array_key_exists($limitParam, $_GET)) {
+}
+if (array_key_exists($limitParam, $_GET)) {
     $pageLimit = $_GET[$limitParam];
-  }
-  if(array_key_exists($removedParam, $_GET)) {
+}
+if (array_key_exists($removedParam, $_GET)) {
     $removed = $_GET[$removedParam];
-  }
-  if(array_key_exists($reversedParam, $_GET)) {
+}
+if (array_key_exists($reversedParam, $_GET)) {
     $reversed = $_GET[$reversedParam] == "1" ? true : false;
-  }
-  
-  $groups = $api->getGroupList(array(
-    'limit' => $pageLimit,
-    'from' => $from,
-    'to' => $to,
-    'removed' => $removed,
-    'offset' => 0,
-    'reversed' => $reversed
-  ));
-  $cnt = $groups->count();
-  
+}
 
+$groups = $api->getGroupList(array(
+'limit' => $pageLimit,
+'from' => $from,
+'to' => $to,
+'removed' => $removed,
+'offset' => 0,
+'reversed' => $reversed,
+));
+$cnt = $groups->count();
 ?>
 <!DOCTYPE html>
 <html>
@@ -63,7 +61,7 @@ use Uploadcare\Api;
     </div>
     <div class="row">
       <div class="col-md-12">
-   
+
         <table class="table table-striped">
           <thead>
             <tr>
@@ -72,19 +70,19 @@ use Uploadcare\Api;
             </tr>
           </thead>
           <tboby>
-          <?php 
+          <?php
           foreach ($groups as $key => $value) {
               $uuid = $value->getGroupId();
               $filesCnt = $value->getFilesQty();
 
-              echo (<<<EOT
+              echo(<<<EOT
               <tr>
               <td>${uuid}</td>
               <td>${filesCnt}</td>
               <tr>
 EOT
               );
-            }
+          }
             $prevPageQuery = $groups->getPrevPageQuery();
             $nextPageQuery = $groups->getNextPageQuery();
           ?>
@@ -96,16 +94,20 @@ EOT
       <div class="col-md-12">
         <nav aria-label="...">
           <ul class="pager">
-          <?php if($prevPageQuery) { ?>
+          <?php if ($prevPageQuery) {
+              ?>
             <li class="previous"><a href="
               <?php echo("?".$prevPageQuery) ?>
             ">Previous</a></li>
-          <?php } ?>
-          <?php if($nextPageQuery) { ?>
+          <?php
+          } ?>
+          <?php if ($nextPageQuery) {
+              ?>
             <li class="next"><a href="
               <?php echo("?".$nextPageQuery) ?>
             ">Next</a></li>
-          <?php } ?>
+          <?php
+          } ?>
           </ul>
         </nav>
       </div>

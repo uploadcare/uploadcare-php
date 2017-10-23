@@ -2,7 +2,7 @@
   require_once 'config.php';
   require_once '../vendor/autoload.php';
   use Uploadcare\Api;
-  
+
   $fileId = null;
   $fileIdParam = "fileId";
   
@@ -22,54 +22,54 @@
   $makePublicParam = "makePublic";
 
   
-  if(array_key_exists($fileIdParam, $_GET)) {
-    $fileId = $_GET[$fileIdParam];
+  if (array_key_exists($fileIdParam, $_GET)) {
+      $fileId = $_GET[$fileIdParam];
   }
   
-  if(array_key_exists($actionParam, $_POST)) {
-    $action = $_POST[$actionParam];
+  if (array_key_exists($actionParam, $_POST)) {
+      $action = $_POST[$actionParam];
   }
   
-  if(array_key_exists($storeParam, $_POST)) {
-    $store = $_POST[$storeParam];
+  if (array_key_exists($storeParam, $_POST)) {
+      $store = $_POST[$storeParam];
   }
   
-  if(array_key_exists($targetStorageParam, $_POST)) {
-    $targetStorage = $_POST[$targetStorageParam];
+  if (array_key_exists($targetStorageParam, $_POST)) {
+      $targetStorage = $_POST[$targetStorageParam];
   }
   
-  if(array_key_exists($patternParam, $_POST)) {
-    $pattern = $_POST[$patternParam];
+  if (array_key_exists($patternParam, $_POST)) {
+      $pattern = $_POST[$patternParam];
   }
   
-  if(array_key_exists($makePublicParam, $_POST)) {
-    $makePublic = $_POST[$makePublicParam];
+  if (array_key_exists($makePublicParam, $_POST)) {
+      $makePublic = $_POST[$makePublicParam];
   }
   
   $api = new Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
   
-  if($fileId) {
-    $file = $api->getFile($fileId);
-    $imgUrl = $file->preview(400, 400)->getUrl();
-    $uuid = $file->getUuid();
-    $data = $file->__get('data');
-    $fileName = $data["original_filename"];
-    $imgInfo = $data["image_info"];
-    $height = $imgInfo->height;
-    $width = $imgInfo->width; 
-    $format = $imgInfo->format;
-    $size = $data["size"];
-    $actionResult = null;
-    $actionError = null;
-    $isImage = $data['is_image'];
-    $state = $data["datetime_removed"] ?
+  if ($fileId) {
+      $file = $api->getFile($fileId);
+      $imgUrl = $file->preview(400, 400)->getUrl();
+      $uuid = $file->getUuid();
+      $data = $file->__get('data');
+      $fileName = $data["original_filename"];
+      $imgInfo = $data["image_info"];
+      $height = $imgInfo->height;
+      $width = $imgInfo->width;
+      $format = $imgInfo->format;
+      $size = $data["size"];
+      $actionResult = null;
+      $actionError = null;
+      $isImage = $data['is_image'];
+      $state = $data["datetime_removed"] ?
                 '<span class="label label-danger">Deleted</span>' :
                   ($data["datetime_stored"] ?
                     '<span class="label label-success">Stored</span>' :
                     '<span class="label label-primary">Uploaded</span>');
     
-    try {
-      switch($action) {
+      try {
+          switch ($action) {
         case 'localCopy':
           $isStore = $store ? true : false;
           $res = $api->createLocalCopy($uuid, $isStore);
@@ -86,10 +86,9 @@
           $state = '<span class="label label-danger">Deleted</span>';
         break;
       }
-    } catch (Exception $ex) {
-      $actionError = $ex->getMessage();
-    }
-    
+      } catch (Exception $ex) {
+          $actionError = $ex->getMessage();
+      }
   }
 
 ?>
@@ -106,22 +105,26 @@
       <div class="col-md-12">
         <a href="fileList.php">Return to file list</a>
       </div>
-<?php if(!!$actionResult) { ?>
+<?php if (!!$actionResult) {
+    ?>
         <p>&nbsp;</p>
         <div class="col-md-12">
           <div class="alert alert-success" role="alert">
             <?php echo($actionResult); ?>
           </div>
         </div>
-<?php } ?>
-<?php if(!!$actionError) { ?>
+<?php
+} ?>
+<?php if (!!$actionError) {
+        ?>
         <p>&nbsp;</p>
         <div class="col-md-12">
           <div class="alert alert-danger" role="alert">
             <?php echo($actionError); ?>
           </div>
         </div>
-<?php } ?>
+<?php
+    } ?>
       <div class="col-md-12">
         <center><h2>Edit file</h2></center>
         <br/>
@@ -129,23 +132,21 @@
     </div>
     <div class="row">
 <?php 
-  if(!!$uuid) {
-    if($isImage) {
-?>
+  if (!!$uuid) {
+      if ($isImage) {
+          ?>
       <div class="col-md-6">
       <center>
         <?php
           echo(<<<EOT
           <img src="${imgUrl}" alt="">
 EOT
-);
-        ?>
+); ?>
         <p>Image resized to fit 400x400</p>
         </center>
       </div>
 <?php
-    }
-?>
+      } ?>
       <div class="col-md-6">
         <table class="table table-striped">
           <tbody>
@@ -153,40 +154,35 @@ EOT
               <th>File name:</th>
               <td>
                 <?php
-                  echo($fileName);
-                ?>
+                  echo($fileName); ?>
             </td>
             </tr>
             <tr>
               <th>File Id:</th>
               <td>
                 <?php
-                  echo($uuid);
-                ?>
+                  echo($uuid); ?>
             </td>
             </tr>
             <tr>
               <th>Original size:</th>
               <td>
                 <?php
-                  echo("${width}x${height}, ${size}b");
-                ?>
+                  echo("${width}x${height}, ${size}b"); ?>
               </td>
             </tr>
             <tr>
               <th>Format:</th>
               <td>
                 <?php
-                  echo($format);
-                ?>
+                  echo($format); ?>
               </td>
             </tr>
             <tr>
               <th>State:</th>
               <td>
                 <?php
-                  echo($state);
-                ?>
+                  echo($state); ?>
               </td>
             </tr>
           </tbody>

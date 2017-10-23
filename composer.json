@@ -2,18 +2,17 @@
     "name": "uploadcare/uploadcare-php",
     "description": "Uploadcare API binding for PHP",
     "license": "MIT",
-    "authors": [
-        {
-            "name": "Uploadcare, LLC",
-            "email": "hello@uploadcare.com"
-        }
-    ],
+    "authors": [{
+        "name": "Uploadcare, LLC",
+        "email": "hello@uploadcare.com"
+    }],
     "require": {
         "php": ">=5.3",
         "ext-curl": "*",
         "ext-json": "*"
     },
     "require-dev": {
+        "friendsofphp/php-cs-fixer": "^2.0",
         "phpunit/phpunit": "=4.8.36",
         "squizlabs/php_codesniffer": ">=2.9.1,<4"
     },
