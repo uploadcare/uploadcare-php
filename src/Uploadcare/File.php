@@ -249,33 +249,28 @@ class File
                 $part[] = $operation_type;
 
                 switch ($operation_type) {
-          case 'crop':
-            $part = $this->__addPartSize($part, $operation_params);
-            $part = $this->__addPartCenter($part, $operation_params);
-            $part = $this->__addPartFillColor($part, $operation_params);
-            break;
-
-          case 'resize':
-            $part = $this->__addPartSize($part, $operation_params);
-            break;
-
-          case 'scale_crop':
-            $part = $this->__addPartSize($part, $operation_params);
-            $part = $this->__addPartCenter($part, $operation_params);
-            break;
-
-          case 'effect':
-            $part = $this->__addPartEffect($part, $operation_params);
-            break;
-
-          case 'preview':
-            $part = $this->__addPartSize($part, $operation_params);
-            break;
-
-          case 'custom':
-            $part = array($operation_params);
-            break;
-        }
+                    case 'crop':
+                        $part = $this->__addPartSize($part, $operation_params);
+                        $part = $this->__addPartCenter($part, $operation_params);
+                        $part = $this->__addPartFillColor($part, $operation_params);
+                        break;
+                    case 'resize':
+                        $part = $this->__addPartSize($part, $operation_params);
+                        break;
+                    case 'scale_crop':
+                        $part = $this->__addPartSize($part, $operation_params);
+                        $part = $this->__addPartCenter($part, $operation_params);
+                        break;
+                    case 'effect':
+                        $part = $this->__addPartEffect($part, $operation_params);
+                        break;
+                    case 'preview':
+                        $part = $this->__addPartSize($part, $operation_params);
+                        break;
+                    case 'custom':
+                        $part = array($operation_params);
+                        break;
+                }
                 $part_str = join('/', $part);
                 $operations[] = $part_str;
             }

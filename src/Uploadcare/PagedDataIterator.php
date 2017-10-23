@@ -160,7 +160,7 @@ abstract class PagedDataIterator implements \Iterator, \Countable, \ArrayAccess
      */
     private function loadChunk()
     {
-        $portion = $this->_pd_getDataChunk($this->api, $this->options, $this->reverse);
+        $portion = $this->pdGetDataChunk($this->api, $this->options, $this->reverse);
 
         $this->options = $portion['params'];
         $this->nextPageParams = $portion['nextParams'];
@@ -183,7 +183,7 @@ abstract class PagedDataIterator implements \Iterator, \Countable, \ArrayAccess
      * @param bool $reverse
      * @return array
      */
-    public function _pd_getDataChunk($api, $options, $reverse)
+    public function pdGetDataChunk($api, $options, $reverse)
     {
         return array();
     }
@@ -191,7 +191,7 @@ abstract class PagedDataIterator implements \Iterator, \Countable, \ArrayAccess
     public function count()
     {
         if ($this->count === null) {
-            $this->count = $this->_pd_GetCount($this->api, $this->options);
+            $this->count = $this->pdGetCount($this->api, $this->options);
         }
 
         if ($this->limit && $this->count > $this->limit) {
@@ -209,7 +209,7 @@ abstract class PagedDataIterator implements \Iterator, \Countable, \ArrayAccess
      * @param array $ptions
      * @return int
      */
-    public function _pd_GetCount($api, $options)
+    public function pdGetCount($api, $options)
     {
         return 0;
     }

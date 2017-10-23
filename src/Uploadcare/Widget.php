@@ -7,7 +7,7 @@ class Widget
     /**
      * Uploadcare widget version
      */
-    const version = '3.x';
+    const VERSION = '3.x';
 
     /**
      * Api instance
@@ -53,7 +53,7 @@ EOT;
     public function getScriptSrc($version = null, $full = true)
     {
         if (!$version) {
-            $version = self::version;
+            $version = self::VERSION;
         }
         if ($full) {
             $tail = "uploadcare.full.min.js";

@@ -734,7 +734,7 @@ class Api
                 break;
             case 'HEAD':
                 curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'HEAD');
-            curl_setopt($ch, CURLOPT_NOBODY, true);
+                curl_setopt($ch, CURLOPT_NOBODY, true);
                 break;
             case 'OPTIONS':
                 curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'OPTIONS');
