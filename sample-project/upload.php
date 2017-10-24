@@ -8,11 +8,11 @@ $uc_handler = new Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
 $file = $uc_handler->getFile($file_id);
 
 try {
-  $file->store();
+    $file->store();
 } catch (Exception $e) {
-  echo $e->getMessage()."<br />";
-  echo nl2br($e->getTraceAsString());
-  die();
+    echo $e->getMessage()."<br />";
+    echo nl2br($e->getTraceAsString());
+    die();
 }
 ?>
 

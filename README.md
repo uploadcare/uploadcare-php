@@ -75,8 +75,8 @@ Create some form to use with widget:
 
 ```php
 <form method="POST" action="upload.php">
-  <?php echo $api->widget->getInputTag('qs-file'); ?>
-  <input type="submit" value="Save!" />
+    <?php echo $api->widget->getInputTag('qs-file'); ?>
+    <input type="submit" value="Save!" />
  </form>
 ```
 
@@ -376,10 +376,10 @@ do it:
 
 ```php
 try {
-  $file->createRemoteCopy("target_storage_name");
+    $file->createRemoteCopy("target_storage_name");
 } catch (Exception $e) {
-  echo $e->getMessage()."\n";
-  echo nl2br($e->getTraceAsString())."\n";
+    echo $e->getMessage()."\n";
+    echo nl2br($e->getTraceAsString())."\n";
 }
 ```
 
@@ -400,13 +400,15 @@ By using default params of "fromUrl" method you tell Uploader to check file to b
 By default, Uploader will make 5 checks max with 1 second wait. You can change these params:
 
 ```php
-$file = $api->uploader->fromUrl('http://www.baysflowers.co.nz/Images/tangerine-delight.jpg',
-                                array(
-                                  'filename' => 'image.jpeg,
-                                  'check_status' => true,
-                                  'timeout' => $timeout,
-                                  'max_attempts' => $max_attempts
-                                ));
+$file = $api->uploader->fromUrl(
+    'http://www.baysflowers.co.nz/Images/tangerine-delight.jpg',
+    array(
+        'filename' => 'image.jpeg,
+        'check_status' => true,
+        'timeout' => $timeout,
+        'max_attempts' => $max_attempts
+    )
+);
 ```
 
 If file is not uploaded an Exception will be thrown.
@@ -414,12 +416,14 @@ If file is not uploaded an Exception will be thrown.
 You can just get token and check status manually later any time:
 
 ```php
-$token = $api->uploader->fromUrl('http://www.baysflowers.co.nz/Images/tangerine-delight.jpg',
-                                 array('check_status' => false));
+$token = $api->uploader->fromUrl(
+    'http://www.baysflowers.co.nz/Images/tangerine-delight.jpg',
+    array('check_status' => false)
+);
 $data = $api->uploader->status($token);
 if ($data->status == 'success') {
-  $file_id = $data->file_id
-  // do smth with a file
+    $file_id = $data->file_id
+    // do smth with a file
 }
 ```
 
