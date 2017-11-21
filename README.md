@@ -249,6 +249,12 @@ To store group:
 $group->store();
 ```
 
+To create group from array of File objects:
+
+```php
+$group = createGroup($files);
+```
+
 ## File operations
 
 Using object of \Uploadcare\File class we can get a URL for the file
