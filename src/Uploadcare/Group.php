@@ -64,6 +64,13 @@ class Group
     public function __get($name)
     {
         if ($name == 'data') {
+            if (!$this->cached_data) {
+                try {
+                    $this->updateInfo();
+                } catch (\Exception $ex) {
+                    return null;
+                }
+            }
             return $this->cached_data;
         }
         return null;
