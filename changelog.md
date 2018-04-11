@@ -1,7 +1,7 @@
 # Changelog
 
 ## 2.1.2
-- fix with usage `??` for `File->data` and `Group->data` for php 7.x see [error description](https://bugs.php.net/bug.php?id=71359)
+- fix of usage `??` with `File->data` and `Group->data` see [error description](https://bugs.php.net/bug.php?id=71359) Now its safe to use `$data = File->data ?? $defaultData;` or `$data = Group->data ?? $defaultData;`
 
 ## 2.1.1
 - fix `File->op()`
