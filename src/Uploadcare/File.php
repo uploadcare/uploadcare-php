@@ -83,12 +83,24 @@ class File
     public function __get($name)
     {
         if ($name == 'data') {
-            if (!$this->cached_data) {
-                $this->updateInfo();
-            }
             return $this->cached_data;
         }
         return null;
+    }
+
+    public function __isSet($name)
+    {
+        if ($name == 'data') {
+            if (!$this->cached_data) {
+                try {
+                    $this->updateInfo();
+                } catch (\Exception $ex) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
     }
 
     /**
