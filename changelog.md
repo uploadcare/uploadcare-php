@@ -1,5 +1,8 @@
 # Changelog
 
+## 2.1.2
+- fix with usage `??` for `File->data` and `Group->data` for php 7.x see [error description](https://bugs.php.net/bug.php?id=71359)
+
 ## 2.1.1
 - fix `File->op()`
 
