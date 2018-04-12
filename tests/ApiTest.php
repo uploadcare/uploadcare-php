@@ -2,6 +2,7 @@
 error_reporting(E_ALL);
 require_once __DIR__.'/config.php';
 require_once __DIR__.'/../vendor/autoload.php';
+require_once __DIR__.'/PropertyClass.php';
 
 use PHPUnit\Framework\TestCase;
 use Uploadcare\Api;
@@ -225,20 +226,17 @@ class ApiTest extends TestCase
     }
 
     /**
-     * Test File with usage of ?? for its data
+     * Test usage of File->__get() and File->__isset() methods with accessing in 2 nested properties
      */
     public function testFileDataWithNullableChecker()
     {
-        if(PHP_MAJOR_VERSION >= 7) {
-            $fakeUuid = 'e17f5de0-b978-4039-8547-7074eb4846bb';
-            $defaultValue = array('original_filename' => 'file not found');
+        $result = $this->api->request('GET', '/files/');
+        $file_raw = (array)$result->results[0];
 
-            $file = new File($fakeUuid, $this->api);
-            $data = $file->data ?? $defaultValue;
-            $this->assertEquals($data, $defaultValue);
-        } else {
-            $this->assertEquals(1, 1);
-        }
+        $file = new File($file_raw['uuid'], $this->api);
+        $fakeInst = new PropertyClass($file);
+        $data = $fakeInst->property->data;
+        $this->assertEquals($data, $file->data);
     }
 
     /**

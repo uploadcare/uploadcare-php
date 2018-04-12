@@ -2,11 +2,14 @@
 error_reporting(E_ALL);
 require_once __DIR__.'/config.php';
 require_once __DIR__.'/../vendor/autoload.php';
+require_once __DIR__.'/PropertyClass.php';
 
 use PHPUnit\Framework\TestCase;
 use Uploadcare\Api;
 use Uploadcare\Exceptions\ThrottledRequestException;
 use Uploadcare\File;
+
+
 
 class GroupTest extends TestCase
 {
@@ -64,19 +67,15 @@ class GroupTest extends TestCase
     }
 
     /**
-     * Test Group with usage of ?? for its data
+     * Test usage of Group->__get() and Group->__isset() methods with accessing in 2 nested properties
      */
     public function testGroupDataWithNullableChecker()
     {
-        if(PHP_MAJOR_VERSION >= 7) {
-            $fakeUuid = '8b1362ed-b477-4a15-819a-2c6bb497d8bb~3';
-            $defaultValue = array('files' => 'files not found');
-
-            $file = new \Uploadcare\Group($fakeUuid, $this->api);
-            $data = $file->data ?? $defaultValue;
-            $this->assertEquals($data, $defaultValue);
-        } else {
-            $this->assertEquals(1, 1);
-        }
+        $groups = $this->api->getGroupList(array(
+            'limit' => 20,
+        ));
+        $fakeInst = new PropertyClass($groups[0]);
+        $data = $fakeInst->property->data;
+        $this->assertEquals($data, $groups[0]->data);
     }
 }

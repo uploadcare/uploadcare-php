@@ -65,11 +65,7 @@ class Group
     {
         if ($name == 'data') {
             if (!$this->cached_data) {
-                try {
-                    $this->updateInfo();
-                } catch (\Exception $ex) {
-                    return null;
-                }
+                $this->updateInfo();
             }
             return $this->cached_data;
         }
@@ -78,17 +74,7 @@ class Group
 
     public function __isset($name)
     {
-        if ($name == 'data') {
-            if (!$this->cached_data) {
-                try {
-                    $this->updateInfo();
-                } catch (\Exception $ex) {
-                    return false;
-                }
-            }
-            return true;
-        }
-        return false;
+        return $name == 'data';
     }
 
     /**
