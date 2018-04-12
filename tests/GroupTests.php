@@ -9,8 +9,6 @@ use Uploadcare\Api;
 use Uploadcare\Exceptions\ThrottledRequestException;
 use Uploadcare\File;
 
-
-
 class GroupTest extends TestCase
 {
     /** @var Uploadcare\Api */
