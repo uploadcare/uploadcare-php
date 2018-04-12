@@ -95,7 +95,7 @@ class File
         return null;
     }
 
-    public function __isSet($name)
+    public function __isset($name)
     {
         if ($name == 'data') {
             if (!$this->cached_data) {
