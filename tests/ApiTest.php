@@ -228,7 +228,7 @@ class ApiTest extends TestCase
     /**
      * Test usage of File->__get() and File->__isset() methods with accessing in 2 nested properties
      */
-    public function testFileDataWithNullableChecker()
+    public function testFileDataFromNestedProperty()
     {
         $result = $this->api->request('GET', '/files/');
         $file_raw = (array)$result->results[0];

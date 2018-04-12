@@ -69,7 +69,7 @@ class GroupTest extends TestCase
     /**
      * Test usage of Group->__get() and Group->__isset() methods with accessing in 2 nested properties
      */
-    public function testGroupDataWithNullableChecker()
+    public function testGroupDataFromNestedProperty()
     {
         $groups = $this->api->getGroupList(array(
             'limit' => 20,
