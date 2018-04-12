@@ -70,7 +70,7 @@ class GroupTest extends TestCase
     {
         if(PHP_MAJOR_VERSION >= 7) {
             $fakeUuid = '8b1362ed-b477-4a15-819a-2c6bb497d8bb~3';
-            $defaultValue = ['files' => 'files not found'];
+            $defaultValue = array('files' => 'files not found');
 
             $file = new \Uploadcare\Group($fakeUuid, $this->api);
             $data = $file->data ?? $defaultValue;

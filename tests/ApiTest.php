@@ -231,7 +231,7 @@ class ApiTest extends TestCase
     {
         if(PHP_MAJOR_VERSION >= 7) {
             $fakeUuid = 'e17f5de0-b978-4039-8547-7074eb4846bb';
-            $defaultValue = ['original_filename' => 'file not found'];
+            $defaultValue = array('original_filename' => 'file not found');
 
             $file = new File($fakeUuid, $this->api);
             $data = $file->data ?? $defaultValue;
