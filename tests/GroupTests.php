@@ -36,7 +36,6 @@ class GroupTest extends TestCase
     {
     }
 
-
     /**
      * Test that testFileGroupList method returns array
      * and each item of array is an object of Uploadcare\Group class
@@ -62,5 +61,18 @@ class GroupTest extends TestCase
         foreach ($groups as $g) {
             $this->assertTrue(get_class($g) == 'Uploadcare\Group');
         }
+    }
+
+    /**
+     * Test Group with usage of ?? for its data
+     */
+    public function testGroupDataWithNullableChecker()
+    {
+        $fakeUuid = '8b1362ed-b477-4a15-819a-2c6bb497d8bb~3';
+        $defaultValue = ['files' => 'files not found'];
+
+        $file = new \Uploadcare\Group($fakeUuid, $this->api);
+        $data = $file->data ?? $defaultValue;
+        $this->assertEquals($data, $defaultValue);
     }
 }

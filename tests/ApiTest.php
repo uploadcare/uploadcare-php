@@ -225,6 +225,19 @@ class ApiTest extends TestCase
     }
 
     /**
+     * Test File with usage of ?? for its data
+     */
+    public function testFileDataWithNullableChecker()
+    {
+        $fakeUuid = 'e17f5de0-b978-4039-8547-7074eb4846bb';
+        $defaultValue = ['original_filename' => 'file not found'];
+
+        $file = new File($fakeUuid, $this->api);
+        $data = $file->data ?? $defaultValue;
+        $this->assertEquals($data, $defaultValue);
+    }
+
+    /**
      * Let's check the file operations and check for correct urls
      */
     public function testFile()
