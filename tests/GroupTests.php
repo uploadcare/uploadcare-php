@@ -68,11 +68,15 @@ class GroupTest extends TestCase
      */
     public function testGroupDataWithNullableChecker()
     {
-        $fakeUuid = '8b1362ed-b477-4a15-819a-2c6bb497d8bb~3';
-        $defaultValue = ['files' => 'files not found'];
+        if(PHP_MAJOR_VERSION >= 7) {
+            $fakeUuid = '8b1362ed-b477-4a15-819a-2c6bb497d8bb~3';
+            $defaultValue = ['files' => 'files not found'];
 
-        $file = new \Uploadcare\Group($fakeUuid, $this->api);
-        $data = $file->data ?? $defaultValue;
-        $this->assertEquals($data, $defaultValue);
+            $file = new \Uploadcare\Group($fakeUuid, $this->api);
+            $data = $file->data ?? $defaultValue;
+            $this->assertEquals($data, $defaultValue);
+        } else {
+            $this->assertEquals(1, 1);
+        }
     }
 }

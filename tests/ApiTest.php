@@ -229,12 +229,16 @@ class ApiTest extends TestCase
      */
     public function testFileDataWithNullableChecker()
     {
-        $fakeUuid = 'e17f5de0-b978-4039-8547-7074eb4846bb';
-        $defaultValue = ['original_filename' => 'file not found'];
+        if(PHP_MAJOR_VERSION >= 7) {
+            $fakeUuid = 'e17f5de0-b978-4039-8547-7074eb4846bb';
+            $defaultValue = ['original_filename' => 'file not found'];
 
-        $file = new File($fakeUuid, $this->api);
-        $data = $file->data ?? $defaultValue;
-        $this->assertEquals($data, $defaultValue);
+            $file = new File($fakeUuid, $this->api);
+            $data = $file->data ?? $defaultValue;
+            $this->assertEquals($data, $defaultValue);
+        } else {
+            $this->assertEquals(1, 1);
+        }
     }
 
     /**
