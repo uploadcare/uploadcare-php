@@ -52,7 +52,7 @@
       $file = $api->getFile($fileId);
       $imgUrl = $file->preview(400, 400)->getUrl();
       $uuid = $file->getUuid();
-      $data = $file->__get('data');
+      $data = $file->data;
       $fileName = $data["original_filename"];
       $imgInfo = $data["image_info"];
       $height = $imgInfo->height;

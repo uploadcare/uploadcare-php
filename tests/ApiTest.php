@@ -2,6 +2,7 @@
 error_reporting(E_ALL);
 require_once __DIR__.'/config.php';
 require_once __DIR__.'/../vendor/autoload.php';
+require_once __DIR__.'/PropertyClass.php';
 
 use PHPUnit\Framework\TestCase;
 use Uploadcare\Api;
@@ -222,6 +223,20 @@ class ApiTest extends TestCase
 
         $file = new File($file_raw['uuid'], $this->api, $file_raw);
         $this->assertEquals($file_raw['uuid'], $file->data['uuid']);
+    }
+
+    /**
+     * Test usage of File->__get() and File->__isset() methods with accessing in 2 nested properties
+     */
+    public function testFileDataFromNestedProperty()
+    {
+        $result = $this->api->request('GET', '/files/');
+        $file_raw = (array)$result->results[0];
+
+        $file = new File($file_raw['uuid'], $this->api);
+        $fakeInst = new PropertyClass($file);
+        $data = $fakeInst->property->data;
+        $this->assertEquals($data, $file->data);
     }
 
     /**

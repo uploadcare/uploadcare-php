@@ -69,8 +69,12 @@ class Group
             }
             return $this->cached_data;
         }
-
         return null;
+    }
+
+    public function __isset($name)
+    {
+        return $name == 'data';
     }
 
     /**

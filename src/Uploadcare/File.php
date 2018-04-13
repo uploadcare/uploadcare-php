@@ -91,6 +91,11 @@ class File
         return null;
     }
 
+    public function __isset($name)
+    {
+        return $name == 'data';
+    }
+
     /**
      * @return string
      */

@@ -2,6 +2,7 @@
 error_reporting(E_ALL);
 require_once __DIR__.'/config.php';
 require_once __DIR__.'/../vendor/autoload.php';
+require_once __DIR__.'/PropertyClass.php';
 
 use PHPUnit\Framework\TestCase;
 use Uploadcare\Api;
@@ -36,7 +37,6 @@ class GroupTest extends TestCase
     {
     }
 
-
     /**
      * Test that testFileGroupList method returns array
      * and each item of array is an object of Uploadcare\Group class
@@ -62,5 +62,18 @@ class GroupTest extends TestCase
         foreach ($groups as $g) {
             $this->assertTrue(get_class($g) == 'Uploadcare\Group');
         }
+    }
+
+    /**
+     * Test usage of Group->__get() and Group->__isset() methods with accessing in 2 nested properties
+     */
+    public function testGroupDataFromNestedProperty()
+    {
+        $groups = $this->api->getGroupList(array(
+            'limit' => 20,
+        ));
+        $fakeInst = new PropertyClass($groups[0]);
+        $data = $fakeInst->property->data;
+        $this->assertEquals($data, $groups[0]->data);
     }
 }

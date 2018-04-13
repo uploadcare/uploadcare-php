@@ -1,5 +1,8 @@
 # Changelog
 
+## 2.1.2
+- add `__isset()` to classes that have `__get()` that fixes class behaviours in PHP 7.0.6+ see [error description](https://bugs.php.net/bug.php?id=71359)
+
 ## 2.1.1
 - fix `File->op()`
 
