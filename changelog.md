@@ -1,7 +1,7 @@
 # Changelog
 
 ## 2.1.2
-- fix of usage `??` with `File->data` and `Group->data` see [error description](https://bugs.php.net/bug.php?id=71359) Now its safe to use `$data = File->data ?? $defaultData;` or `$data = Group->data ?? $defaultData;`
+- add __isset to classes that have __get that fixes class behaviours in PHP 7.0.6+ see [error description](https://bugs.php.net/bug.php?id=71359)
 
 ## 2.1.1
 - fix `File->op()`
