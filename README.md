@@ -173,32 +173,13 @@ This objects provide ways to display the file and to use methods such as resize,
 
 ```php
 $files = $api->getFileList();
+// $files is Iterator instance, so you don't have to use pagination explicitly:
+foreach ($files as $file) {
+    // do something with file
+    echo $file->getUrl();
+}
 ```
 
-`getFileList` called without any params will return just an array of first 20 files objects (first page).
-
-But you can supply a page you want to see:
-
-```php
-$page = 2;
-$files = $api->getFileList($page);
-```
-
-You can get some information about pagination.
-
-You will get an array with params:
-
-- page: current page
-- next: URI to request next page
-- per_page: number of files per page
-- pages: number of pages
-- previous: URI to request previous page
-
-Use "per_page" and "pages" information to create pagination inside your own project
-
-```php
-$pagination_info = $api->getFilePaginationInfo();
-```
 
 If you have a file's UUID or CDN URL (for example, it's saved in your database) you can create object for file easily:
 

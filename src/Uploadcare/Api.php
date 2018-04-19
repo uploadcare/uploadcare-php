@@ -318,15 +318,10 @@ class Api
      *   - $options['limit'] - a total number of objects to be iterated;
      *     If not specified, all available objects are iterated;
      *   - $options['request_limit'] - a number of objects to be downloaded per request.
-     *   - $options['stored'] - True to include only stored objects,
-     *     False to exclude, Null is default, will not exclude anything;
-     *   - $options['removed'] - True to include only removed file groups,
-     *     False to exclude, Null will not exclude anything.
-     *     The default is False.
      *   - $options['reversed'] - If True then result list will be reversed
      *
      * @param array $options
-     * @return FileIterator
+     * @return GroupIterator
      */
     public function getGroupList($options = array())
     {
@@ -335,8 +330,6 @@ class Api
             'to' => null,
             'limit' => null,
             'request_limit' => null,
-            'stored' => $this->defaultFilters['file']['stored'],
-            'removed' => $this->defaultFilters['file']['removed'],
             'reversed' => false,
         ), $options);
 
