@@ -6,8 +6,6 @@ require_once __DIR__.'/PropertyClass.php';
 
 use PHPUnit\Framework\TestCase;
 use Uploadcare\Api;
-use Uploadcare\Exceptions\ThrottledRequestException;
-use Uploadcare\File;
 
 class GroupTest extends TestCase
 {

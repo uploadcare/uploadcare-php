@@ -56,6 +56,11 @@ class Group
         $this->api = $api;
     }
 
+    /**
+     * Update info.
+     *
+     * @throws \Exception
+     */
     public function updateInfo()
     {
         $this->cached_data = (array)$this->api->__preparedRequest('group', 'GET', array('uuid' => $this->getUuid()));
@@ -121,7 +126,8 @@ class Group
     /**
      * Try to store group.
      *
-     * @return array
+     * @return object|null
+     * @throws \Exception
      */
     public function store()
     {
@@ -142,7 +148,8 @@ class Group
      * Get all Files
      *
      * @return array
-     **/
+     * @throws \Exception
+     */
     public function getFiles()
     {
         $result = array();

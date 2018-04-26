@@ -5,8 +5,6 @@ require_once __DIR__.'/../vendor/autoload.php';
 
 use PHPUnit\Framework\TestCase;
 use Uploadcare\Api;
-use Uploadcare\Exceptions\ThrottledRequestException;
-use Uploadcare\File;
 
 class ProcessMultipleFilesTest extends TestCase
 {
@@ -32,7 +30,7 @@ class ProcessMultipleFilesTest extends TestCase
     {
     }
 
-  
+
     /**
      * Test that testFileGroupList method returns array
      * and each item of array is an object of Uploadcare\Group class

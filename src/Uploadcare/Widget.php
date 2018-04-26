@@ -68,13 +68,13 @@ EOT;
      * Gets input tag to use with widget
      *
      * @param string $name Input name
-     * @param array $attribs Custom attributes to include
+     * @param array $attributes Custom attributes to include
      * @return string
      */
-    public function getInputTag($name, $attribs = array())
+    public function getInputTag($name, $attributes = array())
     {
         $to_compile = array();
-        foreach ($attribs as $key => $value) {
+        foreach ($attributes as $key => $value) {
             $to_compile[] = sprintf('%s="%s"', $key, $value);
         }
         return sprintf('<input type="hidden" role="uploadcare-uploader" name="%s" data-upload-url-base="" %s />', $name, join(' ', $to_compile));

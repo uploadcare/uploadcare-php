@@ -130,6 +130,7 @@ class File
      * Update File info
      *
      * @return array
+     * @throws \Exception
      */
     public function updateInfo()
     {
@@ -140,7 +141,8 @@ class File
     /**
      * Store file.
      *
-     * @return array
+     * @return object
+     * @throws \Exception
      */
     public function store()
     {
@@ -153,6 +155,7 @@ class File
      * @deprecated 2.0.0 Use createLocalCopy() or createRemoteCopy() instead.
      * @param string $target Name of custom storage.
      * @return File|string
+     * @throws \Exception
      */
     public function copy($target = null)
     {
@@ -166,6 +169,7 @@ class File
      * @deprecated 2.0.0 Use createRemoteCopy() instead.
      * @param string $target Name of custom storage.
      * @return string
+     * @throws \Exception
      */
     public function copyTo($target)
     {
@@ -178,6 +182,7 @@ class File
      *
      * @param boolean $store MUST be either true or false. true to store files while copying. If stored, files won’t be automatically deleted within 24 hours after copying. false * to not store files, default.
      * @return File|string
+     * @throws \Exception
      */
     public function createLocalCopy($store = true)
     {
@@ -201,6 +206,7 @@ class File
      * ${ext} = file extension, leading dot, e.g. .jpg
      *
      * @return File|string
+     * @throws \Exception
      */
     public function createRemoteCopy($target, $make_public = true, $pattern = '${default}')
     {
@@ -210,7 +216,8 @@ class File
     /**
      * Delete file
      *
-     * @return array
+     * @return object|null
+     * @throws \Exception
      */
     public function delete()
     {
@@ -293,13 +300,13 @@ class File
      * Get image tag
      *
      * @param string $postfix File path postfix
-     * @param array $attribs additional attributes
+     * @param array $attributes additional attributes
      * @return string
      */
-    public function getImgTag($postfix = null, $attribs = array())
+    public function getImgTag($postfix = null, $attributes = array())
     {
         $to_compile = array();
-        foreach ($attribs as $key => $value) {
+        foreach ($attributes as $key => $value) {
             $to_compile[] = sprintf('%s="%s"', $key, $value);
         }
         return sprintf('<img src="%s" %s />', $this->getUrl(), join(' ', $to_compile));
@@ -313,6 +320,7 @@ class File
      * @param boolean $center Center crop? true or false (default false).
      * @param string|boolean $fill_color Fill color. If nothing is provided just use false (default false).
      * @return File
+     * @throws \Exception
      */
     public function crop($width, $height, $center = false, $fill_color = false)
     {
@@ -382,6 +390,7 @@ class File
      * @param int $height Crop height
      * @param boolean $center Center crop? true or false (default false).
      * @return File
+     * @throws \Exception
      */
     public function scaleCrop($width, $height, $center = false)
     {
