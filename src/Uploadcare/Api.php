@@ -66,7 +66,7 @@ class Api
     private $userAgentName = 'PHP Uploadcare Module';
 
     /**
-     * Maximum files number can be processed in file batch operaions
+     * Maximum files number can be processed in file batch operations
      *
      * @var int
      */
@@ -201,7 +201,9 @@ class Api
      * Get portion of groups from server respecting filters
      *
      * @param array $options
+     * @param bool $reverse
      * @return array
+     * @throws \Exception
      */
     public function getGroupsChunk($options = array(), $reverse = false)
     {
@@ -218,7 +220,9 @@ class Api
      * Get portion of files from server respecting filters
      *
      * @param array $options
+     * @param bool $reverse
      * @return array
+     * @throws \Exception
      */
     public function getFilesChunk($options = array(), $reverse = false)
     {
@@ -237,6 +241,7 @@ class Api
      *
      * @param array $options
      * @return mixed
+     * @throws \Exception
      */
     public function getFilesCount($options = array())
     {
@@ -252,6 +257,7 @@ class Api
      *
      * @param array $options
      * @return mixed
+     * @throws \Exception
      */
     public function getGroupsCount($options = array())
     {
@@ -280,6 +286,7 @@ class Api
      *
      * @param array $options
      * @return FileIterator
+     * @throws \Exception
      */
     public function getFileList($options = array())
     {
@@ -306,7 +313,7 @@ class Api
             }
         }
 
-        return new \Uploadcare\FileIterator($this, $options);
+        return new FileIterator($this, $options);
     }
 
     /**
@@ -322,6 +329,7 @@ class Api
      *
      * @param array $options
      * @return GroupIterator
+     * @throws \Exception
      */
     public function getGroupList($options = array())
     {
@@ -340,7 +348,7 @@ class Api
         $options['from'] = self::dateTimeString($options['from']);
         $options['to'] = self::dateTimeString($options['to']);
 
-        return  new \Uploadcare\GroupIterator($this, $options);
+        return new GroupIterator($this, $options);
     }
 
     /**
@@ -348,6 +356,7 @@ class Api
      *
      * @param string $uuid_or_url Uploadcare group UUID or CDN URL
      * @return Group
+     * @throws \Exception
      */
     public function getGroup($uuid_or_url)
     {
@@ -361,6 +370,7 @@ class Api
      * @param string $source CDN URL or file's uuid you need to copy.
      * @param string $target Name of custom storage connected to your project. Uploadcare storage is used if target is absent.
      * @return File|string
+     * @throws \Exception
      */
     public function copyFile($source, $target = null)
     {
@@ -378,6 +388,7 @@ class Api
      * @param string $source CDN URL or file's uuid you need to copy.
      * @param boolean $store MUST be either true or false. true to store files while copying. If stored, files won’t be automatically deleted within 24 hours after copying. false * to not store files, default.
      * @return File|string
+     * @throws \Exception
      */
     public function createLocalCopy($source, $store = true)
     {
@@ -411,6 +422,7 @@ class Api
      * ${ext} = file extension, leading dot, e.g. .jpg
      *
      * @return File|string
+     * @throws \Exception
      */
     public function createRemoteCopy($source, $target, $make_public = true, $pattern = null)
     {
@@ -433,8 +445,9 @@ class Api
     /**
      * Store multiple files
      *
-     * @param string $filesUuidArr uploaded file's uuid array you need to store.
+     * @param array $filesUuidArr uploaded file's uuid array you need to store.
      * @return array with stored files and problems if any
+     * @throws \Exception
      */
     public function storeMultipleFiles($filesUuidArr)
     {
@@ -444,8 +457,9 @@ class Api
     /**
      * Delete multiple files
      *
-     * @param string $filesUuidArr uploaded or stored file's uuid array you need to delete.
+     * @param array $filesUuidArr uploaded or stored file's uuid array you need to delete.
      * @return array with deleted files and problems if any
+     * @throws \Exception
      */
     public function deleteMultipleFiles($filesUuidArr)
     {
@@ -455,9 +469,10 @@ class Api
     /**
      * Process multiple files with chunk support
      *
-     * @param string $filesUuidArr uploaded file's uuid array you need to process.
+     * @param array $filesUuidArr uploaded file's uuid array you need to process.
      * @param string $request_type request type, could be PUT or DELETE .
      * @return array with processed files and problems if any
+     * @throws \Exception
      */
     public function __batchProcessFiles($filesUuidArr, $request_type)
     {
@@ -488,9 +503,10 @@ class Api
     /**
      * Run request to process multiple files
      *
-     * @param string $filesUuidArr uploaded file's uuid array you need to process.
+     * @param array $filesUuidArr uploaded file's uuid array you need to process.
      * @param string $request_type request type, could be PUT or DELETE .
      * @return array with processed files and problems if any
+     * @throws \Exception
      */
     public function __batchProcessFilesChunk($filesUuidArr, $request_type)
     {
@@ -581,7 +597,7 @@ class Api
      * @param null $retry_throttled
      * @throws \Exception
      * @throws \Uploadcare\Exceptions\ThrottledRequestException
-     * @return object
+     * @return object|null
      */
     public function __preparedRequest($type, $request_type = 'GET', $params = array(), $data = array(), $retry_throttled = null)
     {
@@ -748,7 +764,7 @@ class Api
     }
 
     /**
-     * Set all the headers for request and set returntrasfer.
+     * Set all the headers for request and set return transfer.
      *
      * @param resource $ch. Curl resource.
      * @param array $add_headers additional headers.
@@ -817,6 +833,7 @@ class Api
      *
      * @param string $uuid_or_url Uploadcare file UUID or CDN URL
      * @return File
+     * @throws \Exception
      */
     public function getFile($uuid_or_url)
     {

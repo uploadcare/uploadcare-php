@@ -5,8 +5,6 @@ require_once __DIR__.'/../vendor/autoload.php';
 
 use PHPUnit\Framework\TestCase;
 use Uploadcare\Api;
-use Uploadcare\Exceptions\ThrottledRequestException;
-use Uploadcare\File;
 
 class CopyFilesTest extends TestCase
 {

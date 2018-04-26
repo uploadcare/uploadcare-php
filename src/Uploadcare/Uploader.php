@@ -33,6 +33,7 @@ class Uploader
      *
      * @param string $token
      * @return object
+     * @throws \Exception
      */
     public function status($token)
     {
@@ -88,7 +89,7 @@ class Uploader
      * Upload file from a URL and get File instance
      *
      * @param string $url A URL of file to be uploaded.
-     * @param array $options Optioanal dictionary with additional params. Available keys are following:
+     * @param array $options Optional dictionary with additional params. Available keys are following:
      *   'store' - can be true, false or 'auto'. This flag indicates should file be stored automatically after upload.
      *   'filename' - should be a string, Sets explicitly file name of uploaded file.
      *   'check_status' - Wait till upload is complete
@@ -158,6 +159,7 @@ class Uploader
      * @param string $path
      * @param string|bool $mime_type
      * @return File
+     * @throws \Exception
      */
     public function fromPath($path, $mime_type = false)
     {
@@ -194,6 +196,7 @@ class Uploader
      *
      * @param resource $fp
      * @return File
+     * @throws \Exception
      */
     public function fromResource($fp)
     {
@@ -214,6 +217,7 @@ class Uploader
      * @param string $content
      * @param string $mime_type
      * @return File
+     * @throws \Exception
      */
     public function fromContent($content, $mime_type)
     {
@@ -230,6 +234,7 @@ class Uploader
      *
      * @param array $files
      * @return Group
+     * @throws \Exception
      */
     public function createGroup($files)
     {
