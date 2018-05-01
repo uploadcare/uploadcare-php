@@ -148,7 +148,7 @@ class ApiTest extends TestCase
             $this->api->request('HEAD', '/project/');
             $this->api->request('OPTIONS', '/project/');
         } catch (Exception $e) {
-            $this->fail('An unexpected exception thrown');
+            $this->fail('An unexpected exception thrown: '.$e->getMessage());
         }
 
         // echo $result;

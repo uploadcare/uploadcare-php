@@ -855,12 +855,18 @@ class Api
     }
 
     /**
-     * Returns full user agent string
+     * Returns full user agent string.
      *
      * @return string
      */
     public function getUserAgentHeader()
     {
+        // If has own User-Agent
+        $userAgentName = $this->getUserAgentName();
+        if ($userAgentName) {
+            return $userAgentName;
+        }
+
         $userAgent = sprintf('%s/%s/%s (PHP/%s.%s.%s', $this->getLibraryName(), $this->getVersion(), $this->getPublicKey(), PHP_MAJOR_VERSION, PHP_MINOR_VERSION, PHP_RELEASE_VERSION);
 
         $framework = $this->getFramework();
@@ -928,7 +934,6 @@ class Api
 
         $sign = hash_hmac('sha1', $sign_string_as_bytes, $secret_as_bytes);
 
-        $userAgentName = $this->getUserAgentName();
         $headers = array(
             sprintf('Host: %s', $this->api_host),
             sprintf('Authorization: Uploadcare %s:%s', $this->public_key, $sign),
@@ -936,7 +941,7 @@ class Api
             sprintf('Content-Type: %s', $content_type),
             sprintf('Content-Length: %d', $content_length),
             sprintf('Accept: application/vnd.uploadcare-v%s+json', $this->api_version),
-            sprintf('User-Agent: %s', $userAgentName ? $userAgentName : $this->getUserAgentHeader()),
+            sprintf('User-Agent: %s', $this->getUserAgentHeader()),
         ) + $add_headers;
 
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
