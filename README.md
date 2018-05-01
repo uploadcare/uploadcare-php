@@ -455,6 +455,14 @@ To do that pass a string with user agent name as third argument to Api construct
 $api = new Uploadcare\Api(UC_PUBLIC_KEY, UC_SECRET_KEY, "Awesome Lib/1.2.3");
 ```
 
+Or the better way to send report User-Agent HTTP header is set framework name (ex: Wordpress, Laravel) and extension name (ex: PHPUploadcare-Wordpress) with versions if exists:
+
+```php
+$api = new Uploadcare\Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
+$api->setFramework('Wordpress', '4.9.5');
+$api->setExtension('PHPUploadcare-Wordpress', '2.6.0');
+```
+
 You may also change default CDN host. You need to do this when you're using custom CNAME or you want to explicitly set your
 [CDN provider](https://uploadcare.com/documentation/cdn/#alternative-domains).
 To do that pass a string with domain name as fourth argument to Api constructor:
