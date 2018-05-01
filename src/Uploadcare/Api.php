@@ -7,6 +7,11 @@ use Uploadcare\Exceptions\ThrottledRequestException;
 class Api
 {
     /**
+     * Uploadcare library version
+     */
+    const UPLOADCARE_LIBRARY_VERSION = '2.2.0';
+
+    /**
      * Uploadcare public key
      *
      * @var string
@@ -84,13 +89,6 @@ class Api
     public $uploader = null;
 
     /**
-     * Uploadcare library version
-     *
-     * @var string
-     */
-    private $version = '2.2.0';
-
-    /**
      * Uploadcare rest API version
      *
      * @var string
@@ -110,14 +108,14 @@ class Api
     );
 
     /**
-     * Framework name with version.
+     * Framework name to report with version.
      *
      * @var string
      */
     protected $framework = '';
 
     /**
-     * Extension name with version.
+     * Extension name to report with version.
      *
      * @var string
      */
@@ -170,7 +168,7 @@ class Api
      */
     public function getVersion()
     {
-        return $this->version;
+        return self::UPLOADCARE_LIBRARY_VERSION;
     }
 
     /**
@@ -186,8 +184,8 @@ class Api
     /**
      * Set framework name with version.
      *
-     * @param $name
-     * @param $version
+     * @param string $name Framework name (ex: Wordpress, Laravel).
+     * @param string $version Framework version (ex: 1.0.1).
      * @return string
      */
     public function setFramework($name, $version)
@@ -198,8 +196,8 @@ class Api
     /**
      * Set extension name with version.
      *
-     * @param $name
-     * @param $version
+     * @param string $name Extension name (ex: PHPUploadcare-Wordpress).
+     * @param string $version Extension version (ex: 1.0.1).
      * @return string
      */
     public function setExtension($name, $version)
