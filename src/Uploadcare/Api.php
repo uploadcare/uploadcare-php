@@ -61,11 +61,18 @@ class Api
     private $retry_throttled = 1;
 
     /**
+     * Library name for HTTP headers
+     *
+     * @var string
+     */
+    protected $libraryName = 'PHPUploadcare';
+
+    /**
      * User agent name for HTTP headers
      *
      * @var string
      */
-    private $userAgentName = 'PHPUploadcare';
+    protected $userAgentName = null;
 
     /**
      * Maximum files number can be processed in file batch operations
@@ -206,6 +213,17 @@ class Api
     }
 
     /**
+     * Set own User-Agent name for report in HTTP header.
+     *
+     * @param string $name
+     * @return string
+     */
+    public function setUserAgentName($name)
+    {
+        return $this->userAgentName = $name;
+    }
+
+    /**
      * Get framework name with version.
      *
      * @return string
@@ -223,6 +241,26 @@ class Api
     public function getExtension()
     {
         return $this->extension;
+    }
+
+    /**
+     * Get library name.
+     *
+     * @return string
+     */
+    public function getLibraryName()
+    {
+        return $this->libraryName;
+    }
+
+    /**
+     * Get library name.
+     *
+     * @return string
+     */
+    public function getUserAgentName()
+    {
+        return $this->userAgentName;
     }
 
     /**
@@ -821,9 +859,9 @@ class Api
      *
      * @return string
      */
-    public function getUserAgent()
+    public function getUserAgentHeader()
     {
-        $userAgent = sprintf('%s/%s/%s (PHP/%s.%s.%s', $this->userAgentName, $this->getVersion(), $this->getPublicKey(), PHP_MAJOR_VERSION, PHP_MINOR_VERSION, PHP_RELEASE_VERSION);
+        $userAgent = sprintf('%s/%s/%s (PHP/%s.%s.%s', $this->getLibraryName(), $this->getVersion(), $this->getPublicKey(), PHP_MAJOR_VERSION, PHP_MINOR_VERSION, PHP_RELEASE_VERSION);
 
         $framework = $this->getFramework();
         if ($framework) {
@@ -890,6 +928,7 @@ class Api
 
         $sign = hash_hmac('sha1', $sign_string_as_bytes, $secret_as_bytes);
 
+        $userAgentName = $this->getUserAgentName();
         $headers = array(
             sprintf('Host: %s', $this->api_host),
             sprintf('Authorization: Uploadcare %s:%s', $this->public_key, $sign),
@@ -897,7 +936,7 @@ class Api
             sprintf('Content-Type: %s', $content_type),
             sprintf('Content-Length: %d', $content_length),
             sprintf('Accept: application/vnd.uploadcare-v%s+json', $this->api_version),
-            sprintf('User-Agent: %s', $this->getUserAgent()),
+            sprintf('User-Agent: %s', $userAgentName ? $userAgentName : $this->getUserAgentHeader()),
         ) + $add_headers;
 
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
