@@ -4,9 +4,6 @@ namespace Uploadcare;
 
 use Uploadcare\Exceptions\ThrottledRequestException;
 
-$uploadcare_version = '2.1.2';
-define('UPLOADCARE_LIB_VERSION', sprintf('%s/%s.%s', $uploadcare_version, PHP_MAJOR_VERSION, PHP_MINOR_VERSION));
-
 class Api
 {
     /**
@@ -63,7 +60,7 @@ class Api
      *
      * @var string
      */
-    private $userAgentName = 'PHP Uploadcare Module';
+    private $userAgentName = 'PHPUploadcare';
 
     /**
      * Maximum files number can be processed in file batch operations
@@ -91,7 +88,7 @@ class Api
      *
      * @var string
      */
-    public $version = UPLOADCARE_LIB_VERSION;
+    private $version = '2.2.0';
 
     /**
      * Uploadcare rest API version
@@ -111,6 +108,20 @@ class Api
             'removed' => false,
         ),
     );
+
+    /**
+     * Framework name with version.
+     *
+     * @var string
+     */
+    protected $framework = '';
+
+    /**
+     * Extension name with version.
+     *
+     * @var string
+     */
+    protected $extension = '';
 
     /**
      * Constructor
@@ -153,6 +164,16 @@ class Api
     }
 
     /**
+     * Return lib version
+     *
+     * @return string
+     */
+    public function getVersion()
+    {
+        return $this->version;
+    }
+
+    /**
      * Return CDN URI
      *
      * @return string
@@ -160,6 +181,50 @@ class Api
     public function getCdnUri()
     {
         return $this->cdn_protocol . '://' . $this->cdn_host;
+    }
+
+    /**
+     * Set framework name with version.
+     *
+     * @param $name
+     * @param $version
+     * @return string
+     */
+    public function setFramework($name, $version)
+    {
+        return $this->framework = $name.'/'.$version;
+    }
+
+    /**
+     * Set extension name with version.
+     *
+     * @param $name
+     * @param $version
+     * @return string
+     */
+    public function setExtension($name, $version)
+    {
+        return $this->extension = $name.'/'.$version;
+    }
+
+    /**
+     * Get framework name with version.
+     *
+     * @return string
+     */
+    public function getFramework()
+    {
+        return $this->framework;
+    }
+
+    /**
+     * Get extension name with version.
+     *
+     * @return string
+     */
+    public function getExtension()
+    {
+        return $this->extension;
     }
 
     /**
@@ -578,7 +643,7 @@ class Api
         }
 
         curl_close($ch);
-        if (!defined('PHPUNIT_UPLOADCARE_TESTSUITE') && ($this->public_key == 'demopublickey' || $this->secret_key == 'demoprivatekey')) {
+        if (!defined('PHPUNIT_UPLOADCARE_TESTSUITE') && ($this->public_key == 'demopublic_key' || $this->secret_key == 'demoprivatekey')) {
             trigger_error('You are using the demo account. Please get an Uploadcare account at https://uploadcare.com/accounts/create/', E_USER_WARNING);
         }
 
@@ -760,7 +825,21 @@ class Api
      */
     public function getUserAgent()
     {
-        return sprintf('%s/%s/%s', $this->userAgentName, $this->version, $this->getPublicKey());
+        $userAgent = sprintf('%s/%s/%s (PHP/%s.%s.%s', $this->userAgentName, $this->getVersion(), $this->getPublicKey(), PHP_MAJOR_VERSION, PHP_MINOR_VERSION, PHP_RELEASE_VERSION);
+
+        $framework = $this->getFramework();
+        if ($framework) {
+            $userAgent .= '; '.$framework;
+        }
+
+        $extension = $this->getExtension();
+        if ($extension) {
+            $userAgent .= '; '.$extension;
+        }
+
+        $userAgent .= ')';
+
+        return $userAgent;
     }
 
     /**
