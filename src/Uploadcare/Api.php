@@ -4,11 +4,13 @@ namespace Uploadcare;
 
 use Uploadcare\Exceptions\ThrottledRequestException;
 
-$uploadcare_version = '2.1.2';
-define('UPLOADCARE_LIB_VERSION', sprintf('%s/%s.%s', $uploadcare_version, PHP_MAJOR_VERSION, PHP_MINOR_VERSION));
-
 class Api
 {
+    /**
+     * Uploadcare library version
+     */
+    const UPLOADCARE_LIBRARY_VERSION = '2.2.0';
+
     /**
      * Uploadcare public key
      *
@@ -59,11 +61,18 @@ class Api
     private $retry_throttled = 1;
 
     /**
+     * Library name for HTTP headers
+     *
+     * @var string
+     */
+    protected $libraryName = 'PHPUploadcare';
+
+    /**
      * User agent name for HTTP headers
      *
      * @var string
      */
-    private $userAgentName = 'PHP Uploadcare Module';
+    protected $userAgentName = null;
 
     /**
      * Maximum files number can be processed in file batch operations
@@ -87,13 +96,6 @@ class Api
     public $uploader = null;
 
     /**
-     * Uploadcare library version
-     *
-     * @var string
-     */
-    public $version = UPLOADCARE_LIB_VERSION;
-
-    /**
      * Uploadcare rest API version
      *
      * @var string
@@ -111,6 +113,20 @@ class Api
             'removed' => false,
         ),
     );
+
+    /**
+     * Framework name to report with version.
+     *
+     * @var string
+     */
+    protected $framework = '';
+
+    /**
+     * Extension name to report with version.
+     *
+     * @var string
+     */
+    protected $extension = '';
 
     /**
      * Constructor
@@ -153,6 +169,16 @@ class Api
     }
 
     /**
+     * Return lib version
+     *
+     * @return string
+     */
+    public function getVersion()
+    {
+        return self::UPLOADCARE_LIBRARY_VERSION;
+    }
+
+    /**
      * Return CDN URI
      *
      * @return string
@@ -160,6 +186,81 @@ class Api
     public function getCdnUri()
     {
         return $this->cdn_protocol . '://' . $this->cdn_host;
+    }
+
+    /**
+     * Set framework name with version.
+     *
+     * @param string $name Framework name (ex: Wordpress, Laravel).
+     * @param string $version Framework version (ex: 1.0.1).
+     * @return string
+     */
+    public function setFramework($name, $version)
+    {
+        return $this->framework = $name.'/'.$version;
+    }
+
+    /**
+     * Set extension name with version.
+     *
+     * @param string $name Extension name (ex: PHPUploadcare-Wordpress).
+     * @param string $version Extension version (ex: 1.0.1).
+     * @return string
+     */
+    public function setExtension($name, $version)
+    {
+        return $this->extension = $name.'/'.$version;
+    }
+
+    /**
+     * Set own User-Agent name for report in HTTP header.
+     *
+     * @param string $name
+     * @return string
+     */
+    public function setUserAgentName($name)
+    {
+        return $this->userAgentName = $name;
+    }
+
+    /**
+     * Get framework name with version.
+     *
+     * @return string
+     */
+    public function getFramework()
+    {
+        return $this->framework;
+    }
+
+    /**
+     * Get extension name with version.
+     *
+     * @return string
+     */
+    public function getExtension()
+    {
+        return $this->extension;
+    }
+
+    /**
+     * Get library name.
+     *
+     * @return string
+     */
+    public function getLibraryName()
+    {
+        return $this->libraryName;
+    }
+
+    /**
+     * Get library name.
+     *
+     * @return string
+     */
+    public function getUserAgentName()
+    {
+        return $this->userAgentName;
     }
 
     /**
@@ -578,7 +679,7 @@ class Api
         }
 
         curl_close($ch);
-        if (!defined('PHPUNIT_UPLOADCARE_TESTSUITE') && ($this->public_key == 'demopublickey' || $this->secret_key == 'demoprivatekey')) {
+        if (!defined('PHPUNIT_UPLOADCARE_TESTSUITE') && ($this->public_key == 'demopublic_key' || $this->secret_key == 'demoprivatekey')) {
             trigger_error('You are using the demo account. Please get an Uploadcare account at https://uploadcare.com/accounts/create/', E_USER_WARNING);
         }
 
@@ -754,13 +855,33 @@ class Api
     }
 
     /**
-     * Returns full user agent string
+     * Returns full user agent string.
      *
      * @return string
      */
-    public function getUserAgent()
+    public function getUserAgentHeader()
     {
-        return sprintf('%s/%s/%s', $this->userAgentName, $this->version, $this->getPublicKey());
+        // If has own User-Agent
+        $userAgentName = $this->getUserAgentName();
+        if ($userAgentName) {
+            return $userAgentName;
+        }
+
+        $userAgent = sprintf('%s/%s/%s (PHP/%s.%s.%s', $this->getLibraryName(), $this->getVersion(), $this->getPublicKey(), PHP_MAJOR_VERSION, PHP_MINOR_VERSION, PHP_RELEASE_VERSION);
+
+        $framework = $this->getFramework();
+        if ($framework) {
+            $userAgent .= '; '.$framework;
+        }
+
+        $extension = $this->getExtension();
+        if ($extension) {
+            $userAgent .= '; '.$extension;
+        }
+
+        $userAgent .= ')';
+
+        return $userAgent;
     }
 
     /**
@@ -820,7 +941,7 @@ class Api
             sprintf('Content-Type: %s', $content_type),
             sprintf('Content-Length: %d', $content_length),
             sprintf('Accept: application/vnd.uploadcare-v%s+json', $this->api_version),
-            sprintf('User-Agent: %s', $this->getUserAgent()),
+            sprintf('User-Agent: %s', $this->getUserAgentHeader()),
         ) + $add_headers;
 
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);

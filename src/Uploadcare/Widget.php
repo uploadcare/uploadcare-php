@@ -65,6 +65,28 @@ EOT;
     }
 
     /**
+     * Return data-integration attribute.
+     *
+     * @return string
+     */
+    public function getIntegrationData()
+    {
+        $integrationData = '';
+
+        $framework = $this->api->getFramework();
+        if ($framework) {
+            $integrationData .= $framework;
+        }
+
+        $extension = $this->api->getExtension();
+        if ($extension) {
+            $integrationData .= '; '.$extension;
+        }
+
+        return $integrationData;
+    }
+
+    /**
      * Gets input tag to use with widget
      *
      * @param string $name Input name
@@ -77,6 +99,6 @@ EOT;
         foreach ($attributes as $key => $value) {
             $to_compile[] = sprintf('%s="%s"', $key, $value);
         }
-        return sprintf('<input type="hidden" role="uploadcare-uploader" name="%s" data-upload-url-base="" %s />', $name, join(' ', $to_compile));
+        return sprintf('<input type="hidden" role="uploadcare-uploader" name="%s" data-upload-url-base="" data-integration="%s" %s />', $name, $this->getIntegrationData(), join(' ', $to_compile));
     }
 }

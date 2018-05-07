@@ -55,6 +55,20 @@ class ApiTest extends TestCase
     }
 
     /**
+     * Test User-Agent name.
+     */
+    public function testUserAgentHeader()
+    {
+        $this->assertTrue($this->api->getUserAgentHeader() == sprintf('%s/%s/%s (PHP/%s.%s.%s)', 'PHPUploadcare', $this->api->getVersion(), $this->api->getPublicKey(), PHP_MAJOR_VERSION, PHP_MINOR_VERSION, PHP_RELEASE_VERSION), 'This is true');
+
+        $this->api->setFramework('Framework', '1.0.0');
+        $this->assertTrue($this->api->getUserAgentHeader() == sprintf('%s/%s/%s (PHP/%s.%s.%s; %s)', 'PHPUploadcare', $this->api->getVersion(), $this->api->getPublicKey(), PHP_MAJOR_VERSION, PHP_MINOR_VERSION, PHP_RELEASE_VERSION, 'Framework/1.0.0'), 'This is true');
+
+        $this->api->setExtension('Extension', '1.0.0');
+        $this->assertTrue($this->api->getUserAgentHeader() == sprintf('%s/%s/%s (PHP/%s.%s.%s; %s; %s)', 'PHPUploadcare', $this->api->getVersion(), $this->api->getPublicKey(), PHP_MAJOR_VERSION, PHP_MINOR_VERSION, PHP_RELEASE_VERSION, 'Framework/1.0.0', 'Extension/1.0.0'), 'This is true');
+    }
+
+    /**
      * Test that getFilesList method returns array
      * and each item of array is an object of Uploadcare\File class
      */
@@ -134,7 +148,7 @@ class ApiTest extends TestCase
             $this->api->request('HEAD', '/project/');
             $this->api->request('OPTIONS', '/project/');
         } catch (Exception $e) {
-            $this->fail('An unexpected exception thrown');
+            $this->fail('An unexpected exception thrown: '.$e->getMessage());
         }
 
         // echo $result;
