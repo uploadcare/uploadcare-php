@@ -139,7 +139,7 @@ class Uploader
                 if ($data->status == 'error') {
                     throw new \Exception('Upload is not successful: ' . $data->error);
                 }
-                if ($attempts == $max_attempts) {
+                if ($attempts == $max_attempts && $data->status != 'success') {
                     throw new \Exception('Max attempts reached, upload is not successful');
                 }
                 sleep($timeout);
