@@ -9,7 +9,7 @@ class Api
     /**
      * Uploadcare library version
      */
-    const UPLOADCARE_LIBRARY_VERSION = '2.2.0';
+    const UPLOADCARE_LIBRARY_VERSION = '2.2.1';
 
     /**
      * Uploadcare public key
@@ -852,6 +852,16 @@ class Api
             default:
                 throw new \Exception('No request type is provided for request. Use post, put, delete, get or appropriate constants.');
         }
+    }
+
+    /**
+     * Returns full user agent string.
+     * @deprecated 2.2.1 Use getUserAgentHeader() instead.
+     * @return string
+     */
+    public function getUserAgent() {
+        Helper::deprecate('2.0.0', '3.0.0', 'Use getUserAgentHeader() instead');
+        return $this->getUserAgentHeader();
     }
 
     /**
