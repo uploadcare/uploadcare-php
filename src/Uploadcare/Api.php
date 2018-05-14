@@ -861,7 +861,7 @@ class Api
      */
     public function getUserAgent() {
         Helper::deprecate('2.0.0', '3.0.0', 'Use getUserAgentHeader() instead');
-        return sprintf('%s/%s/%s', $this->userAgentName, $this->getVersion(), $this->getPublicKey());
+        return $this->getUserAgentHeader();
     }
 
     /**
