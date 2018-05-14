@@ -6,29 +6,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [2.2.0] - 2018-05-14
 ### Added
-- Rights to user set own User-Agent
-- Getter $api->getUserAgentHeader() for retrieving HTTP User-Agent header
-- Getter $api->getIntegrationData() for data-integration attribute to the widget
-- Setters $api->setFramework($name, $version), $api->setExtension($name, $version), $api->setUserAgentName($name) methods reported during API requests
-- Getters $api->getFramework(), $api->getExtension(), $api->getLibraryName(), $api->getUserAgentName()
-- @throws to PHPDoc
+- Allow user to specify User Agent
+- User agent reporting for the lib and integrations that use it
 - data-integration attribute to the widget
-- New contributor to AUTHORS.txt
 
 ### Changed
-- User-Agent reported during API requests
-- Replace library version var with const, update PHPDoc for setters
-- Changelog format
-- README.md accordingly to the last changes
+- User agent now is reporting in new format by default
+- `$api->getUserAgent()` replaced with `$api->getUserAgentHeader()`
 
 ### Fixed
-- $api->getGroupList($options = array()) method
+- `$api->getGroupList($options = array())` method
 - Some mistakes in description of methods
-- An issue, that response status is a success but still hit max attempts
-
-### Removed
-- Unnecessary imports
-- $api->getUserAgent() with $api->getUserAgentHeader()
+- Hitting max throttling attempts if request was successful
 
 ## [2.1.2]
 - add `__isset()` to classes that have `__get()` that fixes class behaviours in PHP 7.0.6+ see [error description](https://bugs.php.net/bug.php?id=71359)
