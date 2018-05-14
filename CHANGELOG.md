@@ -7,14 +7,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [2.2.0] - 2018-05-14
 ### Added
 - Rights to user set own User-Agent
-- $api->setFrame
+- Getter $api->getUserAgentHeader() for retrieving HTTP User-Agent header
+- Getter $api->getIntegrationData() for data-integration attribute to the widget
+- Setters $api->setFramework($name, $version), $api->setExtension($name, $version), $api->setUserAgentName($name) methods reported during API requests
+- Getters $api->getFramework(), $api->getExtension(), $api->getLibraryName(), $api->getUserAgentName()
 - @throws to PHPDoc
 - data-integration attribute to the widget
 - New contributor to AUTHORS.txt
 
 ### Changed
 - User-Agent reported during API requests
-- Replace version var with const, update PHPDoc for setters
+- Replace library version var with const, update PHPDoc for setters
 - Changelog format
 - README.md accordingly to the last changes
 
@@ -25,6 +28,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Removed
 - Unnecessary imports
+- $api->getUserAgent() with $api->getUserAgentHeader()
 
 ## 2.1.2
 - add `__isset()` to classes that have `__get()` that fixes class behaviours in PHP 7.0.6+ see [error description](https://bugs.php.net/bug.php?id=71359)
