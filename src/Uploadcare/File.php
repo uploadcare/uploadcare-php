@@ -2,6 +2,9 @@
 
 namespace Uploadcare;
 
+/**
+ * @property array $data File info
+ */
 class File
 {
     /**
