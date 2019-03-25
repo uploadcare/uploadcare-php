@@ -522,7 +522,7 @@ class Api
      * ${uuid} = file UUID
      * ${ext} = file extension, leading dot, e.g. .jpg
      *
-     * @return File|string
+     * @return string
      * @throws \Exception
      */
     public function createRemoteCopy($source, $target, $make_public = true, $pattern = null)
