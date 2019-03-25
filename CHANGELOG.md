@@ -6,7 +6,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
-- Fixed wrong return type for `createRemoteCopy` method in `API.php`. 
+### Fixed 
+- Wrong return type for `createRemoteCopy` method in `API.php`. 
 
 ## [2.2.1] - 2018-05-14
 ### Deprecated
