@@ -208,7 +208,7 @@ class File
      * ${uuid} = file UUID
      * ${ext} = file extension, leading dot, e.g. .jpg
      *
-     * @return File|string
+     * @return string
      * @throws \Exception
      */
     public function createRemoteCopy($target, $make_public = true, $pattern = '${default}')
