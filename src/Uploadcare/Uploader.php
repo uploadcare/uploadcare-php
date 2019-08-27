@@ -161,7 +161,7 @@ class Uploader
      * @return File
      * @throws \Exception
      */
-    public function fromPath($path, $mime_type = false)
+    public function fromPath($path, $mime_type = false, $filename = '')
     {
         if (function_exists('curl_file_create')) {
             if ($mime_type) {
@@ -180,7 +180,9 @@ class Uploader
         $data = array(
             'UPLOADCARE_PUB_KEY' => $this->api->getPublicKey(),
             'file' => $f,
-        );
+            'filename' => $filename ?: basename($path),
+        ];
+      
         $ch = $this->__initRequest('base');
         $this->__setRequestType($ch);
         $this->__setData($ch, $data);
@@ -219,14 +221,14 @@ class Uploader
      * @return File
      * @throws \Exception
      */
-    public function fromContent($content, $mime_type)
+    public function fromContent($content, $mime_type, $filename = '')
     {
         $tmpfile = tempnam(sys_get_temp_dir(), 'ucr');
         $temp = fopen($tmpfile, 'w');
         fwrite($temp, $content);
         fclose($temp);
 
-        return $this->fromPath($tmpfile, $mime_type);
+        return $this->fromPath($tmpfile, $mime_type, $filename);
     }
 
     /**
