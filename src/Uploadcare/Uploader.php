@@ -158,6 +158,7 @@ class Uploader
      *
      * @param string $path
      * @param string|bool $mime_type
+     * @param string $filename
      * @return File
      * @throws \Exception
      */
@@ -180,9 +181,12 @@ class Uploader
         $data = array(
             'UPLOADCARE_PUB_KEY' => $this->api->getPublicKey(),
             'file' => $f,
-            'filename' => $filename ?: basename($path),
         );
-      
+
+        if ($filename != '') {
+            $data['filename'] = $filename;
+        }
+
         $ch = $this->__initRequest('base');
         $this->__setRequestType($ch);
         $this->__setData($ch, $data);
