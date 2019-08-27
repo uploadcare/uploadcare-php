@@ -222,6 +222,7 @@ class Uploader
      *
      * @param string $content
      * @param string $mime_type
+     * @param string $filename
      * @return File
      * @throws \Exception
      */
