@@ -181,7 +181,7 @@ class Uploader
             'UPLOADCARE_PUB_KEY' => $this->api->getPublicKey(),
             'file' => $f,
             'filename' => $filename ?: basename($path),
-        ];
+        );
       
         $ch = $this->__initRequest('base');
         $this->__setRequestType($ch);
