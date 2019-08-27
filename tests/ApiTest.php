@@ -375,7 +375,7 @@ class ApiTest extends TestCase
     public function testUploadFromPath()
     {
         try {
-            $file = $this->api->uploader->fromPath(dirname(__FILE__).'/test.jpg');
+            $file = $this->api->uploader->fromPath(dirname(__FILE__).'/test.jpg', 'image/jpeg', 'rename.jpg');
         } catch (Exception $e) {
             $this->fail('We get an unexpected exception trying to upload from path: '.$e->getMessage());
         }
@@ -385,6 +385,10 @@ class ApiTest extends TestCase
         } catch (Exception $e) {
             $this->fail('We get an unexpected exception trying to store uploaded file from path: '.$e->getMessage());
         }
+
+        usleep(2000000); // wait 2 sec to give a time to prepare file and avoid 404 error.
+
+        $this->assertEquals($file->data['original_filename'], 'rename.jpg');
     }
 
     public function testUploadFromResource()
@@ -406,7 +410,7 @@ class ApiTest extends TestCase
     {
         try {
             $content = "This is some text I want to upload";
-            $file = $this->api->uploader->fromContent($content, 'text/plain');
+            $file = $this->api->uploader->fromContent($content, 'text/plain', 'test.txt');
         } catch (Exception $e) {
             $this->fail('We get an unexpected exception trying to upload from contents: '.$e->getMessage());
         }
@@ -417,8 +421,12 @@ class ApiTest extends TestCase
         }
 
         usleep(2000000); // wait 2 sec to give a time to prepare file and avoid 404 error.
-        $text = file_get_contents($file->getUrl());
+        $url = $file->getUrl();
+        $text = file_get_contents($url);
+
         $this->assertEquals($text, "This is some text I want to upload");
+
+        $this->assertEquals($file->data['original_filename'], "test.txt");
     }
 
     public function testFileConstructor()
