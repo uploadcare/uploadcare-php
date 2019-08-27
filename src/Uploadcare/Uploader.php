@@ -166,15 +166,19 @@ class Uploader
     {
         if (function_exists('curl_file_create')) {
             if ($mime_type) {
-                $f = curl_file_create($path, $mime_type);
+                $f = curl_file_create($path, $mime_type, $filename);
             } else {
-                $f = curl_file_create($path);
+                $f = curl_file_create($path, null, $filename);
             }
         } else {
             if ($mime_type) {
                 $f = '@' . $path . ';type=' . $mime_type;
             } else {
                 $f = '@' . $path;
+            }
+
+            if($filename) {
+              $f.=';filename='.$filename;
             }
         }
 
