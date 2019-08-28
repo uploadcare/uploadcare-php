@@ -2,17 +2,26 @@
 
 language: php
 sudo: false
+dist: xenial
 
 matrix:
   include:
+
+    # EOL
     - php: 5.3
       dist: precise
     - php: 5.4
+      dist: trusty
     - php: 5.5
+      dist: trusty
     - php: 5.6
     - php: 7.0
+
+    # Current
     - php: 7.1
     - php: 7.2
+    - php: 7.3
+      dist: bionic
     - php: hhvm
 
     - stage: style checks
@@ -34,4 +43,3 @@ script:
 notifications:
   email:
     - devops@uploadcare.com
-    - nickzherdev@gmail.com
