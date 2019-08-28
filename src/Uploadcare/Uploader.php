@@ -162,23 +162,19 @@ class Uploader
      * @return File
      * @throws \Exception
      */
-    public function fromPath($path, $mime_type = false, $filename = '')
+    public function fromPath($path, $mime_type = null, $filename = null)
     {
         if (function_exists('curl_file_create')) {
-            if ($mime_type) {
-                $f = curl_file_create($path, $mime_type, $filename);
-            } else {
-                $f = curl_file_create($path, null, $filename);
-            }
+            $f = curl_file_create($path, $mime_type, $filename);
         } else {
+            $f = '@' . $path;
+          
             if ($mime_type) {
-                $f = '@' . $path . ';type=' . $mime_type;
-            } else {
-                $f = '@' . $path;
+                $f.= ';type=' . $mime_type;
             }
 
             if($filename) {
-              $f.=';filename='.$filename;
+              $f.= ';filename='.$filename;
             }
         }
 
@@ -186,10 +182,6 @@ class Uploader
             'UPLOADCARE_PUB_KEY' => $this->api->getPublicKey(),
             'file' => $f,
         );
-
-        if ($filename != '') {
-            $data['filename'] = $filename;
-        }
 
         $ch = $this->__initRequest('base');
         $this->__setRequestType($ch);
@@ -230,7 +222,7 @@ class Uploader
      * @return File
      * @throws \Exception
      */
-    public function fromContent($content, $mime_type, $filename = '')
+    public function fromContent($content, $mime_type, $filename = null)
     {
         $tmpfile = tempnam(sys_get_temp_dir(), 'ucr');
         $temp = fopen($tmpfile, 'w');
