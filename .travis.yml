@@ -33,6 +33,7 @@ matrix:
 
 
 before_script:
+  - phpenv config-rm xdebug.ini  # disable xdebug
   - composer install
 
 script:
