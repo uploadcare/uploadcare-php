@@ -2,31 +2,39 @@
 
 language: php
 sudo: false
+dist: xenial
 
 matrix:
   include:
+
+    # EOL
     - php: 5.3
       dist: precise
     - php: 5.4
+      dist: trusty
     - php: 5.5
+      dist: trusty
     - php: 5.6
     - php: 7.0
+
+    # Current
     - php: 7.1
     - php: 7.2
-    - php: hhvm
+    - php: 7.3
+      dist: bionic
 
     - stage: style checks
       script: php vendor/bin/phpcs --standard=PSR2 src
 
   allow_failures:
-    - php: hhvm
     - stage: style checks
 
   fast_finish: false
 
 
 before_script:
-  - composer install
+  - phpenv config-rm xdebug.ini  # disable xdebug
+  - COMPOSER_MEMORY_LIMIT=-1 travis_retry composer install
 
 script:
   php vendor/bin/phpunit
@@ -34,4 +42,3 @@ script:
 notifications:
   email:
     - devops@uploadcare.com
-    - nickzherdev@gmail.com
