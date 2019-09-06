@@ -9,7 +9,7 @@ class Api
     /**
      * Uploadcare library version
      */
-    const UPLOADCARE_LIBRARY_VERSION = '2.2.1';
+    const UPLOADCARE_LIBRARY_VERSION = '2.3.0';
 
     /**
      * Uploadcare public key
