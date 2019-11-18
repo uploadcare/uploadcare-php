@@ -6,7 +6,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
-### Fixed 
+## [2.3.0] - 2019-09-06
+### Added
+- Allow to specify filename for local uploads
+- Allow to control "autostore" for local uploads
+
+### Fixed
 - Wrong return type for `createRemoteCopy` method in `API.php`. 
 As result is always casted to `string`, the return type should be `string` 
 

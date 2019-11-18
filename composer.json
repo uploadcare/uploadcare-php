@@ -3,7 +3,7 @@
     "description": "Uploadcare API binding for PHP",
     "license": "MIT",
     "authors": [{
-        "name": "Uploadcare, LLC",
+        "name": "Uploadcare, Inc",
         "email": "hello@uploadcare.com"
     }],
     "require": {
@@ -32,7 +32,7 @@
     ],
     "homepage": "https://uploadcare.com",
     "support": {
-        "email": "support@uploadcare.com",
+        "email": "help@uploadcare.com",
         "issues": "https://github.com/uploadcare/uploadcare-php/issues"
     }
 }

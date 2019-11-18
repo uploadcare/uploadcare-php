@@ -8,6 +8,7 @@ Dmitry Mukhin <dm@uploadcare.com>
 Dmitry Petrov <dimaninc@gmail.com>
 Gray Hound <admin@devilmaydie.name>
 Koen Schmeets <k.schmeets@gmail.com>
+Mark van Eijk <mark@vaneijk.co>
 Nikolay Zherdev <nickzherdev@gmail.com>
 Paul Blundell <pblundell.1989@gmail.com>
 Philip Harvey <philip@activeingredients.com>

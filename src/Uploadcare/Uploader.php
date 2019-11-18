@@ -168,29 +168,37 @@ class Uploader
      *
      * @param string $path
      * @param string|bool $mime_type
+     * @param string $filename
+     * @param string|bool $store
      * @return File
      * @throws \Exception
      */
-    public function fromPath($path, $mime_type = false)
-    {
+    public function fromPath(
+        $path,
+        $mime_type = null,
+        $filename = null,
+        $store = 'auto'
+    ) {
         if (function_exists('curl_file_create')) {
-            if ($mime_type) {
-                $f = curl_file_create($path, $mime_type);
-            } else {
-                $f = curl_file_create($path);
-            }
+            $f = curl_file_create($path, $mime_type, $filename);
         } else {
+            $f = '@' . $path;
+          
             if ($mime_type) {
-                $f = '@' . $path . ';type=' . $mime_type;
-            } else {
-                $f = '@' . $path;
+                $f .= ';type=' . $mime_type;
+            }
+
+            if ($filename) {
+                $f .= ';filename=' . $filename;
             }
         }
 
         $data = array(
             'UPLOADCARE_PUB_KEY' => $this->api->getPublicKey(),
+            'UPLOADCARE_STORE' => $store,
             'file' => $f,
         );
+
         $ch = $this->__initRequest('base');
         $this->__setRequestType($ch);
         $this->__setData($ch, $data);
@@ -205,11 +213,18 @@ class Uploader
      * Upload file from file pointer
      *
      * @param resource $fp
+     * @param string $mime_type
+     * @param string $filename
+     * @param string|bool $store
      * @return File
      * @throws \Exception
      */
-    public function fromResource($fp)
-    {
+    public function fromResource(
+        $fp,
+        $mime_type = null,
+        $filename = null,
+        $store = 'auto'
+    ) {
         $tmpfile = tempnam(sys_get_temp_dir(), 'ucr');
         $temp = fopen($tmpfile, 'w');
         while (!feof($fp)) {
@@ -218,7 +233,7 @@ class Uploader
         fclose($temp);
         fclose($fp);
 
-        return $this->fromPath($tmpfile);
+        return $this->fromPath($tmpfile, $mime_type, $filename, $store);
     }
 
     /**
@@ -226,17 +241,19 @@ class Uploader
      *
      * @param string $content
      * @param string $mime_type
+     * @param string $filename
+     * @param string|bool $store
      * @return File
      * @throws \Exception
      */
-    public function fromContent($content, $mime_type)
+    public function fromContent($content, $mime_type, $filename = null, $store = 'auto')
     {
         $tmpfile = tempnam(sys_get_temp_dir(), 'ucr');
         $temp = fopen($tmpfile, 'w');
         fwrite($temp, $content);
         fclose($temp);
 
-        return $this->fromPath($tmpfile, $mime_type);
+        return $this->fromPath($tmpfile, $mime_type, $filename, $store);
     }
 
     /**
