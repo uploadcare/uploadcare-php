@@ -2,6 +2,8 @@
 
 namespace Uploadcare;
 
+use Uploadcare\Signature\SignatureInterface;
+
 class Uploader
 {
     /**
@@ -19,12 +21,19 @@ class Uploader
     private $api = null;
 
     /**
+     * @var SignatureInterface|null
+     */
+    private $secureSignature = null;
+
+    /**
      * Constructor
      * @param Api $api
+     * @param SignatureInterface|null $signature
      */
-    public function __construct(Api $api)
+    public function __construct(Api $api, SignatureInterface $signature = null)
     {
         $this->api = $api;
+        $this->secureSignature = $signature;
     }
 
     /**
@@ -40,6 +49,7 @@ class Uploader
         $data = array(
             'token' => $token,
         );
+
         $ch = $this->__initRequest('from_url/status', $data);
         $this->__setHeaders($ch);
         $data = $this->__runRequest($ch);
@@ -260,6 +270,25 @@ class Uploader
     }
 
     /**
+     * Sign data for signed uploads.
+     *
+     * @param array|null $data Data to sign.
+     * @return array
+     */
+    private function signData($data)
+    {
+        $signature = $this->secureSignature;
+        if ($data && $signature) {
+            $data = array_merge($data, array(
+                'signature' => $signature->getSignature(),
+                'expire' => $signature->getExpire(),
+            ));
+        }
+
+        return $data;
+    }
+
+    /**
      * Init upload request and return curl resource
      *
      * @param $type
@@ -268,11 +297,16 @@ class Uploader
      */
     private function __initRequest($type, $data = null)
     {
+        $data = $this->signData($data);
+
         $url = sprintf('https://%s/%s/', $this->host, $type);
+
         if (is_array($data)) {
             $url = sprintf('%s?%s', $url, http_build_query($data));
         }
+
         $ch = curl_init($url);
+
         return $ch;
     }
 
