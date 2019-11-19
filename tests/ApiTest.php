@@ -8,6 +8,7 @@ use PHPUnit\Framework\TestCase;
 use Uploadcare\Api;
 use Uploadcare\Exceptions\ThrottledRequestException;
 use Uploadcare\File;
+use Uploadcare\Signature\SecureSignature;
 
 class ApiTest extends TestCase
 {
@@ -556,5 +557,39 @@ class ApiTest extends TestCase
         $exception = new ThrottledRequestException();
         $exception->setResponseHeaders(array('x-throttle-wait-seconds' => $wait));
         return $exception;
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function testWidgetSignedUploads()
+    {
+        $expireTimeInSeconds = 30 * 60;
+        $api = new Api(
+            UC_PUBLIC_KEY,
+            UC_SECRET_KEY,
+            null,
+            null,
+            null,
+            null,
+            $expireTimeInSeconds
+        );
+
+        $secureSignature = $api->widget->getSecureSignature();
+        $attributes = array(
+            'data-secure-signature' => $secureSignature->getSignature(),
+            'data-secure-expire' => $secureSignature->getExpire(),
+        );
+
+        $toCompile = array();
+        foreach ($attributes as $key => $value) {
+            $toCompile[] = sprintf('%s="%s"', $key, $value);
+        }
+
+        $inputName = 'file';
+        $expectedInputTag = sprintf('<input type="hidden" role="uploadcare-uploader" name="%s" data-upload-url-base="" data-integration="%s" %s />', $inputName, '', join(' ', $toCompile));
+        $actualInputTag = $api->widget->getInputTag($inputName);
+
+        $this->assertEquals($expectedInputTag, $actualInputTag);
     }
 }

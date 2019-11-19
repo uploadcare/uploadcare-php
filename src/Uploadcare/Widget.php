@@ -36,6 +36,16 @@ class Widget
     }
 
     /**
+     * Return secure signature for signed uploads.
+     *
+     * @return SignatureInterface|null
+     */
+    public function getSecureSignature()
+    {
+        return $this->secureSignature;
+    }
+
+    /**
      * Returns <script> sections to include Uploadcare widget
      *
      * @param string $version Uploadcare version
