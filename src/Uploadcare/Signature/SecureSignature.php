@@ -4,7 +4,6 @@ namespace Uploadcare\Signature;
 
 use Exception;
 use DateTimeImmutable;
-use DateInterval;
 
 /**
  * Class SecureSignature
@@ -33,9 +32,8 @@ class SecureSignature implements SignatureInterface
     public function __construct($secretKey, $expireTimeInSeconds)
     {
         $dateTime = new DateTimeImmutable();
-        $interval = new DateInterval('PT' . $expireTimeInSeconds . 'S');
-        $expireAt = $dateTime->add($interval);
-        $expireTimestamp = $expireAt->getTimestamp();
+        $dateTimeTimestamp = $dateTime->getTimestamp();
+        $expireTimestamp = $dateTimeTimestamp + $expireTimeInSeconds;
 
         $toSign = $secretKey . $expireTimestamp;
 
