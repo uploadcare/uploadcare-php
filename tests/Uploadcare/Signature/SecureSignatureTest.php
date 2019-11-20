@@ -4,8 +4,8 @@ error_reporting(E_ALL);
 require_once __DIR__ . './../../config.php';
 require_once __DIR__ . './../../../vendor/autoload.php';
 
-use Uploadcare\Signature\SecureSignature;
 use PHPUnit\Framework\TestCase;
+use Uploadcare\Signature\SecureSignature;
 
 class SecureSignatureTest extends TestCase
 {
@@ -13,8 +13,8 @@ class SecureSignatureTest extends TestCase
     {
         return array(
             array(
-                UC_SECRET_KEY, 30 * 60
-            )
+                UC_SECRET_KEY, 30 * 60,
+            ),
         );
     }
 
@@ -41,7 +41,7 @@ class SecureSignatureTest extends TestCase
     {
         $secureSignature = new SecureSignature($secretKey, $expireTimeInSeconds);
 
-        $dateTime = new DateTimeImmutable();
+        $dateTime = new DateTime();
         $dateTimeTimestamp = $dateTime->getTimestamp();
         $expireTimestamp = $dateTimeTimestamp + $expireTimeInSeconds;
 
@@ -60,11 +60,10 @@ class SecureSignatureTest extends TestCase
     {
         $secureSignature = new SecureSignature($secretKey, $expireTimeInSeconds);
 
-        $dateTime = new DateTimeImmutable();
+        $dateTime = new DateTime();
         $dateTimeTimestamp = $dateTime->getTimestamp();
         $expireTimestamp = $dateTimeTimestamp + $expireTimeInSeconds;
 
         $this->assertEquals($expireTimestamp, $secureSignature->getExpire());
     }
 }
-
