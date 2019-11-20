@@ -712,6 +712,15 @@ class ApiTest extends TestCase
      */
     public function testUploaderCreateGroupSignedUploads()
     {
+        $api = new Api(
+            UC_PUBLIC_KEY,
+            UC_SECRET_KEY
+        );
+        $uploader = $api->uploader;
+
+        $file1 = $uploader->fromContent('1', 'text/plain');
+        $file2 = $uploader->fromContent('2', 'text/plain');
+
         $expireTimeInSeconds = 30 * 60;
         $api = new Api(
             '',
@@ -724,9 +733,6 @@ class ApiTest extends TestCase
         );
         $uploader = $api->uploader;
         $secureSignature = $uploader->getSecureSignature();
-
-        $file1 = $uploader->fromContent('1', 'text/plain');
-        $file2 = $uploader->fromContent('2', 'text/plain');
 
         try {
             $uploader->createGroup(array($file1, $file2));
