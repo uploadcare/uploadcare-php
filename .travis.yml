@@ -34,6 +34,7 @@ matrix:
 
 before_script:
   - phpenv config-rm xdebug.ini  # disable xdebug
+  - pecl install ext-http
   - COMPOSER_MEMORY_LIMIT=-1 travis_retry composer install
 
 script:
