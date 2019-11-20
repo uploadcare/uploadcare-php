@@ -2,8 +2,15 @@
 
 namespace Uploadcare;
 
+use Exception;
+use Uploadcare\Exceptions\RequestErrorException;
 use Uploadcare\Signature\SignatureInterface;
 
+/**
+ * Class Uploader
+ * @package Uploadcare
+ * @method File|string fromUrl(string $url)
+ */
 class Uploader
 {
     /**
@@ -24,6 +31,11 @@ class Uploader
      * @var SignatureInterface|null
      */
     private $secureSignature = null;
+
+    /**
+     * @var array|null
+     */
+    private $requestData = null;
 
     /**
      * Constructor
@@ -51,7 +63,8 @@ class Uploader
      * Return array of json data
      *
      * @param string $token
-     * @throws \Exception
+     * @throws Exception
+     * @throws RequestErrorException
      * @return object
      */
     public function status($token)
@@ -59,6 +72,8 @@ class Uploader
         $data = array(
             'token' => $token,
         );
+
+        $this->requestData = $data;
 
         $ch = $this->__initRequest('from_url/status', $data);
         $this->__setHeaders($ch);
@@ -92,7 +107,8 @@ class Uploader
      * @param boolean $check_status Wait till upload is complete
      * @param int $timeout Wait $timeout seconds between status checks
      * @param int $max_attempts Check status no more than $max_attempts times
-     * @throws \Exception
+     * @throws Exception
+     * @throws RequestErrorException
      * @return File|string
      */
     private function fromUrlOld($url, $check_status = true, $timeout = 1, $max_attempts = 5)
@@ -115,7 +131,8 @@ class Uploader
      *   'check_status' - Wait till upload is complete
      *   'timeout' - Wait number of seconds between status checks
      *   'max_attempts' - Check status no more than passed number of times
-     * @throws \Exception
+     * @throws Exception
+     * @throws RequestErrorException
      * @return File|string
      */
     private function fromUrlNew($url, $options = array())
@@ -142,6 +159,9 @@ class Uploader
             $requestData['filename'] = $params['filename'];
         }
 
+        $requestData = $this->getSignedUploadsData($requestData);
+        $this->requestData = $requestData;
+
         $ch = $this->__initRequest('from_url', $requestData);
         $this->__setHeaders($ch);
 
@@ -157,10 +177,10 @@ class Uploader
                     $success = true;
                 }
                 if ($data->status == 'error') {
-                    throw new \Exception('Upload is not successful: ' . $data->error);
+                    throw new Exception('Upload is not successful: ' . $data->error);
                 }
                 if ($attempts == $max_attempts && $data->status != 'success') {
-                    throw new \Exception('Max attempts reached, upload is not successful');
+                    throw new Exception('Max attempts reached, upload is not successful');
                 }
                 sleep($timeout);
                 $attempts++;
@@ -180,7 +200,8 @@ class Uploader
      * @param string|bool $mime_type
      * @param string $filename
      * @param string|bool $store
-     * @throws \Exception
+     * @throws Exception
+     * @throws RequestErrorException
      * @return File
      */
     public function fromPath(
@@ -203,11 +224,12 @@ class Uploader
             }
         }
 
-        $data = array(
+        $data = $this->getSignedUploadsData(array(
             'UPLOADCARE_PUB_KEY' => $this->api->getPublicKey(),
             'UPLOADCARE_STORE' => $store,
             'file' => $f,
-        );
+        ));
+        $this->requestData = $data;
 
         $ch = $this->__initRequest('base');
         $this->__setRequestType($ch);
@@ -226,7 +248,8 @@ class Uploader
      * @param string $mime_type
      * @param string $filename
      * @param string|bool $store
-     * @throws \Exception
+     * @throws Exception
+     * @throws RequestErrorException
      * @return File
      */
     public function fromResource(
@@ -253,7 +276,8 @@ class Uploader
      * @param string $mime_type
      * @param string $filename
      * @param string|bool $store
-     * @throws \Exception
+     * @throws Exception
+     * @throws RequestErrorException
      * @return File
      */
     public function fromContent($content, $mime_type, $filename = null, $store = 'auto')
@@ -270,7 +294,8 @@ class Uploader
      * Create group from array of File objects
      *
      * @param array $files
-     * @throws \Exception
+     * @throws Exception
+     * @throws RequestErrorException
      * @return Group
      */
     public function createGroup($files)
@@ -285,6 +310,8 @@ class Uploader
             $data["files[$i]"] = $file->getUrl();
         }
 
+        $data = $this->getSignedUploadsData($data);
+        $this->requestData = $data;
 
         $ch = $this->__initRequest('group');
         $this->__setRequestType($ch);
@@ -297,18 +324,28 @@ class Uploader
     }
 
     /**
-     * Sign data for signed uploads.
+     * Return request data.
+     *
+     * @return array|null
+     */
+    private function getRequestData()
+    {
+        return $this->requestData;
+    }
+
+    /**
+     * Add secure signature to data for signed uploads.
      *
      * @param array|null $data Data to sign.
      * @return array
      */
-    private function signData($data)
+    private function getSignedUploadsData($data)
     {
-        $signature = $this->secureSignature;
-        if ($data && $signature) {
+        $secureSignature = $this->secureSignature;
+        if (!\is_null($data) && !\is_null($secureSignature)) {
             $data = array_merge($data, array(
-                'signature' => $signature->getSignature(),
-                'expire' => $signature->getExpire(),
+                'signature' => $secureSignature->getSignature(),
+                'expire' => $secureSignature->getExpire(),
             ));
         }
 
@@ -324,8 +361,6 @@ class Uploader
      */
     private function __initRequest($type, $data = null)
     {
-        $data = $this->signData($data);
-
         $url = sprintf('https://%s/%s/', $this->host, $type);
 
         if (is_array($data)) {
@@ -379,7 +414,7 @@ class Uploader
      * Throws Exception of not 200 http code
      *
      * @param resource $ch. Curl resource
-     * @throws \Exception
+     * @throws RequestErrorException
      * @return object
      */
     private function __runRequest($ch)
@@ -387,9 +422,10 @@ class Uploader
         $data = curl_exec($ch);
         $ch_info = curl_getinfo($ch);
         if ($data === false) {
-            throw new \Exception(curl_error($ch));
+            throw new RequestErrorException(curl_error($ch), $this->getRequestData());
         } elseif ($ch_info['http_code'] != 200) {
-            throw new \Exception('Unexpected HTTP status code ' . $ch_info['http_code'] . '.' . curl_error($ch));
+            $message = 'Unexpected HTTP status code ' . $ch_info['http_code'] . '.' . curl_error($ch);
+            throw new RequestErrorException($message, $this->getRequestData());
         }
         curl_close($ch);
         return json_decode($data);

@@ -8,7 +8,7 @@ use PHPUnit\Framework\TestCase;
 use Uploadcare\Api;
 use Uploadcare\Exceptions\ThrottledRequestException;
 use Uploadcare\File;
-use Uploadcare\Signature\SecureSignature;
+use Uploadcare\Exceptions\RequestErrorException;
 
 class ApiTest extends TestCase
 {
@@ -591,5 +591,149 @@ class ApiTest extends TestCase
         $actualInputTag = $api->widget->getInputTag($inputName);
 
         $this->assertEquals($expectedInputTag, $actualInputTag);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function testUploaderFromPathSignedUploads()
+    {
+        $expireTimeInSeconds = 30 * 60;
+        $api = new Api(
+            '',
+            UC_SECRET_KEY,
+            null,
+            null,
+            null,
+            null,
+            $expireTimeInSeconds
+        );
+        $uploader = $api->uploader;
+        $secureSignature = $uploader->getSecureSignature();
+
+        try {
+            $uploader->fromPath(dirname(__FILE__).'/test.jpg', 'image/jpeg', 'rename.jpg');
+        } catch (RequestErrorException $exception) {
+            $requestData = $exception->getRequestData();
+            $this->assertEquals($requestData['signature'], $secureSignature->getSignature());
+            $this->assertEquals($requestData['expire'], $secureSignature->getExpire());
+        }
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function testUploaderFromResourceSignedUploads()
+    {
+        $expireTimeInSeconds = 30 * 60;
+        $api = new Api(
+            '',
+            UC_SECRET_KEY,
+            null,
+            null,
+            null,
+            null,
+            $expireTimeInSeconds
+        );
+        $uploader = $api->uploader;
+        $secureSignature = $uploader->getSecureSignature();
+
+        $fp = fopen(dirname(__FILE__).'/test.jpg', 'r');
+
+        try {
+            $uploader->fromResource($fp);
+        } catch (RequestErrorException $exception) {
+            $requestData = $exception->getRequestData();
+            $this->assertEquals($requestData['signature'], $secureSignature->getSignature());
+            $this->assertEquals($requestData['expire'], $secureSignature->getExpire());
+        }
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function testUploaderFromContentSignedUploads()
+    {
+        $expireTimeInSeconds = 30 * 60;
+        $api = new Api(
+            '',
+            UC_SECRET_KEY,
+            null,
+            null,
+            null,
+            null,
+            $expireTimeInSeconds
+        );
+        $uploader = $api->uploader;
+        $secureSignature = $uploader->getSecureSignature();
+
+        $content = "This is some text I want to upload";
+
+        try {
+            $uploader->fromContent($content, 'text/plain', 'test.txt');
+        } catch (RequestErrorException $exception) {
+            $requestData = $exception->getRequestData();
+            $this->assertEquals($requestData['signature'], $secureSignature->getSignature());
+            $this->assertEquals($requestData['expire'], $secureSignature->getExpire());
+        }
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function testUploaderFromUrlSignedUploads()
+    {
+        $expireTimeInSeconds = 30 * 60;
+        $api = new Api(
+            '',
+            UC_SECRET_KEY,
+            null,
+            null,
+            null,
+            null,
+            $expireTimeInSeconds
+        );
+        $uploader = $api->uploader;
+        $secureSignature = $uploader->getSecureSignature();
+
+        $url = 'https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png';
+
+        try {
+            $uploader->fromUrl($url);
+        } catch (RequestErrorException $exception) {
+            $requestData = $exception->getRequestData();
+            $this->assertEquals($requestData['signature'], $secureSignature->getSignature());
+            $this->assertEquals($requestData['expire'], $secureSignature->getExpire());
+        }
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function testUploaderCreateGroupSignedUploads()
+    {
+        $expireTimeInSeconds = 30 * 60;
+        $api = new Api(
+            '',
+            UC_SECRET_KEY,
+            null,
+            null,
+            null,
+            null,
+            $expireTimeInSeconds
+        );
+        $uploader = $api->uploader;
+        $secureSignature = $uploader->getSecureSignature();
+
+        $file1 = $uploader->fromContent('1', 'text/plain');
+        $file2 = $uploader->fromContent('2', 'text/plain');
+
+        try {
+            $uploader->createGroup(array($file1, $file2));
+        } catch (RequestErrorException $exception) {
+            $requestData = $exception->getRequestData();
+            $this->assertEquals($requestData['signature'], $secureSignature->getSignature());
+            $this->assertEquals($requestData['expire'], $secureSignature->getExpire());
+        }
     }
 }

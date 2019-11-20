@@ -2,6 +2,8 @@
 
 namespace Uploadcare;
 
+use Exception;
+
 class Group
 {
     /**
@@ -42,13 +44,13 @@ class Group
      *
      * @param string $uuid_or_url Uploadcare group UUID or CDN URL
      * @param Api $api Uploadcare class instance
-     * @throws \Exception
+     * @throws Exception
      */
     public function __construct($uuid_or_url, Api $api)
     {
         $matches = array();
         if (!preg_match($this->re_uuid, $uuid_or_url, $matches)) {
-            throw new \Exception('UUID not found');
+            throw new Exception('UUID not found');
         }
 
         $this->uuid = $matches['uuid'];
@@ -59,7 +61,7 @@ class Group
     /**
      * Update info.
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function updateInfo()
     {
@@ -126,8 +128,8 @@ class Group
     /**
      * Try to store group.
      *
+     * @throws Exception
      * @return object|null
-     * @throws \Exception
      */
     public function store()
     {
@@ -147,8 +149,8 @@ class Group
     /**
      * Get all Files
      *
+     * @throws Exception
      * @return array
-     * @throws \Exception
      */
     public function getFiles()
     {
