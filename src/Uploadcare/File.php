@@ -2,6 +2,8 @@
 
 namespace Uploadcare;
 
+use Exception;
+
 /**
  * @property array $data File info
  */
@@ -57,13 +59,13 @@ class File
      * @param string $uuid_or_url Uploadcare file UUID or CDN URL
      * @param Api $api Uploadcare class instance
      * @param boolean|array|object $data prepopulate this->cached_data
-     * @throws \Exception
+     * @throws Exception
      */
     public function __construct($uuid_or_url, Api $api, $data = false)
     {
         $matches = array();
         if (!preg_match($this->re_uuid_with_effects, $uuid_or_url, $matches)) {
-            throw new \Exception(sprintf('UUID or CDN URL cannot be found in "%s"', $uuid_or_url));
+            throw new Exception(sprintf('UUID or CDN URL cannot be found in "%s"', $uuid_or_url));
         }
 
         $this->uuid = $matches['uuid'];
@@ -132,7 +134,7 @@ class File
     /**
      * Update File info
      *
-     * @throws \Exception
+     * @throws Exception
      * @return array
      */
     public function updateInfo()
@@ -144,7 +146,7 @@ class File
     /**
      * Store file.
      *
-     * @throws \Exception
+     * @throws Exception
      * @return object
      */
     public function store()
@@ -157,7 +159,7 @@ class File
      *
      * @deprecated 2.0.0 Use createLocalCopy() or createRemoteCopy() instead.
      * @param string $target Name of custom storage.
-     * @throws \Exception
+     * @throws Exception
      * @return File|string
      */
     public function copy($target = null)
@@ -171,7 +173,7 @@ class File
      *
      * @deprecated 2.0.0 Use createRemoteCopy() instead.
      * @param string $target Name of custom storage.
-     * @throws \Exception
+     * @throws Exception
      * @return string
      */
     public function copyTo($target)
@@ -184,7 +186,7 @@ class File
      * Copy file to the Uploadcare storage
      *
      * @param boolean $store MUST be either true or false. true to store files while copying. If stored, files won’t be automatically deleted within 24 hours after copying. false * to not store files, default.
-     * @throws \Exception
+     * @throws Exception
      * @return File|string
      */
     public function createLocalCopy($store = true)
@@ -208,7 +210,7 @@ class File
      * ${uuid} = file UUID
      * ${ext} = file extension, leading dot, e.g. .jpg
      *
-     * @throws \Exception
+     * @throws Exception
      * @return string
      */
     public function createRemoteCopy($target, $make_public = true, $pattern = '${default}')
@@ -219,7 +221,7 @@ class File
     /**
      * Delete file
      *
-     * @throws \Exception
+     * @throws Exception
      * @return object|null
      */
     public function delete()
@@ -322,13 +324,13 @@ class File
      * @param int $height Crop height
      * @param boolean $center Center crop? true or false (default false).
      * @param string|boolean $fill_color Fill color. If nothing is provided just use false (default false).
-     * @throws \Exception
+     * @throws Exception
      * @return File
      */
     public function crop($width, $height, $center = false, $fill_color = false)
     {
         if (!$width || !$height) {
-            throw new \Exception('Please provide both $width and $height');
+            throw new Exception('Please provide both $width and $height');
         }
         $result = clone $this;
         $result->operations[]['crop'] = array(
@@ -347,13 +349,13 @@ class File
      *
      * @param int|boolean $width Resized image width. Provide false if you resize proportionally.
      * @param int|boolean $height Resized image height. Provide false if you resize proportionally.
-     * @throws \Exception
+     * @throws Exception
      * @return File
      */
     public function resize($width = false, $height = false)
     {
         if (!$width && !$height) {
-            throw new \Exception('Please, provide at least $width or $height for resize');
+            throw new Exception('Please, provide at least $width or $height for resize');
         }
         $result = clone $this;
         $result->operations[]['resize'] = array(
@@ -370,13 +372,13 @@ class File
      *
      * @param int $width Preview image width.
      * @param int $height Preview image height.
-     * @throws \Exception
+     * @throws Exception
      * @return File
      */
     public function preview($width, $height)
     {
         if (!$width || !$height) {
-            throw new \Exception('Please, provide both width and height for preview');
+            throw new Exception('Please, provide both width and height for preview');
         }
         $result = clone $this;
         $result->operations[]['preview'] = array(
@@ -392,13 +394,13 @@ class File
      * @param int $width Crop width
      * @param int $height Crop height
      * @param boolean $center Center crop? true or false (default false).
-     * @throws \Exception
+     * @throws Exception
      * @return File
      */
     public function scaleCrop($width, $height, $center = false)
     {
         if (!$width || !$height) {
-            throw new \Exception('Please, provide both $width and $height');
+            throw new Exception('Please, provide both $width and $height');
         }
         $result = clone $this;
         $result->operations[]['scale_crop'] = array(
