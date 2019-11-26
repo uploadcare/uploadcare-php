@@ -17,7 +17,7 @@ class SecureSignature implements SignatureInterface
     private $signature;
 
     /**
-     * @var DateTime
+     * @var int
      */
     private $expire;
 
