@@ -139,7 +139,7 @@ class Api
      * @param string $cdn_host CDN Host
      * @param string $cdn_protocol CDN Protocol
      * @param integer $retry_throttled Retry throttled requests this number of times
-     * @param int $signatureExpireInSeconds Secure signature expire time in seconds for signed uploads.
+     * @param int $lifeTime Secure signature expire time in seconds for signed uploads.
      * @throws Exception
      */
     public function __construct(
@@ -149,7 +149,7 @@ class Api
         $cdn_host = null,
         $cdn_protocol = null,
         $retry_throttled = null,
-        $signatureExpireInSeconds = 0
+        $lifeTime = 0
     ) {
         $this->public_key = $public_key;
         $this->secret_key = $secret_key;
@@ -171,8 +171,8 @@ class Api
         }
 
         $signature = null;
-        if ($signatureExpireInSeconds) {
-            $signature = new SecureSignature($secret_key, $signatureExpireInSeconds);
+        if ($lifeTime) {
+            $signature = new SecureSignature($secret_key, $lifeTime);
         }
 
         $this->widget = new Widget($this, $signature);
