@@ -31,7 +31,7 @@ class SecureSignature implements SignatureInterface
      */
     public function __construct($secretKey, $lifeTime)
     {
-        $dateTime = new DateTime();
+        $now = new DateTime();
         $dateTimeTimestamp = $dateTime->getTimestamp();
         $expireTimestamp = $dateTimeTimestamp + $lifeTime;
 
