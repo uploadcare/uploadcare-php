@@ -3,6 +3,7 @@
 namespace Uploadcare;
 
 use Uploadcare\Exceptions\ThrottledRequestException;
+use Uploadcare\Signature\SecureSignature;
 
 class Api
 {
@@ -137,9 +138,18 @@ class Api
      * @param string $cdn_host CDN Host
      * @param string $cdn_protocol CDN Protocol
      * @param integer $retry_throttled Retry throttled requests this number of times
+     * @param int $lifeTime Secure signature expire time in seconds for signed uploads.
+     * @throws \Exception
      */
-    public function __construct($public_key, $secret_key, $userAgentName = null, $cdn_host = null, $cdn_protocol = null, $retry_throttled = null)
-    {
+    public function __construct(
+        $public_key,
+        $secret_key,
+        $userAgentName = null,
+        $cdn_host = null,
+        $cdn_protocol = null,
+        $retry_throttled = null,
+        $lifeTime = 0
+    ) {
         $this->public_key = $public_key;
         $this->secret_key = $secret_key;
         $this->widget = new Widget($this);
@@ -156,6 +166,14 @@ class Api
         if ($userAgentName !== null) {
             $this->userAgentName = $userAgentName;
         }
+
+        $signature = null;
+        if ($lifeTime) {
+            $signature = new SecureSignature($secret_key, $lifeTime);
+        }
+
+        $this->widget = new Widget($this, $signature);
+        $this->uploader = new Uploader($this, $signature);
     }
 
     /**
