@@ -25,15 +25,15 @@ class SecureSignature implements SignatureInterface
      * SecureSignature constructor.
      *
      * @param string $secretKey
-     * @param int $lifeTime
+     * @param int $lifetime
      *
      * @throws Exception
      */
-    public function __construct($secretKey, $lifeTime)
+    public function __construct($secretKey, $lifetime)
     {
         $now = new DateTime();
-        $dateTimeTimestamp = $dateTime->getTimestamp();
-        $expireTimestamp = $dateTimeTimestamp + $lifeTime;
+        $dateTimeTimestamp = $now->getTimestamp();
+        $expireTimestamp = $dateTimeTimestamp + $lifetime;
 
         $toSign = $secretKey . $expireTimestamp;
 
