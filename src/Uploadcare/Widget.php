@@ -2,6 +2,8 @@
 
 namespace Uploadcare;
 
+use Uploadcare\Signature\SignatureInterface;
+
 class Widget
 {
     /**
@@ -17,13 +19,30 @@ class Widget
     private $api = null;
 
     /**
+     * @var SignatureInterface|null
+     */
+    private $secureSignature = null;
+
+    /**
      * Constructor
      *
      * @param Api $api
+     * @param SignatureInterface $signature
      */
-    public function __construct(Api $api)
+    public function __construct(Api $api, SignatureInterface $signature = null)
     {
         $this->api = $api;
+        $this->secureSignature = $signature;
+    }
+
+    /**
+     * Return secure signature for signed uploads.
+     *
+     * @return SignatureInterface|null
+     */
+    public function getSecureSignature()
+    {
+        return $this->secureSignature;
     }
 
     /**
@@ -87,6 +106,25 @@ EOT;
     }
 
     /**
+     * Enable signed uploads.
+     *
+     * @param array $attributes Widget attributes.
+     * @return array Array with attributes.
+     */
+    private function withSignatureAttributes($attributes)
+    {
+        $signature = $this->secureSignature;
+        if ($signature) {
+            $attributes = array_merge($attributes, array(
+                'data-secure-signature' => $signature->getSignature(),
+                'data-secure-expire' => $signature->getExpire(),
+            ));
+        }
+
+        return $attributes;
+    }
+
+    /**
      * Gets input tag to use with widget
      *
      * @param string $name Input name
@@ -95,6 +133,8 @@ EOT;
      */
     public function getInputTag($name, $attributes = array())
     {
+        $attributes = $this->withSignatureAttributes($attributes);
+
         $to_compile = array();
         foreach ($attributes as $key => $value) {
             $to_compile[] = sprintf('%s="%s"', $key, $value);
