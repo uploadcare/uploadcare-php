@@ -6,14 +6,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
+## [2.3.0-rc] - 2020-01-09
+### Added
+- Support for [signed uploads](https://uploadcare.com/docs/api_reference/upload/signed_uploads/).
+
 ## [2.3.0] - 2019-09-06
 ### Added
 - Allow to specify filename for local uploads
 - Allow to control "autostore" for local uploads
 
 ### Fixed
-- Wrong return type for `createRemoteCopy` method in `API.php`. 
-As result is always casted to `string`, the return type should be `string` 
+- Wrong return type for `createRemoteCopy` method in `API.php`.
+As result is always casted to `string`, the return type should be `string`
 
 ## [2.2.1] - 2018-05-14
 ### Deprecated
