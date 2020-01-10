@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
-## [2.3.0-rc] - 2020-01-09
+## [2.4.0-rc] - 2020-01-09
 ### Added
 - Support for [signed uploads](https://uploadcare.com/docs/api_reference/upload/signed_uploads/).
 
