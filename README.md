@@ -471,6 +471,26 @@ To do that pass a string with domain name as fourth argument to Api constructor:
 $api = new Uploadcare\Api(UC_PUBLIC_KEY, UC_SECRET_KEY, null, "cdn.example.com");
 ```
 
+## Signed uploads
+
+Signed Uploads let you control who and when can upload files to a specified Uploadcare project.
+
+Just pass expire lifetime in seconds:
+
+```php
+$api = new Uploadcare\Api(
+    UC_PUBLIC_KEY,
+    UC_SECRET_KEY,
+    null,
+    "cdn.example.com",
+    null,
+    null,
+    30 * 60 // 30 minutes expire time
+);
+```
+
+See more about it in [documentation](https://uploadcare.com/docs/api_reference/upload/signed_uploads/)
+
 ## Tests
 
 Inside "tests" directory you can find tests for PHP 5.3 and up.

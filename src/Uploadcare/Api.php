@@ -10,7 +10,7 @@ class Api
     /**
      * Uploadcare library version
      */
-    const UPLOADCARE_LIBRARY_VERSION = '2.3.0';
+    const UPLOADCARE_LIBRARY_VERSION = '2.4.0-rc';
 
     /**
      * Uploadcare public key
