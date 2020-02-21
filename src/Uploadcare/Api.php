@@ -56,13 +56,6 @@ class Api
     public $cdn_host = 'ucarecdn.com';
 
     /**
-     * CNAME
-     *
-     * @var string
-     */
-    public $cname;
-
-    /**
      * Uploadcare CDN protocol
      *
      * @var string
@@ -154,7 +147,6 @@ class Api
      * @param string $cdn_protocol CDN Protocol
      * @param integer $retry_throttled Retry throttled requests this number of times
      * @param int $lifetime Secure signature expire time in seconds for signed uploads.
-     * @param string $cname CNAME
      * @param string $cname_secret secret key for authentication token generation
      * @param string $cdn_enc_algo algorithm, one of 'sha256','sha1','md5'
      * @param string $cdn_provider
@@ -168,14 +160,12 @@ class Api
         $cdn_protocol = null,
         $retry_throttled = null,
         $lifetime = 0,
-        $cname = '',
         $cname_secret = '',
         $cdn_enc_algo = 'sha256',
         $cdn_provider = 'akamai'
     ) {
         $this->public_key = $public_key;
         $this->secret_key = $secret_key;
-        $this->cname = $cname;
         $this->widget = new Widget($this);
         $this->uploader = new Uploader($this);
         if ($cdn_host !== null) {
