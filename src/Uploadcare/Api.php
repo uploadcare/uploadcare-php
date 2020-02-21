@@ -4,6 +4,7 @@ namespace Uploadcare;
 
 use Uploadcare\Exceptions\ThrottledRequestException;
 use Uploadcare\Signature\SecureSignature;
+use Uploadcare\Authenticate\AkamaiAuthenticatedUrl;
 
 class Api
 {
@@ -34,6 +35,13 @@ class Api
     private $api_host = 'api.uploadcare.com';
 
     /**
+     * AuthenticatedUrl concrete realization
+     *
+     * @var Authenticate\AuthenticatedUrlInterface
+     */
+    public $authenticatedUrl;
+
+    /**
      * Current request method
      *
      * @var string
@@ -46,6 +54,13 @@ class Api
      * @var string
      */
     public $cdn_host = 'ucarecdn.com';
+
+    /**
+     * CNAME
+     *
+     * @var string
+     */
+    public $cname;
 
     /**
      * Uploadcare CDN protocol
@@ -139,6 +154,10 @@ class Api
      * @param string $cdn_protocol CDN Protocol
      * @param integer $retry_throttled Retry throttled requests this number of times
      * @param int $lifetime Secure signature expire time in seconds for signed uploads.
+     * @param string $cname CNAME
+     * @param string $cname_secret secret key for authentication token generation
+     * @param string $cdn_enc_algo algorithm, one of 'sha256','sha1','md5'
+     * @param string $cdn_provider
      * @throws \Exception
      */
     public function __construct(
@@ -148,10 +167,15 @@ class Api
         $cdn_host = null,
         $cdn_protocol = null,
         $retry_throttled = null,
-        $lifetime = 0
+        $lifetime = 0,
+        $cname = '',
+        $cname_secret = '',
+        $cdn_enc_algo = 'sha256',
+        $cdn_provider = 'akamai'
     ) {
         $this->public_key = $public_key;
         $this->secret_key = $secret_key;
+        $this->cname = $cname;
         $this->widget = new Widget($this);
         $this->uploader = new Uploader($this);
         if ($cdn_host !== null) {
@@ -170,6 +194,12 @@ class Api
         $signature = null;
         if ($lifetime) {
             $signature = new SecureSignature($secret_key, $lifetime);
+        }
+
+        if ($cname_secret) {
+            if ($cdn_provider === 'akamai') {
+                $this->authenticatedUrl = new AkamaiAuthenticatedUrl($cname_secret, $lifetime, $cdn_enc_algo);
+            }
         }
 
         $this->widget = new Widget($this, $signature);

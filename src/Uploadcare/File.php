@@ -235,7 +235,12 @@ class File
      */
     public function getUrl($postfix = null)
     {
-        $url = sprintf('%s%s', $this->api->getCdnUri(), $this->getPath($postfix));
+        if (!empty($this->api->authenticatedUrl)) {
+            $path = $this->api->authenticatedUrl->getAuthenticatedUrl($this->getPath($postfix));
+        } else {
+            $path = $this->getPath($postfix);
+        }
+        $url = sprintf('%s%s', $this->api->getCdnUri(), $path);
         return $url;
     }
 
