@@ -61,7 +61,7 @@ class AkamaiAuthenticatedUrl implements AuthenticatedUrlInterface
         return $url . '?token=' . $m_token . 'hmac=' . $signature;
     }
 
-    protected function h2b($str)
+    protected static function h2b($str)
     {
         $bin = "";
         $i = 0;
