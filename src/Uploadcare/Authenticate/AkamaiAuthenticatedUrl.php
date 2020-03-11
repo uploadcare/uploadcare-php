@@ -26,15 +26,14 @@ class AkamaiAuthenticatedUrl implements AuthenticatedUrlInterface
     /**
      * @var string algorithm, one of 'sha256','sha1','md5'
      */
-    private $algo;
+    private static $algo = 'sha256';
 
     /**
      * @param string $key secret key for authentication token generation
      * @param int $lifetime
-     * @param string $algo algorithm, one of 'sha256','sha1','md5'
      * @throws Exception
      */
-    public function __construct($key, $lifetime, $algo = 'sha256')
+    public function __construct($key, $lifetime)
     {
         if ($lifetime > 3600) {
             throw new \Exception('Lifetime of Access tokens can\'t be longer than one hour for akamai CDN provider');
@@ -46,13 +45,6 @@ class AkamaiAuthenticatedUrl implements AuthenticatedUrlInterface
         $this->expire = $expire;
 
         $this->key = $key;
-
-        if (in_array($algo, array('sha256', 'sha1', 'md5'))) {
-            $this->algo = $algo;
-        } else {
-            throw new \Exception("Invalid algorithm, must be one of 'sha256', 'sha1' or 'md5'");
-        }
-        $this->algo = $algo;
     }
 
     /**
@@ -65,7 +57,7 @@ class AkamaiAuthenticatedUrl implements AuthenticatedUrlInterface
         $m_token = $this->getExprField();
         $m_token .= $this->getAclField($url);
 
-        $signature = hash_hmac($this->getAlgo(), rtrim($m_token, $this->getFieldDelimiter()), $this->h2b($this->getKey()));
+        $signature = hash_hmac(self::$algo, rtrim($m_token, $this->getFieldDelimiter()), $this->h2b($this->getKey()));
         return $url . '?token=' . $m_token . 'hmac=' . $signature;
     }
 
@@ -93,11 +85,6 @@ class AkamaiAuthenticatedUrl implements AuthenticatedUrlInterface
     public function getAclField($url)
     {
         return 'acl=' . $url . $this->fieldDelimiter;
-    }
-
-    public function getAlgo()
-    {
-        return $this->algo;
     }
 
     public function getFieldDelimiter()

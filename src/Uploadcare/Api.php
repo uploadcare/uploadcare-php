@@ -4,7 +4,6 @@ namespace Uploadcare;
 
 use Uploadcare\Exceptions\ThrottledRequestException;
 use Uploadcare\Signature\SecureSignature;
-use Uploadcare\Authenticate\AkamaiAuthenticatedUrl;
 
 class Api
 {
@@ -35,12 +34,19 @@ class Api
     private $api_host = 'api.uploadcare.com';
 
     /**
-     * AuthenticatedUrl concrete realization
-     *
-     * @var Authenticate\AuthenticatedUrlInterface
+     * @var string secret key for authentication token generation
      */
-    public $authenticatedUrl;
+    public $cdn_secret_token = '';
 
+    /**
+     * @var string cdn provider name
+     */
+    public $cdn_provider = 'akamai';
+
+    /**
+     * @var int  access tokens lifetime
+     */
+    public $lifetime = 0;
     /**
      * Current request method
      *
@@ -147,8 +153,7 @@ class Api
      * @param string $cdn_protocol CDN Protocol
      * @param integer $retry_throttled Retry throttled requests this number of times
      * @param int $lifetime Secure signature expire time in seconds for signed uploads.
-     * @param string $cname_secret secret key for authentication token generation
-     * @param string $cdn_enc_algo algorithm, one of 'sha256','sha1','md5'
+     * @param string $cdn_secret_token secret key for authentication token generation
      * @param string $cdn_provider
      * @throws \Exception
      */
@@ -160,8 +165,7 @@ class Api
         $cdn_protocol = null,
         $retry_throttled = null,
         $lifetime = 0,
-        $cname_secret = '',
-        $cdn_enc_algo = 'sha256',
+        $cdn_secret_token = '',
         $cdn_provider = 'akamai'
     ) {
         $this->public_key = $public_key;
@@ -183,14 +187,12 @@ class Api
 
         $signature = null;
         if ($lifetime) {
+            $this->lifetime = $lifetime;
             $signature = new SecureSignature($secret_key, $lifetime);
         }
 
-        if ($cname_secret) {
-            if ($cdn_provider === 'akamai') {
-                $this->authenticatedUrl = new AkamaiAuthenticatedUrl($cname_secret, $lifetime, $cdn_enc_algo);
-            }
-        }
+        $this->cdn_secret_token = $cdn_secret_token;
+        $this->cdn_provider = $cdn_provider;
 
         $this->widget = new Widget($this, $signature);
         $this->uploader = new Uploader($this, $signature);
