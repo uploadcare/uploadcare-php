@@ -13,6 +13,9 @@ use Uploadcare\Exceptions\RequestErrorException;
 class ApiTest extends TestCase
 {
     /** @var Uploadcare\Api */
+    private $authenticatedApi;
+    /** @var Uploadcare\Api */
+
     private $api;
     /** @var \Uploadcare\Api | \PHPUnit_Framework_MockObject_MockObject */
     private $apiMock;
@@ -24,6 +27,7 @@ class ApiTest extends TestCase
     public function setUp()
     {
         $this->api = new Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
+        $this->authenticatedApi = new Api(UC_PUBLIC_KEY, UC_SECRET_KEY, null, UC_CNAME, null, null, 3600, UC_CHAME_SECRET);
         $this->apiMock = $this->getMockBuilder('\Uploadcare\Api')
             ->disableOriginalConstructor()
             ->setMethods(array('request'))
@@ -462,6 +466,29 @@ class ApiTest extends TestCase
         usleep(2000000);
 
         $this->assertEquals($file->data['original_filename'], "test.txt");
+    }
+
+    /**
+     * Test uploading from path
+     */
+    public function testAuthenticatedUrls()
+    {
+        try {
+            $file = $this->authenticatedApi->uploader->fromPath(dirname(__FILE__).'/test.jpg', 'image/jpeg', 'rename.jpg');
+        } catch (Exception $e) {
+            $this->fail('We get an unexpected exception trying to upload from path: '.$e->getMessage());
+        }
+
+        $dargs = array("ssl" => array("verify_peer" => false, "verify_peer_name" => false), "http" => array('timeout' => 60, 'user_agent' => 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.9) Gecko/20071025 Firefox/3.0.0.1'));
+
+        try {
+            $this->assertEquals(
+                file_get_contents($file->getUrl(), false, stream_context_create($dargs)),
+                file_get_contents(dirname(__FILE__).'/test.jpg')
+            );
+        } catch (Exception $e) {
+            $this->fail('Error while compare file downloaded by authenticated url and the original : '.$e->getMessage());
+        }
     }
 
     public function testFileConstructor()
