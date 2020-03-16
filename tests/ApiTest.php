@@ -27,7 +27,7 @@ class ApiTest extends TestCase
     public function setUp()
     {
         $this->api = new Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
-        $this->authenticatedApi = new Api(UC_PUBLIC_KEY, UC_SECRET_KEY, null, UC_CNAME, null, null, 3600, UC_CHAME_SECRET);
+        $this->authenticatedApi = new Api(UC_PUBLIC_KEY, UC_SECRET_KEY, null, UC_CNAME, null, null, 3600, UC_CNAME_SECRET);
         $this->apiMock = $this->getMockBuilder('\Uploadcare\Api')
             ->disableOriginalConstructor()
             ->setMethods(array('request'))
@@ -479,16 +479,25 @@ class ApiTest extends TestCase
             $this->fail('We get an unexpected exception trying to upload from path: '.$e->getMessage());
         }
 
-        $dargs = array("ssl" => array("verify_peer" => false, "verify_peer_name" => false), "http" => array('timeout' => 60, 'user_agent' => 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.9) Gecko/20071025 Firefox/3.0.0.1'));
-
         try {
-            $this->assertEquals(
-                file_get_contents($file->getUrl(), false, stream_context_create($dargs)),
-                file_get_contents(dirname(__FILE__).'/test.jpg')
-            );
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $file->getUrl());
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_HTTPGET, true);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
+            $data = curl_exec($ch);
+            $info = curl_getinfo($ch);
+            $error = curl_error($ch);
+            $errorNum = curl_errno($ch);
+            curl_close($ch);
         } catch (Exception $e) {
             $this->fail('Error while compare file downloaded by authenticated url and the original : '.$e->getMessage());
         }
+
+        $this->assertEquals($errorNum, 0, $error);
+        $this->assertEquals($info['http_code'], 200);
+        $this->assertEquals($info['content_type'], 'image/jpeg');
+        $this->assertEquals($data, file_get_contents(dirname(__FILE__).'/test.jpg'));
     }
 
     public function testFileConstructor()

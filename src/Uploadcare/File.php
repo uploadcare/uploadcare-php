@@ -39,7 +39,7 @@ class File
      *
      * @var Authenticate\AuthenticatedUrlInterface
      */
-    public $authenticatedUrl;
+    private $authenticatedUrl;
 
     /**
      * Operations list
@@ -89,6 +89,8 @@ class File
         if ($api->cdn_secret_token) {
             if ($api->cdn_provider === 'akamai') {
                 $this->authenticatedUrl = new AkamaiAuthenticatedUrl($this->api->cdn_secret_token, $this->api->lifetime);
+            } else {
+                throw new \Exception('Not Implemented');
             }
         }
     }
