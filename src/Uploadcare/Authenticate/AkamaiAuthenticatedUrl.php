@@ -96,4 +96,4 @@ class AkamaiAuthenticatedUrl implements AuthenticatedUrlInterface
     {
         return $this->key;
     }
-
+}
