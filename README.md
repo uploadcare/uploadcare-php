@@ -49,7 +49,7 @@ If you like, define some constants with Public and Secret keys within your proje
 
 ```php
 define('UC_PUBLIC_KEY', 'demopublickey');
-define('UC_SECRET_KEY', 'demoprivatekey');
+define('UC_SECRET_KEY', 'demosecretkey');
 ```
 
 Just include one file to start using Uploadcare inside your PHP project and use namespace `\Uploadcare`:
