@@ -455,6 +455,8 @@ $file->store();
 echo $file->getUrl();
 ```
 
+### Deleting files
+
 If you want to delete file, just call delete() method on Uploadcare\File object.
 
 ```php
