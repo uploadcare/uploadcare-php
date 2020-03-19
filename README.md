@@ -476,7 +476,7 @@ $api = new Uploadcare\Api(UC_PUBLIC_KEY, UC_SECRET_KEY, null, "cdn.example.com")
 
 Signed Uploads let you control who and when can upload files to a specified Uploadcare project.
 
-Just pass expire lifetime in seconds:
+To do so, pass expire lifetime in seconds,
 
 ```php
 $api = new Uploadcare\Api(
@@ -490,7 +490,7 @@ $api = new Uploadcare\Api(
 );
 ```
 
-See more about it in [documentation](https://uploadcare.com/docs/api_reference/upload/signed_uploads/)
+Check out our [documentation](https://uploadcare.com/docs/api_reference/upload/signed_uploads/) to learn more.
 
 ### Tests
 
