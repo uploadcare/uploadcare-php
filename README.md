@@ -21,6 +21,8 @@ Uploadcare PHP integration handles uploads by wrapping Upload and REST APIs.
   * [Custom User-Agent and CDN host](#custom-user-agent-and-cdn-host)
   * [Signed uploads](#signed-uploads)
   * [Tests](#tests)
+* [Useful links](#useful-links)
+
 ## Requirements
 
 - `php5.3+`
@@ -516,3 +518,12 @@ To execute the tests, run the following commands:
 
 [1]: https://uploadcare.com/
 [2]: https://uploadcare.com/documentation/cdn/
+## Useful links
+
+[Uploadcare documentation](https://uploadcare.com/docs/?utm_source=github&utm_medium=referral&utm_campaign=uploadcare-php)  
+[Upload API reference](https://uploadcare.com/api-refs/upload-api/?utm_source=github&utm_medium=referral&utm_campaign=uploadcare-php)  
+[REST API reference](https://uploadcare.com/api-refs/rest-api/?utm_source=github&utm_medium=referral&utm_campaign=uploadcare-php)  
+[Changelog](https://github.com/uploadcare/uploadcare-php/blob/master/CHANGELOG.md)  
+[Contributing guide](https://github.com/uploadcare/.github/blob/master/CONTRIBUTING.md)  
+[Security policy](https://github.com/uploadcare/uploadcare-php/security/policy)  
+[Support](https://github.com/uploadcare/.github/blob/master/SUPPORT.md)  
