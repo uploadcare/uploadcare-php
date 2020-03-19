@@ -1,8 +1,8 @@
 # Uploadcare PHP
 
-This is a set of libraries to work with [Uploadcare][1].
+Uploadcare PHP integration handles uploads by wrapping Upload and REST APIs.
 
-[![Build Status][travis-img]][travis] [![Uploadcare stack on StackShare][stack-img]][stack]
+[![Build Status][travis-img]][travis] [![Uploadcare stack on StackShare][stack-img]][stack]  
 
 [travis-img]: https://api.travis-ci.org/uploadcare/uploadcare-php.svg?branch=master
 [travis]: https://travis-ci.org/uploadcare/uploadcare-php
