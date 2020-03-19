@@ -9,6 +9,18 @@ Uploadcare PHP integration handles uploads by wrapping Upload and REST APIs.
 [stack-img]: http://img.shields.io/badge/tech-stack-0690fa.svg?style=flat
 [stack]: https://stackshare.io/uploadcare/stacks/
 
+* [Requirements](#requirements)
+* [Install](#install)
+* [Usage](#usage)
+  * [Uploadcare Widget and simple example](#uploadcare-widget-and-simple-example)
+  * [API and requests](#api-and-requests)
+  * [Groups](#groups)
+  * [File operations](#file-operations)
+  * [Copy file](#copy-file)
+  * [Uploading files](#uploading-files)
+  * [Custom User-Agent and CDN host](#custom-user-agent-and-cdn-host)
+  * [Signed uploads](#signed-uploads)
+  * [Tests](#tests)
 ## Requirements
 
 - `php5.3+`
@@ -53,7 +65,8 @@ $api = new Uploadcare\Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
 
 This is a main object your should work with. It has everything you need.
 
-## Widgets and simple example
+## Usage
+### Uploadcare Widget and simple example
 
 Let's start with widgets.
 
@@ -109,7 +122,7 @@ Or you can even call a getImgTag method. This will return a prepared <img> tag:
 echo $file->getImgTag('image.jpg', array('alt' => 'Image'));
 ```
 
-## API and requests
+### API and requests
 
 You can do any simple request if you like by calling:
 
@@ -200,7 +213,7 @@ $file->data['size'];
 Trying to access "data" parameter will fire GET request to get all that data once.
 It will be a cached array if you will try to access "data" parameter again.
 
-## Groups
+### Groups
 
 To get list of groups:
 
@@ -230,7 +243,7 @@ To store group:
 $group->store();
 ```
 
-## File operations
+### File operations
 
 Using object of \Uploadcare\File class we can get a URL for the file
 
@@ -331,7 +344,7 @@ The result will be like this one:
 
 [More information on file operations can be found here][2]
 
-## Copy file
+### Copy file
 
 You can copy your file with all file operations like this:
 
@@ -364,7 +377,7 @@ try {
 }
 ```
 
-## Uploading files
+### Uploading files
 Let's have some fun with uploading files.
 
 First of all, we can upload file from a URL. Just use construction below.
@@ -446,7 +459,7 @@ If you want to delete file, just call delete() method on Uploadcare\File object.
 $file->delete();
 ```
 
-## Custom User-Agent and CDN host
+### Custom User-Agent and CDN host
 
 You can customize User-Agent reported during API requests (please do this if you're building a lib that is using uploadcare-php).
 To do that pass a string with user agent name as third argument to Api constructor:
@@ -471,7 +484,7 @@ To do that pass a string with domain name as fourth argument to Api constructor:
 $api = new Uploadcare\Api(UC_PUBLIC_KEY, UC_SECRET_KEY, null, "cdn.example.com");
 ```
 
-## Signed uploads
+### Signed uploads
 
 Signed Uploads let you control who and when can upload files to a specified Uploadcare project.
 
@@ -491,7 +504,7 @@ $api = new Uploadcare\Api(
 
 See more about it in [documentation](https://uploadcare.com/docs/api_reference/upload/signed_uploads/)
 
-## Tests
+### Tests
 
 Inside "tests" directory you can find tests for PHP 5.3 and up.
 
