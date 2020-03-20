@@ -37,7 +37,7 @@ Prior to installing `uploadcare-php` check if you're using the [Composer](getcom
 
 ```js
 "require": {
-    "uploadcare/uploadcare-php": ">=v1.1.0,<2.0"
+    "uploadcare/uploadcare-php": ">=v2.0,<3.0"
 }
 ```
 
