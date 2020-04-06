@@ -474,7 +474,9 @@ class ApiTest extends TestCase
     public function testAuthenticatedUrls()
     {
         try {
-            $file = $this->authenticatedApi->uploader->fromPath(dirname(__FILE__).'/test.jpg', 'image/jpeg', 'rename.jpg');
+            $uploadedfile = $this->api->uploader->fromPath(dirname(__FILE__).'/test.jpg', 'image/jpeg', 'rename.jpg');
+
+            $file = $this->authenticatedApi->getFile($uploadedfile->getUuid());
         } catch (Exception $e) {
             $this->fail('We get an unexpected exception trying to upload from path: '.$e->getMessage());
         }
