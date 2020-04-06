@@ -69,6 +69,9 @@ class AkamaiAuthenticatedUrlTest extends TestCase
         $dateTimeTimestamp = $dateTime->getTimestamp();
         $expireTimestamp = $dateTimeTimestamp + $expireTimeInSeconds;
 
-        $this->assertEquals('exp=' . $expireTimestamp . $authenticatedUrl->getFieldDelimiter(), $authenticatedUrl->getExprField());
+        $getExprField = self::getMethod('getExprField');
+        $getFieldDelimiter = self::getMethod('getFieldDelimiter');
+
+        $this->assertEquals('exp=' . $expireTimestamp . $getFieldDelimiter->invoke($authenticatedUrl), $getExprField->invoke($authenticatedUrl));
     }
 }

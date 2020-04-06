@@ -24,7 +24,7 @@ class AkamaiAuthenticatedUrl implements AuthenticatedUrlInterface
     private $expire;
 
     /**
-     * @var string algorithm, one of 'sha256','sha1','md5'
+     * @var string algorithm
      */
     private static $algo = 'sha256';
 
@@ -72,7 +72,7 @@ class AkamaiAuthenticatedUrl implements AuthenticatedUrlInterface
         return $bin;
     }
 
-    public function getExprField()
+    private function getExprField()
     {
         return 'exp=' . $this->expire . $this->fieldDelimiter;
     }
@@ -82,17 +82,17 @@ class AkamaiAuthenticatedUrl implements AuthenticatedUrlInterface
      *
      * @return string
      */
-    public function getAclField($url)
+    private function getAclField($url)
     {
         return 'acl=' . $url . $this->fieldDelimiter;
     }
 
-    public function getFieldDelimiter()
+    private function getFieldDelimiter()
     {
         return $this->fieldDelimiter;
     }
 
-    public function getKey()
+    private function getKey()
     {
         return $this->key;
     }
