@@ -87,6 +87,10 @@ class File
         }
 
         if ($api->cdn_secret_token) {
+            if(empty($api->cdn_host)) {
+                throw new \Exception('CDN Host must not be emty');
+            }
+
             if ($api->cdn_provider === 'akamai') {
                 $this->authenticatedUrl = new AkamaiAuthenticatedUrl($this->api->cdn_secret_token, $this->api->lifetime);
             } else {
