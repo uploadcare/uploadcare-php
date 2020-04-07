@@ -1,10 +1,10 @@
 # http://php.net/supported-versions.php
 
 language: php
-sudo: false
+os: linux
 dist: xenial
 
-matrix:
+jobs:
   include:
 
     # EOL
