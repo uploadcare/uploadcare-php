@@ -13,6 +13,9 @@ use Uploadcare\Exceptions\RequestErrorException;
 class ApiTest extends TestCase
 {
     /** @var Uploadcare\Api */
+    private $authenticatedApi;
+    /** @var Uploadcare\Api */
+
     private $api;
     /** @var \Uploadcare\Api | \PHPUnit_Framework_MockObject_MockObject */
     private $apiMock;
@@ -24,6 +27,7 @@ class ApiTest extends TestCase
     public function setUp()
     {
         $this->api = new Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
+        $this->authenticatedApi = new Api(UC_PUBLIC_KEY, UC_SECRET_KEY, null, UC_CNAME, null, null, 3600, UC_CNAME_SECRET);
         $this->apiMock = $this->getMockBuilder('\Uploadcare\Api')
             ->disableOriginalConstructor()
             ->setMethods(array('request'))
@@ -462,6 +466,40 @@ class ApiTest extends TestCase
         usleep(2000000);
 
         $this->assertEquals($file->data['original_filename'], "test.txt");
+    }
+
+    /**
+     * Test uploading from path
+     */
+    public function testAuthenticatedUrls()
+    {
+        try {
+            $uploadedfile = $this->api->uploader->fromPath(dirname(__FILE__).'/test.jpg', 'image/jpeg', 'rename.jpg');
+
+            $file = $this->authenticatedApi->getFile($uploadedfile->getUuid());
+        } catch (Exception $e) {
+            $this->fail('We get an unexpected exception trying to upload from path: '.$e->getMessage());
+        }
+
+        try {
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $file->getUrl());
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_HTTPGET, true);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
+            $data = curl_exec($ch);
+            $info = curl_getinfo($ch);
+            $error = curl_error($ch);
+            $errorNum = curl_errno($ch);
+            curl_close($ch);
+        } catch (Exception $e) {
+            $this->fail('Error while compare file downloaded by authenticated url and the original : '.$e->getMessage());
+        }
+
+        $this->assertEquals($errorNum, 0, $error);
+        $this->assertEquals($info['http_code'], 200);
+        $this->assertEquals($info['content_type'], 'image/jpeg');
+        $this->assertEquals($data, file_get_contents(dirname(__FILE__).'/test.jpg'));
     }
 
     public function testFileConstructor()

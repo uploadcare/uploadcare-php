@@ -1,6 +1,7 @@
 <?php
 
 namespace Uploadcare;
+use Uploadcare\Authenticate\AkamaiAuthenticatedUrl;
 
 /**
  * @property array $data File info
@@ -32,6 +33,13 @@ class File
      * @var Api
      */
     private $api = null;
+
+    /**
+     * AuthenticatedUrl concrete realization
+     *
+     * @var Authenticate\AuthenticatedUrlInterface
+     */
+    private $authenticatedUrl;
 
     /**
      * Operations list
@@ -75,6 +83,18 @@ class File
 
             if (array_key_exists('default_effects', $this->cached_data)) {
                 $this->default_effects = $this->cached_data['default_effects'];
+            }
+        }
+
+        if ($api->cdn_secret_token) {
+            if(empty($api->cdn_host)) {
+                throw new \Exception('CDN Host must not be emty');
+            }
+
+            if ($api->cdn_provider === 'akamai') {
+                $this->authenticatedUrl = new AkamaiAuthenticatedUrl($this->api->cdn_secret_token, $this->api->lifetime);
+            } else {
+                throw new \Exception('Not Implemented');
             }
         }
     }
@@ -235,7 +255,12 @@ class File
      */
     public function getUrl($postfix = null)
     {
-        $url = sprintf('%s%s', $this->api->getCdnUri(), $this->getPath($postfix));
+        if (!empty($this->authenticatedUrl)) {
+            $path = $this->authenticatedUrl->getAuthenticatedUrl($this->getPath($postfix));
+        } else {
+            $path = $this->getPath($postfix);
+        }
+        $url = sprintf('%s%s', $this->api->getCdnUri(), $path);
         return $url;
     }
 

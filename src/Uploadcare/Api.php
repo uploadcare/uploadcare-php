@@ -34,6 +34,20 @@ class Api
     private $api_host = 'api.uploadcare.com';
 
     /**
+     * @var string secret key for authentication token generation
+     */
+    public $cdn_secret_token = '';
+
+    /**
+     * @var string cdn provider name
+     */
+    public $cdn_provider = 'akamai';
+
+    /**
+     * @var int  access tokens lifetime
+     */
+    public $lifetime = 0;
+    /**
      * Current request method
      *
      * @var string
@@ -139,6 +153,8 @@ class Api
      * @param string $cdn_protocol CDN Protocol
      * @param integer $retry_throttled Retry throttled requests this number of times
      * @param int $lifetime Secure signature expire time in seconds for signed uploads.
+     * @param string $cdn_secret_token secret key for authentication token generation
+     * @param string $cdn_provider
      * @throws \Exception
      */
     public function __construct(
@@ -148,7 +164,9 @@ class Api
         $cdn_host = null,
         $cdn_protocol = null,
         $retry_throttled = null,
-        $lifetime = 0
+        $lifetime = 0,
+        $cdn_secret_token = '',
+        $cdn_provider = 'akamai'
     ) {
         $this->public_key = $public_key;
         $this->secret_key = $secret_key;
@@ -169,8 +187,12 @@ class Api
 
         $signature = null;
         if ($lifetime) {
+            $this->lifetime = $lifetime;
             $signature = new SecureSignature($secret_key, $lifetime);
         }
+
+        $this->cdn_secret_token = $cdn_secret_token;
+        $this->cdn_provider = $cdn_provider;
 
         $this->widget = new Widget($this, $signature);
         $this->uploader = new Uploader($this, $signature);
