@@ -88,7 +88,7 @@ class File
 
         if ($api->cdn_secret_token) {
             if(empty($api->cdn_host)) {
-                throw new \Exception('CDN Host must not be emty');
+                throw new \Exception('CDN Host must not be empty');
             }
 
             if ($api->cdn_provider === 'akamai') {
