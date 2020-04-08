@@ -175,6 +175,9 @@ class Api
         if ($cdn_host !== null) {
             $this->cdn_host = $cdn_host;
         }
+        if(empty($this->cdn_host)) {
+            throw new \Exception('CDN host must not be empty');
+        }
         if ($cdn_protocol !== null) {
             $this->cdn_protocol = $cdn_protocol;
         }
@@ -194,11 +197,6 @@ class Api
         $this->cdn_secret_token = $cdn_secret_token;
         $this->cdn_provider = $cdn_provider;
 
-        if ($this->cdn_secret_token) {
-            if(empty($this->cdn_host)) {
-                throw new \Exception('CDN host must not be empty');
-            }
-        }
         if ($this->cdn_secret_token) {
             if(empty($this->cdn_provider)) {
                 throw new \Exception('CDN provider must not be empty');
