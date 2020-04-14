@@ -165,7 +165,7 @@ class Api
         $cdn_protocol = null,
         $retry_throttled = null,
         $lifetime = 0,
-        $cdn_secret_token = '',
+        $cdn_secret_token = null,
         $cdn_provider = 'akamai'
     ) {
         $this->public_key = $public_key;
@@ -194,14 +194,11 @@ class Api
             $signature = new SecureSignature($secret_key, $lifetime);
         }
 
-        $this->cdn_secret_token = $cdn_secret_token;
-        $this->cdn_provider = $cdn_provider;
-
-        if ($this->cdn_secret_token) {
-            if(empty($this->cdn_provider)) {
-                throw new \Exception('CDN provider must not be empty');
-            }
+        if(!empty($cdn_secret_token)) {
+            $this->cdn_secret_token = $cdn_secret_token;
         }
+        
+        $this->cdn_provider = $cdn_provider;
 
         $this->widget = new Widget($this, $signature);
         $this->uploader = new Uploader($this, $signature);
