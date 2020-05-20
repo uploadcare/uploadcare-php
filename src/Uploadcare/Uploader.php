@@ -163,9 +163,9 @@ class Uploader
         $this->__setHeaders($ch);
 
         $data = $this->__runRequest($ch);
-        $token = $data->token;
+        $token = isset($data->token) ? $data->token : null;
 
-        if ($check_status) {
+        if ($check_status && $token) {
             $success = false;
             $attempts = 0;
             while (!$success) {
@@ -182,7 +182,7 @@ class Uploader
                 sleep($timeout);
                 $attempts++;
             }
-        } else {
+        } elseif ($token) {
             return $token;
         }
         $uuid = $data->uuid;
