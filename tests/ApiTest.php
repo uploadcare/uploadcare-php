@@ -371,6 +371,52 @@ class ApiTest extends TestCase
     }
 
     /**
+     * Test upload from URL
+     */
+    public function testUploadFromURLWithOptions()
+    {
+        $options = array(
+            'filename' => 'IMG_1.jpg',
+            'store' => true,
+            'check_status' => false,
+            'timeout' => 3,
+            'max_attempts' => 6,
+            'save_URL_duplicates' => true,
+            'check_URL_duplicates' => true,
+        );
+        try {
+            // We have to pre-upload in case file gets deleted from demo account
+            $file = $this->api->uploader->fromUrl('https://www.baysflowers.co.nz/wp-content/uploads/2015/06/IMG_9886_2.jpg', $options);
+        } catch (Exception $e) {
+            $this->fail('We get an unexpected exception trying to upload from url: '.$e->getMessage());
+        }
+        try {
+            $file = $this->api->uploader->fromUrl('https://www.baysflowers.co.nz/wp-content/uploads/2015/06/IMG_9886_2.jpg', $options);
+        } catch (Exception $e) {
+            $this->fail('We get an unexpected exception trying to upload from url: '.$e->getMessage());
+        }
+        $data = $file->__get('data');
+
+        $this->assertArrayHasKey('url', $data);
+        $this->assertArrayHasKey('uuid', $data);
+
+        $failOptions = array(
+            'filename' => 'IMG_1.jpg',
+            'store' => true,
+            'check_status' => false,
+            'timeout' => 3,
+            'max_attempts' => 6,
+        );
+
+        try {
+            $string = $this->api->uploader->fromUrl('https://www.baysflowers.co.nz/wp-content/uploads/2015/06/IMG_9886_2.jpg', $failOptions);
+        } catch (Exception $e) {
+            $this->fail('We get an unexpected exception trying to upload from url: '.$e->getMessage());
+        }
+        $this->assertInternalType('string', $string);
+    }
+
+    /**
      * Test uploading from path
      */
     public function testUploadFromPath()
