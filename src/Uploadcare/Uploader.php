@@ -147,10 +147,13 @@ class Uploader
             '_' => time(),
             'source_url' => $url,
             'pub_key' => $this->api->getPublicKey(),
-            'store' => $params['store'],
         );
-        if ($params['filename']) {
-            $requestData['filename'] = $params['filename'];
+
+        $requestParameters = array('filename', 'store', 'save_URL_duplicates', 'check_URL_duplicates');
+        foreach ($requestParameters as $requestParameter) {
+            if (isset($params[$requestParameter]) && !is_null($requestParameter)) {
+                $requestData[$requestParameter] = $params[$requestParameter];
+            }
         }
 
         $requestData = $this->getSignedUploadsData($requestData);
