@@ -57,9 +57,9 @@ class Uploader
      * Return array of json data
      *
      * @param string $token
-     * @return object
      * @throws \Exception
      * @throws RequestErrorException
+     * @return object
      */
     public function status($token)
     {
@@ -194,9 +194,9 @@ class Uploader
      * @param string|bool $mime_type
      * @param string $filename
      * @param string|bool $store
-     * @return File
      * @throws \Exception
      * @throws RequestErrorException
+     * @return File
      */
     public function fromPath(
         $path,
@@ -242,9 +242,9 @@ class Uploader
      * @param string $mime_type
      * @param string $filename
      * @param string|bool $store
-     * @return File
      * @throws \Exception
      * @throws RequestErrorException
+     * @return File
      */
     public function fromResource(
         $fp,
@@ -270,9 +270,9 @@ class Uploader
      * @param string $mime_type
      * @param string $filename
      * @param string|bool $store
-     * @return File
      * @throws \Exception
      * @throws RequestErrorException
+     * @return File
      */
     public function fromContent($content, $mime_type, $filename = null, $store = 'auto')
     {
@@ -288,9 +288,9 @@ class Uploader
      * Create group from array of File objects
      *
      * @param array $files
-     * @return Group
      * @throws \Exception
      * @throws RequestErrorException
+     * @return Group
      */
     public function createGroup($files)
     {

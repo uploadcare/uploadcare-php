@@ -126,8 +126,8 @@ class Group
     /**
      * Try to store group.
      *
-     * @return object|null
      * @throws \Exception
+     * @return object|null
      */
     public function store()
     {
@@ -147,8 +147,8 @@ class Group
     /**
      * Get all Files
      *
-     * @return array
      * @throws \Exception
+     * @return array
      */
     public function getFiles()
     {

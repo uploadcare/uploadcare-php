@@ -132,8 +132,8 @@ class File
     /**
      * Update File info
      *
-     * @return array
      * @throws \Exception
+     * @return array
      */
     public function updateInfo()
     {
@@ -144,8 +144,8 @@ class File
     /**
      * Store file.
      *
-     * @return object
      * @throws \Exception
+     * @return object
      */
     public function store()
     {
@@ -157,8 +157,8 @@ class File
      *
      * @deprecated 2.0.0 Use createLocalCopy() or createRemoteCopy() instead.
      * @param string $target Name of custom storage.
-     * @return File|string
      * @throws \Exception
+     * @return File|string
      */
     public function copy($target = null)
     {
@@ -171,8 +171,8 @@ class File
      *
      * @deprecated 2.0.0 Use createRemoteCopy() instead.
      * @param string $target Name of custom storage.
-     * @return string
      * @throws \Exception
+     * @return string
      */
     public function copyTo($target)
     {
@@ -184,8 +184,8 @@ class File
      * Copy file to the Uploadcare storage
      *
      * @param boolean $store MUST be either true or false. true to store files while copying. If stored, files won’t be automatically deleted within 24 hours after copying. false * to not store files, default.
-     * @return File|string
      * @throws \Exception
+     * @return File|string
      */
     public function createLocalCopy($store = true)
     {
@@ -208,8 +208,8 @@ class File
      * ${uuid} = file UUID
      * ${ext} = file extension, leading dot, e.g. .jpg
      *
-     * @return string
      * @throws \Exception
+     * @return string
      */
     public function createRemoteCopy($target, $make_public = true, $pattern = '${default}')
     {
@@ -219,8 +219,8 @@ class File
     /**
      * Delete file
      *
-     * @return object|null
      * @throws \Exception
+     * @return object|null
      */
     public function delete()
     {
@@ -322,8 +322,8 @@ class File
      * @param int $height Crop height
      * @param boolean $center Center crop? true or false (default false).
      * @param string|boolean $fill_color Fill color. If nothing is provided just use false (default false).
-     * @return File
      * @throws \Exception
+     * @return File
      */
     public function crop($width, $height, $center = false, $fill_color = false)
     {
@@ -392,8 +392,8 @@ class File
      * @param int $width Crop width
      * @param int $height Crop height
      * @param boolean $center Center crop? true or false (default false).
-     * @return File
      * @throws \Exception
+     * @return File
      */
     public function scaleCrop($width, $height, $center = false)
     {

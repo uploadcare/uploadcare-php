@@ -2,6 +2,7 @@
 
 namespace Uploadcare;
 
+use Uploadcare\Exceptions\RequestErrorException;
 use Uploadcare\Exceptions\ThrottledRequestException;
 use Uploadcare\Signature\SecureSignature;
 
@@ -321,8 +322,8 @@ class Api
      *
      * @param array $options
      * @param bool $reverse
-     * @return array
      * @throws \Exception
+     * @return array
      */
     public function getGroupsChunk($options = array(), $reverse = false)
     {
@@ -340,8 +341,8 @@ class Api
      *
      * @param array $options
      * @param bool $reverse
-     * @return array
      * @throws \Exception
+     * @return array
      */
     public function getFilesChunk($options = array(), $reverse = false)
     {
@@ -359,8 +360,8 @@ class Api
      * Return count of files respecting filters
      *
      * @param array $options
-     * @return mixed
      * @throws \Exception
+     * @return mixed
      */
     public function getFilesCount($options = array())
     {
@@ -375,8 +376,8 @@ class Api
      * Return count of groups respecting filters
      *
      * @param array $options
-     * @return mixed
      * @throws \Exception
+     * @return mixed
      */
     public function getGroupsCount($options = array())
     {
@@ -404,8 +405,8 @@ class Api
      *   - $options['reversed'] - If True then result list will be reversed
      *
      * @param array $options
-     * @return FileIterator
      * @throws \Exception
+     * @return FileIterator
      */
     public function getFileList($options = array())
     {
@@ -447,8 +448,8 @@ class Api
      *   - $options['reversed'] - If True then result list will be reversed
      *
      * @param array $options
-     * @return GroupIterator
      * @throws \Exception
+     * @return GroupIterator
      */
     public function getGroupList($options = array())
     {
@@ -474,8 +475,8 @@ class Api
      * Get group.
      *
      * @param string $uuid_or_url Uploadcare group UUID or CDN URL
-     * @return Group
      * @throws \Exception
+     * @return Group
      */
     public function getGroup($uuid_or_url)
     {
@@ -488,8 +489,8 @@ class Api
      * @deprecated 2.0.0 Use createLocalCopy() or createRemoteCopy() instead.
      * @param string $source CDN URL or file's uuid you need to copy.
      * @param string $target Name of custom storage connected to your project. Uploadcare storage is used if target is absent.
-     * @return File|string
      * @throws \Exception
+     * @return File|string
      */
     public function copyFile($source, $target = null)
     {
@@ -506,8 +507,8 @@ class Api
      *
      * @param string $source CDN URL or file's uuid you need to copy.
      * @param boolean $store MUST be either true or false. true to store files while copying. If stored, files won’t be automatically deleted within 24 hours after copying. false * to not store files, default.
-     * @return File|string
      * @throws \Exception
+     * @return File|string
      */
     public function createLocalCopy($source, $store = true)
     {
@@ -540,8 +541,8 @@ class Api
      * ${uuid} = file UUID
      * ${ext} = file extension, leading dot, e.g. .jpg
      *
-     * @return string
      * @throws \Exception
+     * @return string
      */
     public function createRemoteCopy($source, $target, $make_public = true, $pattern = null)
     {
@@ -565,8 +566,8 @@ class Api
      * Store multiple files
      *
      * @param array $filesUuidArr uploaded file's uuid array you need to store.
-     * @return array with stored files and problems if any
      * @throws \Exception
+     * @return array with stored files and problems if any
      */
     public function storeMultipleFiles($filesUuidArr)
     {
@@ -577,8 +578,8 @@ class Api
      * Delete multiple files
      *
      * @param array $filesUuidArr uploaded or stored file's uuid array you need to delete.
-     * @return array with deleted files and problems if any
      * @throws \Exception
+     * @return array with deleted files and problems if any
      */
     public function deleteMultipleFiles($filesUuidArr)
     {
@@ -590,8 +591,8 @@ class Api
      *
      * @param array $filesUuidArr uploaded file's uuid array you need to process.
      * @param string $request_type request type, could be PUT or DELETE .
-     * @return array with processed files and problems if any
      * @throws \Exception
+     * @return array with processed files and problems if any
      */
     public function __batchProcessFiles($filesUuidArr, $request_type)
     {
@@ -624,8 +625,8 @@ class Api
      *
      * @param array $filesUuidArr uploaded file's uuid array you need to process.
      * @param string $request_type request type, could be PUT or DELETE .
-     * @return array with processed files and problems if any
      * @throws \Exception
+     * @return array with processed files and problems if any
      */
     public function __batchProcessFilesChunk($filesUuidArr, $request_type)
     {
@@ -877,7 +878,8 @@ class Api
      * @deprecated 2.2.1 Use getUserAgentHeader() instead.
      * @return string
      */
-    public function getUserAgent() {
+    public function getUserAgent()
+    {
         Helper::deprecate('2.0.0', '3.0.0', 'Use getUserAgentHeader() instead');
         return $this->getUserAgentHeader();
     }
@@ -981,8 +983,8 @@ class Api
      * Get object of File class by id
      *
      * @param string $uuid_or_url Uploadcare file UUID or CDN URL
-     * @return File
      * @throws \Exception
+     * @return File
      */
     public function getFile($uuid_or_url)
     {
