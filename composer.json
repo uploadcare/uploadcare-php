@@ -17,9 +17,10 @@
     },
     "minimum-stability": "dev",
     "autoload": {
-        "psr-0": {
-            "Uploadcare": "src"
-        }
+        "psr-4": {
+            "Uploadcare\\": "src/Uploadcare/"
+        },
+        "files": [ "src/Functions/json_decode.php" ]
     },
     "keywords": [
         "files",
