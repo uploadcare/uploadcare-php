@@ -4,3 +4,4 @@
 composer.lock
 sample-project/vendor/
 vendor/
+.env
