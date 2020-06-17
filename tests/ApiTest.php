@@ -524,7 +524,7 @@ class ApiTest extends TestCase
                 ->method('request')
                 ->willThrowException($this->getThrottledRequestException());
 
-            $this->apiMock->__preparedRequest('root');
+            $this->apiMock->preparedRequest('root');
         } catch (\Exception $e) {
         }
     }
@@ -537,7 +537,7 @@ class ApiTest extends TestCase
                 ->method('request')
                 ->willThrowException($this->getThrottledRequestException());
 
-            $this->apiMock->__preparedRequest('root', 'GET', array(), array(), $retry_throttled);
+            $this->apiMock->preparedRequest('root', 'GET', array(), array(), $retry_throttled);
         } catch (\Exception $e) {
         }
     }
@@ -549,7 +549,7 @@ class ApiTest extends TestCase
             ->willThrowException($this->getThrottledRequestException());
         $this->setExpectedException('\Uploadcare\Exceptions\ThrottledRequestException');
 
-        $this->apiMock->__preparedRequest('root');
+        $this->apiMock->preparedRequest('root');
     }
 
     private function getThrottledRequestException($wait = 0)

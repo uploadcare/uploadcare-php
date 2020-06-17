@@ -4,7 +4,8 @@ namespace Uploadcare;
 
 use Uploadcare\Exceptions\JsonException;
 
-function jsonDecode($json, $assoc = false, $depth = 512, $options = 0) {
+function jsonDecode($json, $assoc = false, $depth = 512, $options = 0)
+{
     $result = \json_decode($json, $assoc, $depth, $options);
     if (json_last_error() === JSON_ERROR_NONE) {
         return $result;

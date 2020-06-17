@@ -63,7 +63,7 @@ class Group
      */
     public function updateInfo()
     {
-        $this->cached_data = (array)$this->api->__preparedRequest('group', 'GET', array('uuid' => $this->getUuid()));
+        $this->cached_data = (array)$this->api->preparedRequest('group', 'GET', array('uuid' => $this->getUuid()));
     }
 
     public function __get($name)
@@ -131,7 +131,7 @@ class Group
      */
     public function store()
     {
-        return $this->api->__preparedRequest('group_storage', 'POST', array('uuid' => $this->getUuid()));
+        return $this->api->preparedRequest('group_storage', 'POST', array('uuid' => $this->getUuid()));
     }
 
     /**

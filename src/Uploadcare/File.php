@@ -137,7 +137,7 @@ class File
      */
     public function updateInfo()
     {
-        $this->cached_data = (array)$this->api->__preparedRequest('file', 'GET', array('uuid' => $this->uuid));
+        $this->cached_data = (array)$this->api->preparedRequest('file', 'GET', array('uuid' => $this->uuid));
         return $this->cached_data;
     }
 
@@ -149,7 +149,7 @@ class File
      */
     public function store()
     {
-        return $this->api->__preparedRequest('file_storage', 'POST', array('uuid' => $this->uuid));
+        return $this->api->preparedRequest('file_storage', 'POST', array('uuid' => $this->uuid));
     }
 
     /**
@@ -224,7 +224,7 @@ class File
      */
     public function delete()
     {
-        return $this->api->__preparedRequest('file_storage', 'DELETE', array('uuid' => $this->uuid));
+        return $this->api->preparedRequest('file_storage', 'DELETE', array('uuid' => $this->uuid));
     }
 
     /**
