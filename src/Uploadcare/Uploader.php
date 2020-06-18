@@ -7,6 +7,8 @@ use Uploadcare\Signature\SignatureInterface;
 
 class Uploader
 {
+    const PIECE_LENGTH = 8192;
+
     /**
      * Base upload host
      *
@@ -27,9 +29,9 @@ class Uploader
     private $secureSignature = null;
 
     /**
-     * @var array|null
+     * @var array
      */
-    private $requestData = null;
+    private $requestData = array();
 
     /**
      * Constructor
@@ -69,28 +71,37 @@ class Uploader
 
         $this->requestData = $data;
 
-        $ch = $this->__initRequest('from_url/status', $data);
-        $this->__setHeaders($ch);
-        $data = $this->__runRequest($ch);
+        $ch = $this->initRequest('from_url/status', $data);
+        $this->setHeaders($ch);
+        $data = $this->runRequest($ch);
         return $data;
     }
 
+    /**
+     * @param $method
+     * @param $arguments
+     * @return File|string|null
+     */
     public function __call($method, $arguments)
     {
-        if ($method == 'fromUrl') {
-            if (count($arguments) == 1) {
+        if ($method === 'fromUrl') {
+            if (count($arguments) === 1) {
                 return call_user_func_array(array($this,'fromUrlNew'), $arguments);
             }
-            if (count($arguments) == 2) {
+            if (count($arguments) === 2) {
                 if (is_array($arguments[1])) {
                     return call_user_func_array(array($this,'fromUrlNew'), $arguments);
-                } else {
-                    return call_user_func_array(array($this,'fromUrlOld'), $arguments);
                 }
-            } elseif (count($arguments) >= 3) {
+
+                return call_user_func_array(array($this,'fromUrlOld'), $arguments);
+            }
+
+            if (count($arguments) >= 3) {
                 return call_user_func_array(array($this,'fromUrlOld'), $arguments);
             }
         }
+
+        return null;
     }
 
     /**
@@ -156,10 +167,10 @@ class Uploader
         $requestData = $this->getSignedUploadsData($requestData);
         $this->requestData = $requestData;
 
-        $ch = $this->__initRequest('from_url', $requestData);
-        $this->__setHeaders($ch);
+        $ch = $this->initRequest('from_url', $requestData);
+        $this->setHeaders($ch);
 
-        $data = $this->__runRequest($ch);
+        $data = $this->runRequest($ch);
         $token = $data->token;
 
         if ($check_status) {
@@ -167,14 +178,14 @@ class Uploader
             $attempts = 0;
             while (!$success) {
                 $data = $this->status($token);
-                if ($data->status == 'success') {
+                if ($data->status === 'success') {
                     $success = true;
                 }
-                if ($data->status == 'error') {
-                    throw new \Exception('Upload is not successful: ' . $data->error);
+                if ($data->status === 'error') {
+                    throw new \RuntimeException('Upload is not successful: ' . $data->error);
                 }
-                if ($attempts == $max_attempts && $data->status != 'success') {
-                    throw new \Exception('Max attempts reached, upload is not successful');
+                if ($attempts === $max_attempts && $data->status !== 'success') {
+                    throw new \RuntimeException('Max attempts reached, upload is not successful');
                 }
                 sleep($timeout);
                 $attempts++;
@@ -198,39 +209,25 @@ class Uploader
      * @throws RequestErrorException
      * @return File
      */
-    public function fromPath(
-        $path,
-        $mime_type = null,
-        $filename = null,
-        $store = 'auto'
-    ) {
-        if (function_exists('curl_file_create')) {
-            $f = curl_file_create($path, $mime_type, $filename);
-        } else {
-            $f = '@' . $path;
-
-            if ($mime_type) {
-                $f .= ';type=' . $mime_type;
-            }
-
-            if ($filename) {
-                $f .= ';filename=' . $filename;
-            }
+    public function fromPath($path, $mime_type = null, $filename = null, $store = 'auto')
+    {
+        if (!\is_file($path)) {
+            throw new \RuntimeException(\sprintf('Unable to read file from \'%s\'', $path));
         }
 
         $data = $this->getSignedUploadsData(array(
           'UPLOADCARE_PUB_KEY' => $this->api->getPublicKey(),
           'UPLOADCARE_STORE' => $store,
-          'file' => $f,
+          'file' => curlFile($path, $mime_type, $filename),
         ));
         $this->requestData = $data;
 
-        $ch = $this->__initRequest('base');
-        $this->__setRequestType($ch);
-        $this->__setData($ch, $data);
-        $this->__setHeaders($ch);
+        $ch = $this->initRequest('base');
+        $this->setRequestType($ch);
+        $this->setData($ch, $data);
+        $this->setHeaders($ch);
 
-        $data = $this->__runRequest($ch);
+        $data = $this->runRequest($ch);
         $uuid = $data->file;
         return new File($uuid, $this->api);
     }
@@ -246,16 +243,17 @@ class Uploader
      * @throws RequestErrorException
      * @return File
      */
-    public function fromResource(
-        $fp,
-        $mime_type = null,
-        $filename = null,
-        $store = 'auto'
-    ) {
+    public function fromResource($fp, $mime_type = null, $filename = null, $store = 'auto')
+    {
+        if (!\is_resource($fp)) {
+            $message = \sprintf('Expected resource in %s, %s given', __METHOD__, \gettype($fp));
+            throw new \RuntimeException($message);
+        }
+
         $tmpfile = tempnam(sys_get_temp_dir(), 'ucr');
-        $temp = fopen($tmpfile, 'w');
+        $temp = fopen($tmpfile, 'wb');
         while (!feof($fp)) {
-            fwrite($temp, fread($fp, 8192));
+            fwrite($temp, fread($fp, self::PIECE_LENGTH));
         }
         fclose($temp);
         fclose($fp);
@@ -277,7 +275,7 @@ class Uploader
     public function fromContent($content, $mime_type, $filename = null, $store = 'auto')
     {
         $tmpfile = tempnam(sys_get_temp_dir(), 'ucr');
-        $temp = fopen($tmpfile, 'w');
+        $temp = fopen($tmpfile, 'wb');
         fwrite($temp, $content);
         fclose($temp);
 
@@ -307,14 +305,14 @@ class Uploader
         $data = $this->getSignedUploadsData($data);
         $this->requestData = $data;
 
-        $ch = $this->__initRequest('group');
-        $this->__setRequestType($ch);
-        $this->__setData($ch, $data);
-        $this->__setHeaders($ch);
+        $ch = $this->initRequest('group');
+        $this->setRequestType($ch);
+        $this->setData($ch, $data);
+        $this->setHeaders($ch);
 
-        $resp = $this->__runRequest($ch);
-        $group = $this->api->getGroup($resp->id);
-        return $group;
+        $resp = $this->runRequest($ch);
+
+        return $this->api->getGroup($resp->id);
     }
 
     /**
@@ -350,17 +348,17 @@ class Uploader
      * Init upload request and return curl resource
      *
      * @param $type
-     * @param array $data
+     * @param array|null $data
      * @return resource
      */
-    private function __initRequest($type, $data = null)
+    private function initRequest($type, $data = null)
     {
         $url = sprintf('https://%s/%s/', $this->host, $type);
         if (is_array($data)) {
             $url = sprintf('%s?%s', $url, http_build_query($data));
         }
-        $ch = curl_init($url);
-        return $ch;
+
+        return curl_init($url);
     }
 
     /**
@@ -369,7 +367,7 @@ class Uploader
      * @param resource $ch
      * @return void
      */
-    private function __setRequestType($ch)
+    private function setRequestType($ch)
     {
         curl_setopt($ch, CURLOPT_POST, true);
     }
@@ -380,7 +378,7 @@ class Uploader
      * @param resource $ch. Curl resource.
      * @return void
      */
-    private function __setHeaders($ch)
+    private function setHeaders($ch)
     {
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array(
@@ -395,7 +393,7 @@ class Uploader
      * @param array $data
      * @return void
      */
-    private function __setData($ch, $data = array())
+    private function setData($ch, $data = array())
     {
         curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
     }
@@ -408,17 +406,24 @@ class Uploader
      * @throws RequestErrorException
      * @return object
      */
-    private function __runRequest($ch)
+    private function runRequest($ch)
     {
         $data = curl_exec($ch);
         $ch_info = curl_getinfo($ch);
+        if (!\array_key_exists('http_code', $ch_info)) {
+            throw new RequestErrorException('Unexpected response: no \'http_code\' key in response', $this->getRequestData());
+        }
+
         if ($data === false) {
             throw new RequestErrorException(curl_error($ch), $this->getRequestData());
-        } elseif ($ch_info['http_code'] != 200) {
+        }
+
+        if ($ch_info['http_code'] !== 200) {
             $message = 'Unexpected HTTP status code ' . $ch_info['http_code'] . '.' . curl_error($ch);
             throw new RequestErrorException($message, $this->getRequestData());
         }
         curl_close($ch);
-        return json_decode($data);
+
+        return jsonDecode($data, false);
     }
 }
