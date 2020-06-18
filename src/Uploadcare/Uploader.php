@@ -8,6 +8,8 @@ use Uploadcare\Signature\SignatureInterface;
 class Uploader
 {
     const PIECE_LENGTH = 8192;
+    const UPLOADCARE_PUB_KEY_KEY = 'UPLOADCARE_PUB_KEY';
+    const UPLOADCARE_STORE_KEY = 'UPLOADCARE_STORE';
 
     /**
      * Base upload host
@@ -42,6 +44,11 @@ class Uploader
     {
         $this->api = $api;
         $this->secureSignature = $signature;
+    }
+
+    public function getApi()
+    {
+        return $this->api;
     }
 
     /**
@@ -216,8 +223,8 @@ class Uploader
         }
 
         $data = $this->getSignedUploadsData(array(
-          'UPLOADCARE_PUB_KEY' => $this->api->getPublicKey(),
-          'UPLOADCARE_STORE' => $store,
+          self::UPLOADCARE_PUB_KEY_KEY => $this->api->getPublicKey(),
+          self::UPLOADCARE_STORE_KEY => $store,
           'file' => curlFile($path, $mime_type, $filename),
         ));
         $this->requestData = $data;
@@ -230,6 +237,21 @@ class Uploader
         $data = $this->runRequest($ch);
         $uuid = $data->file;
         return new File($uuid, $this->api);
+    }
+
+    public function multipartUpload($path, $mime_type = null, $filename = null, $store = 'auto')
+    {
+        if (!\is_file($path)) {
+            throw new \RuntimeException(\sprintf('Unable to read file from \'%s\'', $path));
+        }
+
+        $requestData = $this->getSignedUploadsData(array(
+            self::UPLOADCARE_PUB_KEY_KEY => $this->api->getPublicKey(),
+            self::UPLOADCARE_STORE_KEY => $store,
+        ));
+
+        $multipartUploader = new MultipartUpload($requestData, $this->host, $this);
+        return $multipartUploader->uploadByParts($path, $mime_type, $filename);
     }
 
     /**
@@ -357,8 +379,11 @@ class Uploader
         if (is_array($data)) {
             $url = sprintf('%s?%s', $url, http_build_query($data));
         }
+        if (!\is_resource($channel = \curl_init($url))) {
+            throw new \RuntimeException('Unable to initialize request');
+        }
 
-        return curl_init($url);
+        return $channel;
     }
 
     /**
@@ -406,7 +431,7 @@ class Uploader
      * @throws RequestErrorException
      * @return object
      */
-    private function runRequest($ch)
+    public function runRequest($ch)
     {
         $data = curl_exec($ch);
         $ch_info = curl_getinfo($ch);
