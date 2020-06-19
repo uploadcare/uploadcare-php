@@ -3,6 +3,7 @@
 namespace Uploadcare;
 
 use Uploadcare\DataClass\MultipartStartResponse;
+use Uploadcare\Exceptions\RequestErrorException;
 
 /**
  * Multipart Upload.
@@ -33,6 +34,8 @@ class MultipartUpload
      */
     private $uploader;
 
+    private $boundary;
+
     /**
      * @param array    $requestData
      * @param string   $baseUrl
@@ -43,6 +46,7 @@ class MultipartUpload
         $this->requestData = $requestData;
         $this->baseUrl = $baseUrl;
         $this->uploader = $uploader;
+        $this->boundary = \uniqid('-------------------', false);
     }
 
     /**
@@ -66,8 +70,7 @@ class MultipartUpload
             $filename = Uuid::create();
         }
 
-        $size = \filesize($path);
-        $startData = $this->startRequest($this->startRequestData($size, $mimeType, $filename));
+        $startData = $this->startRequest($this->startRequestData(\filesize($path), $mimeType, $filename));
 
         $this->uploadParts($startData, $path);
         $finish = $this->finishUpload($startData);
@@ -109,7 +112,9 @@ class MultipartUpload
      */
     protected function finishUpload(MultipartStartResponse $response)
     {
-        $ch = $this->initRequest('multipart/complete', array('Content-Type: multipart/form-data'));
+        $ch = $this->initRequest('multipart/complete/', array(
+            sprintf('Content-Type: multipart/form-data; boundary=%s', $this->boundary),
+        ));
         $this->setCurlOptions(array(
             CURLOPT_POST => true,
             CURLOPT_POSTFIELDS => array('uuid' => $response->getUuid()),
@@ -127,10 +132,13 @@ class MultipartUpload
      */
     protected function startRequest(array $data)
     {
-        $ch = $this->initRequest('multipart/start', array('Content-Type: multipart/form-data'));
+        $ch = $this->initRequest('multipart/start/', array(
+            sprintf('Content-Type: multipart/form-data; boundary=%s', $this->boundary),
+        ));
+
         $this->setCurlOptions(array(
+            CURLOPT_POST => true,           // REQUIRED on first place!
             CURLOPT_POSTFIELDS => $data,
-            CURLOPT_POST => true,
         ), $ch);
 
         $result = $this->uploader->runRequest($ch);
@@ -166,12 +174,23 @@ class MultipartUpload
         if (!$channel) {
             throw new \RuntimeException('Unable to initialize request');
         }
-        $headers = \array_merge(array('User-Agent: '.$this->uploader->getApi()->getUserAgentHeader()), $headers);
+        $headers = \array_merge(array(
+            'User-Agent: '.$this->uploader->getApi()->getUserAgentHeader(),
+        ), $headers);
 
         $options = array(
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_HTTPHEADER => $headers,
         );
+
+        /**
+         * Use CURL_DEEP_DEBUG constant as resource definition for debug purposes.
+         * `\define('CURL_DEEP_DEBUG', \fopen('php://stdout', 'w')))` for example
+         */
+        if (\defined('CURL_DEEP_DEBUG')) {
+            $options[CURLOPT_VERBOSE] = true;
+            $options[CURLOPT_STDERR] = CURL_DEEP_DEBUG;
+        }
 
         $this->setCurlOptions($options, $channel);
 
@@ -182,8 +201,10 @@ class MultipartUpload
      * @param array    $opts
      * @param resource $ch   Curl resource
      */
-    private function setCurlOptions(array $opts, $ch)
+    private function setCurlOptions(array $opts, &$ch)
     {
-        \curl_setopt_array($ch, $opts);
+        foreach ($opts as $opt => $value) {
+            \curl_setopt($ch, $opt, $value);
+        }
     }
 }

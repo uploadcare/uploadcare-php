@@ -245,12 +245,12 @@ class Uploader
             throw new \RuntimeException(\sprintf('Unable to read file from \'%s\'', $path));
         }
 
-        $requestData = $this->getSignedUploadsData(array(
+        $this->requestData = $this->getSignedUploadsData(array(
             self::UPLOADCARE_PUB_KEY_KEY => $this->api->getPublicKey(),
             self::UPLOADCARE_STORE_KEY => $store,
         ));
 
-        $multipartUploader = new MultipartUpload($requestData, $this->host, $this);
+        $multipartUploader = new MultipartUpload($this->requestData, $this->host, $this);
         return $multipartUploader->uploadByParts($path, $mime_type, $filename);
     }
 
