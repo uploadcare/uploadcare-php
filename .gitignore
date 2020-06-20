@@ -6,3 +6,5 @@ sample-project/vendor/
 vendor/
 .env
 tests/output
+run-tests.sh
+
