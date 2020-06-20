@@ -14,8 +14,7 @@
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^2.2",
         "phpunit/phpunit": "^4.8",
-        "squizlabs/php_codesniffer": ">=2.9.1,<4",
-        "symfony/var-dumper": "3.4.x-dev"
+        "squizlabs/php_codesniffer": ">=2.9.1,<4"
     },
     "minimum-stability": "dev",
     "autoload": {
