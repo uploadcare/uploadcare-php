@@ -29,6 +29,11 @@ class MultipartStartResponse
         return $item;
     }
 
+    private function __construct()
+    {
+        // Only self::create, no direct creation
+    }
+
     /**
      * @var array|MultipartPreSignedUrl[]
      */

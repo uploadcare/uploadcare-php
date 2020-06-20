@@ -239,9 +239,17 @@ class Uploader
         return new File($uuid, $this->api);
     }
 
+    /**
+     * @param $path
+     * @param null $mime_type
+     * @param null $filename
+     * @param string $store
+     * @return File
+     * @throws RequestErrorException
+     */
     public function multipartUpload($path, $mime_type = null, $filename = null, $store = 'auto')
     {
-        if (!\is_file($path)) {
+        if (!\is_file($path) || !\is_readable($path)) {
             throw new \RuntimeException(\sprintf('Unable to read file from \'%s\'', $path));
         }
 

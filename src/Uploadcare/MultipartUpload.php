@@ -60,7 +60,7 @@ class MultipartUpload
      */
     public function uploadByParts($path, $mimeType = null, $filename = null)
     {
-        if (!\is_file($path)) {
+        if (!\is_file($path) || !\is_readable($path)) {
             throw new \RuntimeException(\sprintf('Unable to read file from \'%s\'', $path));
         }
         if ($mimeType === null) {
@@ -71,7 +71,6 @@ class MultipartUpload
         }
 
         $startData = $this->startRequest($this->startRequestData(\filesize($path), $mimeType, $filename));
-
         $this->uploadParts($startData, $path);
         $finish = $this->finishUpload($startData);
 
@@ -79,15 +78,56 @@ class MultipartUpload
     }
 
     /**
-     * @param MultipartStartResponse $response
-     * @param $path
+     * @param array $data
+     * @param bool  $raw If true, the original response object will be returned.
+     *
+     * @return MultipartStartResponse|object
+     *
+     * @throws Exceptions\RequestErrorException
+     */
+    protected function startRequest(array $data, $raw = false)
+    {
+        $ch = $this->initRequest('multipart/start/', array(
+            sprintf('Content-Type: multipart/form-data; boundary=%s', $this->boundary),
+        ));
+
+        $this->setCurlOptions(array(
+            CURLOPT_POST => true,           // REQUIRED on first place!
+            CURLOPT_POSTFIELDS => $data,
+        ), $ch);
+
+        $result = $this->uploader->runRequest($ch);
+
+        return $raw ? $result : MultipartStartResponse::create($result);
+    }
+
+    /**
+     * @param int    $size
+     * @param string $mimeType
+     * @param string $filename
+     *
+     * @return array
+     */
+    protected function startRequestData($size, $mimeType, $filename)
+    {
+        return \array_merge(array(
+            'filename' => $filename,
+            'size' => $size,
+            'content_type' => $mimeType,
+        ), $this->requestData);
+    }
+
+    /**
+     * @param MultipartStartResponse $response  Response of start request.
+     * @param string                 $path      Path to local file.
+     * @throws RequestErrorException
      */
     protected function uploadParts(MultipartStartResponse $response, $path)
     {
-        $res = \fopen($path, 'rb');
-        if ($res === false) {
+        if (!\is_file($path) || !\is_readable($path)) {
             throw new \RuntimeException(\sprintf('Unable to open \'%s\' file for reading', $path));
         }
+        $res = \fopen($path, 'rb');
 
         foreach ($response->getParts() as $signedUrl) {
             $part = \fread($res, self::PART_SIZE);
@@ -100,6 +140,8 @@ class MultipartUpload
                 CURLOPT_CUSTOMREQUEST => 'PUT',
                 CURLOPT_POSTFIELDS => $part,
             ), $ch);
+
+            $this->uploader->runRequest($ch);
         }
     }
 
@@ -117,49 +159,13 @@ class MultipartUpload
         ));
         $this->setCurlOptions(array(
             CURLOPT_POST => true,
-            CURLOPT_POSTFIELDS => array('uuid' => $response->getUuid()),
+            CURLOPT_POSTFIELDS => array(
+                Uploader::UPLOADCARE_PUB_KEY_KEY => $this->uploader->getApi()->getPublicKey(),
+                'uuid' => $response->getUuid()
+            ),
         ), $ch);
 
         return $this->uploader->runRequest($ch);
-    }
-
-    /**
-     * @param array $data
-     *
-     * @return MultipartStartResponse
-     *
-     * @throws Exceptions\RequestErrorException
-     */
-    protected function startRequest(array $data)
-    {
-        $ch = $this->initRequest('multipart/start/', array(
-            sprintf('Content-Type: multipart/form-data; boundary=%s', $this->boundary),
-        ));
-
-        $this->setCurlOptions(array(
-            CURLOPT_POST => true,           // REQUIRED on first place!
-            CURLOPT_POSTFIELDS => $data,
-        ), $ch);
-
-        $result = $this->uploader->runRequest($ch);
-
-        return MultipartStartResponse::create($result);
-    }
-
-    /**
-     * @param int    $size
-     * @param string $mimeType
-     * @param string $filename
-     *
-     * @return array
-     */
-    protected function startRequestData($size, $mimeType, $filename)
-    {
-        return \array_merge(array(
-            'filename' => $filename,
-            'size' => $size,
-            'content_type' => $mimeType,
-        ), $this->requestData);
     }
 
     /**

@@ -8,6 +8,7 @@ use Uploadcare\Api;
 use Uploadcare\DataClass\MultipartStartResponse;
 use Uploadcare\MultipartUpload;
 use Uploadcare\Uploader;
+use Uploadcare\Uuid;
 
 class MultipartUploadTest extends TestCase
 {
@@ -49,53 +50,191 @@ class MultipartUploadTest extends TestCase
         return $host->getValue($this->api->uploader);
     }
 
-    public function testStartRequestDataMethod()
+    /**
+     * @param mixed $response
+     * @return \PHPUnit_Framework_MockObject_MockObject|Uploader
+     */
+    protected function getMockUploader($response)
     {
-        $requestData = $this->getSignedUploadArray();
-        $mu = new MultipartUpload($requestData, $this->getHost(), $this->api->uploader);
+        $uploader = $this
+            ->getMockBuilder('Uploadcare\\Uploader')
+            ->setConstructorArgs(array($this->api))
+            ->setMethods(array('runRequest'))
+            ->getMock();
+        $uploader->method('runRequest')
+            ->willReturn($response);
 
+        return $uploader;
+    }
+
+    /**
+     * @return \PHPUnit_Framework_MockObject_MockObject|Uploader
+     */
+    protected function getCurlFromMockUploader()
+    {
+        $uploader = $this
+            ->getMockBuilder('Uploadcare\\Uploader')
+            ->setConstructorArgs(array($this->api))
+            ->setMethods(array('runRequest'))
+            ->getMock();
+        $uploader->method('runRequest')
+            ->willReturnArgument(0);
+
+        return $uploader;
+    }
+
+    /**
+     * @param string $path
+     * @param string $mimeType
+     * @param string $name
+     * @throws \ReflectionException
+     * @return array
+     */
+    protected function getStartUploadParams($path, $mimeType, $name)
+    {
+        $mu = new MultipartUpload($this->getSignedUploadArray(), $this->getHost(), $this->api->uploader);
         $muReflection = new ReflectionObject($mu);
         $startRequestData = $muReflection->getMethod('startRequestData');
         $startRequestData->setAccessible(true);
 
+        return $startRequestData->invokeArgs($mu, array(\filesize($path), $mimeType, $name));
+    }
+
+    public function testStartRequestDataMethod()
+    {
         $path = __DIR__ . '/test.jpg';
-        $size = \filesize($path);
         $mimeType = 'image/jpeg';
 
-        $result = $startRequestData->invokeArgs($mu, array($size, $mimeType, 'test.jpg'));
+        $result = $this->getStartUploadParams($path, $mimeType, 'test.jpg');
         $this->assertArrayHasKey('filename', $result);
         $this->assertEquals('test.jpg', $result['filename']);
         $this->assertArrayHasKey(Uploader::UPLOADCARE_PUB_KEY_KEY, $result);
     }
 
-    /**
-     * @todo Refactor this. Works only with valid keys, not with demo, and you should check `startRequestData`
-     *       method for valid data and then mock Uploader::runRequest for return tests/data/startResponse.json contents.
-     *
-     * @throws \ReflectionException
-     */
-    public function testRealStartRequest()
+    public function testStartRequestWithNormalData()
     {
-//        $mu = new MultipartUpload($this->getSignedUploadArray(), $this->getHost(), $this->api->uploader);
-//        $muReflection = new ReflectionObject($mu);
-//        $startRequestData = $muReflection->getMethod('startRequestData');
-//        $startRequestData->setAccessible(true);
-//
-//        $path = __DIR__ . '/24hr-NewYork-5K.heic';
-//        $size = \filesize($path);
-//        $mimeType = 'image/heic-sequence';
-//        $data = $startRequestData->invokeArgs($mu, array($size, $mimeType, '24hr-NewYork-5K.heic'));
-//
-//        $startRequest = $muReflection->getMethod('startRequest');
-//        $startRequest->setAccessible(true);
-//        /** @var MultipartStartResponse $result */
-//        $result = $startRequest->invokeArgs($mu, array($data));
-//
-//        $this->assertInstanceOf('Uploadcare\\DataClass\\MultipartStartResponse', $result);
-//        $this->assertNotEmpty($result->getUuid());
-//        $this->assertNotEmpty($result->getParts());
-//
-//        $parts = $result->getParts();
-//        $this->assertInstanceOf('Uploadcare\\DataClass\\MultipartPreSignedUrl', $parts[0]);
+        $validResponse = \file_get_contents(__DIR__ . '/data/startResponse.json');
+        $uploader = $this->getMockUploader(\Uploadcare\jsonDecode($validResponse));
+
+        $path = __DIR__ . '/test.jpg';
+        $mimeType = 'image/jpeg';
+        $data = $this->getStartUploadParams($path, $mimeType, 'test.jpeg');
+
+        $mu = new MultipartUpload($this->getSignedUploadArray(), $this->getHost(), $uploader);
+        $muReflection = new ReflectionObject($mu);
+
+        $startRequest = $muReflection->getMethod('startRequest');
+        $startRequest->setAccessible(true);
+        /** @var MultipartStartResponse $result */
+        $result = $startRequest->invokeArgs($mu, array($data));
+
+        $this->assertInstanceOf('Uploadcare\\DataClass\\MultipartStartResponse', $result);
+        $this->assertNotEmpty($result->getUuid());
+        $this->assertNotEmpty($result->getParts());
+
+        $parts = $result->getParts();
+        $this->assertInstanceOf('Uploadcare\\DataClass\\MultipartPreSignedUrl', $parts[0]);
+    }
+
+    public function testInspectRequestParameters()
+    {
+        $uploader = $this->getCurlFromMockUploader();
+        $data = $this->getStartUploadParams(__DIR__ . '/test.jpg', 'image/jpeg', 'test.jpeg');
+
+        $mu = new MultipartUpload($this->getSignedUploadArray(), $this->getHost(), $uploader);
+        $muReflection = new ReflectionObject($mu);
+        $startRequest = $muReflection->getMethod('startRequest');
+        $startRequest->setAccessible(true);
+
+        $result = $startRequest->invokeArgs($mu, array($data, true));
+        $this->assertTrue(\is_resource($result));
+
+        \curl_setopt($result, CURLOPT_URL, 'https://httpbin.org/post');
+        $response = \Uploadcare\jsonDecode(\curl_exec($result), true);
+
+        $this->assertArrayHasKey('form', $response);
+        $formData = $response['form'];
+        $this->assertArrayHasKey(Uploader::UPLOADCARE_PUB_KEY_KEY, $formData);
+        $this->assertArrayHasKey(Uploader::UPLOADCARE_STORE_KEY, $formData);
+
+        $this->assertArrayHasKey('headers', $response);
+        $headersData = $response['headers'];
+        $this->assertArrayHasKey('Content-Type', $headersData);
+        $this->assertStringStartsWith('multipart/form-data; boundary=', $headersData['Content-Type']);
+    }
+
+    public function testFinishUploadMethod()
+    {
+        $response = MultipartStartResponse::create((object) array(
+            'uuid' => Uuid::create(),
+            'parts' => array('https://example.com'),
+        ));
+        $uploader = $this->getCurlFromMockUploader();
+        $mu = new MultipartUpload($this->getSignedUploadArray(), $this->getHost(), $uploader);
+        $muReflection = new ReflectionObject($mu);
+        $finishUpload = $muReflection->getMethod('finishUpload');
+        $finishUpload->setAccessible(true);
+
+        $result = $finishUpload->invokeArgs($mu, array($response));
+        $this->assertTrue(\is_resource($result));
+        \curl_setopt($result, CURLOPT_URL, 'https://httpbin.org/post');
+        $response = \Uploadcare\jsonDecode(\curl_exec($result), true);
+
+        $this->assertArrayHasKey('form', $response);
+        $formData = $response['form'];
+        $this->assertArrayHasKey(Uploader::UPLOADCARE_PUB_KEY_KEY, $formData);
+
+        $this->assertArrayHasKey('headers', $response);
+        $headersData = $response['headers'];
+        $this->assertArrayHasKey('Content-Type', $headersData);
+        $this->assertStringStartsWith('multipart/form-data; boundary=', $headersData['Content-Type']);
+    }
+
+    public function testUploadPartsWithNoFile()
+    {
+        $this->setExpectedException('RuntimeException');
+
+        $response = MultipartStartResponse::create((object) array(
+            'uuid' => Uuid::create(),
+            'parts' => array('https://example.com'),
+        ));
+        $uploader = $this->getCurlFromMockUploader();
+        $mu = new MultipartUpload($this->getSignedUploadArray(), $this->getHost(), $uploader);
+        $muReflection = new ReflectionObject($mu);
+
+        $uploadParts = $muReflection->getMethod('uploadParts');
+        $uploadParts->setAccessible(true);
+        $uploadParts->invokeArgs($mu, array($response, '/file/does/not/exists'));
+    }
+
+    public function testCallsInUploaderParts()
+    {
+        $response = MultipartStartResponse::create((object) array(
+            'uuid' => Uuid::create(),
+            'parts' => array('https://example.com'),
+        ));
+        $uploader = $this->getCurlFromMockUploader();
+        $uploader->expects($this->once())
+            ->method('runRequest');
+
+        $mu = new MultipartUpload($this->getSignedUploadArray(), $this->getHost(), $uploader);
+        $muReflection = new ReflectionObject($mu);
+
+        $uploadParts = $muReflection->getMethod('uploadParts');
+        $uploadParts->setAccessible(true);
+        $uploadParts->invokeArgs($mu, array($response, __DIR__ . '/test.jpg'));
+    }
+
+    public function testUploadByPartsWithNoFile()
+    {
+        $this->setExpectedException('RuntimeException');
+        $mu = new MultipartUpload($this->getSignedUploadArray(), $this->getHost(), $this->api->uploader);
+        $mu->uploadByParts('/file/does/not/exists');
+    }
+
+    public function testUploaderMultipartUploadWithNoFile()
+    {
+        $this->setExpectedException('RuntimeException');
+        $this->api->uploader->multipartUpload('/file/does/not/exists');
     }
 }
