@@ -141,7 +141,7 @@ class MultipartUpload
                 CURLOPT_POSTFIELDS => $part,
             ), $ch);
 
-            $this->uploader->runRequest($ch);
+            $this->uploader->runRequest($ch, false);
         }
     }
 
@@ -176,7 +176,12 @@ class MultipartUpload
      */
     protected function initRequest($path, array $headers = array())
     {
-        $channel = \curl_init(\sprintf('https://%s/%s', $this->baseUrl, \ltrim($path, '/')));
+        $url = \sprintf('https://%s/%s', $this->baseUrl, \ltrim($path, '/'));
+        if (\strpos($path, 'http') === 0) {
+            $url = $path;
+        }
+
+        $channel = \curl_init($url);
         if (!$channel) {
             throw new \RuntimeException('Unable to initialize request');
         }

@@ -436,10 +436,11 @@ class Uploader
      * Throws Exception of not 200 http code
      *
      * @param resource $ch. Curl resource
+     * @param bool     $decode Whether convert response to object
      * @throws RequestErrorException
-     * @return object
+     * @return object|string
      */
-    public function runRequest($ch)
+    public function runRequest($ch, $decode = true)
     {
         $data = curl_exec($ch);
         $ch_info = curl_getinfo($ch);
@@ -457,6 +458,6 @@ class Uploader
         }
         curl_close($ch);
 
-        return jsonDecode($data, false);
+        return $decode ? jsonDecode($data, false) : $data;
     }
 }
