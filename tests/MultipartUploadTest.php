@@ -4,9 +4,11 @@ namespace Tests;
 
 use PHPUnit\Framework\TestCase;
 use ReflectionObject;
+use Uploadcare\AbstractUploader;
 use Uploadcare\Api;
 use Uploadcare\DataClass\MultipartStartResponse;
 use Uploadcare\MultipartUpload;
+use Uploadcare\Signature\SecureSignature;
 use Uploadcare\Uploader;
 use Uploadcare\Uuid;
 
@@ -57,7 +59,7 @@ class MultipartUploadTest extends TestCase
     protected function getMockUploader($response)
     {
         $uploader = $this
-            ->getMockBuilder('Uploadcare\\Uploader')
+            ->getMockBuilder('Uploadcare\\MultipartUpload')
             ->setConstructorArgs(array($this->api))
             ->setMethods(array('runRequest'))
             ->getMock();
@@ -73,7 +75,7 @@ class MultipartUploadTest extends TestCase
     protected function getCurlFromMockUploader()
     {
         $uploader = $this
-            ->getMockBuilder('Uploadcare\\Uploader')
+            ->getMockBuilder('Uploadcare\\MultipartUpload')
             ->setConstructorArgs(array($this->api))
             ->setMethods(array('runRequest'))
             ->getMock();
@@ -81,6 +83,11 @@ class MultipartUploadTest extends TestCase
             ->willReturnArgument(0);
 
         return $uploader;
+    }
+
+    protected function getRealUploader()
+    {
+        return new MultipartUpload($this->api, new SecureSignature(UC_SECRET_KEY, 3600));
     }
 
     /**
@@ -92,9 +99,9 @@ class MultipartUploadTest extends TestCase
      */
     protected function getStartUploadParams($path, $mimeType, $name)
     {
-        $mu = new MultipartUpload($this->getSignedUploadArray(), $this->getHost(), $this->api->uploader);
+        $mu = $this->getRealUploader();
         $muReflection = new ReflectionObject($mu);
-        $startRequestData = $muReflection->getMethod('startRequestData');
+        $startRequestData = $muReflection->getMethod('extendRequestData');
         $startRequestData->setAccessible(true);
 
         return $startRequestData->invokeArgs($mu, array(\filesize($path), $mimeType, $name));
@@ -114,19 +121,19 @@ class MultipartUploadTest extends TestCase
     public function testStartRequestWithNormalData()
     {
         $validResponse = \file_get_contents(__DIR__ . '/data/startResponse.json');
-        $uploader = $this->getMockUploader(\Uploadcare\jsonDecode($validResponse));
+        $uploader = $this->getMockUploader(json_decode($validResponse));
 
         $path = __DIR__ . '/test.jpg';
         $mimeType = 'image/jpeg';
-        $data = $this->getStartUploadParams($path, $mimeType, 'test.jpeg');
-
-        $mu = new MultipartUpload($this->getSignedUploadArray(), $this->getHost(), $uploader);
-        $muReflection = new ReflectionObject($mu);
+        $muReflection = new ReflectionObject($uploader);
+        $startRequestData = $muReflection->getMethod('extendRequestData');
+        $startRequestData->setAccessible(true);
+        $data = $startRequestData->invokeArgs($uploader, array(\filesize($path), $mimeType, 'test.jpg'));
 
         $startRequest = $muReflection->getMethod('startRequest');
         $startRequest->setAccessible(true);
         /** @var MultipartStartResponse $result */
-        $result = $startRequest->invokeArgs($mu, array($data));
+        $result = $startRequest->invokeArgs($uploader, array($data));
 
         $this->assertInstanceOf('Uploadcare\\DataClass\\MultipartStartResponse', $result);
         $this->assertNotEmpty($result->getUuid());
@@ -138,10 +145,10 @@ class MultipartUploadTest extends TestCase
 
     public function testInspectRequestParameters()
     {
-        $uploader = $this->getCurlFromMockUploader();
+        $mu = $this->getCurlFromMockUploader();
         $data = $this->getStartUploadParams(__DIR__ . '/test.jpg', 'image/jpeg', 'test.jpeg');
+        $data[AbstractUploader::UPLOADCARE_STORE_KEY] = 'auto';
 
-        $mu = new MultipartUpload($this->getSignedUploadArray(), $this->getHost(), $uploader);
         $muReflection = new ReflectionObject($mu);
         $startRequest = $muReflection->getMethod('startRequest');
         $startRequest->setAccessible(true);
@@ -169,8 +176,8 @@ class MultipartUploadTest extends TestCase
             'uuid' => Uuid::create(),
             'parts' => array('https://example.com'),
         ));
-        $uploader = $this->getCurlFromMockUploader();
-        $mu = new MultipartUpload($this->getSignedUploadArray(), $this->getHost(), $uploader);
+        $mu = $this->getCurlFromMockUploader();
+
         $muReflection = new ReflectionObject($mu);
         $finishUpload = $muReflection->getMethod('finishUpload');
         $finishUpload->setAccessible(true);
@@ -198,8 +205,7 @@ class MultipartUploadTest extends TestCase
             'uuid' => Uuid::create(),
             'parts' => array('https://example.com'),
         ));
-        $uploader = $this->getCurlFromMockUploader();
-        $mu = new MultipartUpload($this->getSignedUploadArray(), $this->getHost(), $uploader);
+        $mu = $this->getCurlFromMockUploader();
         $muReflection = new ReflectionObject($mu);
 
         $uploadParts = $muReflection->getMethod('uploadParts');
@@ -213,11 +219,10 @@ class MultipartUploadTest extends TestCase
             'uuid' => Uuid::create(),
             'parts' => array('https://example.com'),
         ));
-        $uploader = $this->getCurlFromMockUploader();
-        $uploader->expects($this->once())
+        $mu = $this->getCurlFromMockUploader();
+        $mu->expects($this->once())
             ->method('runRequest');
 
-        $mu = new MultipartUpload($this->getSignedUploadArray(), $this->getHost(), $uploader);
         $muReflection = new ReflectionObject($mu);
 
         $uploadParts = $muReflection->getMethod('uploadParts');
@@ -225,16 +230,10 @@ class MultipartUploadTest extends TestCase
         $uploadParts->invokeArgs($mu, array($response, __DIR__ . '/test.jpg'));
     }
 
-    public function testUploadByPartsWithNoFile()
-    {
-        $this->setExpectedException('RuntimeException');
-        $mu = new MultipartUpload($this->getSignedUploadArray(), $this->getHost(), $this->api->uploader);
-        $mu->uploadByParts('/file/does/not/exists');
-    }
-
     public function testUploaderMultipartUploadWithNoFile()
     {
         $this->setExpectedException('RuntimeException');
-        $this->api->uploader->multipartUpload('/file/does/not/exists');
+        $mu = new MultipartUpload($this->api);
+        $mu->fromPath('/file/does/not/exists');
     }
 }
