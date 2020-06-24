@@ -5,36 +5,8 @@ namespace Uploadcare;
 use Uploadcare\Exceptions\RequestErrorException;
 use Uploadcare\Signature\SignatureInterface;
 
-class Uploader
+class Uploader extends AbstractUploader
 {
-    const PIECE_LENGTH = 8192;
-    const UPLOADCARE_PUB_KEY_KEY = 'UPLOADCARE_PUB_KEY';
-    const UPLOADCARE_STORE_KEY = 'UPLOADCARE_STORE';
-
-    /**
-     * Base upload host
-     *
-     * @var string
-     */
-    private $host = 'upload.uploadcare.com';
-
-    /**
-     * Api instance
-     *
-     * @var Api
-     */
-    private $api = null;
-
-    /**
-     * @var SignatureInterface|null
-     */
-    private $secureSignature = null;
-
-    /**
-     * @var array
-     */
-    private $requestData = array();
-
     /**
      * Constructor
      * @param Api $api
@@ -240,58 +212,6 @@ class Uploader
     }
 
     /**
-     * @param $path
-     * @param null $mime_type
-     * @param null $filename
-     * @param string $store
-     * @return File
-     * @throws RequestErrorException
-     */
-    public function multipartUpload($path, $mime_type = null, $filename = null, $store = 'auto')
-    {
-        if (!\is_file($path) || !\is_readable($path)) {
-            throw new \RuntimeException(\sprintf('Unable to read file from \'%s\'', $path));
-        }
-
-        $this->requestData = $this->getSignedUploadsData(array(
-            self::UPLOADCARE_PUB_KEY_KEY => $this->api->getPublicKey(),
-            self::UPLOADCARE_STORE_KEY => $store,
-        ));
-
-        $multipartUploader = new MultipartUpload($this->requestData, $this->host, $this);
-        return $multipartUploader->uploadByParts($path, $mime_type, $filename);
-    }
-
-    /**
-     * Upload file from file pointer
-     *
-     * @param resource $fp
-     * @param string $mime_type
-     * @param string $filename
-     * @param string|bool $store
-     * @throws \Exception
-     * @throws RequestErrorException
-     * @return File
-     */
-    public function fromResource($fp, $mime_type = null, $filename = null, $store = 'auto')
-    {
-        if (!\is_resource($fp)) {
-            $message = \sprintf('Expected resource in %s, %s given', __METHOD__, \gettype($fp));
-            throw new \RuntimeException($message);
-        }
-
-        $tmpfile = tempnam(sys_get_temp_dir(), 'ucr');
-        $temp = fopen($tmpfile, 'wb');
-        while (!feof($fp)) {
-            fwrite($temp, fread($fp, self::PIECE_LENGTH));
-        }
-        fclose($temp);
-        fclose($fp);
-
-        return $this->fromPath($tmpfile, $mime_type, $filename, $store);
-    }
-
-    /**
      * Upload file from string using mime-type.
      *
      * @param string $content
@@ -343,121 +263,5 @@ class Uploader
         $resp = $this->runRequest($ch);
 
         return $this->api->getGroup($resp->id);
-    }
-
-    /**
-     * Return request data.
-     *
-     * @return array|null
-     */
-    private function getRequestData()
-    {
-        return $this->requestData;
-    }
-
-    /**
-     * Add secure signature to data for signed uploads.
-     *
-     * @param array|null $data Data to sign.
-     * @return array
-     */
-    private function getSignedUploadsData($data)
-    {
-        $secureSignature = $this->secureSignature;
-        if (!\is_null($data) && !\is_null($secureSignature)) {
-            $data = array_merge($data, array(
-                'signature' => $secureSignature->getSignature(),
-                'expire' => $secureSignature->getExpire(),
-            ));
-        }
-
-        return $data;
-    }
-
-    /**
-     * Init upload request and return curl resource
-     *
-     * @param $type
-     * @param array|null $data
-     * @return resource
-     */
-    private function initRequest($type, $data = null)
-    {
-        $url = sprintf('https://%s/%s/', $this->host, $type);
-        if (is_array($data)) {
-            $url = sprintf('%s?%s', $url, http_build_query($data));
-        }
-        if (!\is_resource($channel = \curl_init($url))) {
-            throw new \RuntimeException('Unable to initialize request');
-        }
-
-        return $channel;
-    }
-
-    /**
-     * Set request type for curl resource
-     *
-     * @param resource $ch
-     * @return void
-     */
-    private function setRequestType($ch)
-    {
-        curl_setopt($ch, CURLOPT_POST, true);
-    }
-
-    /**
-     * Set all the headers for request and set return transfer.
-     *
-     * @param resource $ch. Curl resource.
-     * @return void
-     */
-    private function setHeaders($ch)
-    {
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-            'User-Agent: ' . $this->api->getUserAgentHeader(),
-        ));
-    }
-
-    /**
-     * Set data to be posted on request
-     *
-     * @param resource $ch. Curl resource
-     * @param array $data
-     * @return void
-     */
-    private function setData($ch, $data = array())
-    {
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
-    }
-
-    /**
-     * Run prepared curl request.
-     * Throws Exception of not 200 http code
-     *
-     * @param resource $ch. Curl resource
-     * @param bool     $decode Whether convert response to object
-     * @throws RequestErrorException
-     * @return object|string
-     */
-    public function runRequest($ch, $decode = true)
-    {
-        $data = curl_exec($ch);
-        $ch_info = curl_getinfo($ch);
-        if (!\array_key_exists('http_code', $ch_info)) {
-            throw new RequestErrorException('Unexpected response: no \'http_code\' key in response', $this->getRequestData());
-        }
-
-        if ($data === false) {
-            throw new RequestErrorException(curl_error($ch), $this->getRequestData());
-        }
-
-        if ($ch_info['http_code'] !== 200) {
-            $message = 'Unexpected HTTP status code ' . $ch_info['http_code'] . '.' . curl_error($ch);
-            throw new RequestErrorException($message, $this->getRequestData());
-        }
-        curl_close($ch);
-
-        return $decode ? jsonDecode($data, false) : $data;
     }
 }

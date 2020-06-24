@@ -4,13 +4,14 @@ namespace Uploadcare;
 
 use Uploadcare\DataClass\MultipartStartResponse;
 use Uploadcare\Exceptions\RequestErrorException;
+use Uploadcare\Signature\SignatureInterface;
 
 /**
  * Multipart Upload.
  *
  * @see https://uploadcare.com/api-refs/upload-api/#operation/multipartFileUploadStart
  */
-class MultipartUpload
+class MultipartUpload extends AbstractUploader
 {
     /**
      * Chunk size from docs.
@@ -20,45 +21,56 @@ class MultipartUpload
     const PART_SIZE = 5242880;
 
     /**
-     * @var array request data must be predefined
+     * Minimal size for multipart upload.
      */
-    private $requestData;
-
-    /**
-     * @var string uploadcare url
-     */
-    private $baseUrl;
-
-    /**
-     * @var Uploader
-     */
-    private $uploader;
+    const MIN_SIZE = 10485760;
 
     private $boundary;
 
     /**
-     * @param array    $requestData
-     * @param string   $baseUrl
-     * @param Uploader $uploader
+     * @param Api                     $api
+     * @param SignatureInterface|null $signature
      */
-    public function __construct(array $requestData, $baseUrl, Uploader $uploader)
+    public function __construct(Api $api, SignatureInterface $signature = null)
     {
-        $this->requestData = $requestData;
-        $this->baseUrl = $baseUrl;
-        $this->uploader = $uploader;
         $this->boundary = \uniqid('-------------------', false);
+        $this->api = $api;
+        $this->secureSignature = $signature;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function fromPath($path, $mime_type = null, $filename = null, $store = 'auto')
+    {
+        if (!\is_file($path) || !\is_readable($path)) {
+            throw new \RuntimeException(\sprintf('Unable to read file from \'%s\'', $path));
+        }
+        if (\filesize($path) < self::MIN_SIZE) {
+            $uploader = new Uploader($this->api, $this->secureSignature);
+            return $uploader->fromPath($path);
+        }
+        $this->requestData[self::UPLOADCARE_STORE_KEY] = $store;
+
+        $this->requestData = $this->getSignedUploadsData(array(
+            self::UPLOADCARE_PUB_KEY_KEY => $this->api->getPublicKey(),
+            self::UPLOADCARE_STORE_KEY => $store,
+        ));
+
+        return $this->uploadByParts($path, $mime_type, $filename, $store);
     }
 
     /**
      * @param string      $path     Path to file
      * @param null|string $mimeType
      * @param null|string $filename
+     * @param string      $store
      *
      * @throws Exceptions\RequestErrorException|\Exception
      *
      * @return File
      */
-    public function uploadByParts($path, $mimeType = null, $filename = null)
+    protected function uploadByParts($path, $mimeType = null, $filename = null, $store = 'auto')
     {
         if (!\is_file($path) || !\is_readable($path)) {
             throw new \RuntimeException(\sprintf('Unable to read file from \'%s\'', $path));
@@ -70,11 +82,12 @@ class MultipartUpload
             $filename = Uuid::create();
         }
 
-        $startData = $this->startRequest($this->startRequestData(\filesize($path), $mimeType, $filename));
+        $this->requestData[self::UPLOADCARE_STORE_KEY] = $store;
+        $startData = $this->startRequest($this->extendRequestData(\filesize($path), $mimeType, $filename));
         $this->uploadParts($startData, $path);
         $finish = $this->finishUpload($startData);
 
-        return new File($startData->getUuid(), $this->uploader->getApi(), (array) $finish);
+        return new File($startData->getUuid(), $this->api, (array) $finish);
     }
 
     /**
@@ -87,7 +100,7 @@ class MultipartUpload
      */
     protected function startRequest(array $data, $raw = false)
     {
-        $ch = $this->initRequest('multipart/start/', array(
+        $ch = $this->initMultipartRequest('multipart/start/', array(
             sprintf('Content-Type: multipart/form-data; boundary=%s', $this->boundary),
         ));
 
@@ -96,7 +109,7 @@ class MultipartUpload
             CURLOPT_POSTFIELDS => $data,
         ), $ch);
 
-        $result = $this->uploader->runRequest($ch);
+        $result = $this->runRequest($ch);
 
         return $raw ? $result : MultipartStartResponse::create($result);
     }
@@ -108,12 +121,13 @@ class MultipartUpload
      *
      * @return array
      */
-    protected function startRequestData($size, $mimeType, $filename)
+    protected function extendRequestData($size, $mimeType, $filename)
     {
         return \array_merge(array(
             'filename' => $filename,
             'size' => $size,
             'content_type' => $mimeType,
+            self::UPLOADCARE_PUB_KEY_KEY => $this->api->getPublicKey(),
         ), $this->requestData);
     }
 
@@ -135,13 +149,13 @@ class MultipartUpload
                 return;
             }
 
-            $ch = $this->initRequest($signedUrl->getUrl(), array('Content-Type: application/octet-stream'));
+            $ch = $this->initMultipartRequest($signedUrl->getUrl(), array('Content-Type: application/octet-stream'));
             $this->setCurlOptions(array(
                 CURLOPT_CUSTOMREQUEST => 'PUT',
                 CURLOPT_POSTFIELDS => $part,
             ), $ch);
 
-            $this->uploader->runRequest($ch, false);
+            $this->runRequest($ch, false);
         }
     }
 
@@ -154,18 +168,18 @@ class MultipartUpload
      */
     protected function finishUpload(MultipartStartResponse $response)
     {
-        $ch = $this->initRequest('multipart/complete/', array(
+        $ch = $this->initMultipartRequest('multipart/complete/', array(
             sprintf('Content-Type: multipart/form-data; boundary=%s', $this->boundary),
         ));
         $this->setCurlOptions(array(
             CURLOPT_POST => true,
             CURLOPT_POSTFIELDS => array(
-                Uploader::UPLOADCARE_PUB_KEY_KEY => $this->uploader->getApi()->getPublicKey(),
+                Uploader::UPLOADCARE_PUB_KEY_KEY => $this->api->getPublicKey(),
                 'uuid' => $response->getUuid()
             ),
         ), $ch);
 
-        return $this->uploader->runRequest($ch);
+        return $this->runRequest($ch);
     }
 
     /**
@@ -174,9 +188,9 @@ class MultipartUpload
      *
      * @return resource
      */
-    protected function initRequest($path, array $headers = array())
+    protected function initMultipartRequest($path, array $headers = array())
     {
-        $url = \sprintf('https://%s/%s', $this->baseUrl, \ltrim($path, '/'));
+        $url = \sprintf('https://%s/%s', $this->host, \ltrim($path, '/'));
         if (\strpos($path, 'http') === 0) {
             $url = $path;
         }
@@ -186,7 +200,7 @@ class MultipartUpload
             throw new \RuntimeException('Unable to initialize request');
         }
         $headers = \array_merge(array(
-            'User-Agent: '.$this->uploader->getApi()->getUserAgentHeader(),
+            'User-Agent: '.$this->api->getUserAgentHeader(),
         ), $headers);
 
         $options = array(

@@ -99,6 +99,13 @@ class Api
     public $uploader = null;
 
     /**
+     * Multipart uploader instance.
+     *
+     * @var MultipartUpload
+     */
+    public $multipartUploader;
+
+    /**
      * Uploadcare rest API version
      *
      * @var string
@@ -156,6 +163,7 @@ class Api
         $this->secret_key = $secret_key;
         $this->widget = new Widget($this);
         $this->uploader = new Uploader($this);
+        $this->multipartUploader = new MultipartUpload($this);
         if ($cdn_host !== null) {
             $this->cdn_host = $cdn_host;
         }
