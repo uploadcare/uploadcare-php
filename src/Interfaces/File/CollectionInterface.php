@@ -10,7 +10,7 @@ namespace Uploadcare\Interfaces\File;
  * @template-extends IteratorAggregate<TKey, T>
  * @template-extends ArrayAccess<TKey|null, T>
  */
-interface FileCollectionInterface extends \Countable, \IteratorAggregate, \ArrayAccess
+interface CollectionInterface extends \Countable, \IteratorAggregate, \ArrayAccess
 {
     /**
      * @param mixed $element
@@ -125,19 +125,19 @@ interface FileCollectionInterface extends \Countable, \IteratorAggregate, \Array
     /**
      * @param \Closure $p
      *
-     * @return FileCollectionInterface a collection with the results of the filter operation
+     * @return CollectionInterface a collection with the results of the filter operation
      * @psalm-param Closure(T=):bool $p
-     * @psalm-return FileCollectionInterface<TKey, T>
+     * @psalm-return CollectionInterface<TKey, T>
      */
     public function filter(\Closure $p);
 
     /**
      * @param \Closure $func
      *
-     * @return FileCollectionInterface
-     * @psalm-template U
+     * @return CollectionInterface
+     * @psalm-template U of
      * @psalm-param Closure(T=):U $func
-     * @psalm-return FileCollectionInterface<TKey, U>
+     * @psalm-return CollectionInterface<TKey, U>
      */
     public function map(\Closure $func);
 

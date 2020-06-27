@@ -2,7 +2,7 @@
 
 namespace Uploadcare\Interfaces\Response;
 
-use Uploadcare\Interfaces\File\FileCollectionInterface;
+use Uploadcare\Interfaces\File\CollectionInterface;
 
 /**
  * File collection representation.
@@ -30,7 +30,7 @@ interface FileListResponseInterface
     public function getPerPage();
 
     /**
-     * @return FileCollectionInterface
+     * @return CollectionInterface
      */
     public function getFiles();
 }

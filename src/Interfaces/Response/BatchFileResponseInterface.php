@@ -2,7 +2,7 @@
 
 namespace Uploadcare\Interfaces\Response;
 
-use Uploadcare\Interfaces\File\FileCollectionInterface;
+use Uploadcare\Interfaces\File\CollectionInterface;
 
 /**
  * Object of batch file store / delete.
@@ -26,7 +26,7 @@ interface BatchFileResponseInterface
     public function getProblems();
 
     /**
-     * @return FileCollectionInterface
+     * @return CollectionInterface
      */
     public function getResult();
 }

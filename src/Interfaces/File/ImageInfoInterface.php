@@ -15,7 +15,7 @@ interface ImageInfoInterface
     /**
      * Image orientation from EXIF. \range(0, 8).
      *
-     * @return string|null
+     * @return int|null
      */
     public function getOrientation();
 
