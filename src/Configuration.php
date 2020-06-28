@@ -88,6 +88,7 @@ class Configuration
 
         if (!empty($exists) && \is_string($exists[0])) {
             $headers['User-Agent'] = \sprintf('%s (php-%s)', $exists[0], PHP_VERSION);
+
             return;
         }
 

@@ -2,6 +2,8 @@
 
 namespace Uploadcare;
 
+use GuzzleHttp\Exception\GuzzleException;
+use Psr\Http\Message\ResponseInterface;
 use Uploadcare\Exception\InvalidArgumentException;
 use Uploadcare\Interfaces\UploaderInterface;
 
@@ -98,7 +100,7 @@ abstract class AbstractUploader implements UploaderInterface
     protected function checkResource($handle)
     {
         if (!\is_resource($handle)) {
-            throw new \InvalidArgumentException(\sprintf('Expected resource, %s given', (\is_object($handle) ? \get_class($handle) : \gettype($handle))));
+            throw new InvalidArgumentException(\sprintf('Expected resource, %s given', (\is_object($handle) ? \get_class($handle) : \gettype($handle))));
         }
 
         $this->checkResourceMetadata(\stream_get_meta_data($handle));
@@ -116,12 +118,13 @@ abstract class AbstractUploader implements UploaderInterface
             'stream_type' => ['tcp_socket/ssl', 'plainfile'],
             'mode' => ['rb', 'rb+', 'r+b', 'r', 'r+'],
         ];
+        $required = \array_keys($parameters);
+        $received = \array_keys($metadata);
+        if (!empty($needle = \array_diff($required, $received))) {
+            throw new \UnexpectedValueException(\sprintf('Required keys %s not exists in metadata', \implode(', ', $needle)));
+        }
 
         foreach ($parameters as $parameterName => $values) {
-            if (!isset($metadata[$parameterName])) {
-                throw new \UnexpectedValueException(\sprintf('No key \'%s\' in stream metadata', $parameterName));
-            }
-
             if (!\in_array($metadata[$parameterName], $values, false)) {
                 $expectedValues = \implode(', ', $values);
                 throw new \UnexpectedValueException(\sprintf('\'%s\' metadata parameter can be %s only, %s given', $parameterName, $expectedValues, $metadata[$parameterName]));
@@ -145,7 +148,7 @@ abstract class AbstractUploader implements UploaderInterface
      *      ['name' => 'foo', 'contents' => 'bar'],
      *      ['contents' => 'hello', 'name' => 'file'],
      *      ['name' => 'baz', 'contents' => 'foo'],
-     * ]
+     * ].
      *
      * @see http://docs.guzzlephp.org/en/stable/quickstart.html#sending-form-files
      *
@@ -183,5 +186,60 @@ abstract class AbstractUploader implements UploaderInterface
             self::UPLOADCARE_SIGNATURE_KEY => $this->configuration->getSecureSignature()->getSignature(),
             self::UPLOADCARE_EXPIRE_KEY => $this->configuration->getSecureSignature()->getExpire()->getTimestamp(),
         ];
+    }
+
+    /**
+     * @param ResponseInterface $response
+     * @param string            $arrayKey
+     *
+     * @return string
+     */
+    protected function serializeFileResponse(ResponseInterface $response, $arrayKey = 'file')
+    {
+        $result = $this->configuration->getSerializer()->denormalize($response->getBody()->getContents());
+        if (!isset($result[$arrayKey])) {
+            throw new \RuntimeException(\sprintf('Unable to get \'%s\' key from response. Call to support', $arrayKey));
+        }
+
+        return (string) $result[$arrayKey];
+    }
+
+    /**
+     * @param string $method
+     * @param string $uri
+     * @param array  $data
+     *
+     * @return ResponseInterface
+     *
+     * @throws GuzzleException
+     */
+    protected function sendRequest($method, $uri, array $data)
+    {
+        if (\strpos($uri, 'https://') !== 0) {
+            $uri = \sprintf('https://%s/%s', \rtrim(self::UPLOAD_BASE_URL, '/'), \ltrim($uri, '/'));
+        }
+        $data['headers'] = $this->configuration->getHeaders();
+
+        return $this->configuration->getClient()
+            ->request($method, $uri, $data);
+    }
+
+    /**
+     * Size of target file in bytes.
+     *
+     * @see https://www.php.net/manual/en/function.stat.php
+     *
+     * @param resource $handle
+     *
+     * @return int
+     */
+    protected function getSize($handle)
+    {
+        $stat = \fstat($handle);
+        if (\is_array($stat) && \array_key_exists(7, $stat)) {
+            return $stat[7];
+        }
+
+        return 0;
     }
 }
