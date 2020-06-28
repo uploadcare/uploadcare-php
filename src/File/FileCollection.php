@@ -48,8 +48,6 @@ final class FileCollection implements CollectionInterface
 
     /**
      * @inheritDoc
-     *
-     * @return FileInfoInterface|null
      */
     public function get($key)
     {
@@ -75,7 +73,6 @@ final class FileCollection implements CollectionInterface
     }
 
     /**
-     * @param FileInfoInterface $element
      * @inheritDoc
      */
     public function add($element)
@@ -86,8 +83,6 @@ final class FileCollection implements CollectionInterface
     }
 
     /**
-     * @param int|string        $key
-     * @param FileInfoInterface $value
      * @inheritDoc
      */
     public function set($key, $value)
@@ -153,7 +148,6 @@ final class FileCollection implements CollectionInterface
     }
 
     /**
-     * @param FileInfoInterface $element
      * @inheritDoc
      */
     public function removeElement($element)
@@ -258,7 +252,7 @@ final class FileCollection implements CollectionInterface
      *
      * @return $this
      * @psalm-param array<array-key,T> $elements
-     * @psalm-return static<array-key,T>
+     * @psalm-return static
      */
     protected function createFrom(array $elements)
     {

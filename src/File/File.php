@@ -341,7 +341,7 @@ final class File implements FileInfoInterface
     }
 
     /**
-     * @return CollectionInterface
+     * @return CollectionInterface|null
      */
     public function getVariations()
     {
