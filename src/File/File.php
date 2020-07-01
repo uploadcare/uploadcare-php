@@ -113,7 +113,7 @@ final class File implements FileInfoInterface
      *
      * @return File
      */
-    public function setDateTimeRemoved($dateTimeRemoved)
+    public function setDateTimeRemoved(\DateTimeInterface $dateTimeRemoved = null)
     {
         $this->dateTimeRemoved = $dateTimeRemoved;
 
@@ -133,7 +133,7 @@ final class File implements FileInfoInterface
      *
      * @return File
      */
-    public function setDateTimeStored($dateTimeStored)
+    public function setDateTimeStored(\DateTimeInterface $dateTimeStored = null)
     {
         $this->dateTimeStored = $dateTimeStored;
 
@@ -153,7 +153,7 @@ final class File implements FileInfoInterface
      *
      * @return File
      */
-    public function setDateTimeUploaded($dateTimeUploaded)
+    public function setDateTimeUploaded(\DateTimeInterface $dateTimeUploaded = null)
     {
         $this->dateTimeUploaded = $dateTimeUploaded;
 
@@ -173,7 +173,7 @@ final class File implements FileInfoInterface
      *
      * @return File
      */
-    public function setImageInfo($imageInfo)
+    public function setImageInfo(ImageInfoInterface $imageInfo)
     {
         $this->imageInfo = $imageInfo;
 
@@ -195,7 +195,7 @@ final class File implements FileInfoInterface
      */
     public function setIsImage($isImage)
     {
-        $this->isImage = $isImage;
+        $this->isImage = (bool) $isImage;
 
         return $this;
     }
@@ -215,7 +215,7 @@ final class File implements FileInfoInterface
      */
     public function setIsReady($isReady)
     {
-        $this->isReady = $isReady;
+        $this->isReady = (bool) $isReady;
 
         return $this;
     }
@@ -235,7 +235,7 @@ final class File implements FileInfoInterface
      */
     public function setMimeType($mimeType)
     {
-        $this->mimeType = $mimeType;
+        $this->mimeType = (string) $mimeType;
 
         return $this;
     }
@@ -349,11 +349,11 @@ final class File implements FileInfoInterface
     }
 
     /**
-     * @param FileCollection|null $variations
+     * @param FileCollection|CollectionInterface|null $variations
      *
      * @return File
      */
-    public function setVariations($variations)
+    public function setVariations(CollectionInterface $variations = null)
     {
         $this->variations = $variations;
 
@@ -373,7 +373,7 @@ final class File implements FileInfoInterface
      *
      * @return File
      */
-    public function setVideoInfo($videoInfo)
+    public function setVideoInfo(VideoInfoInterface $videoInfo = null)
     {
         $this->videoInfo = $videoInfo;
 

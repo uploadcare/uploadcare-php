@@ -4,11 +4,12 @@ namespace Uploadcare\File;
 
 use Uploadcare\Interfaces\File\GeoLocationInterface;
 use Uploadcare\Interfaces\File\ImageInfoInterface;
+use Uploadcare\Interfaces\SerializableInterface;
 
 /**
  * Image Info.
  */
-final class ImageInfo implements ImageInfoInterface
+final class ImageInfo implements ImageInfoInterface, SerializableInterface
 {
     /**
      * @var string|null
@@ -54,6 +55,21 @@ final class ImageInfo implements ImageInfoInterface
      * @var null|array<array-key, int>
      */
     private $dpi;
+
+    public static function rules()
+    {
+        return [
+            'colorMode' => 'string',
+            'orientation' => 'int',
+            'format' => 'string',
+            'isSequence' => 'bool',
+            'height' => 'int',
+            'width' => 'int',
+            'geoLocation' => GeoLocation::class,
+            'datetimeOriginal' => \DateTime::class,
+            'dpi' => 'array',
+        ];
+    }
 
     /**
      * @return string|null
@@ -120,7 +136,7 @@ final class ImageInfo implements ImageInfoInterface
      */
     public function isSequence()
     {
-        return $this->isSequence;
+        return (bool) $this->isSequence;
     }
 
     /**
@@ -130,7 +146,7 @@ final class ImageInfo implements ImageInfoInterface
      */
     public function setIsSequence($isSequence)
     {
-        $this->isSequence = $isSequence;
+        $this->isSequence = (bool) $isSequence;
 
         return $this;
     }

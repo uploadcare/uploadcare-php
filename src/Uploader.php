@@ -122,7 +122,7 @@ class Uploader extends AbstractUploader
         try {
             $response = $this->sendRequest('POST', 'multipart/start/', $parameters);
             $startData = $this->configuration->getSerializer()
-                ->denormalize($response->getBody()->getContents(), MultipartStartResponse::class);
+                ->deserialize($response->getBody()->getContents(), MultipartStartResponse::class);
         } catch (GuzzleException $e) {
             throw new HttpException('', 0, ($e instanceof \Exception ? $e : null));
         }

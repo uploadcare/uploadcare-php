@@ -5,7 +5,7 @@ namespace Uploadcare;
 use GuzzleHttp\ClientInterface;
 use Uploadcare\Client\ClientFactory;
 use Uploadcare\Interfaces\ClientFactoryInterface;
-use Uploadcare\Interfaces\SerializerInterface;
+use Uploadcare\Interfaces\Serializer\SerializerInterface;
 use Uploadcare\Interfaces\SignatureInterface;
 use Uploadcare\Security\Signature;
 

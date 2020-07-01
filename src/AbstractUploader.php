@@ -196,7 +196,7 @@ abstract class AbstractUploader implements UploaderInterface
      */
     protected function serializeFileResponse(ResponseInterface $response, $arrayKey = 'file')
     {
-        $result = $this->configuration->getSerializer()->denormalize($response->getBody()->getContents());
+        $result = $this->configuration->getSerializer()->deserialize($response->getBody()->getContents());
         if (!isset($result[$arrayKey])) {
             throw new \RuntimeException(\sprintf('Unable to get \'%s\' key from response. Call to support', $arrayKey));
         }

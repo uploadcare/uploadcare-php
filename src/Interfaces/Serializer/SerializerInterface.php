@@ -1,25 +1,27 @@
 <?php
 
-namespace Uploadcare\Interfaces;
+namespace Uploadcare\Interfaces\Serializer;
 
 interface SerializerInterface
 {
     /**
      * @param object $object
-     * @param string $format
      * @param array  $context
      *
      * @return string
      *
      * @throws \RuntimeException
      */
-    public function normalize($object, $format = 'json', array $context = []);
+    public function serialize($object, array $context = []);
 
     /**
      * @param string      $string
      * @param string|null $className
+     * @param array       $context
      *
      * @return object|array
+     *
+     * @throws \RuntimeException
      */
-    public function denormalize($string, $className = null);
+    public function deserialize($string, $className = null, array $context = []);
 }

@@ -3,11 +3,12 @@
 namespace Uploadcare\File;
 
 use Uploadcare\Interfaces\File\GeoLocationInterface;
+use Uploadcare\Interfaces\SerializableInterface;
 
 /**
  * GeoLocation.
  */
-final class GeoLocation implements GeoLocationInterface
+final class GeoLocation implements GeoLocationInterface, SerializableInterface
 {
     /**
      * @var float
@@ -23,6 +24,17 @@ final class GeoLocation implements GeoLocationInterface
     {
         $this->latitude = $latitude ?: .0;
         $this->longitude = $longitude ?: .0;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public static function rules()
+    {
+        return [
+            'latitude' => 'float',
+            'longitude' => 'float',
+        ];
     }
 
     /**
