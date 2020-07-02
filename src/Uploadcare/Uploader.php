@@ -5,6 +5,9 @@ namespace Uploadcare;
 use Uploadcare\Exceptions\RequestErrorException;
 use Uploadcare\Signature\SignatureInterface;
 
+/**
+ * @method fromUrl($url, $options = array())
+ */
 class Uploader extends AbstractUploader
 {
     /**

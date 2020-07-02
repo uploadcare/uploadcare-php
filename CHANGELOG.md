@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
+## [2.4.1-rc] - 2020-06-02
+### Added
+- Support for [multipart uploads](https://uploadcare.com/api-refs/upload-api/#operation/multipartFileUploadStart)
+
 ## [2.4.0-rc] - 2020-01-13
 ### Added
 - Support for [signed uploads](https://uploadcare.com/docs/api_reference/upload/signed_uploads/).

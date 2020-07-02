@@ -12,7 +12,7 @@ class Api
     /**
      * Uploadcare library version
      */
-    const UPLOADCARE_LIBRARY_VERSION = '2.4.0-rc';
+    const UPLOADCARE_LIBRARY_VERSION = '2.4.1-rc';
 
     /**
      * Uploadcare public key
@@ -162,8 +162,6 @@ class Api
         $this->public_key = $public_key;
         $this->secret_key = $secret_key;
         $this->widget = new Widget($this);
-        $this->uploader = new Uploader($this);
-        $this->multipartUploader = new MultipartUpload($this);
         if ($cdn_host !== null) {
             $this->cdn_host = $cdn_host;
         }
@@ -184,6 +182,7 @@ class Api
 
         $this->widget = new Widget($this, $signature);
         $this->uploader = new Uploader($this, $signature);
+        $this->multipartUploader = new MultipartUpload($this, $signature);
     }
 
     /**
