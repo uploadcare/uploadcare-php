@@ -58,7 +58,7 @@ define('UC_SECRET_KEY', 'demosecretkey');
 
 ```php
 require_once 'vendor/autoload.php';
-use \Uploadcare;
+use Uploadcare;
 ```
 
 **Step 5** — create an object of the `Uploadcare\Api` class,
@@ -103,20 +103,20 @@ You might then want to `store()` a file. Keep in mind that we remove files that 
 
 ```php
 $file_id = $_POST['qs-file'];
-$api = new Uploadcare\Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
+$api = new \Uploadcare\Api(UC_PUBLIC_KEY, UC_SECRET_KEY);
 $file = $api->getFile($file_id);
 $file->store();
 ``````
 
 Now, you got an `Uploadcare\File` object to work with. For instance, this is how you show an image,
 
-```php
+```html
 <img src="<?php echo $file->getUrl(); ?>" />
 ```
 
 That can be put even simpler,
 
-```php
+```html
 <img src="<?php echo $file; ?>" />
 ```
 
@@ -159,7 +159,7 @@ Now lets get a list of files. Let's form a request that will return
 $files_raw = $api->request('GET', '/files/');
 ```
 
-Each files has:
+Each file has:
 
 - size
 - upload_date
@@ -385,10 +385,13 @@ Using `fromUrl()` with default params tells Uploadcare to check file availabilit
 with 1-second timeouts in between. These can be changed:
 
 ```php
+$timeout = 2;
+$max_attempts = 3;
+
 $file = $api->uploader->fromUrl(
     'http://www.baysflowers.co.nz/Images/tangerine-delight.jpg',
     array(
-        'filename' => 'image.jpeg,
+        'filename' => 'image.jpeg',
         'check_status' => true,
         'timeout' => $timeout,
         'max_attempts' => $max_attempts
@@ -404,7 +407,7 @@ $token = $api->uploader->fromUrl(
     array('check_status' => false)
 );
 $data = $api->uploader->status($token);
-if ($data->status == 'success') {
+if ($data->status === 'success') {
     $file_id = $data->file_id
     // do smth with a file
 }
@@ -418,7 +421,7 @@ echo $file->effect('flip')->getUrl();
 Another way of uploading files is **from a path**,
 
 ```php
-$file = $api->uploader->fromPath(dirname(__FILE__).'/test.jpg');
+$file = $api->uploader->fromPath(__DIR__ . '/test.jpg');
 $file->store();
 echo $file->effect('flip')->getUrl();
 ```
@@ -426,7 +429,7 @@ echo $file->effect('flip')->getUrl();
 This will also do when using file pointers,
 
 ```php
-$fp = fopen(dirname(__FILE__).'/test.jpg', 'r');
+$fp = fopen(__DIR__ . '/test.jpg', 'rb');
 $file = $api->uploader->fromResource($fp);
 $file->store();
 echo $file->effect('flip')->getUrl();
@@ -440,6 +443,10 @@ $file = $api->uploader->fromContent($content, 'text/plain');
 $file->store();
 echo $file->getUrl();
 ```
+
+### Multipart upload
+
+If you have a large (more than 100Mb / 10485760 bytes) file, you should use the [multipart upload](https://uploadcare.com/api-refs/upload-api/#operation/multipartFileUploadStart). You don't have to change anything except API property: just call `$api->multipartUploader` instead of `$api->uploader` and use the same methods as in [direct upload](#uploading-files).
 
 ### Deleting files
 
@@ -496,7 +503,7 @@ Check out our [documentation](https://uploadcare.com/docs/api_reference/upload/s
 
 PHP 5.3+ tests can be found in the "tests" directory. The tests are based on PHPUnit, so you must have it installed on your system to use those.
 
-Tests are executed using the `phpunit` command.
+Tests can be executed using the `phpunit` command.
 
 ## Useful links
 

@@ -9,7 +9,7 @@ class PropertyClass
     }
     public function __get($name)
     {
-        if($name == 'property') {
+        if ($name == 'property') {
             return $this->_prop;
         }
         return null;

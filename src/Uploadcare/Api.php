@@ -2,6 +2,8 @@
 
 namespace Uploadcare;
 
+use RuntimeException;
+use Uploadcare\Exceptions\RequestErrorException;
 use Uploadcare\Exceptions\ThrottledRequestException;
 use Uploadcare\Signature\SecureSignature;
 
@@ -10,7 +12,7 @@ class Api
     /**
      * Uploadcare library version
      */
-    const UPLOADCARE_LIBRARY_VERSION = '2.4.0-rc';
+    const UPLOADCARE_LIBRARY_VERSION = '2.4.1-rc';
 
     /**
      * Uploadcare public key
@@ -97,6 +99,13 @@ class Api
     public $uploader = null;
 
     /**
+     * Multipart uploader instance.
+     *
+     * @var MultipartUpload
+     */
+    public $multipartUploader;
+
+    /**
      * Uploadcare rest API version
      *
      * @var string
@@ -153,7 +162,6 @@ class Api
         $this->public_key = $public_key;
         $this->secret_key = $secret_key;
         $this->widget = new Widget($this);
-        $this->uploader = new Uploader($this);
         if ($cdn_host !== null) {
             $this->cdn_host = $cdn_host;
         }
@@ -174,6 +182,7 @@ class Api
 
         $this->widget = new Widget($this, $signature);
         $this->uploader = new Uploader($this, $signature);
+        $this->multipartUploader = new MultipartUpload($this, $signature);
     }
 
     /**
@@ -285,7 +294,6 @@ class Api
      * Convert datetime from string or \DateTime object to ATOM string
      *
      * @param string|\DateTime $datetime
-     * @throws \Exception
      * @return null|string
      */
     public static function dateTimeString($datetime)
@@ -295,7 +303,7 @@ class Api
         }
 
         if (is_object($datetime) && !($datetime instanceof \DateTime)) {
-            throw new \Exception('Only \DateTime objects allowed');
+            throw new \RuntimeException('Only \DateTime objects allowed');
         }
 
         if (is_string($datetime)) {
@@ -321,18 +329,22 @@ class Api
      *
      * @param array $options
      * @param bool $reverse
-     * @return array
      * @throws \Exception
+     * @return array
      */
     public function getGroupsChunk($options = array(), $reverse = false)
     {
-        $data = $this->__preparedRequest('group_list', 'GET', $options);
+        $data = $this->preparedRequest('group_list', 'GET', $options);
+        if ($data === null) {
+            throw new RequestErrorException('No data returned from request', $options);
+        }
+
         $groups_raw = (array)$data->results;
         $resultArr = array();
         foreach ($groups_raw as $group_raw) {
             $resultArr[] = new Group($group_raw->id, $this);
         }
-        return $this->__preparePagedParams($data, $reverse, $resultArr);
+        return $this->preparePagedParams($data, $reverse, $resultArr);
     }
 
     /**
@@ -340,18 +352,22 @@ class Api
      *
      * @param array $options
      * @param bool $reverse
-     * @return array
      * @throws \Exception
+     * @return array
      */
     public function getFilesChunk($options = array(), $reverse = false)
     {
-        $data = $this->__preparedRequest('file_list', 'GET', $options);
+        $data = $this->preparedRequest('file_list', 'GET', $options);
+        if ($data === null) {
+            throw new RequestErrorException('No data returned from request', $options);
+        }
+
         $files_raw = (array)$data->results;
         $resultArr = array();
         foreach ($files_raw as $file_raw) {
             $resultArr[] = new File($file_raw->uuid, $this, $file_raw);
         }
-        return $this->__preparePagedParams($data, $reverse, $resultArr);
+        return $this->preparePagedParams($data, $reverse, $resultArr);
     }
 
 
@@ -359,14 +375,18 @@ class Api
      * Return count of files respecting filters
      *
      * @param array $options
-     * @return mixed
      * @throws \Exception
+     * @return mixed
      */
     public function getFilesCount($options = array())
     {
         $options['limit'] = 1;
 
-        $data = $this->__preparedRequest('file_list', 'GET', $options);
+        $data = $this->preparedRequest('file_list', 'GET', $options);
+        if ($data === null) {
+            throw new RequestErrorException('No data returned from request', $options);
+        }
+
 
         return $data->total;
     }
@@ -375,14 +395,17 @@ class Api
      * Return count of groups respecting filters
      *
      * @param array $options
-     * @return mixed
      * @throws \Exception
+     * @return mixed
      */
     public function getGroupsCount($options = array())
     {
         $options['limit'] = 1;
 
-        $data = $this->__preparedRequest('group_list', 'GET', $options);
+        $data = $this->preparedRequest('group_list', 'GET', $options);
+        if ($data === null) {
+            throw new RequestErrorException('No data returned from request', $options);
+        }
 
         return $data->total;
     }
@@ -405,7 +428,6 @@ class Api
      *
      * @param array $options
      * @return FileIterator
-     * @throws \Exception
      */
     public function getFileList($options = array())
     {
@@ -420,7 +442,7 @@ class Api
         ), $options);
 
         if (!empty($options['from']) && !empty($options['to'])) {
-            throw new \Exception('Only one of "from" and "to" arguments is allowed');
+            throw new \RuntimeException('Only one of "from" and "to" arguments is allowed');
         }
 
         $options['from'] = self::dateTimeString($options['from']);
@@ -448,7 +470,6 @@ class Api
      *
      * @param array $options
      * @return GroupIterator
-     * @throws \Exception
      */
     public function getGroupList($options = array())
     {
@@ -461,7 +482,7 @@ class Api
         ), $options);
 
         if (!empty($options['from']) && !empty($options['to'])) {
-            throw new \Exception('Only one of "from" and "to" arguments is allowed');
+            throw new \RuntimeException('Only one of "from" and "to" arguments is allowed');
         }
 
         $options['from'] = self::dateTimeString($options['from']);
@@ -474,8 +495,8 @@ class Api
      * Get group.
      *
      * @param string $uuid_or_url Uploadcare group UUID or CDN URL
-     * @return Group
      * @throws \Exception
+     * @return Group
      */
     public function getGroup($uuid_or_url)
     {
@@ -488,17 +509,17 @@ class Api
      * @deprecated 2.0.0 Use createLocalCopy() or createRemoteCopy() instead.
      * @param string $source CDN URL or file's uuid you need to copy.
      * @param string $target Name of custom storage connected to your project. Uploadcare storage is used if target is absent.
-     * @return File|string
      * @throws \Exception
+     * @return File|string
      */
     public function copyFile($source, $target = null)
     {
         Helper::deprecate('2.0.0', '3.0.0', 'Use createLocalCopy() or createRemoteCopy() instead');
         if (!$target) {
             return $this->createLocalCopy($source);
-        } else {
-            return $this->createRemoteCopy($source, $target);
         }
+
+        return $this->createRemoteCopy($source, $target);
     }
 
     /**
@@ -506,21 +527,25 @@ class Api
      *
      * @param string $source CDN URL or file's uuid you need to copy.
      * @param boolean $store MUST be either true or false. true to store files while copying. If stored, files won’t be automatically deleted within 24 hours after copying. false * to not store files, default.
-     * @return File|string
      * @throws \Exception
+     * @return File|string
      */
     public function createLocalCopy($source, $store = true)
     {
-        $data = $this->__preparedRequest('file_copy', 'POST', array(), array('source' => $source, 'store' => $store));
-        if (array_key_exists('result', (array)$data) == true) {
-            if ($data->type == 'file') {
-                return new File((string)$data->result->uuid, $this);
-            } else {
-                return (string)$data->result;
-            }
-        } else {
-            return (string)$data->detail;
+        $data = $this->preparedRequest('file_copy', 'POST', array(), array('source' => $source, 'store' => $store));
+        if ($data === null) {
+            throw new RequestErrorException('No data returned from request', array('source' => $source, 'store' => $store));
         }
+
+        if (array_key_exists('result', (array)$data)) {
+            if ($data->type === 'file') {
+                return new File((string)$data->result->uuid, $this);
+            }
+
+            return (string)$data->result;
+        }
+
+        return (string)$data->detail;
     }
 
     /**
@@ -540,24 +565,28 @@ class Api
      * ${uuid} = file UUID
      * ${ext} = file extension, leading dot, e.g. .jpg
      *
+     * @throws RequestErrorException|ThrottledRequestException
      * @return string
-     * @throws \Exception
      */
     public function createRemoteCopy($source, $target, $make_public = true, $pattern = null)
     {
         if (!$target) {
-            throw new \Exception('$target parameter should not be empty.');
+            throw new \RuntimeException('$target parameter should not be empty.');
         }
         $paramArr = array('source' => $source, 'target' => $target, 'make_public' => $make_public);
         if ($pattern) {
             $paramArr['pattern'] = $pattern;
         }
-        $data = $this->__preparedRequest('file_copy', 'POST', array(), $paramArr);
-        if (array_key_exists('result', (array)$data) == true) {
-            return (string)$data->result;
-        } else {
-            return (string)$data->detail;
+        $data = $this->preparedRequest('file_copy', 'POST', array(), $paramArr);
+
+        if ($data === null) {
+            throw new RequestErrorException('No data returned from request', $paramArr);
         }
+        if (array_key_exists('result', (array)$data)) {
+            return (string)$data->result;
+        }
+
+        return (string)$data->detail;
     }
 
 
@@ -566,23 +595,22 @@ class Api
      *
      * @param array $filesUuidArr uploaded file's uuid array you need to store.
      * @return array with stored files and problems if any
-     * @throws \Exception
      */
     public function storeMultipleFiles($filesUuidArr)
     {
-        return $this->__batchProcessFiles($filesUuidArr, 'PUT');
+        return $this->batchProcessFiles($filesUuidArr, 'PUT');
     }
 
     /**
      * Delete multiple files
      *
      * @param array $filesUuidArr uploaded or stored file's uuid array you need to delete.
-     * @return array with deleted files and problems if any
      * @throws \Exception
+     * @return array with deleted files and problems if any
      */
     public function deleteMultipleFiles($filesUuidArr)
     {
-        return $this->__batchProcessFiles($filesUuidArr, 'DELETE');
+        return $this->batchProcessFiles($filesUuidArr, 'DELETE');
     }
 
     /**
@@ -590,28 +618,30 @@ class Api
      *
      * @param array $filesUuidArr uploaded file's uuid array you need to process.
      * @param string $request_type request type, could be PUT or DELETE .
+     * @throws RequestErrorException
      * @return array with processed files and problems if any
-     * @throws \Exception
      */
-    public function __batchProcessFiles($filesUuidArr, $request_type)
+    public function batchProcessFiles($filesUuidArr, $request_type)
     {
         $filesChunkedArr = array_chunk($filesUuidArr, $this->batchFilesChunkSize);
         $filesArr = array();
         $problemsArr = array();
         $lastStatus = '';
         foreach ($filesChunkedArr as $chunk) {
-            $res = $this->__batchProcessFilesChunk($chunk, $request_type);
+            $res = $this->batchProcessFilesChunk($chunk, $request_type);
             $lastStatus = $res['status'];
-            if ($lastStatus == "ok") {
+            if ($lastStatus === 'ok') {
                 $problemsObj = $res['problems'];
                 if (count(get_object_vars($problemsObj)) > 0) {
                     $problemsArr [] = $problemsObj;
                 }
-                $filesArr = array_merge($filesArr, $res['files']);
+                $filesArr[] = $res['files'];
             } else {
-                throw new \Exception('Error process multiple files', $res);
+                throw new \RuntimeException('Error process multiple files', $res);
             }
         }
+        // @see https://github.com/kalessil/phpinspectionsea/blob/master/docs/performance.md#slow-array-function-used-in-loop
+        $filesArr = call_user_func_array('array_merge', $filesArr + array(array()));
         return array(
             'status' => $lastStatus,
             'files' => $filesArr,
@@ -624,15 +654,19 @@ class Api
      *
      * @param array $filesUuidArr uploaded file's uuid array you need to process.
      * @param string $request_type request type, could be PUT or DELETE .
+     * @throws RequestErrorException
      * @return array with processed files and problems if any
-     * @throws \Exception
      */
-    public function __batchProcessFilesChunk($filesUuidArr, $request_type)
+    public function batchProcessFilesChunk($filesUuidArr, $request_type)
     {
         if (count($filesUuidArr) > $this->batchFilesChunkSize) {
-            throw new \Exception('Files number should not exceed '.$this->batchFilesChunkSize.' items per request.');
+            throw new \RuntimeException('Files number should not exceed '.$this->batchFilesChunkSize.' items per request.');
         }
-        $data = $this->__preparedRequest('files_storage', $request_type, array(), $filesUuidArr);
+        $data = $this->preparedRequest('files_storage', $request_type, array(), $filesUuidArr);
+        if ($data === null) {
+            throw new RequestErrorException('No data returned from request', $filesUuidArr);
+        }
+
         $files_raw = (array)$data->result;
         $result = array();
         foreach ($files_raw as $file_raw) {
@@ -652,18 +686,17 @@ class Api
      * @param string $path Path to request
      * @param array $data Array of data to send.
      * @param array $headers Additional headers.
-     * @throws \Exception
      * @return object
      */
     public function request($method, $path, $data = array(), $headers = array())
     {
         $ch = curl_init(sprintf('https://%s%s', $this->api_host, $path));
-        $this->__setRequestType($ch, $method);
-        $this->__setHeaders($ch, $headers, $data);
+        $this->setRequestType($ch, $method);
+        $this->setHeaders($ch, $headers, $data);
 
         $response = curl_exec($ch);
         if ($response === false) {
-            throw new \Exception(curl_error($ch));
+            throw new \RuntimeException(curl_error($ch));
         }
         $ch_info = curl_getinfo($ch);
 
@@ -672,18 +705,19 @@ class Api
         $body = substr($response, $header_size);
 
         $error = false;
-
-        if ($method == 'DELETE') {
-            if ($ch_info['http_code'] != 302 && $ch_info['http_code'] != 200) {
-                $error = true;
-            }
-        } else {
-            if (!(($ch_info['http_code'] >= 200) && ($ch_info['http_code'] < 300))) {
-                $error = true;
-            }
+        if (!array_key_exists('http_code', $ch_info)) {
+            throw new RuntimeException('Wrong response: no \'http_code\'');
         }
 
-        if ($ch_info['http_code'] == 429) {
+        if ($method === 'DELETE') {
+            if ($ch_info['http_code'] !== 302 && $ch_info['http_code'] !== 200) {
+                $error = true;
+            }
+        } elseif (!(($ch_info['http_code'] >= 200) && ($ch_info['http_code'] < 300))) {
+            $error = true;
+        }
+
+        if ($ch_info['http_code'] === 429) {
             $exception = new ThrottledRequestException();
             $response_headers = Helper::parseHttpHeaders($header);
             $exception->setResponseHeaders($response_headers);
@@ -693,15 +727,15 @@ class Api
         if ($error) {
             $errorInfo = array_filter(array(curl_error($ch), $body));
 
-            throw new \Exception('Request returned unexpected http code '. $ch_info['http_code'] . '. ' . join(', ', $errorInfo));
+            throw new \RuntimeException('Request returned unexpected http code '. $ch_info['http_code'] . '. ' . implode(', ', $errorInfo));
         }
 
         curl_close($ch);
-        if (!defined('PHPUNIT_UPLOADCARE_TESTSUITE') && ($this->public_key == 'demopublic_key' || $this->secret_key == 'demoprivatekey')) {
+        if (!defined('PHPUNIT_UPLOADCARE_TESTSUITE') && ($this->public_key === 'demopublic_key' || $this->secret_key === 'demoprivatekey')) {
             trigger_error('You are using the demo account. Please get an Uploadcare account at https://uploadcare.com/accounts/create/', E_USER_WARNING);
         }
 
-        return json_decode($body);
+        return jsonDecode($body, false);
     }
 
     /**
@@ -714,14 +748,13 @@ class Api
      * @param array $params Additional parameters for requests as array.
      * @param array $data Data will be posted like json.
      * @param null $retry_throttled
-     * @throws \Exception
-     * @throws \Uploadcare\Exceptions\ThrottledRequestException
+     * @throws ThrottledRequestException
      * @return object|null
      */
-    public function __preparedRequest($type, $request_type = 'GET', $params = array(), $data = array(), $retry_throttled = null)
+    public function preparedRequest($type, $request_type = 'GET', $params = array(), $data = array(), $retry_throttled = null)
     {
         $retry_throttled = $retry_throttled ?: $this->retry_throttled;
-        $path = $this->__getPath($type, $params);
+        $path = $this->getPath($type, $params);
 
         while (true) {
             try {
@@ -731,9 +764,9 @@ class Api
                     sleep($exception->getTimeout());
                     $retry_throttled--;
                     continue;
-                } else {
-                    throw $exception;
                 }
+
+                throw $exception;
             }
         }
 
@@ -748,7 +781,7 @@ class Api
      * @param array $resultArr
      * @return array
      */
-    private function __preparePagedParams($data, $reverse, $resultArr)
+    private function preparePagedParams($data, $reverse, $resultArr)
     {
         $nextParamsArr = parse_url($data->next);
         $prevParamsArr = parse_url($data->previous);
@@ -776,14 +809,14 @@ class Api
      * @param string $prefixIfNotEmpty
      * @return string
      */
-    private function __getQueryString($queryAr = array(), $prefixIfNotEmpty = '')
+    private function getQueryString($queryAr = array(), $prefixIfNotEmpty = '')
     {
         $queryAr = array_filter($queryAr);
         array_walk($queryAr, function (&$val, $key) {
             $val = urlencode($key) . '=' . urlencode($val);
         });
 
-        return $queryAr ? $prefixIfNotEmpty . join('&', $queryAr) : '';
+        return $queryAr ? $prefixIfNotEmpty . implode('&', $queryAr) : '';
     }
 
     /**
@@ -792,10 +825,9 @@ class Api
      *
      * @param string $type Construct type.
      * @param array $params Additional parameters for requests as array.
-     * @throws \Exception
      * @return string
      */
-    private function __getPath($type, $params = array())
+    private function getPath($type, $params = array())
     {
         switch ($type) {
             case 'root':
@@ -803,10 +835,10 @@ class Api
             case 'account':
                 return '/account/';
             case 'file_list':
-                return '/files/' . $this->__getQueryString($params, '?');
+                return '/files/' . $this->getQueryString($params, '?');
             case 'file_storage':
-                if (array_key_exists('uuid', $params) == false) {
-                    throw new \Exception('Please provide "uuid" param for request');
+                if (!array_key_exists('uuid', $params)) {
+                    throw new \RuntimeException('Please provide "uuid" param for request');
                 }
                 return sprintf('/files/%s/storage/', $params['uuid']);
             case 'file_copy':
@@ -814,24 +846,24 @@ class Api
             case 'files_storage':
                 return '/files/storage/';
             case 'file':
-                if (array_key_exists('uuid', $params) == false) {
-                    throw new \Exception('Please provide "uuid" param for request');
+                if (!array_key_exists('uuid', $params)) {
+                    throw new \RuntimeException('Please provide "uuid" param for request');
                 }
                 return sprintf('/files/%s/', $params['uuid']);
             case 'group_list':
-                return '/groups/' . $this->__getQueryString($params, '?');
+                return '/groups/' . $this->getQueryString($params, '?');
             case 'group':
-                if (array_key_exists('uuid', $params) == false) {
-                    throw new \Exception('Please provide "uuid" param for request');
+                if (!array_key_exists('uuid', $params)) {
+                    throw new \RuntimeException('Please provide "uuid" param for request');
                 }
                 return sprintf('/groups/%s/', $params['uuid']);
             case 'group_storage':
-                if (array_key_exists('uuid', $params) == false) {
-                    throw new \Exception('Please provide "uuid" param for request');
+                if (!array_key_exists('uuid', $params)) {
+                    throw new \RuntimeException('Please provide "uuid" param for request');
                 }
                 return sprintf('/groups/%s/storage/', $params['uuid']);
             default:
-                throw new \Exception('No api url type is provided for request "' . $type . '". Use store, or appropriate constants.');
+                throw new \RuntimeException('No api url type is provided for request "' . $type . '". Use store, or appropriate constants.');
         }
     }
 
@@ -841,10 +873,9 @@ class Api
      *
      * @param resource $ch. Curl resource.
      * @param string $type Request type. Options: get, post, put, delete.
-     * @throws \Exception
      * @return void
      */
-    private function __setRequestType($ch, $type = 'GET')
+    private function setRequestType($ch, $type = 'GET')
     {
         $this->current_method = strtoupper($type);
 
@@ -868,7 +899,7 @@ class Api
                 curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'OPTIONS');
                 break;
             default:
-                throw new \Exception('No request type is provided for request. Use post, put, delete, get or appropriate constants.');
+                throw new \RuntimeException('No request type is provided for request. Use post, put, delete, get or appropriate constants.');
         }
     }
 
@@ -877,7 +908,8 @@ class Api
      * @deprecated 2.2.1 Use getUserAgentHeader() instead.
      * @return string
      */
-    public function getUserAgent() {
+    public function getUserAgent()
+    {
         Helper::deprecate('2.0.0', '3.0.0', 'Use getUserAgentHeader() instead');
         return $this->getUserAgentHeader();
     }
@@ -918,10 +950,9 @@ class Api
      * @param resource $ch. Curl resource.
      * @param array $add_headers additional headers.
      * @param array $data Data array.
-     * @throws \Exception
      * @return void
      */
-    private function __setHeaders($ch, $add_headers = array(), $data = array())
+    private function setHeaders($ch, $add_headers = array(), $data = array())
     {
         $content_length = 0;
         $rawContent = '';
@@ -936,7 +967,7 @@ class Api
         $url_parts = parse_url($url);
 
         if ($url_parts === false) {
-            throw new \Exception('Incorrect URL ' . $url);
+            throw new \RuntimeException('Incorrect URL ' . $url);
         }
 
         $path = $url_parts['path'] . (!empty($url_parts['query']) ? '?' . $url_parts['query'] : '');
@@ -949,7 +980,7 @@ class Api
         $date = gmdate('D, d M Y H:i:s \G\M\T');
 
         // sign string
-        $sign_string = join("\n", array(
+        $sign_string = implode("\n", array(
             $this->current_method,
             $content_md5,
             $content_type,
@@ -981,8 +1012,8 @@ class Api
      * Get object of File class by id
      *
      * @param string $uuid_or_url Uploadcare file UUID or CDN URL
-     * @return File
      * @throws \Exception
+     * @return File
      */
     public function getFile($uuid_or_url)
     {

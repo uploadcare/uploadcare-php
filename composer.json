@@ -12,14 +12,23 @@
         "ext-json": "*"
     },
     "require-dev": {
-        "friendsofphp/php-cs-fixer": "^2.0",
-        "phpunit/phpunit": "=4.8.36",
+        "friendsofphp/php-cs-fixer": "^2.2",
+        "phpunit/phpunit": "^4.8",
         "squizlabs/php_codesniffer": ">=2.9.1,<4"
     },
     "minimum-stability": "dev",
     "autoload": {
-        "psr-0": {
-            "Uploadcare": "src"
+        "psr-4": {
+            "Uploadcare\\": "src/Uploadcare/"
+        },
+        "files": [
+            "src/Functions/json_decode.php",
+            "src/Functions/curl_file.php"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests"
         }
     },
     "keywords": [

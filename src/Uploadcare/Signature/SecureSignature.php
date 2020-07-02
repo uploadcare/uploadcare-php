@@ -2,8 +2,8 @@
 
 namespace Uploadcare\Signature;
 
-use Exception;
 use DateTime;
+use Exception;
 
 /**
  * Class SecureSignature
