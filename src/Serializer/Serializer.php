@@ -14,6 +14,7 @@ class Serializer implements SerializerInterface
 {
     const JSON_OPTIONS_KEY = 'json_options';
     const EXCLUDE_PROPERTY_KEY = 'exclude_property';
+    const DATE_FORMAT = 'Y-m-d\TH:i:s.u\Z';
 
     protected static $coreTypes = [
         'int' => true,
@@ -49,7 +50,65 @@ class Serializer implements SerializerInterface
      */
     public function serialize($object, array $context = [])
     {
-        throw new \RuntimeException('Not implemented yet');
+        if (!$object instanceof SerializableInterface) {
+            throw new SerializerException(\sprintf('Class \'%s\' must implements \'%s\' interface', \get_class($object), SerializableInterface::class));
+        }
+
+        $options = isset($context[self::JSON_OPTIONS_KEY]) ? $context[self::JSON_OPTIONS_KEY] : self::$defaultJsonOptions;
+        $normalized = [];
+        $this->normalize($object, $normalized, $context);
+        $result = \json_encode($normalized, $options);
+        if (\json_last_error() !== JSON_ERROR_NONE) {
+            throw new ConversionException(\sprintf('Unable to decode given data. Error is %s', \json_last_error_msg()));
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param SerializableInterface $object
+     * @param array                 $result
+     * @param array                 $context
+     *
+     * @return void
+     */
+    protected function normalize($object, array &$result = [], array $context = [])
+    {
+        $rules = $object::rules();
+        $excluded = isset($context[self::EXCLUDE_PROPERTY_KEY]) ? $context[self::EXCLUDE_PROPERTY_KEY] : [];
+        foreach ($rules as $propertyName => $rule) {
+            if (\array_key_exists($propertyName, \array_flip($excluded))) {
+                continue;
+            }
+
+            $convertedName = $this->nameConverter->normalize($propertyName);
+            $method = $this->getMethodName($propertyName, 'get');
+            if (!\method_exists($object, $method)) {
+                // Method may be the same as property in case of `isSomething`
+                $method = $propertyName;
+            }
+
+            if (!\method_exists($object, $method)) {
+                throw new MethodNotFoundException(\sprintf('Method \'%s\' not found in class \'%s\'', $method, \get_class($object)));
+            }
+            $value = $object->{$method}();
+
+            switch (true) {
+                case !\is_object($value) && $value !== null && \array_key_exists($rule, self::$coreTypes):
+                    \settype($value, $rule);
+                    $result[$convertedName] = $value;
+                    break;
+                case $value instanceof \DateTime:
+                    $result[$convertedName] = $this->normalizeDate($value);
+                    break;
+                case $value instanceof SerializableInterface:
+                    $result[$convertedName] = [];
+                    $this->normalize($value, $result[$convertedName], $context);
+                    break;
+                default:
+                    $result[$convertedName] = null;
+            }
+        }
     }
 
     /**
@@ -112,14 +171,11 @@ class Serializer implements SerializerInterface
                 $this->denormalizeClassesArray($class, $innerClassName, $convertedName, $value);
             }
 
-            if (\array_key_exists($convertedName, \array_flip($excluded))) {
+            if (!\array_key_exists($convertedName, $rules) || \array_key_exists($convertedName, \array_flip($excluded))) {
                 continue;
             }
-            $methodName = $this->getMethodName($convertedName);
 
-            if (!\array_key_exists($convertedName, $rules)) {
-                continue;
-            }
+            $methodName = $this->getMethodName($convertedName);
             if (!\method_exists($class, $methodName)) {
                 throw new MethodNotFoundException(\sprintf('Method \'%s\' not found in class \'%s\'', $methodName, $className));
             }
@@ -132,7 +188,7 @@ class Serializer implements SerializerInterface
                 if (!\is_string($value)) {
                     throw new ConversionException(\sprintf('Unable to convert \'%s\' to \'%s\'', \gettype($value), \DateTime::class));
                 }
-                $value = $this->denormalizeDate((string) $value);
+                $value = $this->denormalizeDate($value);
             }
 
             if (\is_array($value) && !\array_key_exists($rule, self::$coreTypes)) {
@@ -190,12 +246,26 @@ class Serializer implements SerializerInterface
         if (empty(\ini_get('date.timezone'))) {
             @\trigger_error('You should set your date.timezone in php.ini', E_USER_WARNING);
         }
-        $date = \date_create($dateTime);
+        $date = \date_create_from_format(self::DATE_FORMAT, $dateTime);
         if ($date === false) {
             throw new ConversionException(\sprintf('Unable to convert \'%s\' to \'%s\'', $dateTime, \DateTime::class));
         }
 
         return $date;
+    }
+
+    /**
+     * @param \DateTime $dateTime
+     *
+     * @return string
+     */
+    private function normalizeDate(\DateTime $dateTime)
+    {
+        if (empty(\ini_get('date.timezone'))) {
+            @\trigger_error('You should set your date.timezone in php.ini', E_USER_WARNING);
+        }
+
+        return $dateTime->format(self::DATE_FORMAT);
     }
 
     /**

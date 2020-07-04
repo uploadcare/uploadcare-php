@@ -6,23 +6,24 @@ use Uploadcare\Interfaces\File\CollectionInterface;
 use Uploadcare\Interfaces\File\FileInfoInterface;
 use Uploadcare\Interfaces\File\ImageInfoInterface;
 use Uploadcare\Interfaces\File\VideoInfoInterface;
+use Uploadcare\Interfaces\SerializableInterface;
 
-final class File implements FileInfoInterface
+final class File implements FileInfoInterface, SerializableInterface
 {
     /**
      * @var \DateTimeInterface|null
      */
-    private $dateTimeRemoved;
+    private $datetimeRemoved;
 
     /**
      * @var \DateTimeInterface|null
      */
-    private $dateTimeStored;
+    private $datetimeStored;
 
     /**
      * @var \DateTimeInterface|null
      */
-    private $dateTimeUploaded;
+    private $datetimeUploaded;
 
     /**
      * @var ImageInfoInterface|null
@@ -70,11 +71,13 @@ final class File implements FileInfoInterface
     private $uuid;
 
     /**
+     * @todo Not a files collection
      * @var CollectionInterface|null
      */
     private $variations;
 
     /**
+     * @todo make it implements SerializableInterface too
      * @var VideoInfoInterface|null
      */
     private $videoInfo;
@@ -100,22 +103,43 @@ final class File implements FileInfoInterface
         $this->uuid = '';
     }
 
-    /**
-     * @return \DateTimeInterface|null
-     */
-    public function getDateTimeRemoved()
+    public static function rules()
     {
-        return $this->dateTimeRemoved;
+        return [
+            'datetimeRemoved' => \DateTime::class,
+            'datetimeStored' => \DateTime::class,
+            'datetimeUploaded' => \DateTime::class,
+            'imageInfo' => ImageInfo::class,
+            'isImage' => 'bool',
+            'isReady' => 'bool',
+            'mimeType' => 'string',
+            'originalFilename' => 'string',
+            'size' => 'int',
+            'url' => 'string',
+            'uuid' => 'string',
+//            'variations' => FileCollection::class,
+//            'videoInfo' => VideoInfo::class,
+            'source' => 'string',
+            'rekognitionInfo' => 'array',
+        ];
     }
 
     /**
-     * @param \DateTimeInterface|null $dateTimeRemoved
+     * @return \DateTimeInterface|null
+     */
+    public function getDatetimeRemoved()
+    {
+        return $this->datetimeRemoved;
+    }
+
+    /**
+     * @param \DateTimeInterface|null $datetimeRemoved
      *
      * @return File
      */
-    public function setDateTimeRemoved(\DateTimeInterface $dateTimeRemoved = null)
+    public function setDatetimeRemoved(\DateTimeInterface $datetimeRemoved = null)
     {
-        $this->dateTimeRemoved = $dateTimeRemoved;
+        $this->datetimeRemoved = $datetimeRemoved;
 
         return $this;
     }
@@ -123,19 +147,19 @@ final class File implements FileInfoInterface
     /**
      * @return \DateTimeInterface|null
      */
-    public function getDateTimeStored()
+    public function getDatetimeStored()
     {
-        return $this->dateTimeStored;
+        return $this->datetimeStored;
     }
 
     /**
-     * @param \DateTimeInterface|null $dateTimeStored
+     * @param \DateTimeInterface|null $datetimeStored
      *
      * @return File
      */
-    public function setDateTimeStored(\DateTimeInterface $dateTimeStored = null)
+    public function setDatetimeStored(\DateTimeInterface $datetimeStored = null)
     {
-        $this->dateTimeStored = $dateTimeStored;
+        $this->datetimeStored = $datetimeStored;
 
         return $this;
     }
@@ -143,19 +167,19 @@ final class File implements FileInfoInterface
     /**
      * @return \DateTimeInterface|null
      */
-    public function getDateTimeUploaded()
+    public function getDatetimeUploaded()
     {
-        return $this->dateTimeUploaded;
+        return $this->datetimeUploaded;
     }
 
     /**
-     * @param \DateTimeInterface|null $dateTimeUploaded
+     * @param \DateTimeInterface|null $datetimeUploaded
      *
      * @return File
      */
-    public function setDateTimeUploaded(\DateTimeInterface $dateTimeUploaded = null)
+    public function setDatetimeUploaded(\DateTimeInterface $datetimeUploaded = null)
     {
-        $this->dateTimeUploaded = $dateTimeUploaded;
+        $this->datetimeUploaded = $datetimeUploaded;
 
         return $this;
     }
