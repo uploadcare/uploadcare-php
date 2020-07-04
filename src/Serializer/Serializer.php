@@ -66,6 +66,10 @@ class Serializer implements SerializerInterface
         $options = isset($context[self::JSON_OPTIONS_KEY]) ? $context[self::JSON_OPTIONS_KEY] : self::$defaultJsonOptions;
 
         $data = \json_decode($string, true, 512, $options);
+        if (\json_last_error() !== JSON_ERROR_NONE) {
+            throw new ConversionException(\sprintf('Unable to decode given value. Error is %s', \json_last_error_msg()));
+        }
+
         if ($className === null) {
             return $data;
         }
@@ -86,17 +90,28 @@ class Serializer implements SerializerInterface
     protected function denormalize(array $data, $className, array $context)
     {
         $this->validateClass($className);
+        if (!\is_a($className, SerializableInterface::class, true)) {
+            throw new SerializerException(\sprintf('Class \'%s\' must implements the \'%s\' interface', $className, SerializableInterface::class));
+        }
 
         $class = new $className;
         $excluded = isset($context[self::EXCLUDE_PROPERTY_KEY]) ? $context[self::EXCLUDE_PROPERTY_KEY] : [];
 
-        if (!$class instanceof SerializableInterface) {
-            throw new SerializerException(\sprintf('Class \'%s\' must implements the \'%s\' interface', $className, SerializableInterface::class));
-        }
-
         $rules = $class::rules();
         foreach ($data as $propertyName => $value) {
             $convertedName = $this->nameConverter->denormalize($propertyName);
+            $rule = $rules[$convertedName];
+            if (\is_array($rule)) {
+                // This means the property contains an array with other classes
+                // and we need to denormalize this classes first.
+                $innerClassName = $rule[\key($rule)];
+                if (!\is_array($value)) {
+                    throw new ConversionException(\sprintf('The \'%s\' property declared as array of \'%s\' classes, but value is \'%s\'', $convertedName, $innerClassName, \gettype($value)));
+                }
+
+                $this->denormalizeClassesArray($class, $innerClassName, $convertedName, $value);
+            }
+
             if (\array_key_exists($convertedName, \array_flip($excluded))) {
                 continue;
             }
@@ -109,14 +124,15 @@ class Serializer implements SerializerInterface
                 throw new MethodNotFoundException(\sprintf('Method \'%s\' not found in class \'%s\'', $methodName, $className));
             }
 
-            $rule = $rules[$convertedName];
-
             if (\array_key_exists($rule, self::$coreTypes) && $value !== null) {
                 \settype($value, $rule);
             }
 
             if ($value !== null && \is_a($rule, \DateTimeInterface::class, true)) {
-                $value = $this->denormalizeDate($value);
+                if (!\is_string($value)) {
+                    throw new ConversionException(\sprintf('Unable to convert \'%s\' to \'%s\'', \gettype($value), \DateTime::class));
+                }
+                $value = $this->denormalizeDate((string) $value);
             }
 
             if (\is_array($value) && !\array_key_exists($rule, self::$coreTypes)) {
@@ -134,6 +150,37 @@ class Serializer implements SerializerInterface
     }
 
     /**
+     * @param $parentClass
+     * @param $targetClassName
+     * @param $targetProperty
+     * @param array $data
+     */
+    private function denormalizeClassesArray($parentClass, $targetClassName, $targetProperty, array $data)
+    {
+        $set = false;
+        $method = $this->getMethodName($targetProperty, 'add');
+        if (!\method_exists(new $targetClassName(), $method)) {
+            $set = true;
+            $method = $this->getMethodName($targetProperty);
+        }
+
+        $result = [];
+        foreach ($data as $singleItem) {
+            $value = \is_array($singleItem) ? $this->denormalize($singleItem, $targetClassName, []) : $singleItem;
+
+            if (!$set) {
+                $parentClass->{$method}($value);
+            } else {
+                $result[] = $value;
+            }
+        }
+
+        if ($set) {
+            $parentClass->{$method}($result);
+        }
+    }
+
+    /**
      * @param string $dateTime Date string in `Y-m-d\TH:i:s.u\Z` format
      *
      * @return \DateTimeInterface
@@ -141,7 +188,7 @@ class Serializer implements SerializerInterface
     private function denormalizeDate($dateTime)
     {
         if (empty(\ini_get('date.timezone'))) {
-            @\trigger_error('You should set your date.timezone in php.ini');
+            @\trigger_error('You should set your date.timezone in php.ini', E_USER_WARNING);
         }
         $date = \date_create($dateTime);
         if ($date === false) {
@@ -167,8 +214,8 @@ class Serializer implements SerializerInterface
         throw new SerializerException(\sprintf('Class \'%s\' must implements any of \'%s\' interfaces', $className, \implode(', ', self::$validClasses)));
     }
 
-    private function getMethodName($propertyName)
+    private function getMethodName($propertyName, $prefix = 'set')
     {
-        return \sprintf('set%s', \ucfirst($propertyName));
+        return \sprintf('%s%s', $prefix, \ucfirst($propertyName));
     }
 }

@@ -2,12 +2,14 @@
 
 namespace Uploadcare\MultipartResponse;
 
+use Uploadcare\Interfaces\SerializableInterface;
+
 /**
  * Response of "Start multipart request" representation.
  *
  * @see https://uploadcare.com/api-refs/upload-api/#operation/multipartFileUploadStart
  */
-class MultipartStartResponse
+class MultipartStartResponse implements SerializableInterface
 {
     /**
      * @var array|MultipartPreSignedUrl[]
@@ -18,6 +20,17 @@ class MultipartStartResponse
      * @var string
      */
     private $uuid;
+
+    /**
+     * @return array|string[]
+     */
+    public static function rules()
+    {
+        return [
+            'parts' => 'array',
+            'uuid' => 'string',
+        ];
+    }
 
     /**
      * @return string
@@ -48,12 +61,30 @@ class MultipartStartResponse
     }
 
     /**
+     * @param array|string[] $parts Url-parts
+     *
+     * @return $this
+     */
+    public function setParts(array $parts)
+    {
+        foreach ($parts as $part) {
+            $this->addPart($part);
+        }
+
+        return $this;
+    }
+
+    /**
      * @param string $part
      *
      * @return MultipartStartResponse
      */
     public function addPart($part)
     {
+        if (empty($part)) {
+            return $this;
+        }
+
         $partUrl = (new MultipartPreSignedUrl())->setUrl($part);
         if (!\in_array($partUrl, $this->parts, true)) {
             $this->parts[] = $partUrl;

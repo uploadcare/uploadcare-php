@@ -15,9 +15,9 @@ interface SerializerInterface
     public function serialize($object, array $context = []);
 
     /**
-     * @param string      $string
-     * @param string|null $className
-     * @param array       $context
+     * @param string      $string    Data string
+     * @param string|null $className Class name fot serialize to or null for return array
+     * @param array       $context   Any serialization context
      *
      * @return object|array
      *
