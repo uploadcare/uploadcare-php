@@ -5,9 +5,11 @@ namespace Uploadcare;
 use GuzzleHttp\ClientInterface;
 use Uploadcare\Client\ClientFactory;
 use Uploadcare\Interfaces\ClientFactoryInterface;
+use Uploadcare\Interfaces\Serializer\SerializerFactoryInterface;
 use Uploadcare\Interfaces\Serializer\SerializerInterface;
 use Uploadcare\Interfaces\SignatureInterface;
 use Uploadcare\Security\Signature;
+use Uploadcare\Serializer\SerializerFactory;
 
 /**
  * Uploadcare Api Configuration.
@@ -37,33 +39,37 @@ class Configuration
     private $serializer;
 
     /**
-     * @param string                      $publicKey     Uploadcare API public key
-     * @param string                      $privateKey    Uploadcare API private key
-     * @param array                       $clientOptions Parameters for Http client (proxy, special headers, etc.)
-     * @param ClientFactoryInterface|null $clientFactory
+     * @param string                          $publicKey     Uploadcare API public key
+     * @param string                          $privateKey    Uploadcare API private key
+     * @param array                           $clientOptions Parameters for Http client (proxy, special headers, etc.)
+     * @param ClientFactoryInterface|null     $clientFactory
+     * @param SerializerFactoryInterface|null $serializerFactory
      *
      * @return Configuration
      */
-    public static function create($publicKey, $privateKey, array $clientOptions = [], ClientFactoryInterface $clientFactory = null)
+    public static function create($publicKey, $privateKey, array $clientOptions = [], ClientFactoryInterface $clientFactory = null, SerializerFactoryInterface $serializerFactory = null)
     {
         $signature = new Signature($privateKey);
         $client = $clientFactory !== null ? $clientFactory::createClient($clientOptions) : ClientFactory::createClient($clientOptions);
+        $serializer = $serializerFactory !== null ? $serializerFactory::create() : SerializerFactory::create();
 
-        return new static($publicKey, $signature, $client);
+        return new static($publicKey, $signature, $client, $serializer);
     }
 
     /**
      * Configuration constructor.
      *
-     * @param $publicKey
-     * @param SignatureInterface $secureSignature
-     * @param ClientInterface    $client
+     * @param string              $publicKey
+     * @param SignatureInterface  $secureSignature
+     * @param ClientInterface     $client
+     * @param SerializerInterface $serializer
      */
-    public function __construct($publicKey, SignatureInterface $secureSignature, ClientInterface $client)
+    public function __construct($publicKey, SignatureInterface $secureSignature, ClientInterface $client, SerializerInterface $serializer)
     {
         $this->publicKey = $publicKey;
         $this->secureSignature = $secureSignature;
         $this->client = $client;
+        $this->serializer = $serializer;
     }
 
     /**

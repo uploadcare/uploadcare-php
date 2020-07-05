@@ -12,6 +12,7 @@ use PHPUnit\Framework\TestCase;
 use Uploadcare\Configuration;
 use Uploadcare\Exception\InvalidArgumentException;
 use Uploadcare\Security\Signature;
+use Uploadcare\Serializer\SerializerFactory;
 use Uploadcare\Uploader;
 
 class UploaderServiceTest extends TestCase
@@ -36,7 +37,7 @@ class UploaderServiceTest extends TestCase
 
     private function getConf(ClientInterface $client = null)
     {
-        return new Configuration('demo-public-key', new Signature('demo-private-key'), $client ?: $this->mockClient());
+        return new Configuration('demo-public-key', new Signature('demo-private-key'), $client ?: $this->mockClient(), $this->getSerializer());
     }
 
     /**
@@ -53,6 +54,11 @@ class UploaderServiceTest extends TestCase
         ]);
 
         return new Client(['handler' => HandlerStack::create($mock)]);
+    }
+
+    private function getSerializer()
+    {
+        return SerializerFactory::create();
     }
 
     public function testCheckResourceException()
