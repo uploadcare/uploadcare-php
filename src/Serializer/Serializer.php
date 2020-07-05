@@ -160,6 +160,11 @@ class Serializer implements SerializerInterface
         $rules = $class::rules();
         foreach ($data as $propertyName => $value) {
             $convertedName = $this->nameConverter->denormalize($propertyName);
+            if (!isset($rules[$convertedName])) {
+                // Property can be named as `isSomething`
+                $convertedName = \sprintf('is%s', ucfirst($convertedName));
+            }
+
             $rule = $rules[$convertedName];
             if (\is_array($rule)) {
                 // This means the property contains an array with other classes
@@ -176,7 +181,7 @@ class Serializer implements SerializerInterface
                 continue;
             }
 
-            $methodName = $this->getMethodName($convertedName);
+            $methodName = $this->getMethodName($convertedName, 'set');
             if (!\method_exists($class, $methodName)) {
                 throw new MethodNotFoundException(\sprintf('Method \'%s\' not found in class \'%s\'', $methodName, $className));
             }

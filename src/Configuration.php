@@ -82,11 +82,11 @@ class Configuration
 
     protected function setUserAgent(array &$headers)
     {
-        $exists = \array_filter($headers, function ($header) {
+        $exists = \array_filter($headers, static function ($header) {
             return \is_string($header) && \strtolower($header) === 'user-agent';
         }, ARRAY_FILTER_USE_KEY);
 
-        if (!empty($exists) && \is_string($exists[0])) {
+        if (!empty($exists) && isset($exists[0]) && \is_string($exists[0])) {
             $headers['User-Agent'] = \sprintf('%s (php-%s)', $exists[0], PHP_VERSION);
 
             return;

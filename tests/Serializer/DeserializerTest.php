@@ -58,6 +58,7 @@ class DeserializerTest extends TestCase
         $date = \date_create();
 
         $imageInfo = $this->getImageInfoJson([
+            'sequence' => true,
             'geo_location' => [
                 'latitude' => $lat,
                 'longitude' => $lon,
@@ -73,7 +74,7 @@ class DeserializerTest extends TestCase
         $this->assertEquals('RGB', $object->getColorMode());
         $this->assertNull($object->getOrientation());
         $this->assertEquals('JPEG', $object->getFormat());
-        $this->assertFalse($object->isSequence());
+        $this->assertTrue($object->isSequence());
         $this->assertEquals(500, $object->getHeight());
         $this->assertEquals(800, $object->getWidth());
         $this->assertEquals($lat, $object->getGeoLocation()->getLatitude());

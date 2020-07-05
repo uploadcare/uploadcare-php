@@ -90,9 +90,17 @@ class DeserializerEdgeCasesTest extends TestCase
         $this->assertEmpty($result->getColorMode());
     }
 
+    /**
+     * @todo PHP7
+     * @throws \ReflectionException
+     */
     public function testDenormalizeDateWithoutTimezone()
     {
-        $this->expectException(\PHPUnit_Framework_Error_Warning::class);
+        $throws = 'PHPUnit_Framework_Error_Warning';
+        if (\class_exists('PHPUnit\\Framework\\Error\\Warning')) {
+            $throws = 'PHPUnit\\Framework\\Error\\Warning';
+        }
+        $this->expectException($throws);
 
         $serializer = $this->getSerializer();
         $denormalizeDate = (new \ReflectionObject($serializer))->getMethod('denormalizeDate');
