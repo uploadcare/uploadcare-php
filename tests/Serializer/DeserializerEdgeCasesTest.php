@@ -91,7 +91,7 @@ class DeserializerEdgeCasesTest extends TestCase
     }
 
     /**
-     * @todo PHP7
+     * @requires PHP 5.6
      * @throws \ReflectionException
      */
     public function testDenormalizeDateWithoutTimezone()
@@ -100,14 +100,19 @@ class DeserializerEdgeCasesTest extends TestCase
         if (\class_exists('PHPUnit\\Framework\\Error\\Warning')) {
             $throws = 'PHPUnit\\Framework\\Error\\Warning';
         }
-        $this->expectException($throws);
+        if (PHP_MAJOR_VERSION <= 5) {
+            $this->expectException($throws);
+        }
 
         $serializer = $this->getSerializer();
         $denormalizeDate = (new \ReflectionObject($serializer))->getMethod('denormalizeDate');
         $denormalizeDate->setAccessible(true);
         \ini_set('date.timezone', null);
-        $denormalizeDate->invokeArgs($serializer, [\date_create()->format('Y-m-d\TH:i:s.u\Z')]);
-        $this->expectOutputString('You should set your date.timezone in php.ini');
+        $result = $denormalizeDate->invokeArgs($serializer, [\date_create()->format('Y-m-d\TH:i:s.u\Z')]);
+        if (PHP_MAJOR_VERSION <= 5) {
+            $this->expectOutputString('You should set your date.timezone in php.ini');
+        }
+        $this->assertInstanceOf(\DateTime::class, $result);
     }
 
     public function testDenormalizeWrongDate()
