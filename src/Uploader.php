@@ -37,7 +37,7 @@ class Uploader extends AbstractUploader
         } catch (\Exception $e) {
             throw new InvalidArgumentException(\sprintf('Wrong parameter at %s: %s', __METHOD__, $e->getMessage()));
         }
-        \rewind($handle);
+        $this->rewind($handle);
         if (($fileSize = $this->getSize($handle)) >= self::MULTIPART_UPLOAD_SIZE) {
             return $this->uploadByParts($handle, $fileSize, $mimeType, $filename, $store === 'auto' ? null : $store);
         }
@@ -68,6 +68,7 @@ class Uploader extends AbstractUploader
         try {
             $response = $this->sendRequest('POST', 'base/', $parameters);
         } catch (GuzzleException $e) {
+            \fclose($handle);
             throw new HttpException('', 0, ($e instanceof \Exception ? $e : null));
         }
         \fclose($handle);

@@ -79,7 +79,7 @@ class UploaderServiceTest extends TestCase
         $uploader = new Uploader($this->getConf());
         $checkResource = (new \ReflectionObject($uploader))->getMethod('checkResource');
         $checkResource->setAccessible(true);
-        $checkResource->invokeArgs($uploader, [\fopen(\dirname(__DIR__) . '/_data/empty.file.txt', 'w+b')]);
+        $checkResource->invokeArgs($uploader, [\fopen(\dirname(__DIR__) . '/_data/empty.file.txt', 'wb')]);
 
         $this->expectExceptionMessageRegExp('metadata parameter can be');
     }

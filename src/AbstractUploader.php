@@ -87,7 +87,7 @@ abstract class AbstractUploader implements UploaderInterface
     {
         $res = \fopen('php://temp', 'rb+');
         \fwrite($res, $content);
-        \rewind($res);
+        $this->rewind($res);
 
         return $this->fromResource($res, $mimeType, $filename, $store);
     }
@@ -114,9 +114,9 @@ abstract class AbstractUploader implements UploaderInterface
     protected function checkResourceMetadata(array $metadata)
     {
         $parameters = [
-            'wrapper_type' => ['STDIO', 'http'],
-            'stream_type' => ['tcp_socket/ssl', 'plainfile'],
-            'mode' => ['rb', 'rb+', 'r+b', 'r', 'r+'],
+            'wrapper_type' => ['tcp_socket/ssl', 'plainfile', 'PHP', 'http'],
+            'stream_type' => ['STDIO', 'http', 'TEMP', 'tcp_socket/ssl'],
+            'mode' => ['rb', 'rb+', 'r+b', 'r', 'r+', 'w+b'],
         ];
         $required = \array_keys($parameters);
         $received = \array_keys($metadata);
@@ -241,5 +241,15 @@ abstract class AbstractUploader implements UploaderInterface
         }
 
         return 0;
+    }
+
+    protected function rewind($handle)
+    {
+        if (!\is_resource($handle))
+            return;
+
+        $meta = \stream_get_meta_data($handle);
+        if (isset($meta['seekable']) && $meta['seekable'] === true)
+            \rewind($handle);
     }
 }
