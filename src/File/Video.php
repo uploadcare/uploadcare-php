@@ -3,11 +3,12 @@
 namespace Uploadcare\File;
 
 use Uploadcare\Interfaces\File\VideoInterface;
+use Uploadcare\Interfaces\SerializableInterface;
 
 /**
  * Video.
  */
-final class Video implements VideoInterface
+final class Video implements VideoInterface, SerializableInterface
 {
     /**
      * @var int
@@ -33,6 +34,20 @@ final class Video implements VideoInterface
      * @var string
      */
     private $codec;
+
+    /**
+     * @inheritDoc
+     */
+    public static function rules()
+    {
+        return [
+            'height' => 'int',
+            'width' => 'int',
+            'frameRate' => 'float',
+            'bitrate' => 'int',
+            'codec' => 'string',
+        ];
+    }
 
     /**
      * @return int

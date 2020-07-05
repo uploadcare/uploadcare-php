@@ -66,6 +66,34 @@ class Serializer implements SerializerInterface
     }
 
     /**
+     * @param string      $string
+     * @param string|null $className
+     * @param array       $context
+     *
+     * @return object|array
+     *
+     * @throws \RuntimeException
+     */
+    public function deserialize($string, $className = null, array $context = [])
+    {
+        $options = isset($context[self::JSON_OPTIONS_KEY]) ? $context[self::JSON_OPTIONS_KEY] : self::$defaultJsonOptions;
+
+        $data = \json_decode($string, true, 512, $options);
+        if (\json_last_error() !== JSON_ERROR_NONE) {
+            throw new ConversionException(\sprintf('Unable to decode given value. Error is %s', \json_last_error_msg()));
+        }
+
+        if ($className === null) {
+            return $data;
+        }
+        if (!\class_exists($className)) {
+            throw new ClassNotFoundException(\sprintf('Class \'%s\' not found', $className));
+        }
+
+        return $this->denormalize($data, $className, $context);
+    }
+
+    /**
      * @param SerializableInterface $object
      * @param array                 $result
      * @param array                 $context
@@ -76,6 +104,7 @@ class Serializer implements SerializerInterface
     {
         $rules = $object::rules();
         $excluded = isset($context[self::EXCLUDE_PROPERTY_KEY]) ? $context[self::EXCLUDE_PROPERTY_KEY] : [];
+
         foreach ($rules as $propertyName => $rule) {
             if (\array_key_exists($propertyName, \array_flip($excluded))) {
                 continue;
@@ -109,34 +138,6 @@ class Serializer implements SerializerInterface
                     $result[$convertedName] = null;
             }
         }
-    }
-
-    /**
-     * @param string      $string
-     * @param string|null $className
-     * @param array       $context
-     *
-     * @return object|array
-     *
-     * @throws \RuntimeException
-     */
-    public function deserialize($string, $className = null, array $context = [])
-    {
-        $options = isset($context[self::JSON_OPTIONS_KEY]) ? $context[self::JSON_OPTIONS_KEY] : self::$defaultJsonOptions;
-
-        $data = \json_decode($string, true, 512, $options);
-        if (\json_last_error() !== JSON_ERROR_NONE) {
-            throw new ConversionException(\sprintf('Unable to decode given value. Error is %s', \json_last_error_msg()));
-        }
-
-        if ($className === null) {
-            return $data;
-        }
-        if (!\class_exists($className)) {
-            throw new ClassNotFoundException(\sprintf('Class \'%s\' not found', $className));
-        }
-
-        return $this->denormalize($data, $className, $context);
     }
 
     /**

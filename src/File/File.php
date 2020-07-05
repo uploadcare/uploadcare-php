@@ -2,12 +2,16 @@
 
 namespace Uploadcare\File;
 
-use Uploadcare\Interfaces\File\CollectionInterface;
 use Uploadcare\Interfaces\File\FileInfoInterface;
 use Uploadcare\Interfaces\File\ImageInfoInterface;
 use Uploadcare\Interfaces\File\VideoInfoInterface;
 use Uploadcare\Interfaces\SerializableInterface;
 
+/**
+ * Class File.
+ *
+ * @see FileInfoInterface
+ */
 final class File implements FileInfoInterface, SerializableInterface
 {
     /**
@@ -71,13 +75,11 @@ final class File implements FileInfoInterface, SerializableInterface
     private $uuid;
 
     /**
-     * @todo Not a files collection
-     * @var CollectionInterface|null
+     * @var array|null
      */
     private $variations;
 
     /**
-     * @todo make it implements SerializableInterface too
      * @var VideoInfoInterface|null
      */
     private $videoInfo;
@@ -117,15 +119,15 @@ final class File implements FileInfoInterface, SerializableInterface
             'size' => 'int',
             'url' => 'string',
             'uuid' => 'string',
-//            'variations' => FileCollection::class,
-//            'videoInfo' => VideoInfo::class,
+            'variations' => 'array',
+            'videoInfo' => VideoInfo::class,
             'source' => 'string',
             'rekognitionInfo' => 'array',
         ];
     }
 
     /**
-     * @return \DateTimeInterface|null
+     * @inheritDoc
      */
     public function getDatetimeRemoved()
     {
@@ -145,7 +147,7 @@ final class File implements FileInfoInterface, SerializableInterface
     }
 
     /**
-     * @return \DateTimeInterface|null
+     * @inheritDoc
      */
     public function getDatetimeStored()
     {
@@ -165,7 +167,7 @@ final class File implements FileInfoInterface, SerializableInterface
     }
 
     /**
-     * @return \DateTimeInterface|null
+     * @inheritDoc
      */
     public function getDatetimeUploaded()
     {
@@ -185,7 +187,7 @@ final class File implements FileInfoInterface, SerializableInterface
     }
 
     /**
-     * @return ImageInfoInterface|null
+     * @inheritDoc
      */
     public function getImageInfo()
     {
@@ -205,7 +207,7 @@ final class File implements FileInfoInterface, SerializableInterface
     }
 
     /**
-     * @return bool
+     * @inheritDoc
      */
     public function isImage()
     {
@@ -225,7 +227,7 @@ final class File implements FileInfoInterface, SerializableInterface
     }
 
     /**
-     * @return bool
+     * @inheritDoc
      */
     public function isReady()
     {
@@ -245,7 +247,7 @@ final class File implements FileInfoInterface, SerializableInterface
     }
 
     /**
-     * @return string
+     * @inheritDoc
      */
     public function getMimeType()
     {
@@ -265,7 +267,7 @@ final class File implements FileInfoInterface, SerializableInterface
     }
 
     /**
-     * @return string|null
+     * @inheritDoc
      */
     public function getOriginalFileUrl()
     {
@@ -285,7 +287,7 @@ final class File implements FileInfoInterface, SerializableInterface
     }
 
     /**
-     * @return string
+     * @inheritDoc
      */
     public function getOriginalFilename()
     {
@@ -305,7 +307,7 @@ final class File implements FileInfoInterface, SerializableInterface
     }
 
     /**
-     * @return int
+     * @inheritDoc
      */
     public function getSize()
     {
@@ -325,7 +327,7 @@ final class File implements FileInfoInterface, SerializableInterface
     }
 
     /**
-     * @return string
+     * @inheritDoc
      */
     public function getUrl()
     {
@@ -345,7 +347,7 @@ final class File implements FileInfoInterface, SerializableInterface
     }
 
     /**
-     * @return string
+     * @inheritDoc
      */
     public function getUuid()
     {
@@ -365,7 +367,7 @@ final class File implements FileInfoInterface, SerializableInterface
     }
 
     /**
-     * @return CollectionInterface|null
+     * @inheritDoc
      */
     public function getVariations()
     {
@@ -373,11 +375,11 @@ final class File implements FileInfoInterface, SerializableInterface
     }
 
     /**
-     * @param FileCollection|CollectionInterface|null $variations
+     * @param array|null $variations
      *
      * @return File
      */
-    public function setVariations(CollectionInterface $variations = null)
+    public function setVariations(array $variations = null)
     {
         $this->variations = $variations;
 
@@ -385,7 +387,7 @@ final class File implements FileInfoInterface, SerializableInterface
     }
 
     /**
-     * @return VideoInfoInterface|null
+     * @inheritDoc
      */
     public function getVideoInfo()
     {
@@ -405,7 +407,7 @@ final class File implements FileInfoInterface, SerializableInterface
     }
 
     /**
-     * @return string
+     * @inheritDoc
      */
     public function getSource()
     {
@@ -425,7 +427,7 @@ final class File implements FileInfoInterface, SerializableInterface
     }
 
     /**
-     * @return array<string, string>
+     * @inheritDoc
      */
     public function getRekognitionInfo()
     {

@@ -3,11 +3,12 @@
 namespace Uploadcare\File;
 
 use Uploadcare\Interfaces\File\AudioInterface;
+use Uploadcare\Interfaces\SerializableInterface;
 
 /**
  * Audio.
  */
-final class Audio implements AudioInterface
+final class Audio implements AudioInterface, SerializableInterface
 {
     /**
      * @var int|null
@@ -28,6 +29,19 @@ final class Audio implements AudioInterface
      * @var string|null
      */
     private $channels;
+
+    /**
+     * @inheritDoc
+     */
+    public static function rules()
+    {
+        return [
+            'bitrate' => 'int',
+            'codec' => 'string',
+            'sampleRate' => 'int',
+            'channels' => 'string',
+        ];
+    }
 
     /**
      * @return int|null

@@ -4,7 +4,6 @@ namespace Tests\File;
 
 use PHPUnit\Framework\TestCase;
 use Uploadcare\File\File;
-use Uploadcare\Interfaces\File\CollectionInterface;
 use Uploadcare\Interfaces\File\FileInfoInterface;
 use Uploadcare\Interfaces\File\ImageInfoInterface;
 use Uploadcare\Interfaces\File\VideoInfoInterface;
@@ -66,7 +65,7 @@ class FileTest extends TestCase
             ['setSize', 'getSize', \random_int(1000, 1500)],
             ['setUrl', 'getUrl', 'https://example.com/'],
             ['setUuid', 'getUuid', \uuid_create()],
-            ['setVariations', 'getVariations', $this->createMock(CollectionInterface::class)],
+            ['setVariations', 'getVariations', null],
             ['setVideoInfo', 'getVideoInfo', $this->createMock(VideoInfoInterface::class)],
             ['setSource', 'getSource', 'some-source'],
             ['setRekognitionInfo', 'getRekognitionInfo', ['foo' => 'bar']],

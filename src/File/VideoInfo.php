@@ -5,11 +5,12 @@ namespace Uploadcare\File;
 use Uploadcare\Interfaces\File\AudioInterface;
 use Uploadcare\Interfaces\File\VideoInfoInterface;
 use Uploadcare\Interfaces\File\VideoInterface;
+use Uploadcare\Interfaces\SerializableInterface;
 
 /**
  * Video Info.
  */
-final class VideoInfo implements VideoInfoInterface
+final class VideoInfo implements VideoInfoInterface, SerializableInterface
 {
     /**
      * @var int
@@ -40,6 +41,20 @@ final class VideoInfo implements VideoInfoInterface
     {
         $this->video = new Video();
         $this->audio = new Audio();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public static function rules()
+    {
+        return [
+            'duration' => 'int',
+            'format' => 'string',
+            'bitrate' => 'int',
+            'video' => Video::class,
+            'audio' => Audio::class,
+        ];
     }
 
     /**

@@ -96,7 +96,7 @@ interface FileInfoInterface
     /**
      * Dictionary of other files that has been created using this file as source. Used for video, document and etc. conversion.
      *
-     * @return CollectionInterface|null
+     * @return null|array<array-key, string>
      */
     public function getVariations();
 
