@@ -4,7 +4,6 @@ namespace Uploadcare;
 
 use GuzzleHttp\Exception\GuzzleException;
 use Psr\Http\Message\ResponseInterface;
-use RuntimeException;
 use Uploadcare\Exception\HttpException;
 use Uploadcare\Exception\InvalidArgumentException;
 use Uploadcare\File\UploadedFile;
@@ -234,7 +233,7 @@ abstract class AbstractUploader implements UploaderInterface
 
         $result = $this->configuration->getSerializer()->deserialize($response->getBody()->getContents(), UploadedFile::class);
         if (!$result instanceof UploadedFileInterface) {
-            throw new RuntimeException('Cannot deserialize response object. Call to support');
+            throw new \RuntimeException('Cannot deserialize response object. Call to support');
         }
 
         return $result;
