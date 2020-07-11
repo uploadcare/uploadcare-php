@@ -15,5 +15,4 @@ $url = 'https://httpbin.org/image/jpeg';
 $result = $uploader->fromUrl($url, 'image/jpeg');
 
 echo \sprintf("File from url %s uploaded successfully \n", $url);
-echo \sprintf("Uploaded file ID: %s\n", $result);
-
+dump($result);

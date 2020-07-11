@@ -10,7 +10,6 @@ use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
-use ReflectionObject;
 use Uploadcare\Configuration;
 use Uploadcare\Security\Signature;
 use Uploadcare\Serializer\Serializer;
@@ -21,6 +20,7 @@ class UploaderMethodsTest extends TestCase
 {
     /**
      * @param ClientInterface $client
+     *
      * @return Configuration
      */
     protected function makeConfiguration(ClientInterface $client)
@@ -33,6 +33,7 @@ class UploaderMethodsTest extends TestCase
 
     /**
      * @param ResponseInterface|GuzzleException $response
+     *
      * @return Client
      */
     protected function makeClient($response)
@@ -44,6 +45,7 @@ class UploaderMethodsTest extends TestCase
 
     /**
      * @param array $responseBody
+     *
      * @return Uploader
      */
     protected function makeUploaderWithResponse(array $responseBody)
@@ -59,7 +61,7 @@ class UploaderMethodsTest extends TestCase
     {
         $body = ['file' => \uuid_create()];
         $uploader = $this->makeUploaderWithResponse($body);
-        $directUpload = (new ReflectionObject($uploader))->getMethod('directUpload');
+        $directUpload = (new \ReflectionObject($uploader))->getMethod('directUpload');
         $directUpload->setAccessible(true);
         $handle = \fopen(\dirname(__DIR__) . '/_data/test.jpg', 'rb');
 

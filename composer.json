@@ -39,7 +39,7 @@
   },
   "autoload": {
     "psr-4": {
-      "Uploadcare\\": "src"
+      "Uploadcare\\": "./src/"
     }
   },
   "autoload-dev": {

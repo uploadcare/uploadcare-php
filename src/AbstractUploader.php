@@ -4,7 +4,11 @@ namespace Uploadcare;
 
 use GuzzleHttp\Exception\GuzzleException;
 use Psr\Http\Message\ResponseInterface;
+use RuntimeException;
+use Uploadcare\Exception\HttpException;
 use Uploadcare\Exception\InvalidArgumentException;
+use Uploadcare\File\UploadedFile;
+use Uploadcare\Interfaces\UploadedFileInterface;
 use Uploadcare\Interfaces\UploaderInterface;
 
 /**
@@ -30,7 +34,7 @@ abstract class AbstractUploader implements UploaderInterface
      * @param string|null $filename
      * @param string      $store
      *
-     * @return string
+     * @return UploadedFileInterface
      */
     abstract public function fromResource($handle, $mimeType = null, $filename = null, $store = 'auto');
 
@@ -42,7 +46,7 @@ abstract class AbstractUploader implements UploaderInterface
      * @param string|null $filename
      * @param string      $store
      *
-     * @return string
+     * @return UploadedFileInterface
      */
     public function fromPath($path, $mimeType = null, $filename = null, $store = 'auto')
     {
@@ -61,7 +65,7 @@ abstract class AbstractUploader implements UploaderInterface
      * @param string|null $filename
      * @param string      $store
      *
-     * @return string
+     * @return UploadedFileInterface
      */
     public function fromUrl($url, $mimeType = null, $filename = null, $store = 'auto')
     {
@@ -81,7 +85,7 @@ abstract class AbstractUploader implements UploaderInterface
      * @param string|null $filename
      * @param string      $store
      *
-     * @return string
+     * @return UploadedFileInterface
      */
     public function fromContent($content, $mimeType = null, $filename = null, $store = 'auto')
     {
@@ -104,6 +108,23 @@ abstract class AbstractUploader implements UploaderInterface
         }
 
         $this->checkResourceMetadata(\stream_get_meta_data($handle));
+    }
+
+    /**
+     * @param resource $handle
+     *
+     * @return string|null
+     */
+    protected function getFileName($handle)
+    {
+        $meta = \stream_get_meta_data($handle);
+
+        if (!isset($meta['uri'])) {
+            return null;
+        }
+        $path = $meta['uri'];
+
+        return \pathinfo($path, PATHINFO_BASENAME);
     }
 
     /**
@@ -192,7 +213,7 @@ abstract class AbstractUploader implements UploaderInterface
      * @param ResponseInterface $response
      * @param string            $arrayKey
      *
-     * @return string
+     * @return UploadedFileInterface
      */
     protected function serializeFileResponse(ResponseInterface $response, $arrayKey = 'file')
     {
@@ -200,8 +221,23 @@ abstract class AbstractUploader implements UploaderInterface
         if (!isset($result[$arrayKey])) {
             throw new \RuntimeException(\sprintf('Unable to get \'%s\' key from response. Call to support', $arrayKey));
         }
+        try {
+            $response = $this->sendRequest('GET', '/info', [
+                'query' => [
+                    'file_id' => (string) $result[$arrayKey],
+                    'pub_key' => $this->configuration->getPublicKey(),
+                ],
+            ]);
+        } catch (GuzzleException $e) {
+            throw new HttpException('', 0, ($e instanceof \Exception ? $e : null));
+        }
 
-        return (string) $result[$arrayKey];
+        $result = $this->configuration->getSerializer()->deserialize($response->getBody()->getContents(), UploadedFile::class);
+        if (!$result instanceof UploadedFileInterface) {
+            throw new RuntimeException('Cannot deserialize response object. Call to support');
+        }
+
+        return $result;
     }
 
     /**
@@ -245,11 +281,13 @@ abstract class AbstractUploader implements UploaderInterface
 
     protected function rewind($handle)
     {
-        if (!\is_resource($handle))
+        if (!\is_resource($handle)) {
             return;
+        }
 
         $meta = \stream_get_meta_data($handle);
-        if (isset($meta['seekable']) && $meta['seekable'] === true)
+        if (isset($meta['seekable']) && $meta['seekable'] === true) {
             \rewind($handle);
+        }
     }
 }

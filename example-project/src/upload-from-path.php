@@ -15,4 +15,4 @@ $path = __DIR__ . '/squirrel.jpg';
 $result = $uploader->fromPath($path, 'image/jpeg');
 
 echo \sprintf("File %s uploaded successfully \n", \realpath($path));
-echo \sprintf("Uploaded file ID: %s\n", $result);
+dump($result);
