@@ -1,4 +1,4 @@
-vendor
-.idea
-.composer.lock
-src/.env.local
+/vendor
+/.idea
+/composer.lock
+/src/.env.local
