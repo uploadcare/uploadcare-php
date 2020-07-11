@@ -1,1 +1,4 @@
-.composer.lock
+/vendor
+/.idea
+/composer.lock
+/src/.env.local
