@@ -1,0 +1,15 @@
+{
+  "name": "uploadcare/example-project",
+  "description": "Examples for Uploadcare PHP client",
+  "type": "project",
+  "license": "MIT",
+  "minimum-stability": "stable",
+  "require": {
+    "php": ">=7.4",
+    "uploadcare/uploadcare-php": "dev-release-3.0",
+    "symfony/dotenv": "^5.1"
+  },
+  "require-dev": {
+    "symfony/var-dumper": "^5.1"
+  }
+}

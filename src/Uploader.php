@@ -49,18 +49,20 @@ class Uploader extends AbstractUploader
 
     /**
      * @param resource    $handle
+     * @param string|null $mimeType
      * @param string|null $filename
      * @param string|null $store
      *
      * @return ResponseInterface
      */
-    private function directUpload($handle, $filename = null, $store = 'auto')
+    private function directUpload($handle, $mimeType = null, $filename = null, $store = 'auto')
     {
         $parameters = $this->makeMultipartParameters(\array_merge($this->getDefaultParameters(), [
             [
                 'name' => 'file',
                 'contents' => $handle,
                 'filename' => $filename ?: \uuid_create(),
+                'headers' => ['Content-Type' => $mimeType],
             ],
             self::UPLOADCARE_STORE_KEY => $store,
         ]));
@@ -68,10 +70,14 @@ class Uploader extends AbstractUploader
         try {
             $response = $this->sendRequest('POST', 'base/', $parameters);
         } catch (GuzzleException $e) {
-            \fclose($handle);
+            if (\is_resource($handle)) {
+                \fclose($handle);
+            }
             throw new HttpException('', 0, ($e instanceof \Exception ? $e : null));
         }
-        \fclose($handle);
+        if (\is_resource($handle)) {
+            \fclose($handle);
+        }
 
         return $response;
     }
