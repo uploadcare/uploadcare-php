@@ -164,6 +164,10 @@ class Serializer implements SerializerInterface
                 // Property can be named as `isSomething`
                 $convertedName = \sprintf('is%s', ucfirst($convertedName));
             }
+            if (!isset($rules[$convertedName])) {
+                // There is no rule with this name
+                continue;
+            }
 
             $rule = $rules[$convertedName];
             if (\is_array($rule)) {

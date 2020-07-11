@@ -19,7 +19,7 @@ interface UploaderInterface
      * @param string|null $filename
      * @param string      $store
      *
-     * @return string
+     * @return UploadedFileInterface
      */
     public function fromPath($path, $mimeType = null, $filename = null, $store = 'auto');
 
@@ -31,7 +31,7 @@ interface UploaderInterface
      * @param string|null $filename
      * @param string      $store
      *
-     * @return string
+     * @return UploadedFileInterface
      */
     public function fromUrl($url, $mimeType = null, $filename = null, $store = 'auto');
 
@@ -43,7 +43,7 @@ interface UploaderInterface
      * @param string|null $filename
      * @param string      $store
      *
-     * @return string
+     * @return UploadedFileInterface
      */
     public function fromResource($handle, $mimeType = null, $filename = null, $store = 'auto');
 
@@ -55,7 +55,7 @@ interface UploaderInterface
      * @param string|null $filename
      * @param string      $store
      *
-     * @return string
+     * @return UploadedFileInterface
      */
     public function fromContent($content, $mimeType = null, $filename = null, $store = 'auto');
 }

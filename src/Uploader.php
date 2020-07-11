@@ -6,6 +6,7 @@ use GuzzleHttp\Exception\GuzzleException;
 use Psr\Http\Message\ResponseInterface;
 use Uploadcare\Exception\HttpException;
 use Uploadcare\Exception\InvalidArgumentException;
+use Uploadcare\Interfaces\UploadedFileInterface;
 use Uploadcare\MultipartResponse\MultipartStartResponse;
 
 class Uploader extends AbstractUploader
@@ -28,7 +29,7 @@ class Uploader extends AbstractUploader
      * @param string|null $filename
      * @param string|null $store
      *
-     * @return string
+     * @return UploadedFileInterface
      */
     public function fromResource($handle, $mimeType = null, $filename = null, $store = 'auto')
     {
@@ -37,12 +38,16 @@ class Uploader extends AbstractUploader
         } catch (\Exception $e) {
             throw new InvalidArgumentException(\sprintf('Wrong parameter at %s: %s', __METHOD__, $e->getMessage()));
         }
-        $this->rewind($handle);
-        if (($fileSize = $this->getSize($handle)) >= self::MULTIPART_UPLOAD_SIZE) {
-            return $this->uploadByParts($handle, $fileSize, $mimeType, $filename, $store === 'auto' ? null : $store);
+        if ($filename === null) {
+            $filename = $this->getFileName($handle);
         }
 
-        $response = $this->directUpload($handle, $filename, $store);
+        $this->rewind($handle);
+        if (($fileSize = $this->getSize($handle)) >= self::MULTIPART_UPLOAD_SIZE) {
+            $response = $this->uploadByParts($handle, $fileSize, $mimeType, $filename, $store === 'auto' ? null : $store);
+        } else {
+            $response = $this->directUpload($handle, $mimeType, $filename, $store);
+        }
 
         return $this->serializeFileResponse($response);
     }
@@ -89,7 +94,7 @@ class Uploader extends AbstractUploader
      * @param string|null $filename
      * @param string|null $store
      *
-     * @return string
+     * @return ResponseInterface
      */
     private function uploadByParts($handle, $fileSize, $mimeType = null, $filename = null, $store = null)
     {
@@ -166,7 +171,7 @@ class Uploader extends AbstractUploader
     /**
      * @param MultipartStartResponse $response
      *
-     * @return string
+     * @return ResponseInterface
      */
     private function finishUpload(MultipartStartResponse $response)
     {
@@ -176,11 +181,9 @@ class Uploader extends AbstractUploader
         ];
 
         try {
-            $clientResponse = $this->sendRequest('POST', 'multipart/complete/', $this->makeMultipartParameters($data));
+            return $this->sendRequest('POST', 'multipart/complete/', $this->makeMultipartParameters($data));
         } catch (GuzzleException $e) {
             throw new HttpException('Unable to finish multipart-upload request', 0, ($e instanceof \Exception ? $e : null));
         }
-
-        return $this->serializeFileResponse($clientResponse, 'uuid');
     }
 }

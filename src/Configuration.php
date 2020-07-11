@@ -39,9 +39,9 @@ class Configuration
     private $serializer;
 
     /**
-     * @param string                          $publicKey     Uploadcare API public key
-     * @param string                          $privateKey    Uploadcare API private key
-     * @param array                           $clientOptions Parameters for Http client (proxy, special headers, etc.)
+     * @param string                          $publicKey         Uploadcare API public key
+     * @param string                          $privateKey        Uploadcare API private key
+     * @param array                           $clientOptions     Parameters for Http client (proxy, special headers, etc.)
      * @param ClientFactoryInterface|null     $clientFactory
      * @param SerializerFactoryInterface|null $serializerFactory
      *

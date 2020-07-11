@@ -92,6 +92,7 @@ class DeserializerEdgeCasesTest extends TestCase
 
     /**
      * @requires PHP 5.6
+     *
      * @throws \ReflectionException
      */
     public function testDenormalizeDateWithoutTimezone()

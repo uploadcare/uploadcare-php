@@ -10,8 +10,8 @@ use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
-use ReflectionObject;
 use Uploadcare\Configuration;
+use Uploadcare\Interfaces\UploadedFileInterface;
 use Uploadcare\Security\Signature;
 use Uploadcare\Serializer\Serializer;
 use Uploadcare\Serializer\SnackCaseConverter;
@@ -21,6 +21,7 @@ class UploaderMethodsTest extends TestCase
 {
     /**
      * @param ClientInterface $client
+     *
      * @return Configuration
      */
     protected function makeConfiguration(ClientInterface $client)
@@ -33,17 +34,20 @@ class UploaderMethodsTest extends TestCase
 
     /**
      * @param ResponseInterface|GuzzleException $response
+     *
      * @return Client
      */
     protected function makeClient($response)
     {
-        $handler = new MockHandler([$response]);
+        $fileResponse = new Response(200, ['Content-Type' => 'application/json'], \file_get_contents(\dirname(__DIR__) . '/_data/uploaded-file.json'));
+        $handler = new MockHandler([$response, $fileResponse]);
 
         return new Client(['handler' => HandlerStack::create($handler)]);
     }
 
     /**
      * @param array $responseBody
+     *
      * @return Uploader
      */
     protected function makeUploaderWithResponse(array $responseBody)
@@ -59,7 +63,7 @@ class UploaderMethodsTest extends TestCase
     {
         $body = ['file' => \uuid_create()];
         $uploader = $this->makeUploaderWithResponse($body);
-        $directUpload = (new ReflectionObject($uploader))->getMethod('directUpload');
+        $directUpload = (new \ReflectionObject($uploader))->getMethod('directUpload');
         $directUpload->setAccessible(true);
         $handle = \fopen(\dirname(__DIR__) . '/_data/test.jpg', 'rb');
 
@@ -80,7 +84,7 @@ class UploaderMethodsTest extends TestCase
         $handle = \fopen(\dirname(__DIR__) . '/_data/test.jpg', 'rb');
         $result = $uploader->fromResource($handle);
 
-        $this->assertEquals($body['file'], $result);
+        $this->assertInstanceOf(UploadedFileInterface::class, $result);
     }
 
     public function testFromPathMethod()
@@ -89,7 +93,7 @@ class UploaderMethodsTest extends TestCase
         $uploader = $this->makeUploaderWithResponse($body);
         $result = $uploader->fromPath(\dirname(__DIR__) . '/_data/test.jpg');
 
-        $this->assertEquals($body['file'], $result);
+        $this->assertInstanceOf(UploadedFileInterface::class, $result);
     }
 
     public function testFromContentMethod()
@@ -99,7 +103,7 @@ class UploaderMethodsTest extends TestCase
         $content = \file_get_contents(\dirname(__DIR__) . '/_data/test.jpg');
         $result = $uploader->fromContent($content);
 
-        $this->assertEquals($body['file'], $result);
+        $this->assertInstanceOf(UploadedFileInterface::class, $result);
     }
 
     public function testFromUrl()
@@ -108,7 +112,7 @@ class UploaderMethodsTest extends TestCase
         $uploader = $this->makeUploaderWithResponse($body);
         $result = $uploader->fromUrl('https://httpbin.org/image/jpeg');
 
-        $this->assertEquals($body['file'], $result);
+        $this->assertInstanceOf(UploadedFileInterface::class, $result);
     }
 
     public function testIfResponseSuccessButWrong()

@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Uploadcare\Serializer;
-
 
 use Uploadcare\Interfaces\Serializer\SerializerInterface;
 

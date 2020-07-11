@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Uploadcare\Interfaces\Serializer;
-
 
 interface SerializerFactoryInterface
 {
