@@ -158,6 +158,21 @@ class Serializer implements SerializerInterface
         $excluded = isset($context[self::EXCLUDE_PROPERTY_KEY]) ? $context[self::EXCLUDE_PROPERTY_KEY] : [];
 
         $rules = $class::rules();
+        $this->processData($class, $data, $rules, $excluded);
+
+        return $class;
+    }
+
+    /**
+     * @param SerializableInterface $class
+     * @param array                 $data
+     * @param array                 $rules
+     * @param array                 $excluded
+     *
+     * @return void
+     */
+    private function processData($class, array $data, array $rules, array $excluded)
+    {
         foreach ($data as $propertyName => $value) {
             $convertedName = $this->nameConverter->denormalize($propertyName);
             if (!isset($rules[$convertedName])) {
@@ -187,7 +202,7 @@ class Serializer implements SerializerInterface
 
             $methodName = $this->getMethodName($convertedName, 'set');
             if (!\method_exists($class, $methodName)) {
-                throw new MethodNotFoundException(\sprintf('Method \'%s\' not found in class \'%s\'', $methodName, $className));
+                throw new MethodNotFoundException(\sprintf('Method \'%s\' not found in class \'%s\'', $methodName, \get_class($class)));
             }
 
             if (\array_key_exists($rule, self::$coreTypes) && $value !== null) {
@@ -211,8 +226,6 @@ class Serializer implements SerializerInterface
 
             $class->{$methodName}($value);
         }
-
-        return $class;
     }
 
     /**
