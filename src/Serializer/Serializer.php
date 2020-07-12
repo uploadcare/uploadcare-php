@@ -158,6 +158,21 @@ class Serializer implements SerializerInterface
         $excluded = isset($context[self::EXCLUDE_PROPERTY_KEY]) ? $context[self::EXCLUDE_PROPERTY_KEY] : [];
 
         $rules = $class::rules();
+        $this->processData($class, $data, $rules, $excluded);
+
+        return $class;
+    }
+
+    /**
+     * @param SerializableInterface $class
+     * @param array                 $data
+     * @param array                 $rules
+     * @param array                 $excluded
+     *
+     * @return void
+     */
+    private function processData($class, array $data, array $rules, array $excluded)
+    {
         foreach ($data as $propertyName => $value) {
             $convertedName = $this->nameConverter->denormalize($propertyName);
             if (!isset($rules[$convertedName])) {
@@ -179,6 +194,7 @@ class Serializer implements SerializerInterface
                 }
 
                 $this->denormalizeClassesArray($class, $innerClassName, $convertedName, $value);
+                continue;
             }
 
             if (!\array_key_exists($convertedName, $rules) || \array_key_exists($convertedName, \array_flip($excluded))) {
@@ -187,7 +203,7 @@ class Serializer implements SerializerInterface
 
             $methodName = $this->getMethodName($convertedName, 'set');
             if (!\method_exists($class, $methodName)) {
-                throw new MethodNotFoundException(\sprintf('Method \'%s\' not found in class \'%s\'', $methodName, $className));
+                throw new MethodNotFoundException(\sprintf('Method \'%s\' not found in class \'%s\'', $methodName, \get_class($class)));
             }
 
             if (\array_key_exists($rule, self::$coreTypes) && $value !== null) {
@@ -211,23 +227,24 @@ class Serializer implements SerializerInterface
 
             $class->{$methodName}($value);
         }
-
-        return $class;
     }
 
     /**
-     * @param $parentClass
-     * @param $targetClassName
-     * @param $targetProperty
-     * @param array $data
+     * @param SerializableInterface $parentClass
+     * @param string                $targetClassName
+     * @param string                $targetProperty
+     * @param array                 $data
      */
     private function denormalizeClassesArray($parentClass, $targetClassName, $targetProperty, array $data)
     {
         $set = false;
-        $method = $this->getMethodName($targetProperty, 'add');
-        if (!\method_exists(new $targetClassName(), $method)) {
+        $method = $this->getMethodName($targetProperty, 'add', true);
+        if (!\method_exists($parentClass, $method)) {
             $set = true;
             $method = $this->getMethodName($targetProperty);
+        }
+        if (!\method_exists($parentClass, $method)) {
+            throw new ConversionException(\vsprintf('Neither %s nor %s defined in %s', [$this->getMethodName($targetProperty, 'add'), $this->getMethodName($targetProperty), \get_class($parentClass)]));
         }
 
         $result = [];
@@ -294,8 +311,22 @@ class Serializer implements SerializerInterface
         throw new SerializerException(\sprintf('Class \'%s\' must implements any of \'%s\' interfaces', $className, \implode(', ', self::$validClasses)));
     }
 
-    private function getMethodName($propertyName, $prefix = 'set')
+    /**
+     * @param string $propertyName      Property for method
+     * @param string $prefix            Method prefix
+     * @param bool   $convertToSingular Whether convert property in plural form to singular
+     *
+     * @return string
+     */
+    private function getMethodName($propertyName, $prefix = 'set', $convertToSingular = false)
     {
+        if ($convertToSingular) {
+            $conversions = WordsConverter::conversions();
+            if (\array_key_exists($propertyName, $conversions)) {
+                $propertyName = $conversions[$propertyName];
+            }
+        }
+
         return \sprintf('%s%s', $prefix, \ucfirst($propertyName));
     }
 }

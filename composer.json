@@ -35,6 +35,7 @@
     "friendsofphp/php-cs-fixer": "^2.16",
     "fzaninotto/faker": "^1.9",
     "phpunit/phpunit": "^5.7||^7",
+    "symfony/dotenv": "^3.4",
     "symfony/var-dumper": "^3.4"
   },
   "autoload": {
