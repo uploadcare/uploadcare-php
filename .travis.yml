@@ -21,7 +21,7 @@ before_script:
   - COMPOSER_MEMORY_LIMIT=-1 travis_retry composer install
 
 script:
-  php vendor/bin/phpunit
+  php vendor/bin/phpunit --exclude-group local-only
 
 notifications:
   email:

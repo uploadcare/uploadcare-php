@@ -132,10 +132,10 @@ class UploaderServiceTest extends TestCase
         ]);
 
         $result = $makeMultipartParameters->invokeArgs($uploader, [$parameters]);
-        $this->assertArrayHasKey('multipart', $result);
+        self::assertArrayHasKey('multipart', $result);
         foreach ($result['multipart'] as $item) {
-            $this->assertArrayHasKey('name', $item);
-            $this->assertArrayHasKey('contents', $item);
+            self::assertArrayHasKey('name', $item);
+            self::assertArrayHasKey('contents', $item);
         }
     }
 
@@ -153,8 +153,8 @@ class UploaderServiceTest extends TestCase
         /** @var resource $result */
         $result = $this->getMockUploader()->fromPath($path);
 
-        $this->assertTrue(\is_resource($result));
-        $this->assertEquals($path, \stream_get_meta_data($result)['uri']);
+        self::assertTrue(\is_resource($result));
+        self::assertEquals($path, \stream_get_meta_data($result)['uri']);
     }
 
     public function testUploadFromNotExistsUrl()
@@ -168,13 +168,13 @@ class UploaderServiceTest extends TestCase
     public function testUploadFromValidUrl()
     {
         $url = 'https://httpbin.org/gzip';
-        $this->assertTrue(\is_resource($this->getMockUploader()->fromUrl($url)));
+        self::assertTrue(\is_resource($this->getMockUploader()->fromUrl($url)));
     }
 
     public function testUploadFromContent()
     {
         $content = Factory::create()->realText();
-        $this->assertTrue(\is_resource($this->getMockUploader()->fromContent($content)));
+        self::assertTrue(\is_resource($this->getMockUploader()->fromContent($content)));
     }
 
     public function testGetSizeMethod()
@@ -187,8 +187,8 @@ class UploaderServiceTest extends TestCase
         $getSize = (new \ReflectionObject($uploader))->getMethod('getSize');
         $getSize->setAccessible(true);
 
-        $this->assertEquals($size, $getSize->invokeArgs($uploader, [$handle]));
-        $this->assertEquals(0, $getSize->invokeArgs($uploader, [\fopen('https://httpbin.org/encoding/utf8', 'rb')]));
+        self::assertEquals($size, $getSize->invokeArgs($uploader, [$handle]));
+        self::assertEquals(0, $getSize->invokeArgs($uploader, [\fopen('https://httpbin.org/encoding/utf8', 'rb')]));
     }
 
     private function checkClientRequestArgument($num)
@@ -215,7 +215,7 @@ class UploaderServiceTest extends TestCase
         $args = ['GET', '/path/', ['foo' => 'bar']];
         $result = $sendRequest->invokeArgs($uploader, $args);
 
-        $this->assertArrayHasKey('headers', $result);
+        self::assertArrayHasKey('headers', $result);
     }
 
     public function testSendRequestMethodUri()
@@ -227,6 +227,6 @@ class UploaderServiceTest extends TestCase
         $args = ['GET', '/path/', ['foo' => 'bar']];
         $result = $sendRequest->invokeArgs($uploader, $args);
 
-        $this->assertStringStartsWith('https://', $result);
+        self::assertStringStartsWith('https://', $result);
     }
 }
