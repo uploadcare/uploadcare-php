@@ -3,6 +3,7 @@
 namespace Uploadcare\Security;
 
 use Uploadcare\Interfaces\SignatureInterface;
+use Uploadcare\Interfaces\UploadcareAuthInterface;
 
 class Signature implements SignatureInterface
 {
@@ -38,7 +39,7 @@ class Signature implements SignatureInterface
     {
         $signString = $this->privateKey . $this->getExpire()->getTimestamp();
 
-        return \hash_hmac(self::ALGORITHM, $signString, $this->privateKey);
+        return \hash_hmac(SignatureInterface::SIGN_ALGORITHM, $signString, $this->privateKey);
     }
 
     /**
@@ -47,5 +48,35 @@ class Signature implements SignatureInterface
     public function getExpire()
     {
         return $this->expired;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getDateHeaderString($date = null)
+    {
+        $now = new \DateTime();
+        if ($date instanceof \DateTimeInterface) {
+            $now->setTimestamp($date->getTimestamp());
+        }
+        $now->setTimezone(new \DateTimeZone('GMT'));
+
+        return $now->format(UploadcareAuthInterface::HEADER_DATE_FORMAT);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getAuthHeaderString($method, $uri, $data, $contentType = 'application/json', $date = null)
+    {
+        $signString = \implode("\n", [
+            $method,
+            \md5($data),
+            $contentType,
+            $this->getDateHeaderString($date),
+            $uri,
+        ]);
+
+        return \hash_hmac(UploadcareAuthInterface::AUTH_ALGORITHM, $signString, $this->privateKey);
     }
 }

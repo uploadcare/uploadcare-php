@@ -132,4 +132,22 @@ class Configuration
     {
         return $this->serializer;
     }
+
+    /**
+     * @param string                  $method
+     * @param string                  $uri
+     * @param string                  $data
+     * @param string                  $contentType
+     * @param \DateTimeInterface|null $date
+     *
+     * @return array
+     */
+    public function getAuthHeaders($method, $uri, $data, $contentType = 'application/json', $date = null)
+    {
+        return [
+            'Date' => $this->getSecureSignature()->getDateHeaderString($date),
+            'Authorization' => \sprintf('Uploadcare %s:%s', $this->getPublicKey(), $this->getSecureSignature()->getAuthHeaderString($method, $uri, $data, $contentType, $date)),
+            'Content-Type' => $contentType,
+        ];
+    }
 }

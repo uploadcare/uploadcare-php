@@ -8,6 +8,9 @@ use Psr\Http\Message\ResponseInterface;
 use Uploadcare\Configuration;
 use Uploadcare\Interfaces\UploaderInterface;
 
+/**
+ * @group local-only
+ */
 class GuzzleRequestTest extends TestCase
 {
     public function testIsUserAgentSet()
@@ -40,10 +43,10 @@ class GuzzleRequestTest extends TestCase
 
         $response = $conf->getClient()
             ->request('POST', $uri, $data);
-        $this->assertInstanceOf(ResponseInterface::class, $response);
+        self::assertInstanceOf(ResponseInterface::class, $response);
         $result = \json_decode($response->getBody()->getContents(), true);
 
-        $this->assertArrayHasKey('headers', $result);
-        $this->assertEquals($conf->getHeaders()['User-Agent'], $result['headers']['User-Agent']);
+        self::assertArrayHasKey('headers', $result);
+        self::assertEquals($conf->getHeaders()['User-Agent'], $result['headers']['User-Agent']);
     }
 }
