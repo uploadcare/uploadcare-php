@@ -13,6 +13,13 @@ namespace Uploadcare\Interfaces\File;
 interface CollectionInterface extends \Countable, \IteratorAggregate, \ArrayAccess
 {
     /**
+     * Class of inner elements.
+     *
+     * @return string
+     */
+    public static function elementClass();
+
+    /**
      * @param mixed $element
      *
      * @return true

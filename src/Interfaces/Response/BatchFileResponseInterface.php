@@ -21,7 +21,7 @@ interface BatchFileResponseInterface
     /**
      * Dictionary of passed files UUIDs and problems associated with these UUIDs.
      *
-     * @return ResponseProblemInterface
+     * @return ResponseProblemInterface[]
      */
     public function getProblems();
 

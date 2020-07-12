@@ -22,6 +22,11 @@ final class FileCollection implements CollectionInterface
         $this->elements = $elements;
     }
 
+    public static function elementClass()
+    {
+        return File::class;
+    }
+
     /**
      * @inheritDoc
      */
