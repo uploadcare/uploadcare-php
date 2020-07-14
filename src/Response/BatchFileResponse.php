@@ -28,6 +28,7 @@ final class BatchFileResponse implements BatchFileResponseInterface, Serializabl
 
     public function __construct()
     {
+        $this->problems = [];
         $this->result = new FileCollection();
     }
 
@@ -35,7 +36,7 @@ final class BatchFileResponse implements BatchFileResponseInterface, Serializabl
     {
         return [
             'status' => 'string',
-            'problems' => [ResponseProblem::class],
+            'problems' => 'array',
             'result' => FileCollection::class,
         ];
     }
@@ -63,9 +64,27 @@ final class BatchFileResponse implements BatchFileResponseInterface, Serializabl
         return $this->problems;
     }
 
+    /**
+     * @param array $problems
+     * @return $this
+     */
+    public function setProblems(array $problems)
+    {
+        foreach ($problems as $key => $value) {
+            $item = (new ResponseProblem())
+                ->setId($key)
+                ->setReason($value);
+            $this->addProblem($item);
+        }
+
+        return $this;
+    }
+
     public function addProblem(ResponseProblemInterface $problem)
     {
-        $this->problems = $problem;
+        if (!\in_array($problem, $this->problems)) {
+            $this->problems[] = $problem;
+        }
 
         return $this;
     }

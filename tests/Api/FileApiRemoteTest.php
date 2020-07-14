@@ -11,7 +11,7 @@ use Uploadcare\Interfaces\Response\FileListResponseInterface;
 /**
  * @group local-only
  */
-class FileApiTest extends TestCase
+class FileApiRemoteTest extends TestCase
 {
     protected function setUp()
     {

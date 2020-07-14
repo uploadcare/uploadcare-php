@@ -16,6 +16,8 @@ use Uploadcare\Response\FileListResponse;
 
 final class FileApi implements FileApiInterface
 {
+    const API_VERSION = '0.5';
+
     /**
      * @var Configuration
      */
@@ -43,7 +45,7 @@ final class FileApi implements FileApiInterface
         }
 
         $headers = $this->configuration->getAuthHeaders($method, $uri, $stringData, 'application/json', $date);
-        $headers['Accept'] = 'application/vnd.uploadcare-v0.6+json';
+        $headers['Accept'] = \sprintf('application/vnd.uploadcare-v%s+json', self::API_VERSION);
         $headers = \array_merge($this->configuration->getHeaders(), $headers);
         if (\strpos('http', $uri) !== 0) {
             $uri = \sprintf('https://%s/%s', Configuration::API_BASE_URL, $uri);
