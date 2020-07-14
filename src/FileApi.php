@@ -185,8 +185,14 @@ final class FileApi implements FileApiInterface
             throw new \RuntimeException('Unable to deserialize response. Call to support');
         }
 
-        return $this->configuration->getSerializer()
+        $result = $this->configuration->getSerializer()
             ->deserialize(\json_encode($data['result']), File::class);
+
+        if (!$result instanceof File) {
+            throw new \RuntimeException('Unable to deserialize response. Call to support');
+        }
+
+        return $result;
     }
 
     /**

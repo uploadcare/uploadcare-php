@@ -13,6 +13,7 @@ Uploadcare PHP integration handles uploads by wrapping Upload and REST APIs.
 * [Install](#install)
 * [Usage](#usage)
   * [Uploading files](#uploading-files)
+  * [File operations](#file-operations)
   * [Tests](#tests)
 * [Useful links](#useful-links)
 
@@ -132,11 +133,50 @@ $result = $uploader->fromContent(\file_get_contents($path), 'image/jpeg');
 
 If you have a large (more than 100Mb / 10485760 bytes) file, the uploader will automatically process it with [multipart upload](https://uploadcare.com/api-refs/upload-api/#operation/multipartFileUploadStart). Note that it will take more than usual time, and we are not recommend do this from web-environment.
 
+## File operations
+
+For any type og file operation you should create the `Uploadcare\FileApi` instance with configuration:
+
+```php
+$config = \Uploadcare\Configuration::create($_ENV['UPLOADCARE_PUBLIC_KEY'], $_ENV['UPLOADCARE_PRIVATE_KEY']);
+$fileApi = new \Uploadcare\FileApi($config);
+```
+
+After that, you can access to file operation methods
+
+- `listFiles()` — list of four files. Returns `Uploadcare\Interfaces\Response\FileListResponseInterface`. Each element of collection is a `Uploadcare\Interfaces\File\FileInfoInterface`
+- `storeFile(string $id)` — Store a single file by UUID. Returns `FileInfoInterface`.
+    Takes file UUID as argument.
+- `deleteFile(string $id)` — Remove individual files. Returns file info.
+    Takes file UUID as argument.
+- `fileInfo(string $id)` — Once you obtain a list of files, you might want to acquire some file-specific info. Returns `FileInfoInterface`.
+    Takes array of file UUID's as argument.
+- `batchStoreFile(array $ids)` — Used to store multiple files in one step. Supports up to 100 files per request. Takes array of file UUID's as argument.
+- `batchDeleteFile(array $ids)` — Used to delete multiple files in one step. Array of file UUID's as argument 
+- `copyToLocalStorage(string $source, bool $store)` — Used to copy original files or their modified versions to default storage. Arguments:
+    - `$source` — A CDN URL or just UUID of a file subjected to copy.
+    - `$store` — Parameter only applies to the Uploadcare storage
+- `copyToRemoteStorage(string $source, string $target, bool $makePublic = true, string $pattern = '${default}')` — copy original files or their modified versions to a custom storage. Arguments:
+    - `$source` — CDN URL or just UUID of a file subjected to copy.
+    - `$target` — Identifies a custom storage name related to your project. Implies you are copying a file to a specified custom storage. Keep in mind you can have multiple storages associated with a single S3 bucket.
+    - `$makePublic` — `true` to make copied files available via public links, `false` to reverse the behavior.
+    - `$pattern` — The parameter is used to specify file names Uploadcare passes to a custom storage. In case the parameter is omitted, we use pattern of your custom storage. Use any combination of allowed values.
+    
+See [original API documentation](https://uploadcare.com/api-refs/rest-api/v0.6.0/#tag/File) for details.
+
 ### Tests
 
-PHP 5.6+ tests can be found in the "tests" directory. The tests are based on PHPUnit, so you must have it installed on your system to use those.
+PHP 5.6+ tests can be found in the "tests" directory. All tests based on PHPUnit, so you must have it installed on your system to use those.
 
-Tests can be executed using the `vendor/bin/phpunit` command.
+Tests can be executed using the `vendor/bin/phpunit --exclude-group local-only` command.
+
+`--exclude-group local-only` parameter means that test will not send the real API-requests. If you want to run all tests, you should create the `.env.local` file in `tests` directory and place to this file variables with your real public and private API keys.
+
+```dotenv
+# tests/.env.local
+UPLOADCARE_PUBLIC_KEY=<your public key>
+UPLOADCARE_PRIVATE_KEY=<your private key>
+```
 
 ## Useful links
 
