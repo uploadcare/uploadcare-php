@@ -17,6 +17,7 @@ use Uploadcare\Serializer\SerializerFactory;
 class Configuration
 {
     const LIBRARY_VERSION = 'v3.0.0';
+    const API_BASE_URL = 'api.uploadcare.com';
 
     /**
      * @var string

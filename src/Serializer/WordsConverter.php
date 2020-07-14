@@ -12,6 +12,9 @@ class WordsConverter
         return [
             'dates' => 'date',
             'properties' => 'property',
+            'results' => 'result',
+            'files' => 'file',
+            'problems' => 'problem',
         ];
     }
 }

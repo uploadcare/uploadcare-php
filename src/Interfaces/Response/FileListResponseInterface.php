@@ -32,5 +32,5 @@ interface FileListResponseInterface
     /**
      * @return CollectionInterface
      */
-    public function getFiles();
+    public function getResults();
 }

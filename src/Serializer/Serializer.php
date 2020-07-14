@@ -2,6 +2,7 @@
 
 namespace Uploadcare\Serializer;
 
+use Uploadcare\Interfaces\File\CollectionInterface;
 use Uploadcare\Interfaces\SerializableInterface;
 use Uploadcare\Interfaces\Serializer\NameConverterInterface;
 use Uploadcare\Interfaces\Serializer\SerializerInterface;
@@ -15,6 +16,7 @@ class Serializer implements SerializerInterface
     const JSON_OPTIONS_KEY = 'json_options';
     const EXCLUDE_PROPERTY_KEY = 'exclude_property';
     const DATE_FORMAT = 'Y-m-d\TH:i:s.u\Z';
+    const ORIGINAL_DATE_FORMAT = 'Y-m-d\TH:i:s';
 
     protected static $coreTypes = [
         'int' => true,
@@ -185,14 +187,20 @@ class Serializer implements SerializerInterface
             }
 
             $rule = $rules[$convertedName];
+            if (\is_a($rule, \ArrayAccess::class, true) && !\is_array($value)) {
+                throw new ConversionException(\sprintf('The \'%s\' property declared as array or collection, but value is \'%s\'', $convertedName, \gettype($value)));
+            }
+
             if (\is_array($rule)) {
                 // This means the property contains an array with other classes
                 // and we need to denormalize this classes first.
                 $innerClassName = $rule[\key($rule)];
-                if (!\is_array($value)) {
-                    throw new ConversionException(\sprintf('The \'%s\' property declared as array of \'%s\' classes, but value is \'%s\'', $convertedName, $innerClassName, \gettype($value)));
-                }
+                $this->denormalizeClassesArray($class, $innerClassName, $convertedName, $value);
+                continue;
+            }
 
+            if (\is_a($rule, CollectionInterface::class, true)) {
+                $innerClassName = $rule::elementClass();
                 $this->denormalizeClassesArray($class, $innerClassName, $convertedName, $value);
                 continue;
             }
@@ -274,6 +282,10 @@ class Serializer implements SerializerInterface
             @\trigger_error('You should set your date.timezone in php.ini', E_USER_WARNING);
         }
         $date = \date_create_from_format(self::DATE_FORMAT, $dateTime);
+        if ($date === false) {
+            $date = \date_create_from_format(self::ORIGINAL_DATE_FORMAT, $dateTime);
+        }
+
         if ($date === false) {
             throw new ConversionException(\sprintf('Unable to convert \'%s\' to \'%s\'', $dateTime, \DateTime::class));
         }
