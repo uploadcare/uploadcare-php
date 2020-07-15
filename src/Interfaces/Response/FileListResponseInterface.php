@@ -8,6 +8,7 @@ use Uploadcare\Interfaces\File\FileInfoInterface;
 
 /**
  * File collection representation.
+ *
  * @see https://uploadcare.com/api-refs/rest-api/v0.6.0/#operation/filesList
  */
 interface FileListResponseInterface
@@ -42,6 +43,7 @@ interface FileListResponseInterface
 
     /**
      * Collection of FileInfoInterface.
+     *
      * @see FileInfoInterface
      *
      * @return CollectionInterface|FileCollection[]
