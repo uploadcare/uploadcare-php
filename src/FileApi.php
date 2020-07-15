@@ -3,6 +3,7 @@
 namespace Uploadcare;
 
 use GuzzleHttp\Exception\GuzzleException;
+use Uploadcare\Interfaces\Response\FileListResponseInterface;
 use function GuzzleHttp\Psr7\stream_for;
 use Psr\Http\Message\ResponseInterface;
 use Uploadcare\Exception\HttpException;
@@ -10,7 +11,6 @@ use Uploadcare\File\File;
 use Uploadcare\Interfaces\Api\FileApiInterface;
 use Uploadcare\Interfaces\File\FileInfoInterface;
 use Uploadcare\Interfaces\Response\BatchFileResponseInterface;
-use Uploadcare\Interfaces\Response\FileListResponseInterface;
 use Uploadcare\Response\BatchFileResponse;
 use Uploadcare\Response\FileListResponse;
 
@@ -68,11 +68,28 @@ final class FileApi implements FileApiInterface
     /**
      * Getting a paginated list of files.
      *
+     * @param int             $limit     A preferred amount of files in a list for a single response. Defaults to 100, while the maximum is 1000.
+     * @param string          $orderBy   specifies the way files are sorted in a returned list
+     * @param string|int|null $from      A starting point for filtering files. The value depends on your $orderBy parameter value.
+     * @param array           $addFields Add special fields to the file object
+     * @param bool|null       $stored    `true` to only include files that were stored, `false` to include temporary ones. The default is unset: both stored and not stored files are returned.
+     * @param bool            $removed   `true` to only include removed files in the response, `false` to include existing files. Defaults to false.
+     *
      * @return FileListResponseInterface
      */
-    public function listFiles()
+    public function listFiles($limit = 100, $orderBy = 'datetime_uploaded', $from = null, $addFields = [], $stored = null, $removed = false)
     {
-        $response = $this->request('GET', '/files/');
+        $parameters = [
+            'limit' => $limit,
+            'ordering' => $orderBy,
+            'removed' => $removed,
+            'add_fields' => $addFields,
+        ];
+        if (\is_bool($stored)) {
+            $parameters['stored'] = (bool)$stored;
+        }
+
+        $response = $this->request('GET', '/files/', $parameters);
 
         $result = $this->configuration->getSerializer()
             ->deserialize($response->getBody()->getContents(), FileListResponse::class);

@@ -144,7 +144,14 @@ $fileApi = new \Uploadcare\FileApi($config);
 
 After that, you can access to file operation methods
 
-- `listFiles()` — list of four files. Returns `Uploadcare\Interfaces\Response\FileListResponseInterface`. Each element of collection is a `Uploadcare\Interfaces\File\FileInfoInterface`
+- `listFiles($limit = 100, $orderBy = 'datetime_uploaded', $from = null, $addFields = [], $stored = null, $removed = false)` — list of four files. Returns `Uploadcare\Interfaces\Response\FileListResponseInterface`. Each element of collection is a `Uploadcare\Interfaces\File\FileInfoInterface`. Arguments:
+    - int             `$limit`     A preferred amount of files in a list for a single response. Defaults to 100, while the maximum is 1000.
+    - string          `$orderBy`   specifies the way files are sorted in a returned list
+    - string|int|null `$from`      A starting point for filtering files. The value depends on your $orderBy parameter value.
+    - array           `$addFields` Add special fields to the file object
+    - bool|null       `$stored`    `true` to only include files that were stored, `false` to include temporary ones. The default is unset: both stored and not stored files will be returned.
+    - bool            `$removed`   `true` to only include removed files in the response, `false` to include existing files. Defaults to false.
+
 - `storeFile(string $id)` — Store a single file by UUID. Returns `FileInfoInterface`.
     Takes file UUID as argument.
 - `deleteFile(string $id)` — Remove individual files. Returns file info.

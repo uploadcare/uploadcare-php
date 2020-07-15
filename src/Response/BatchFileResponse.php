@@ -66,6 +66,7 @@ final class BatchFileResponse implements BatchFileResponseInterface, Serializabl
 
     /**
      * @param array $problems
+     *
      * @return $this
      */
     public function setProblems(array $problems)

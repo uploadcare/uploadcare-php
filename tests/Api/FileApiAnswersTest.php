@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Tests\Api;
-
 
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
@@ -10,7 +8,6 @@ use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\TestCase;
-use ReflectionObject;
 use Uploadcare\Configuration;
 use Uploadcare\FileApi;
 use Uploadcare\Interfaces\File\CollectionInterface;
@@ -23,6 +20,7 @@ class FileApiAnswersTest extends TestCase
 {
     /**
      * @param $path
+     *
      * @return string
      */
     protected function fileContents($path)
@@ -37,7 +35,7 @@ class FileApiAnswersTest extends TestCase
 
     /**
      * @param string $path
-     * @param int $status
+     * @param int    $status
      *
      * @return ClientInterface
      */
@@ -53,7 +51,7 @@ class FileApiAnswersTest extends TestCase
             new Response($status, [
                 'Content-Type' => \sprintf('application/vnd.uploadcare-v%s+json', FileApi::API_VERSION),
                 'Access-Control-Allow-Origin' => 'https://uploadcare.com',
-            ], \file_get_contents($filePath))
+            ], \file_get_contents($filePath)),
         ]);
 
         $stack = HandlerStack::create($mock);
@@ -63,6 +61,7 @@ class FileApiAnswersTest extends TestCase
 
     /**
      * @param ClientInterface|null $client
+     *
      * @return Configuration
      */
     public function getConfig(ClientInterface $client = null)
@@ -72,7 +71,7 @@ class FileApiAnswersTest extends TestCase
             return $configuration;
         }
 
-        $clientProperty = (new ReflectionObject($configuration))->getProperty('client');
+        $clientProperty = (new \ReflectionObject($configuration))->getProperty('client');
         $clientProperty->setAccessible(true);
         $clientProperty->setValue($configuration, $client);
 
@@ -120,8 +119,8 @@ class FileApiAnswersTest extends TestCase
     {
         $client = $this->getClient('batch-store-file-api-response.json');
         $ids = [
-            "21975c81-7f57-4c7a-aef9-acfe28779f78",
-            "cbaf2d73-5169-4b2b-a543-496cf2813dff"
+            '21975c81-7f57-4c7a-aef9-acfe28779f78',
+            'cbaf2d73-5169-4b2b-a543-496cf2813dff',
         ];
         $result = (new FileApi($this->getConfig($client)))->batchStoreFile($ids);
 
@@ -135,8 +134,8 @@ class FileApiAnswersTest extends TestCase
     {
         $client = $this->getClient('batch-delete-file-api-response.json');
         $ids = [
-            "21975c81-7f57-4c7a-aef9-acfe28779f78",
-            "cbaf2d73-5169-4b2b-a543-496cf2813dff"
+            '21975c81-7f57-4c7a-aef9-acfe28779f78',
+            'cbaf2d73-5169-4b2b-a543-496cf2813dff',
         ];
         $result = (new FileApi($this->getConfig($client)))->batchDeleteFile($ids);
 
