@@ -40,6 +40,7 @@ final class FileApi implements FileApiInterface
         $date = \date_create();
 
         $stringData = '';
+        $parameters = [];
         if (isset($data['body'])) {
             $stringData = \json_encode($data['body']);
             $parameters['body'] = stream_for($data['body']);
@@ -74,11 +75,11 @@ final class FileApi implements FileApiInterface
      */
     public function nextPage(FileListResponseInterface $response)
     {
-        if ($response->getNext() === null) {
+        if (($next = $response->getNext()) === null) {
             return null;
         }
 
-        $query = \parse_url($response->getNext());
+        $query = \parse_url($next);
         if (!isset($query['query']) || empty($query['query'])) {
             return null;
         }
