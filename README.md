@@ -150,8 +150,16 @@ After that, you can access to file operation methods
     - string|int|null `$from`      A starting point for filtering files. The value depends on your $orderBy parameter value.
     - array           `$addFields` Add special fields to the file object
     - bool|null       `$stored`    `true` to only include files that were stored, `false` to include temporary ones. The default is unset: both stored and not stored files will be returned.
-    - bool            `$removed`   `true` to only include removed files in the response, `false` to include existing files. Defaults to false.
-
+    - bool            `$removed`   `true` to only include removed files in the response, `false` to include existing files. Defaults is false.
+- `nextPage(FileListResponseInterface $response)` — next page from previous answer, if next page are exists. You can use it in simple `while` loop, for example:     
+    ```php
+    $config = \Uploadcare\Configuration::create($_ENV['UPLOADCARE_PUBLIC_KEY'], $_ENV['UPLOADCARE_PRIVATE_KEY']);
+    $fileApi = new \Uploadcare\FileApi($config);
+    $page = $fileApi->listFiles(5); // Here is a FileListResponseInterface
+    while (($page = $fileApi->nextPage($page)) !== null) {
+      $files = $page->getResults(); 
+    }
+    ```
 - `storeFile(string $id)` — Store a single file by UUID. Returns `FileInfoInterface`.
     Takes file UUID as argument.
 - `deleteFile(string $id)` — Remove individual files. Returns file info.

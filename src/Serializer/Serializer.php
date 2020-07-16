@@ -233,7 +233,9 @@ class Serializer implements SerializerInterface
                 $value = $this->denormalize($value, $rule, $class::rules());
             }
 
-            $class->{$methodName}($value);
+            if ($value !== null) {
+                $class->{$methodName}($value);
+            }
         }
     }
 
@@ -258,6 +260,9 @@ class Serializer implements SerializerInterface
         $result = [];
         foreach ($data as $singleItem) {
             $value = \is_array($singleItem) ? $this->denormalize($singleItem, $targetClassName, []) : $singleItem;
+            if ($value === null) {
+                continue;
+            }
 
             if (!$set) {
                 $parentClass->{$method}($value);

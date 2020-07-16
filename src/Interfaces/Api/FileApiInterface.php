@@ -9,6 +9,14 @@ use Uploadcare\Interfaces\Response\FileListResponseInterface;
 interface FileApiInterface
 {
     /**
+     * Get the next page from previous answer (if next page exists).
+     *
+     * @param FileListResponseInterface $response
+     * @return FileListResponseInterface|null
+     */
+    public function nextPage(FileListResponseInterface $response);
+
+    /**
      * Getting a paginated list of files.
      *
      * @param int             $limit     A preferred amount of files in a list for a single response. Defaults to 100, while the maximum is 1000.
