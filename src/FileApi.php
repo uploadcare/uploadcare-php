@@ -40,11 +40,17 @@ final class FileApi implements FileApiInterface
         $date = \date_create();
 
         $stringData = '';
-        if (!empty($data)) {
-            $stringData = \json_encode($data);
+        if (isset($data['body'])) {
+            $stringData = \json_encode($data['body']);
+            $parameters['body'] = stream_for($data['body']);
+            unset($data['body']);
+        }
+        $uriForSign = $uri;
+        if (isset($data['query'])) {
+            $uriForSign .= '?' . \http_build_query($data['query']);
         }
 
-        $headers = $this->configuration->getAuthHeaders($method, $uri, $stringData, 'application/json', $date);
+        $headers = $this->configuration->getAuthHeaders($method, $uriForSign, $stringData, 'application/json', $date);
         $headers['Accept'] = \sprintf('application/vnd.uploadcare-v%s+json', self::API_VERSION);
         $headers = \array_merge($this->configuration->getHeaders(), $headers);
         if (\strpos('http', $uri) !== 0) {
@@ -54,15 +60,43 @@ final class FileApi implements FileApiInterface
         $parameters = [
             'headers' => $headers,
         ];
-        if (!empty($data)) {
-            $parameters['body'] = stream_for($stringData);
-        }
+        $parameters = \array_merge($data, $parameters);
 
         try {
             return $this->configuration->getClient()->request($method, $uri, $parameters);
         } catch (GuzzleException $e) {
             throw new HttpException('', 0, ($e instanceof \Exception) ? $e : null);
         }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function nextPage(FileListResponseInterface $response)
+    {
+        if ($response->getNext() === null) {
+            return null;
+        }
+
+        $query = \parse_url($response->getNext());
+        if (!isset($query['query']) || empty($query['query'])) {
+            return null;
+        }
+        $query = (string) $query['query'];
+        $parameters = [];
+        \parse_str($query, $parameters);
+
+        /** @noinspection VariableFunctionsUsageInspection */
+        $result = \call_user_func_array([$this, 'listFiles'], [
+            isset($parameters['limit']) ? (int) $parameters['limit'] : 100,
+            isset($parameters['ordering']) ? $parameters['ordering'] : 'datetime_uploaded',
+            isset($parameters['from']) ? $parameters['from'] : null,
+            isset($parameters['add_fields']) ? (array) $parameters['add_fields'] : [],
+            isset($parameters['stored']) ? (bool) $parameters['stored'] : null,
+            isset($parameters['removed']) ? (bool) $parameters['removed'] : null,
+        ]);
+
+        return $result instanceof FileListResponseInterface ? $result : null;
     }
 
     /**
@@ -89,7 +123,7 @@ final class FileApi implements FileApiInterface
             $parameters['stored'] = (bool)$stored;
         }
 
-        $response = $this->request('GET', '/files/', $parameters);
+        $response = $this->request('GET', '/files/', ['query' => $parameters]);
 
         $result = $this->configuration->getSerializer()
             ->deserialize($response->getBody()->getContents(), FileListResponse::class);

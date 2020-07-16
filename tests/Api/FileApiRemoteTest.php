@@ -23,7 +23,15 @@ class FileApiRemoteTest extends TestCase
         $config = Configuration::create($_ENV['UPLOADCARE_PUBLIC_KEY'], $_ENV['UPLOADCARE_PRIVATE_KEY']);
         $api = new FileApi($config);
 
-        $list = $api->listFiles();
+        $list = $api->listFiles(5);
         self::assertInstanceOf(FileListResponseInterface::class, $list);
+    }
+
+    public function testNextPage()
+    {
+        $config = Configuration::create($_ENV['UPLOADCARE_PUBLIC_KEY'], $_ENV['UPLOADCARE_PRIVATE_KEY']);
+        $api = new FileApi($config);
+        $list = $api->listFiles(1);
+        self::assertInstanceOf(FileListResponseInterface::class, $api->nextPage($list));
     }
 }
