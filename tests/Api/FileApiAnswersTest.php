@@ -15,6 +15,7 @@ use Uploadcare\Interfaces\File\FileInfoInterface;
 use Uploadcare\Interfaces\Response\BatchFileResponseInterface;
 use Uploadcare\Interfaces\Response\FileListResponseInterface;
 use Uploadcare\Interfaces\Response\ResponseProblemInterface;
+use Uploadcare\Response\FileListResponse;
 
 class FileApiAnswersTest extends TestCase
 {
@@ -160,5 +161,47 @@ class FileApiAnswersTest extends TestCase
         $result = (new FileApi($this->getConfig($client)))->copyToRemoteStorage('03ccf9ab-f266-43fb-973d-a6529c55c2ae', 'my-target');
 
         self::assertEquals($source['result'], $result);
+    }
+
+    public function testApiNextPageNotNull()
+    {
+        $headers = [
+            'Content-Type' => \sprintf('application/vnd.uploadcare-v%s+json', FileApi::API_VERSION),
+            'Access-Control-Allow-Origin' => 'https://uploadcare.com',
+        ];
+        $content = $this->fileContents('file-list-api-response.json');
+
+        $firstResponse = new Response(200, $headers, $content);
+        $nextResponse = new Response(200, $headers, $content);
+
+        $handler = new MockHandler([$firstResponse, $nextResponse]);
+        $client = new Client(['handler' => HandlerStack::create($handler)]);
+        $config = $this->getConfig($client);
+
+        $api = new FileApi($config);
+        $firstPage = $api->listFiles();
+        self::assertInstanceOf(FileListResponse::class, $firstPage);
+        self::assertNotEmpty($firstPage->getNext());
+        $nextPage = $api->nextPage($firstPage);
+        self::assertInstanceOf(FileListResponse::class, $nextPage);
+    }
+
+    public function testApiNextPageIsNull()
+    {
+        $source = \json_decode($this->fileContents('file-list-api-response.json'), true);
+        $source['next'] = null;
+        $response = new Response(200, [
+            'Content-Type' => \sprintf('application/vnd.uploadcare-v%s+json', FileApi::API_VERSION),
+            'Access-Control-Allow-Origin' => 'https://uploadcare.com',
+        ], \json_encode($source));
+        $handler = new MockHandler([$response]);
+        $client = new Client(['handler' => HandlerStack::create($handler)]);
+        $config = $this->getConfig($client);
+        $api = new FileApi($config);
+        $firstPage = $api->listFiles();
+        self::assertInstanceOf(FileListResponse::class, $firstPage);
+        self::assertEmpty($firstPage->getNext());
+        $nextPage = $api->nextPage($firstPage);
+        self::assertNull($nextPage);
     }
 }

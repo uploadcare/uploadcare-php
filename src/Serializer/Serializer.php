@@ -92,7 +92,7 @@ class Serializer implements SerializerInterface
             throw new ClassNotFoundException(\sprintf('Class \'%s\' not found', $className));
         }
 
-        return $this->denormalize($data, $className, $context);
+        return $this->denormalize(($data === null ? [] : $data), $className, $context);
     }
 
     /**
