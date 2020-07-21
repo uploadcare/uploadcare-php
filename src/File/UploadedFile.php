@@ -10,8 +10,13 @@ use Uploadcare\Interfaces\UploadedFileInterface;
 /**
  * UploadedFile.
  */
-class UploadedFile implements UploadedFileInterface, SerializableInterface
+final class UploadedFile implements UploadedFileInterface, SerializableInterface
 {
+    /**
+     * @var string|null
+     */
+    private $defaultEffects;
+
     /**
      * @var bool
      */
@@ -85,6 +90,7 @@ class UploadedFile implements UploadedFileInterface, SerializableInterface
     public static function rules()
     {
         return [
+            'defaultEffects' => 'string',
             'isStored' => 'bool',
             'done' => 'int',
             'fileId' => 'string',
@@ -100,6 +106,18 @@ class UploadedFile implements UploadedFileInterface, SerializableInterface
             'mimeType' => 'string',
             's3Bucket' => 'string',
         ];
+    }
+
+    public function setDefaultEffects($defaultEffects)
+    {
+        $this->defaultEffects = $defaultEffects;
+
+        return $this;
+    }
+
+    public function getDefaultEffects()
+    {
+        return $this->defaultEffects;
     }
 
     /**

@@ -12,6 +12,7 @@ interface FileApiInterface
      * Get the next page from previous answer (if next page exists).
      *
      * @param FileListResponseInterface $response
+     *
      * @return FileListResponseInterface|null
      */
     public function nextPage(FileListResponseInterface $response);

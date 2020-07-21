@@ -13,6 +13,11 @@ use Uploadcare\Interfaces\File\VideoInfoInterface;
 interface UploadedFileInterface
 {
     /**
+     * @return string|null the field contains Image Transformations (in the form of a CDN URL) that were present in the file's CDN URL upon adding it to a group
+     */
+    public function getDefaultEffects();
+
+    /**
      * Is file stored.
      *
      * @return bool

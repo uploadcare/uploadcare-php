@@ -2,6 +2,8 @@
 
 namespace Uploadcare\Interfaces;
 
+use Uploadcare\Interfaces\Response\FileGroupResponseInterface;
+
 interface UploaderInterface
 {
     const UPLOAD_BASE_URL = 'upload.uploadcare.com';
@@ -10,6 +12,20 @@ interface UploaderInterface
     const UPLOADCARE_SIGNATURE_KEY = 'signature';
     const UPLOADCARE_EXPIRE_KEY = 'expire';
     const UPLOADCARE_DEFAULT_STORE = 'auto';
+
+    /**
+     * @param array $files
+     *
+     * @return FileGroupResponseInterface
+     */
+    public function groupFiles(array $files);
+
+    /**
+     * @param string $groupId
+     *
+     * @return FileGroupResponseInterface
+     */
+    public function groupInfo($groupId);
 
     /**
      * Upload file from local path.
