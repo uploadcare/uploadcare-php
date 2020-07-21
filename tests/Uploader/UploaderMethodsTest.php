@@ -143,4 +143,18 @@ class UploaderMethodsTest extends TestCase
         self::assertInstanceOf(UploadedFileCollection::class, $result->getFiles());
         self::assertCount(1, $result->getFiles());
     }
+
+    public function testSuccessGroupInfo()
+    {
+        $data = \file_get_contents(\dirname(__DIR__) . '/_data/upload-group-info-response.json');
+        $response = new Response(200, ['Content-Type' => 'application/json'], $data);
+        $client = $this->makeClient($response);
+        $config = $this->makeConfiguration($client);
+
+        $uploader = new Uploader($config);
+        $result = $uploader->groupInfo('some-group-id');
+        self::assertInstanceOf(FileGroupResponseInterface::class, $result);
+        self::assertInstanceOf(UploadedFileCollection::class, $result->getFiles());
+        self::assertCount(1, $result->getFiles());
+    }
 }

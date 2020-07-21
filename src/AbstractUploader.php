@@ -59,11 +59,30 @@ abstract class AbstractUploader implements UploaderInterface
 
     /**
      * @param string $groupId
+     *
      * @return FileGroupResponseInterface
      */
     public function groupInfo($groupId)
     {
-        throw new \RuntimeException('Not implemented yet');
+        $parameters = [
+            'group_id' => (string) $groupId,
+            self::UPLOADCARE_PUB_KEY_KEY => $this->configuration->getPublicKey(),
+        ];
+
+        try {
+            $response = $this->sendRequest('POST', 'group/info/', $parameters);
+        } catch (GuzzleException $e) {
+            throw new HttpException('', 0, ($e instanceof \Exception ? $e : null));
+        }
+
+        $data = $this->configuration->getSerializer()
+            ->deserialize($response->getBody()->getContents(), FileGroupResponse::class);
+
+        if ($data instanceof FileGroupResponseInterface) {
+            return $data;
+        }
+
+        throw new \RuntimeException('Cannot deserialize response object. Call to support');
     }
 
     /**
