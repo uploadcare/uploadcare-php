@@ -3,14 +3,14 @@
 namespace Uploadcare\File;
 
 /**
- * File Collection.
+ * Uploaded File Collection.
  *
- * @psalm-template T of \Uploadcare\Interfaces\File\FileInfoInterface
+ * @psalm-template T of \Uploadcare\Interfaces\UploadedFileInterface
  */
-final class FileCollection extends AbstractCollection
+final class UploadedFileCollection extends AbstractCollection
 {
     /**
-     * @var array<array-key, \Uploadcare\Interfaces\File\FileInfoInterface>
+     * @var array<array-key, \Uploadcare\Interfaces\UploadedFileInterface>
      */
     protected $elements;
 
@@ -19,9 +19,12 @@ final class FileCollection extends AbstractCollection
         $this->elements = $elements;
     }
 
+    /**
+     * @inheritDoc
+     */
     public static function elementClass()
     {
-        return File::class;
+        return UploadedFile::class;
     }
 
     /**

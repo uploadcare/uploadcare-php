@@ -3,7 +3,6 @@
 namespace Uploadcare;
 
 use GuzzleHttp\Exception\GuzzleException;
-use Uploadcare\Interfaces\Response\FileListResponseInterface;
 use function GuzzleHttp\Psr7\stream_for;
 use Psr\Http\Message\ResponseInterface;
 use Uploadcare\Exception\HttpException;
@@ -11,6 +10,7 @@ use Uploadcare\File\File;
 use Uploadcare\Interfaces\Api\FileApiInterface;
 use Uploadcare\Interfaces\File\FileInfoInterface;
 use Uploadcare\Interfaces\Response\BatchFileResponseInterface;
+use Uploadcare\Interfaces\Response\FileListResponseInterface;
 use Uploadcare\Response\BatchFileResponse;
 use Uploadcare\Response\FileListResponse;
 
@@ -121,7 +121,7 @@ final class FileApi implements FileApiInterface
             'add_fields' => $addFields,
         ];
         if (\is_bool($stored)) {
-            $parameters['stored'] = (bool)$stored;
+            $parameters['stored'] = (bool) $stored;
         }
 
         $response = $this->request('GET', '/files/', ['query' => $parameters]);

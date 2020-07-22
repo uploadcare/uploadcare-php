@@ -7,8 +7,10 @@ use Psr\Http\Message\ResponseInterface;
 use Uploadcare\Exception\HttpException;
 use Uploadcare\Exception\InvalidArgumentException;
 use Uploadcare\File\UploadedFile;
+use Uploadcare\Interfaces\Response\FileGroupResponseInterface;
 use Uploadcare\Interfaces\UploadedFileInterface;
 use Uploadcare\Interfaces\UploaderInterface;
+use Uploadcare\Response\FileGroupResponse;
 
 /**
  * Main Uploader.
@@ -23,6 +25,64 @@ abstract class AbstractUploader implements UploaderInterface
     public function __construct(Configuration $configuration)
     {
         $this->configuration = $configuration;
+    }
+
+    /**
+     * @param array $files
+     *
+     * @return FileGroupResponseInterface
+     */
+    public function groupFiles(array $files)
+    {
+        $parameters = [
+            'files' => $files,
+            self::UPLOADCARE_PUB_KEY_KEY => $this->configuration->getPublicKey(),
+            self::UPLOADCARE_SIGNATURE_KEY => $this->configuration->getSecureSignature()->getSignature(),
+            self::UPLOADCARE_EXPIRE_KEY => $this->configuration->getSecureSignature()->getExpire()->getTimestamp(),
+        ];
+
+        try {
+            $response = $this->sendRequest('POST', 'group/', $parameters);
+        } catch (GuzzleException $e) {
+            throw new HttpException('', 0, ($e instanceof \Exception ? $e : null));
+        }
+
+        $data = $this->configuration->getSerializer()
+            ->deserialize($response->getBody()->getContents(), FileGroupResponse::class);
+
+        if ($data instanceof FileGroupResponseInterface) {
+            return $data;
+        }
+
+        throw new \RuntimeException('Cannot deserialize response object. Call to support');
+    }
+
+    /**
+     * @param string $groupId
+     *
+     * @return FileGroupResponseInterface
+     */
+    public function groupInfo($groupId)
+    {
+        $parameters = [
+            'group_id' => (string) $groupId,
+            self::UPLOADCARE_PUB_KEY_KEY => $this->configuration->getPublicKey(),
+        ];
+
+        try {
+            $response = $this->sendRequest('POST', 'group/info/', $parameters);
+        } catch (GuzzleException $e) {
+            throw new HttpException('', 0, ($e instanceof \Exception ? $e : null));
+        }
+
+        $data = $this->configuration->getSerializer()
+            ->deserialize($response->getBody()->getContents(), FileGroupResponse::class);
+
+        if ($data instanceof FileGroupResponseInterface) {
+            return $data;
+        }
+
+        throw new \RuntimeException('Cannot deserialize response object. Call to support');
     }
 
     /**

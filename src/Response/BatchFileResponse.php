@@ -83,7 +83,7 @@ final class BatchFileResponse implements BatchFileResponseInterface, Serializabl
 
     public function addProblem(ResponseProblemInterface $problem)
     {
-        if (!\in_array($problem, $this->problems)) {
+        if (!\in_array($problem, $this->problems, true)) {
             $this->problems[] = $problem;
         }
 
