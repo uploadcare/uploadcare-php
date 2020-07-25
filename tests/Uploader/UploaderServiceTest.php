@@ -149,7 +149,7 @@ class UploaderServiceTest extends TestCase
 
     public function testUploadFromExistingFile()
     {
-        $path = \dirname(__DIR__) . '/_data/file-example.json';
+        $path = \dirname(__DIR__) . '/_data/file-info.json';
         /** @var resource $result */
         $result = $this->getMockUploader()->fromPath($path);
 
@@ -179,7 +179,7 @@ class UploaderServiceTest extends TestCase
 
     public function testGetSizeMethod()
     {
-        $path = \dirname(__DIR__) . '/_data/file-example.json';
+        $path = \dirname(__DIR__) . '/_data/file-info.json';
         $size = \filesize($path);
         $handle = \fopen($path, 'rb');
 

@@ -1,92 +1,30 @@
 <?php
 
-namespace Uploadcare;
+namespace Uploadcare\Apis;
 
-use GuzzleHttp\Exception\GuzzleException;
-use Uploadcare\Interfaces\ConfigurationInterface;
-use function GuzzleHttp\Psr7\stream_for;
 use Psr\Http\Message\ResponseInterface;
-use Uploadcare\Exception\HttpException;
 use Uploadcare\File\File;
 use Uploadcare\Interfaces\Api\FileApiInterface;
 use Uploadcare\Interfaces\File\FileInfoInterface;
 use Uploadcare\Interfaces\Response\BatchFileResponseInterface;
-use Uploadcare\Interfaces\Response\FileListResponseInterface;
+use Uploadcare\Interfaces\Response\ListResponseInterface;
 use Uploadcare\Response\BatchFileResponse;
 use Uploadcare\Response\FileListResponse;
 
-class FileApi implements FileApiInterface
+/**
+ * File Api.
+ */
+class FileApi extends AbstractApi implements FileApiInterface
 {
-    const API_VERSION = '0.5';
-
-    /**
-     * @var ConfigurationInterface
-     */
-    private $configuration;
-
-    public function __construct(ConfigurationInterface $configuration)
-    {
-        $this->configuration = $configuration;
-    }
-
-    /**
-     * @param string $method
-     * @param string $uri
-     * @param array  $data
-     *
-     * @return ResponseInterface
-     */
-    protected function request($method, $uri, array $data = [])
-    {
-        $date = \date_create();
-
-        $stringData = '';
-        $parameters = [];
-        if (isset($data['body'])) {
-            $stringData = \json_encode($data['body']);
-            $parameters['body'] = stream_for($data['body']);
-            unset($data['body']);
-        }
-        $uriForSign = $uri;
-        if (isset($data['query'])) {
-            $uriForSign .= '?' . \http_build_query($data['query']);
-        }
-
-        $headers = $this->configuration->getAuthHeaders($method, $uriForSign, $stringData, 'application/json', $date);
-        $headers['Accept'] = \sprintf('application/vnd.uploadcare-v%s+json', self::API_VERSION);
-        $headers = \array_merge($this->configuration->getHeaders(), $headers);
-        if (\strpos('http', $uri) !== 0) {
-            $uri = \sprintf('https://%s/%s', Configuration::API_BASE_URL, $uri);
-        }
-
-        $parameters = [
-            'headers' => $headers,
-        ];
-        $parameters = \array_merge($data, $parameters);
-
-        try {
-            return $this->configuration->getClient()->request($method, $uri, $parameters);
-        } catch (GuzzleException $e) {
-            throw new HttpException('', 0, ($e instanceof \Exception) ? $e : null);
-        }
-    }
-
     /**
      * @inheritDoc
      */
-    public function nextPage(FileListResponseInterface $response)
+    public function nextPage(ListResponseInterface $response)
     {
-        if (($next = $response->getNext()) === null) {
+        $parameters = $this->nextParameters($response);
+        if ($parameters === null) {
             return null;
         }
-
-        $query = \parse_url($next);
-        if (!isset($query['query']) || empty($query['query'])) {
-            return null;
-        }
-        $query = (string) $query['query'];
-        $parameters = [];
-        \parse_str($query, $parameters);
 
         /** @noinspection VariableFunctionsUsageInspection */
         $result = \call_user_func_array([$this, 'listFiles'], [
@@ -98,7 +36,7 @@ class FileApi implements FileApiInterface
             isset($parameters['removed']) ? (bool) $parameters['removed'] : null,
         ]);
 
-        return $result instanceof FileListResponseInterface ? $result : null;
+        return $result instanceof ListResponseInterface ? $result : null;
     }
 
     /**
@@ -111,7 +49,7 @@ class FileApi implements FileApiInterface
      * @param bool|null       $stored    `true` to only include files that were stored, `false` to include temporary ones. The default is unset: both stored and not stored files are returned.
      * @param bool            $removed   `true` to only include removed files in the response, `false` to include existing files. Defaults to false.
      *
-     * @return FileListResponseInterface
+     * @return ListResponseInterface
      */
     public function listFiles($limit = 100, $orderBy = 'datetime_uploaded', $from = null, $addFields = [], $stored = null, $removed = false)
     {

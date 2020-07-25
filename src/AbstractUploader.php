@@ -4,6 +4,8 @@ namespace Uploadcare;
 
 use GuzzleHttp\Exception\GuzzleException;
 use Psr\Http\Message\ResponseInterface;
+use Uploadcare\Apis\FileApi;
+use Uploadcare\Exception\HttpException;
 use Uploadcare\Exception\InvalidArgumentException;
 use Uploadcare\Interfaces\ConfigurationInterface;
 use Uploadcare\Interfaces\File\FileInfoInterface;
@@ -22,6 +24,27 @@ abstract class AbstractUploader implements UploaderInterface
     public function __construct(ConfigurationInterface $configuration)
     {
         $this->configuration = $configuration;
+    }
+
+    /**
+     * @param array<array-key, string> $files List of file ID's
+     *
+     * @return ResponseInterface
+     */
+    public function groupFiles(array $files)
+    {
+        $parameters = [
+            'files' => $files,
+            self::UPLOADCARE_PUB_KEY_KEY => $this->configuration->getPublicKey(),
+            self::UPLOADCARE_SIGNATURE_KEY => $this->configuration->getSecureSignature()->getSignature(),
+            self::UPLOADCARE_EXPIRE_KEY => $this->configuration->getSecureSignature()->getExpire()->getTimestamp(),
+        ];
+
+        try {
+            return $this->sendRequest('POST', 'group/', $parameters);
+        } catch (GuzzleException $e) {
+            throw new HttpException('', 0, ($e instanceof \Exception ? $e : null));
+        }
     }
 
     /**
@@ -225,6 +248,7 @@ abstract class AbstractUploader implements UploaderInterface
 
     /**
      * @param $id
+     *
      * @return FileInfoInterface
      */
     protected function fileInfo($id)

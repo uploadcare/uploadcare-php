@@ -11,6 +11,7 @@ use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Uploadcare\Configuration;
+use Uploadcare\Interfaces\File\FileInfoInterface;
 use Uploadcare\Security\Signature;
 use Uploadcare\Serializer\Serializer;
 use Uploadcare\Serializer\SnackCaseConverter;
@@ -38,7 +39,7 @@ class UploaderMethodsTest extends TestCase
      */
     protected function makeClient($response)
     {
-        $fileResponse = new Response(200, ['Content-Type' => 'application/json'], \file_get_contents(\dirname(__DIR__) . '/_data/uploaded-file.json'));
+        $fileResponse = new Response(200, ['Content-Type' => 'application/json'], \file_get_contents(\dirname(__DIR__) . '/_data/file-info.json'));
         $handler = new MockHandler([$response, $fileResponse]);
 
         return new Client(['handler' => HandlerStack::create($handler)]);
@@ -56,5 +57,40 @@ class UploaderMethodsTest extends TestCase
         $config = $this->makeConfiguration($client);
 
         return new Uploader($config);
+    }
+
+    public function testFromPathMethod()
+    {
+        $path = \dirname(__DIR__) . '/_data/test.jpg';
+        $body = ['file' => \uuid_create()];
+
+        $uploader = $this->makeUploaderWithResponse($body);
+        self::assertInstanceOf(FileInfoInterface::class, $uploader->fromPath($path));
+    }
+
+    public function testFromUrlMethod()
+    {
+        $body = ['file' => \uuid_create()];
+        $uploader = $this->makeUploaderWithResponse($body);
+
+        self::assertInstanceOf(FileInfoInterface::class, $uploader->fromUrl('https://httpbin.org/image/jpeg'));
+    }
+
+    public function testFromResourceMethod()
+    {
+        $body = ['file' => \uuid_create()];
+        $uploader = $this->makeUploaderWithResponse($body);
+
+        $handle = \fopen(\dirname(__DIR__) . '/_data/test.jpg', 'rb');
+        self::assertInstanceOf(FileInfoInterface::class, $uploader->fromResource($handle));
+    }
+
+    public function testFromContentMethod()
+    {
+        $body = ['file' => \uuid_create()];
+        $uploader = $this->makeUploaderWithResponse($body);
+        $content = \file_get_contents(\dirname(__DIR__) . '/_data/test.jpg');
+
+        self::assertInstanceOf(FileInfoInterface::class, $uploader->fromContent($content));
     }
 }

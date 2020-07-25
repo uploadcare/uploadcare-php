@@ -8,12 +8,12 @@ use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\TestCase;
+use Uploadcare\Apis\FileApi;
 use Uploadcare\Configuration;
-use Uploadcare\FileApi;
 use Uploadcare\Interfaces\File\CollectionInterface;
 use Uploadcare\Interfaces\File\FileInfoInterface;
 use Uploadcare\Interfaces\Response\BatchFileResponseInterface;
-use Uploadcare\Interfaces\Response\FileListResponseInterface;
+use Uploadcare\Interfaces\Response\ListResponseInterface;
 use Uploadcare\Interfaces\Response\ResponseProblemInterface;
 use Uploadcare\Response\FileListResponse;
 
@@ -85,7 +85,7 @@ class FileApiAnswersTest extends TestCase
         $client = $this->getClient('file-list-api-response.json');
         $result = (new FileApi($this->getConfig($client)))->listFiles();
 
-        self::assertInstanceOf(FileListResponseInterface::class, $result);
+        self::assertInstanceOf(ListResponseInterface::class, $result);
         self::assertNotEmpty($result->getNext());
         self::assertNotEmpty($result->getPrevious());
         self::assertCount(\count($data['results']), $result->getResults());

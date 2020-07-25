@@ -4,10 +4,10 @@ namespace Uploadcare\Response;
 
 use Uploadcare\File\FileCollection;
 use Uploadcare\Interfaces\File\CollectionInterface;
-use Uploadcare\Interfaces\Response\FileListResponseInterface;
+use Uploadcare\Interfaces\Response\ListResponseInterface;
 use Uploadcare\Interfaces\SerializableInterface;
 
-final class FileListResponse implements FileListResponseInterface, SerializableInterface
+final class FileListResponse implements ListResponseInterface, SerializableInterface
 {
     /**
      * @var string|null

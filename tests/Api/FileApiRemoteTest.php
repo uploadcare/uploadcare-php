@@ -4,9 +4,9 @@ namespace Tests\Api;
 
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Dotenv\Dotenv;
+use Uploadcare\Apis\FileApi;
 use Uploadcare\Configuration;
-use Uploadcare\FileApi;
-use Uploadcare\Interfaces\Response\FileListResponseInterface;
+use Uploadcare\Interfaces\Response\ListResponseInterface;
 
 /**
  * @group local-only
@@ -24,7 +24,7 @@ class FileApiRemoteTest extends TestCase
         $api = new FileApi($config);
 
         $list = $api->listFiles(5);
-        self::assertInstanceOf(FileListResponseInterface::class, $list);
+        self::assertInstanceOf(ListResponseInterface::class, $list);
     }
 
     public function testNextPage()
@@ -32,6 +32,6 @@ class FileApiRemoteTest extends TestCase
         $config = Configuration::create($_ENV['UPLOADCARE_PUBLIC_KEY'], $_ENV['UPLOADCARE_PRIVATE_KEY']);
         $api = new FileApi($config);
         $list = $api->listFiles(1);
-        self::assertInstanceOf(FileListResponseInterface::class, $api->nextPage($list));
+        self::assertInstanceOf(ListResponseInterface::class, $api->nextPage($list));
     }
 }

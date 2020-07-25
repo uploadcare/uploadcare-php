@@ -1,12 +1,9 @@
 <?php
 
-
 namespace Tests\Configuration;
-
 
 use GuzzleHttp\Client;
 use PHPUnit\Framework\TestCase;
-use ReflectionObject;
 use Uploadcare\Configuration;
 
 class ConfigurationTest extends TestCase
@@ -37,7 +34,9 @@ class ConfigurationTest extends TestCase
 
     /**
      * @dataProvider generateHeaders
+     *
      * @param $headerString
+     *
      * @throws \ReflectionException
      */
     public function testUserAgentStringCreation($headerString)
@@ -49,7 +48,7 @@ class ConfigurationTest extends TestCase
             $headers['User-Agent'] = $headerString;
         }
 
-        $setUserAgent = (new ReflectionObject($conf))->getMethod('setUserAgent');
+        $setUserAgent = (new \ReflectionObject($conf))->getMethod('setUserAgent');
         $setUserAgent->setAccessible(true);
         $setUserAgent->invokeArgs($conf, [&$headers]);
 
@@ -60,14 +59,16 @@ class ConfigurationTest extends TestCase
 
     /**
      * @dataProvider generateHeaders
+     *
      * @param $headerString
+     *
      * @throws \ReflectionException
      */
     public function testGetHeadersWithClient($headerString)
     {
         $conf = Configuration::create($this->publicKey, $this->privateKey);
         if ($headerString !== null) {
-            $client = (new ReflectionObject($conf))->getProperty('client');
+            $client = (new \ReflectionObject($conf))->getProperty('client');
             $client->setAccessible(true);
             $client->setValue($conf, new Client(['headers' => ['User-Agent' => $headerString]]));
         }

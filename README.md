@@ -81,7 +81,7 @@ $serializer = new \Uploadcare\Serializer\Serializer(new \Uploadcare\Serializer\S
 $configuration = new \Uploadcare\Configuration('<your public key>', $sign, $client, $serializer);
 ```
 
-As you can see, the fabric method is more convenient for standard usage.
+As you can see, the factory method is more convenient for standard usage.
 
 ## Usage
 
@@ -102,7 +102,7 @@ You can use the core API-object for any type of upload:
 
 ```php
 $configuration = \Uploadcare\Configuration::create($_ENV['UPLOADCARE_PUBLIC_KEY'], $_ENV['UPLOADCARE_PRIVATE_KEY']);
-$uploader = (new \Uploadcare\Api($configuration))->getUploader();
+$uploader = (new \Uploadcare\Api($configuration))->uploader();
 ```
 
 First of, files can be uploaded **from URL**. The following returns an instance of `Uploadcare\File`,
@@ -142,18 +142,18 @@ If you have a large (more than 100Mb / 10485760 bytes) file, the uploader will a
 
 ## File operations
 
-For any type og file operation you should create the `Uploadcare\FileApi` instance with configuration:
+For any type of file operation you should create the `Uploadcare\Api` instance with configuration object and call the `file()` method:
 
 ```php
 $config = \Uploadcare\Configuration::create($_ENV['UPLOADCARE_PUBLIC_KEY'], $_ENV['UPLOADCARE_PRIVATE_KEY']);
-$fileApi = new \Uploadcare\Api($config);
+$fileApi = (new \Uploadcare\Api($config))->file();
 ```
 
 After that, you can access to file operation methods
 
 - `listFiles($limit = 100, $orderBy = 'datetime_uploaded', $from = null, $addFields = [], $stored = null, $removed = false)` — list of four files. Returns `Uploadcare\Interfaces\Response\FileListResponseInterface`. Each element of collection is a `Uploadcare\Interfaces\File\FileInfoInterface`. Arguments:
     - int             `$limit`     A preferred amount of files in a list for a single response. Defaults to 100, while the maximum is 1000.
-    - string          `$orderBy`   specifies the way files are sorted in a returned list
+    - string          `$orderBy`   specifies the way to sort files in a returned list
     - string|int|null `$from`      A starting point for filtering files. The value depends on your $orderBy parameter value.
     - array           `$addFields` Add special fields to the file object
     - bool|null       `$stored`    `true` to only include files that were stored, `false` to include temporary ones. The default is unset: both stored and not stored files will be returned.
@@ -161,7 +161,7 @@ After that, you can access to file operation methods
 - `nextPage(FileListResponseInterface $response)` — next page from previous answer, if next page are exists. You can use it in simple `while` loop, for example:     
     ```php
     $config = \Uploadcare\Configuration::create($_ENV['UPLOADCARE_PUBLIC_KEY'], $_ENV['UPLOADCARE_PRIVATE_KEY']);
-    $fileApi = new \Uploadcare\FileApi($config);
+    $fileApi = new \Uploadcare\Apis\FileApi($config);
     $page = $fileApi->listFiles(5); // Here is a FileListResponseInterface
     while (($page = $fileApi->nextPage($page)) !== null) {
       $files = $page->getResults(); 
@@ -185,6 +185,22 @@ After that, you can access to file operation methods
     - `$pattern` — The parameter is used to specify file names Uploadcare passes to a custom storage. In case the parameter is omitted, we use pattern of your custom storage. Use any combination of allowed values.
     
 See [original API documentation](https://uploadcare.com/api-refs/rest-api/v0.6.0/#tag/File) for details.
+
+## Group operations
+
+For any type of group operation you should create the `Uploadcare\Api` instance with configuration object and call the `group()` method:
+
+```php
+$config = \Uploadcare\Configuration::create($_ENV['UPLOADCARE_PUBLIC_KEY'], $_ENV['UPLOADCARE_PRIVATE_KEY']);
+$groupApi = (new \Uploadcare\Api($config))->group();
+```
+
+After that, you can access to group operation methods
+
+- `createGroup($files)` — Creates file group. You can pass the array of ID's or `Uploadcare\File\FileCollection` as argument. Returns `Uploadcare\File\Group` object.
+- `listGroups($limit, $asc = true)` — Get a paginated list of groups. Default limit is 100, default order is order by creation datetime. You can reverse order with `$asc = false`. Returns `Uploadcare\Response\GroupListResponse`
+- `groupInfo($id)` — Gets a file group info by UUID. Returns `Uploadcare\File\Group` object.
+- `storeGroup($id)` — Mark all files in a group as stored. Returns `Uploadcare\File\Group` object.
 
 ### Tests
 

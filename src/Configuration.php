@@ -94,7 +94,7 @@ class Configuration implements ConfigurationInterface
         $info = [
             '{lib-version}' => self::LIBRARY_VERSION,
             '{publicKey}' => $this->publicKey,
-            '{lang-version}' => sprintf('%s.%s.%s', PHP_MAJOR_VERSION, PHP_MINOR_VERSION, PHP_RELEASE_VERSION)
+            '{lang-version}' => sprintf('%s.%s.%s', PHP_MAJOR_VERSION, PHP_MINOR_VERSION, PHP_RELEASE_VERSION),
         ];
         $value = \strtr(self::USER_AGENT_TEMPLATE, $info);
 

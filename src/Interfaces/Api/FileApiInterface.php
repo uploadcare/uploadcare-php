@@ -4,18 +4,18 @@ namespace Uploadcare\Interfaces\Api;
 
 use Uploadcare\Interfaces\File\FileInfoInterface;
 use Uploadcare\Interfaces\Response\BatchFileResponseInterface;
-use Uploadcare\Interfaces\Response\FileListResponseInterface;
+use Uploadcare\Interfaces\Response\ListResponseInterface;
 
 interface FileApiInterface
 {
     /**
      * Get the next page from previous answer (if next page exists).
      *
-     * @param FileListResponseInterface $response
+     * @param ListResponseInterface $response
      *
-     * @return FileListResponseInterface|null
+     * @return ListResponseInterface|null
      */
-    public function nextPage(FileListResponseInterface $response);
+    public function nextPage(ListResponseInterface $response);
 
     /**
      * Getting a paginated list of files.
@@ -27,7 +27,9 @@ interface FileApiInterface
      * @param bool|null       $stored    `true` to only include files that were stored, `false` to include temporary ones. The default is unset: both stored and not stored files are returned.
      * @param bool            $removed   `true` to only include removed files in the response, `false` to include existing files. Defaults to false.
      *
-     * @return FileListResponseInterface
+     * @return ListResponseInterface
+     *
+     * @todo Refactor for normal oarameters.
      */
     public function listFiles($limit = 100, $orderBy = 'datetime_uploaded', $from = null, $addFields = [], $stored = null, $removed = false);
 
