@@ -18,6 +18,7 @@ class Configuration
 {
     const LIBRARY_VERSION = 'v3.0.0';
     const API_BASE_URL = 'api.uploadcare.com';
+    const USER_AGENT_TEMPLATE = 'PHPUploadcare/{lib-version}/{publicKey} (PHP/{lang-version})';
 
     /**
      * @var string
@@ -89,17 +90,14 @@ class Configuration
 
     protected function setUserAgent(array &$headers)
     {
-        $exists = \array_filter($headers, static function ($header) {
-            return \is_string($header) && \strtolower($header) === 'user-agent';
-        }, ARRAY_FILTER_USE_KEY);
+        $info = [
+            '{lib-version}' => self::LIBRARY_VERSION,
+            '{publicKey}' => $this->publicKey,
+            '{lang-version}' => sprintf('%s.%s.%s', PHP_MAJOR_VERSION, PHP_MINOR_VERSION, PHP_RELEASE_VERSION)
+        ];
+        $value = \strtr(self::USER_AGENT_TEMPLATE, $info);
 
-        if (!empty($exists) && isset($exists[0]) && \is_string($exists[0])) {
-            $headers['User-Agent'] = \sprintf('%s (php-%s)', $exists[0], PHP_VERSION);
-
-            return;
-        }
-
-        $headers['User-Agent'] = \sprintf('Uploadcare PHP client %s, (php-%s)', self::LIBRARY_VERSION, PHP_VERSION);
+        $headers['User-Agent'] = $value;
     }
 
     /**
