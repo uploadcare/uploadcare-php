@@ -4,13 +4,10 @@ namespace Uploadcare;
 
 use GuzzleHttp\Exception\GuzzleException;
 use Psr\Http\Message\ResponseInterface;
-use Uploadcare\Exception\HttpException;
 use Uploadcare\Exception\InvalidArgumentException;
-use Uploadcare\File\UploadedFile;
-use Uploadcare\Interfaces\Response\FileGroupResponseInterface;
-use Uploadcare\Interfaces\UploadedFileInterface;
+use Uploadcare\Interfaces\ConfigurationInterface;
+use Uploadcare\Interfaces\File\FileInfoInterface;
 use Uploadcare\Interfaces\UploaderInterface;
-use Uploadcare\Response\FileGroupResponse;
 
 /**
  * Main Uploader.
@@ -18,71 +15,13 @@ use Uploadcare\Response\FileGroupResponse;
 abstract class AbstractUploader implements UploaderInterface
 {
     /**
-     * @var Configuration
+     * @var ConfigurationInterface
      */
     protected $configuration;
 
-    public function __construct(Configuration $configuration)
+    public function __construct(ConfigurationInterface $configuration)
     {
         $this->configuration = $configuration;
-    }
-
-    /**
-     * @param array $files
-     *
-     * @return FileGroupResponseInterface
-     */
-    public function groupFiles(array $files)
-    {
-        $parameters = [
-            'files' => $files,
-            self::UPLOADCARE_PUB_KEY_KEY => $this->configuration->getPublicKey(),
-            self::UPLOADCARE_SIGNATURE_KEY => $this->configuration->getSecureSignature()->getSignature(),
-            self::UPLOADCARE_EXPIRE_KEY => $this->configuration->getSecureSignature()->getExpire()->getTimestamp(),
-        ];
-
-        try {
-            $response = $this->sendRequest('POST', 'group/', $parameters);
-        } catch (GuzzleException $e) {
-            throw new HttpException('', 0, ($e instanceof \Exception ? $e : null));
-        }
-
-        $data = $this->configuration->getSerializer()
-            ->deserialize($response->getBody()->getContents(), FileGroupResponse::class);
-
-        if ($data instanceof FileGroupResponseInterface) {
-            return $data;
-        }
-
-        throw new \RuntimeException('Cannot deserialize response object. Call to support');
-    }
-
-    /**
-     * @param string $groupId
-     *
-     * @return FileGroupResponseInterface
-     */
-    public function groupInfo($groupId)
-    {
-        $parameters = [
-            'group_id' => (string) $groupId,
-            self::UPLOADCARE_PUB_KEY_KEY => $this->configuration->getPublicKey(),
-        ];
-
-        try {
-            $response = $this->sendRequest('POST', 'group/info/', $parameters);
-        } catch (GuzzleException $e) {
-            throw new HttpException('', 0, ($e instanceof \Exception ? $e : null));
-        }
-
-        $data = $this->configuration->getSerializer()
-            ->deserialize($response->getBody()->getContents(), FileGroupResponse::class);
-
-        if ($data instanceof FileGroupResponseInterface) {
-            return $data;
-        }
-
-        throw new \RuntimeException('Cannot deserialize response object. Call to support');
     }
 
     /**
@@ -93,7 +32,7 @@ abstract class AbstractUploader implements UploaderInterface
      * @param string|null $filename
      * @param string      $store
      *
-     * @return UploadedFileInterface
+     * @return FileInfoInterface
      */
     abstract public function fromResource($handle, $mimeType = null, $filename = null, $store = 'auto');
 
@@ -105,7 +44,7 @@ abstract class AbstractUploader implements UploaderInterface
      * @param string|null $filename
      * @param string      $store
      *
-     * @return UploadedFileInterface
+     * @return FileInfoInterface
      */
     public function fromPath($path, $mimeType = null, $filename = null, $store = 'auto')
     {
@@ -124,7 +63,7 @@ abstract class AbstractUploader implements UploaderInterface
      * @param string|null $filename
      * @param string      $store
      *
-     * @return UploadedFileInterface
+     * @return FileInfoInterface
      */
     public function fromUrl($url, $mimeType = null, $filename = null, $store = 'auto')
     {
@@ -144,7 +83,7 @@ abstract class AbstractUploader implements UploaderInterface
      * @param string|null $filename
      * @param string      $store
      *
-     * @return UploadedFileInterface
+     * @return FileInfoInterface
      */
     public function fromContent($content, $mimeType = null, $filename = null, $store = 'auto')
     {
@@ -272,7 +211,7 @@ abstract class AbstractUploader implements UploaderInterface
      * @param ResponseInterface $response
      * @param string            $arrayKey
      *
-     * @return UploadedFileInterface
+     * @return FileInfoInterface
      */
     protected function serializeFileResponse(ResponseInterface $response, $arrayKey = 'file')
     {
@@ -280,23 +219,18 @@ abstract class AbstractUploader implements UploaderInterface
         if (!isset($result[$arrayKey])) {
             throw new \RuntimeException(\sprintf('Unable to get \'%s\' key from response. Call to support', $arrayKey));
         }
-        try {
-            $response = $this->sendRequest('GET', '/info', [
-                'query' => [
-                    'file_id' => (string) $result[$arrayKey],
-                    'pub_key' => $this->configuration->getPublicKey(),
-                ],
-            ]);
-        } catch (GuzzleException $e) {
-            throw new HttpException('', 0, ($e instanceof \Exception ? $e : null));
-        }
 
-        $result = $this->configuration->getSerializer()->deserialize($response->getBody()->getContents(), UploadedFile::class);
-        if (!$result instanceof UploadedFileInterface) {
-            throw new \RuntimeException('Cannot deserialize response object. Call to support');
-        }
+        return $this->fileInfo((string) $result[$arrayKey]);
+    }
 
-        return $result;
+    /**
+     * @param $id
+     * @return FileInfoInterface
+     */
+    protected function fileInfo($id)
+    {
+        return (new FileApi($this->configuration))
+            ->fileInfo($id);
     }
 
     /**

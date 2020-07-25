@@ -3,6 +3,7 @@
 namespace Uploadcare;
 
 use GuzzleHttp\Exception\GuzzleException;
+use Uploadcare\Interfaces\ConfigurationInterface;
 use function GuzzleHttp\Psr7\stream_for;
 use Psr\Http\Message\ResponseInterface;
 use Uploadcare\Exception\HttpException;
@@ -14,16 +15,16 @@ use Uploadcare\Interfaces\Response\FileListResponseInterface;
 use Uploadcare\Response\BatchFileResponse;
 use Uploadcare\Response\FileListResponse;
 
-final class FileApi implements FileApiInterface
+class FileApi implements FileApiInterface
 {
     const API_VERSION = '0.5';
 
     /**
-     * @var Configuration
+     * @var ConfigurationInterface
      */
     private $configuration;
 
-    public function __construct(Configuration $configuration)
+    public function __construct(ConfigurationInterface $configuration)
     {
         $this->configuration = $configuration;
     }

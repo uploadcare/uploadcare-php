@@ -87,15 +87,22 @@ As you can see, the fabric method is more convenient for standard usage.
 
 You can find all usage examples in `example-project` directory.
 
+For all types of actions, you should create the Api object first:
+
+```php
+$configuration = \Uploadcare\Configuration::create($_ENV['UPLOADCARE_PUBLIC_KEY'], $_ENV['UPLOADCARE_PRIVATE_KEY']);
+$api = new \Uploadcare\Api($configuration);
+```
+
 ### Uploading files
 
 This section describes multiple ways of uploading files to Uploadcare.
 
-For any type of upload, you should create `Uploadcare\Uploader` object with [configuration](#Configuration object)
+You can use the core API-object for any type of upload:
 
 ```php
 $configuration = \Uploadcare\Configuration::create($_ENV['UPLOADCARE_PUBLIC_KEY'], $_ENV['UPLOADCARE_PRIVATE_KEY']);
-$uploader = new \Uploadcare\Uploader($configuration);
+$uploader = (new \Uploadcare\Api($configuration))->getUploader();
 ```
 
 First of, files can be uploaded **from URL**. The following returns an instance of `Uploadcare\File`,
@@ -139,7 +146,7 @@ For any type og file operation you should create the `Uploadcare\FileApi` instan
 
 ```php
 $config = \Uploadcare\Configuration::create($_ENV['UPLOADCARE_PUBLIC_KEY'], $_ENV['UPLOADCARE_PRIVATE_KEY']);
-$fileApi = new \Uploadcare\FileApi($config);
+$fileApi = new \Uploadcare\Api($config);
 ```
 
 After that, you can access to file operation methods

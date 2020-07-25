@@ -6,7 +6,7 @@ use GuzzleHttp\Exception\GuzzleException;
 use Psr\Http\Message\ResponseInterface;
 use Uploadcare\Exception\HttpException;
 use Uploadcare\Exception\InvalidArgumentException;
-use Uploadcare\Interfaces\UploadedFileInterface;
+use Uploadcare\Interfaces\File\FileInfoInterface;
 use Uploadcare\MultipartResponse\MultipartStartResponse;
 
 class Uploader extends AbstractUploader
@@ -14,7 +14,7 @@ class Uploader extends AbstractUploader
     /**
      * Below this size direct upload is possible, above — multipart upload.
      */
-    const MULTIPART_UPLOAD_SIZE = 10485760;
+    const MULTIPART_UPLOAD_SIZE = 1024 * 1024 * 100;
 
     /**
      * Multipart upload chunk size.
@@ -29,7 +29,7 @@ class Uploader extends AbstractUploader
      * @param string|null $filename
      * @param string|null $store
      *
-     * @return UploadedFileInterface
+     * @return FileInfoInterface
      */
     public function fromResource($handle, $mimeType = null, $filename = null, $store = 'auto')
     {
