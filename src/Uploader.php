@@ -43,13 +43,15 @@ class Uploader extends AbstractUploader
         }
 
         $this->rewind($handle);
+        $arrayKey = 'file';
         if (($fileSize = $this->getSize($handle)) >= self::MULTIPART_UPLOAD_SIZE) {
             $response = $this->uploadByParts($handle, $fileSize, $mimeType, $filename, $store === 'auto' ? null : $store);
+            $arrayKey = 'uuid';
         } else {
             $response = $this->directUpload($handle, $mimeType, $filename, $store);
         }
 
-        return $this->serializeFileResponse($response);
+        return $this->serializeFileResponse($response, $arrayKey);
     }
 
     /**

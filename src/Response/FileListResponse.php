@@ -30,7 +30,7 @@ final class FileListResponse implements ListResponseInterface, SerializableInter
     private $perPage;
 
     /**
-     * @var CollectionInterface
+     * @var CollectionInterface|FileCollection
      */
     private $results;
 

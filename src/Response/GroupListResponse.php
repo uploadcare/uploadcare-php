@@ -33,7 +33,7 @@ class GroupListResponse implements ListResponseInterface, SerializableInterface
     private $perPage;
 
     /**
-     * @var CollectionInterface
+     * @var CollectionInterface|GroupCollection
      */
     private $results;
 
