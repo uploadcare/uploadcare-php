@@ -79,18 +79,18 @@ interface FileApiInterface
     /**
      * Copy original files or their modified versions to default storage. Source files MAY either be stored or just uploaded and MUST NOT be deleted.
      *
-     * @param string $source a CDN URL or just UUID of a file subjected to copy
-     * @param bool   $store  the parameter only applies to the Uploadcare storage and MUST be boolean
+     * @param string|FileInfoInterface $source a CDN URL or just UUID of a file subjected to copy
+     * @param bool                     $store  the parameter only applies to the Uploadcare storage and MUST be boolean
      *
      * @return mixed
      */
     public function copyToLocalStorage($source, $store);
 
     /**
-     * @param string $source     a CDN URL or just UUID of a file subjected to copy
-     * @param string $target     Identifies a custom storage name related to your project. Implies you are copying a file to a specified custom storage. Keep in mind you can have multiple storage's associated with a single S3 bucket.
-     * @param bool   $makePublic true to make copied files available via public links, false to reverse the behavior
-     * @param string $pattern    Enum: "${default}" "${auto_filename}" "${effects}" "${filename}" "${uuid}" "${ext}" The parameter is used to specify file names Uploadcare passes to a custom storage. In case the parameter is omitted, we use pattern of your custom storage. Use any combination of allowed values.
+     * @param string|FileInfoInterface $source     a CDN URL or just UUID of a file subjected to copy
+     * @param string                   $target     Identifies a custom storage name related to your project. Implies you are copying a file to a specified custom storage. Keep in mind you can have multiple storage's associated with a single S3 bucket.
+     * @param bool                     $makePublic true to make copied files available via public links, false to reverse the behavior
+     * @param string                   $pattern    Enum: "${default}" "${auto_filename}" "${effects}" "${filename}" "${uuid}" "${ext}" The parameter is used to specify file names Uploadcare passes to a custom storage. In case the parameter is omitted, we use pattern of your custom storage. Use any combination of allowed values.
      *
      * @return mixed
      */

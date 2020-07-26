@@ -3,7 +3,6 @@
 namespace Tests\Api;
 
 use PHPUnit\Framework\TestCase;
-use ReflectionObject;
 use Uploadcare\Apis\FileApi;
 use Uploadcare\Exception\InvalidArgumentException;
 use Uploadcare\File\File;
@@ -23,12 +22,14 @@ class FileApiConvertCollectionTest extends TestCase
 
     /**
      * @param FileApi $api
+     *
      * @return \ReflectionMethod
+     *
      * @throws \ReflectionException
      */
     protected function getConvertCollection(FileApi $api)
     {
-        $convertCollection = (new ReflectionObject($api))->getMethod('convertCollection');
+        $convertCollection = (new \ReflectionObject($api))->getMethod('convertCollection');
         $convertCollection->setAccessible(true);
 
         return $convertCollection;
@@ -65,13 +66,15 @@ class FileApiConvertCollectionTest extends TestCase
             [false],
             [null],
             [(object) []],
-            ['string']
+            ['string'],
         ];
     }
 
     /**
      * @dataProvider provideWrongData
+     *
      * @param $item
+     *
      * @throws \ReflectionException
      */
     public function testExceptionWithWrongObject($item)

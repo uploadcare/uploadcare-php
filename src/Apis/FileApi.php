@@ -166,23 +166,21 @@ class FileApi extends AbstractApi implements FileApiInterface
 
     /**
      * @param array|CollectionInterface $ids
+     *
      * @return array<array-key, string>
      */
     protected function convertCollection($ids)
     {
         $values = [];
         if (!\is_array($ids) && !$ids instanceof FileCollection) {
-            throw new InvalidArgumentException(\vsprintf('First argument for %s must be an instance of %s or array, %s given', [
-                __METHOD__,
-                FileCollection::class,
-                \is_object($ids) ? \get_class($ids) : \gettype($ids),
-            ]));
+            throw new InvalidArgumentException(\vsprintf('First argument for %s must be an instance of %s or array, %s given', [__METHOD__, FileCollection::class, \is_object($ids) ? \get_class($ids) : \gettype($ids)]));
         }
         foreach ($ids as $id) {
-            if ($id instanceof FileInfoInterface)
+            if ($id instanceof FileInfoInterface) {
                 $values[] = $id->getUuid();
-            elseif (\uuid_is_valid($id))
+            } elseif (\uuid_is_valid($id)) {
                 $values[] = $id;
+            }
         }
 
         return $values;
@@ -191,16 +189,23 @@ class FileApi extends AbstractApi implements FileApiInterface
     /**
      * Copy original files or their modified versions to default storage. Source files MAY either be stored or just uploaded and MUST NOT be deleted.
      *
-     * @param string $source a CDN URL or just UUID of a file subjected to copy
-     * @param bool   $store  the parameter only applies to the Uploadcare storage and MUST be boolean
+     * @param string|FileInfoInterface $source a CDN URL or just UUID of a file subjected to copy
+     * @param bool                     $store  the parameter only applies to the Uploadcare storage and MUST be boolean
      *
      * @return FileInfoInterface|object
      */
     public function copyToLocalStorage($source, $store)
     {
+        if ($source instanceof FileInfoInterface) {
+            $source = $source->getUuid();
+        }
+        if (!\uuid_is_valid($source)) {
+            throw new InvalidArgumentException(\sprintf('Uuid \'%s\' for request not valid', $source));
+        }
+
         $response = $this->request('POST', '/files/local_copy/', [
             'source' => $source,
-            'store' => $store,
+            'store' => (bool) $store,
         ]);
 
         // Hack
@@ -220,15 +225,22 @@ class FileApi extends AbstractApi implements FileApiInterface
     }
 
     /**
-     * @param string $source     a CDN URL or just UUID of a file subjected to copy
-     * @param string $target     Identifies a custom storage name related to your project. Implies you are copying a file to a specified custom storage. Keep in mind you can have multiple storage's associated with a single S3 bucket.
-     * @param bool   $makePublic true to make copied files available via public links, false to reverse the behavior
-     * @param string $pattern    Enum: "${default}" "${auto_filename}" "${effects}" "${filename}" "${uuid}" "${ext}" The parameter is used to specify file names Uploadcare passes to a custom storage. In case the parameter is omitted, we use pattern of your custom storage. Use any combination of allowed values.
+     * @param string|FileInfoInterface $source     a CDN URL or just UUID of a file subjected to copy
+     * @param string                   $target     Identifies a custom storage name related to your project. Implies you are copying a file to a specified custom storage. Keep in mind you can have multiple storage's associated with a single S3 bucket.
+     * @param bool                     $makePublic true to make copied files available via public links, false to reverse the behavior
+     * @param string                   $pattern    Enum: "${default}" "${auto_filename}" "${effects}" "${filename}" "${uuid}" "${ext}" The parameter is used to specify file names Uploadcare passes to a custom storage. In case the parameter is omitted, we use pattern of your custom storage. Use any combination of allowed values.
      *
      * @return string
      */
     public function copyToRemoteStorage($source, $target, $makePublic = null, $pattern = null)
     {
+        if ($source instanceof FileInfoInterface) {
+            $source = $source->getUuid();
+        }
+        if (!\uuid_is_valid($source)) {
+            throw new InvalidArgumentException(\sprintf('Uuid \'%s\' for request not valid', $source));
+        }
+
         $parameters = [
             'source' => $source,
             'target' => $target,

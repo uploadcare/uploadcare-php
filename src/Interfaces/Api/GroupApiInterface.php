@@ -53,7 +53,7 @@ interface GroupApiInterface
     /**
      * Mark all files in a group as stored.
      *
-     * @param string $id Group UUID
+     * @param string|GroupInterface $id Group UUID
      *
      * @return GroupInterface
      *

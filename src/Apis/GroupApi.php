@@ -103,6 +103,10 @@ class GroupApi extends AbstractApi implements GroupApiInterface
      */
     public function storeGroup($id)
     {
+        if ($id instanceof GroupInterface) {
+            $id = $id->getId();
+        }
+
         $uri = \sprintf('/groups/%s/storage/', $id);
         $response = $this->request('PUT', $uri);
         if ($response->getStatusCode() === 200) {
