@@ -2,6 +2,7 @@
 
 namespace Uploadcare\Interfaces\Api;
 
+use Uploadcare\Interfaces\File\CollectionInterface;
 use Uploadcare\Interfaces\File\FileInfoInterface;
 use Uploadcare\Interfaces\Response\BatchFileResponseInterface;
 use Uploadcare\Interfaces\Response\ListResponseInterface;
@@ -28,15 +29,13 @@ interface FileApiInterface
      * @param bool            $removed   `true` to only include removed files in the response, `false` to include existing files. Defaults to false.
      *
      * @return ListResponseInterface
-     *
-     * @todo Refactor for normal oarameters.
      */
     public function listFiles($limit = 100, $orderBy = 'datetime_uploaded', $from = null, $addFields = [], $stored = null, $removed = false);
 
     /**
      * Store a single file by UUID.
      *
-     * @param string $id file UUID
+     * @param string|FileInfoInterface $id file UUID
      *
      * @return FileInfoInterface
      */
@@ -45,7 +44,7 @@ interface FileApiInterface
     /**
      * Remove individual files. Returns file info.
      *
-     * @param string $id file UUID
+     * @param string|FileInfoInterface $id file UUID
      *
      * @return FileInfoInterface
      */
@@ -64,18 +63,18 @@ interface FileApiInterface
      * Store multiple files in one step.
      * Up to 100 files are supported per request.
      *
-     * @param array $ids array of files UUIDs to store
+     * @param array|CollectionInterface $ids array of files UUIDs or FileCollection to store
      *
      * @return BatchFileResponseInterface
      */
-    public function batchStoreFile(array $ids);
+    public function batchStoreFile($ids);
 
     /**
-     * @param array $ids array of files UUIDs to store
+     * @param array|CollectionInterface $ids array of files UUIDs to store
      *
      * @return BatchFileResponseInterface
      */
-    public function batchDeleteFile(array $ids);
+    public function batchDeleteFile($ids);
 
     /**
      * Copy original files or their modified versions to default storage. Source files MAY either be stored or just uploaded and MUST NOT be deleted.

@@ -3,8 +3,11 @@
 namespace Uploadcare\Apis;
 
 use Psr\Http\Message\ResponseInterface;
+use Uploadcare\Exception\InvalidArgumentException;
 use Uploadcare\File\File;
+use Uploadcare\File\FileCollection;
 use Uploadcare\Interfaces\Api\FileApiInterface;
+use Uploadcare\Interfaces\File\CollectionInterface;
 use Uploadcare\Interfaces\File\FileInfoInterface;
 use Uploadcare\Interfaces\Response\BatchFileResponseInterface;
 use Uploadcare\Interfaces\Response\ListResponseInterface;
@@ -77,12 +80,15 @@ class FileApi extends AbstractApi implements FileApiInterface
     /**
      * Store a single file by UUID.
      *
-     * @param string $id file UUID
+     * @param string|FileInfoInterface $id file UUID
      *
      * @return FileInfoInterface
      */
     public function storeFile($id)
     {
+        if ($id instanceof FileInfoInterface) {
+            $id = $id->getUuid();
+        }
         $response = $this->request('PUT', \sprintf('/files/%s/storage/', $id));
 
         return $this->deserializeFileInfo($response);
@@ -91,12 +97,15 @@ class FileApi extends AbstractApi implements FileApiInterface
     /**
      * Remove individual files. Returns file info.
      *
-     * @param string $id file UUID
+     * @param string|FileInfoInterface $id file UUID
      *
      * @return FileInfoInterface
      */
     public function deleteFile($id)
     {
+        if ($id instanceof FileInfoInterface) {
+            $id = $id->getUuid();
+        }
         $response = $this->request('DELETE', \sprintf('/files/%s/', $id));
 
         return $this->deserializeFileInfo($response);
@@ -120,13 +129,13 @@ class FileApi extends AbstractApi implements FileApiInterface
      * Store multiple files in one step.
      * Up to 100 files are supported per request.
      *
-     * @param array $ids array of files UUIDs to store
+     * @param array|CollectionInterface $ids array of files UUIDs to store
      *
      * @return BatchFileResponseInterface
      */
-    public function batchStoreFile(array $ids)
+    public function batchStoreFile($ids)
     {
-        $response = $this->request('PUT', '/files/storage/', $ids);
+        $response = $this->request('PUT', '/files/storage/', $this->convertCollection($ids));
         $result = $this->configuration->getSerializer()
             ->deserialize($response->getBody()->getContents(), BatchFileResponse::class);
 
@@ -138,13 +147,13 @@ class FileApi extends AbstractApi implements FileApiInterface
     }
 
     /**
-     * @param array $ids array of files UUIDs to store
+     * @param array|CollectionInterface $ids array of files UUIDs to store
      *
      * @return BatchFileResponseInterface
      */
-    public function batchDeleteFile(array $ids)
+    public function batchDeleteFile($ids)
     {
-        $response = $this->request('DELETE', '/files/storage/', $ids);
+        $response = $this->request('DELETE', '/files/storage/', $this->convertCollection($ids));
         $result = $this->configuration->getSerializer()
             ->deserialize($response->getBody()->getContents(), BatchFileResponse::class);
 
@@ -153,6 +162,30 @@ class FileApi extends AbstractApi implements FileApiInterface
         }
 
         return $result;
+    }
+
+    /**
+     * @param array|CollectionInterface $ids
+     * @return array<array-key, string>
+     */
+    protected function convertCollection($ids)
+    {
+        $values = [];
+        if (!\is_array($ids) && !$ids instanceof FileCollection) {
+            throw new InvalidArgumentException(\vsprintf('First argument for %s must be an instance of %s or array, %s given', [
+                __METHOD__,
+                FileCollection::class,
+                \is_object($ids) ? \get_class($ids) : \gettype($ids),
+            ]));
+        }
+        foreach ($ids as $id) {
+            if ($id instanceof FileInfoInterface)
+                $values[] = $id->getUuid();
+            elseif (\uuid_is_valid($id))
+                $values[] = $id;
+        }
+
+        return $values;
     }
 
     /**
