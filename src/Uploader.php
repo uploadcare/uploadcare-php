@@ -12,16 +12,18 @@ use Uploadcare\MultipartResponse\MultipartStartResponse;
 class Uploader extends AbstractUploader
 {
     /**
-     * Below this size direct upload is possible, above — multipart upload.
+     * Below this size direct upload is possible, above — multipart upload (100 Mb).
+     *
+     * @see https://uploadcare.com/api-refs/upload-api/#operation/multipartFileUploadStart
      */
     const MULTIPART_UPLOAD_SIZE = 1024 * 1024 * 100;
 
     /**
-     * Multipart upload chunk size.
+     * Multipart upload chunk size (5 Mb).
      *
      * @see https://uploadcare.com/api-refs/upload-api/#tag/Upload/paths/%3Cpresigned-url-x%3E/put
      */
-    const PART_SIZE = 5242880;
+    const PART_SIZE = 1024 * 1024 * 5;
 
     /**
      * @param resource    $handle
