@@ -12,7 +12,7 @@ use Tests\DataFile;
 use Uploadcare\Configuration;
 use Uploadcare\Exception\HttpException;
 use Uploadcare\MultipartResponse\MultipartStartResponse;
-use Uploadcare\Uploader;
+use Uploadcare\Uploader\Uploader;
 
 class MultipartUploadTest extends TestCase
 {

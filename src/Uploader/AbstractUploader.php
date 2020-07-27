@@ -1,6 +1,6 @@
 <?php
 
-namespace Uploadcare;
+namespace Uploadcare\Uploader;
 
 use GuzzleHttp\Exception\GuzzleException;
 use Psr\Http\Message\ResponseInterface;

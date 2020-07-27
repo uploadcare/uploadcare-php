@@ -9,7 +9,7 @@ use Uploadcare\Interfaces\File\FileInfoInterface;
 use Uploadcare\Interfaces\GroupInterface;
 use Uploadcare\Interfaces\Response\ListResponseInterface;
 use Uploadcare\Response\GroupListResponse;
-use Uploadcare\Uploader;
+use Uploadcare\Uploader\Uploader;
 
 /**
  * Group Api.

@@ -8,6 +8,7 @@ use Uploadcare\Interfaces\Api\FileApiInterface;
 use Uploadcare\Interfaces\Api\GroupApiInterface;
 use Uploadcare\Interfaces\ConfigurationInterface;
 use Uploadcare\Interfaces\UploaderInterface;
+use Uploadcare\Uploader\Uploader;
 
 /**
  * Universal API for Uploadcare.

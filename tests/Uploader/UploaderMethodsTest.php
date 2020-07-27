@@ -15,7 +15,7 @@ use Uploadcare\Interfaces\File\FileInfoInterface;
 use Uploadcare\Security\Signature;
 use Uploadcare\Serializer\Serializer;
 use Uploadcare\Serializer\SnackCaseConverter;
-use Uploadcare\Uploader;
+use Uploadcare\Uploader\Uploader;
 
 class UploaderMethodsTest extends TestCase
 {

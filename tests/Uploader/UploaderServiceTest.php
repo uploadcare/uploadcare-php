@@ -13,7 +13,7 @@ use Uploadcare\Configuration;
 use Uploadcare\Exception\InvalidArgumentException;
 use Uploadcare\Security\Signature;
 use Uploadcare\Serializer\SerializerFactory;
-use Uploadcare\Uploader;
+use Uploadcare\Uploader\Uploader;
 
 class UploaderServiceTest extends TestCase
 {

@@ -21,7 +21,7 @@ interface GroupApiInterface
     /**
      * Create file group.
      *
-     * @param \ArrayAccess $files
+     * @param iterable $files
      *
      * @return GroupInterface
      *

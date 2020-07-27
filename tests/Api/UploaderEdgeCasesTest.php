@@ -12,7 +12,7 @@ use Uploadcare\Exception\HttpException;
 use Uploadcare\Exception\InvalidArgumentException;
 use Uploadcare\File\File;
 use Uploadcare\Interfaces\File\FileInfoInterface;
-use Uploadcare\Uploader;
+use Uploadcare\Uploader\Uploader;
 
 class UploaderEdgeCasesTest extends TestCase
 {
