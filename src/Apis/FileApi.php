@@ -4,6 +4,7 @@ namespace Uploadcare\Apis;
 
 use Psr\Http\Message\ResponseInterface;
 use Uploadcare\Exception\InvalidArgumentException;
+use Uploadcare\File as FileDecorator;
 use Uploadcare\File\File;
 use Uploadcare\File\FileCollection;
 use Uploadcare\Interfaces\Api\FileApiInterface;
@@ -165,34 +166,12 @@ class FileApi extends AbstractApi implements FileApiInterface
     }
 
     /**
-     * @param array|CollectionInterface $ids
-     *
-     * @return array<array-key, string>
-     */
-    protected function convertCollection($ids)
-    {
-        $values = [];
-        if (!\is_array($ids) && !$ids instanceof FileCollection) {
-            throw new InvalidArgumentException(\vsprintf('First argument for %s must be an instance of %s or array, %s given', [__METHOD__, FileCollection::class, \is_object($ids) ? \get_class($ids) : \gettype($ids)]));
-        }
-        foreach ($ids as $id) {
-            if ($id instanceof FileInfoInterface) {
-                $values[] = $id->getUuid();
-            } elseif (\uuid_is_valid($id)) {
-                $values[] = $id;
-            }
-        }
-
-        return $values;
-    }
-
-    /**
      * Copy original files or their modified versions to default storage. Source files MAY either be stored or just uploaded and MUST NOT be deleted.
      *
      * @param string|FileInfoInterface $source a CDN URL or just UUID of a file subjected to copy
      * @param bool                     $store  the parameter only applies to the Uploadcare storage and MUST be boolean
      *
-     * @return FileInfoInterface|object
+     * @return FileInfoInterface
      */
     public function copyToLocalStorage($source, $store)
     {
@@ -232,7 +211,7 @@ class FileApi extends AbstractApi implements FileApiInterface
      *
      * @return string
      */
-    public function copyToRemoteStorage($source, $target, $makePublic = null, $pattern = null)
+    public function copyToRemoteStorage($source, $target, $makePublic = true, $pattern = null)
     {
         if ($source instanceof FileInfoInterface) {
             $source = $source->getUuid();
@@ -264,6 +243,33 @@ class FileApi extends AbstractApi implements FileApiInterface
         return (string) $result['result'];
     }
 
+    /**
+     * @param array|CollectionInterface $ids
+     *
+     * @return array<array-key, string>
+     */
+    protected function convertCollection($ids)
+    {
+        $values = [];
+        if (!\is_array($ids) && !$ids instanceof FileCollection) {
+            throw new InvalidArgumentException(\vsprintf('First argument for %s must be an instance of %s or array, %s given', [__METHOD__, FileCollection::class, \is_object($ids) ? \get_class($ids) : \gettype($ids)]));
+        }
+        foreach ($ids as $id) {
+            if ($id instanceof FileInfoInterface) {
+                $values[] = $id->getUuid();
+            } elseif (\uuid_is_valid($id)) {
+                $values[] = $id;
+            }
+        }
+
+        return $values;
+    }
+
+    /**
+     * @param ResponseInterface $response
+     *
+     * @return FileInfoInterface
+     */
     private function deserializeFileInfo(ResponseInterface $response)
     {
         $result = $this->configuration->getSerializer()
@@ -272,6 +278,6 @@ class FileApi extends AbstractApi implements FileApiInterface
             throw new \RuntimeException('Unable to deserialize response. Call to support');
         }
 
-        return $result;
+        return new FileDecorator($result, $this);
     }
 }
