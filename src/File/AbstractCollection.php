@@ -231,9 +231,8 @@ abstract class AbstractCollection implements CollectionInterface
     /**
      * @param array $elements
      *
-     * @return $this
+     * @return self
      * @psalm-param array<array-key,T> $elements
-     * @psalm-return static
      */
     abstract protected function createFrom(array $elements);
 

@@ -7,6 +7,7 @@ use Uploadcare\Exception\InvalidArgumentException;
 use Uploadcare\File as FileDecorator;
 use Uploadcare\File\File;
 use Uploadcare\File\FileCollection;
+use Uploadcare\FileCollection as FileCollectionDecorator;
 use Uploadcare\Interfaces\Api\FileApiInterface;
 use Uploadcare\Interfaces\File\CollectionInterface;
 use Uploadcare\Interfaces\File\FileInfoInterface;
@@ -74,6 +75,8 @@ class FileApi extends AbstractApi implements FileApiInterface
         if (!$result instanceof FileListResponse) {
             throw new \RuntimeException('Unable to deserialize response. Call to support');
         }
+        $activeCollection = new FileCollectionDecorator($result->getResults(), $this);
+        $result->setResults($activeCollection);
 
         return $result;
     }
@@ -142,6 +145,10 @@ class FileApi extends AbstractApi implements FileApiInterface
 
         if (!$result instanceof BatchFileResponseInterface) {
             throw new \RuntimeException('Unable to deserialize response. Call to support');
+        }
+        if ($result instanceof BatchFileResponse) {
+            $activeCollection = new FileCollectionDecorator($result->getResult(), $this);
+            $result->setResult($activeCollection);
         }
 
         return $result;

@@ -98,6 +98,18 @@ final class BatchFileResponse implements BatchFileResponseInterface, Serializabl
         return $this->result;
     }
 
+    /**
+     * @param CollectionInterface $fileCollection
+     *
+     * @return self
+     */
+    public function setResult(CollectionInterface $fileCollection)
+    {
+        $this->result = $fileCollection;
+
+        return $this;
+    }
+
     public function addResult(FileInfoInterface $fileInfo)
     {
         if (!$this->result->contains($fileInfo)) {

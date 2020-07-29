@@ -3,7 +3,6 @@
 namespace Uploadcare;
 
 use Uploadcare\Apis\FileApi;
-use Uploadcare\File\File as InnerFile;
 use Uploadcare\Interfaces\File\FileInfoInterface;
 
 /**
@@ -12,7 +11,7 @@ use Uploadcare\Interfaces\File\FileInfoInterface;
 class File implements FileInfoInterface
 {
     /**
-     * @var File\File
+     * @var File\File|FileInfoInterface
      */
     private $inner;
 
@@ -22,10 +21,10 @@ class File implements FileInfoInterface
     private $api;
 
     /**
-     * @param InnerFile $inner
-     * @param FileApi   $api
+     * @param FileInfoInterface $inner
+     * @param FileApi           $api
      */
-    public function __construct(InnerFile $inner, FileApi $api)
+    public function __construct(FileInfoInterface $inner, FileApi $api)
     {
         $this->inner = $inner;
         $this->api = $api;

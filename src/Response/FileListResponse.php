@@ -83,7 +83,7 @@ final class FileListResponse implements ListResponseInterface, SerializableInter
     }
 
     /**
-     * @inheritDoc
+     * @return CollectionInterface
      */
     public function getResults()
     {
@@ -143,6 +143,18 @@ final class FileListResponse implements ListResponseInterface, SerializableInter
         if (!$this->results->contains($result)) {
             $this->results[] = $result;
         }
+
+        return $this;
+    }
+
+    /**
+     * @param CollectionInterface $results
+     *
+     * @return self
+     */
+    public function setResults(CollectionInterface $results)
+    {
+        $this->results = $results;
 
         return $this;
     }
