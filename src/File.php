@@ -69,21 +69,6 @@ class File implements FileInfoInterface
     }
 
     /**
-     * @param string $name
-     * @param array  $arguments
-     *
-     * @return mixed
-     */
-    public function __call($name, $arguments)
-    {
-        if (\method_exists($this->inner, $name)) {
-            return \call_user_func_array([$this->inner, $name], $arguments);
-        }
-
-        throw new \BadMethodCallException(\sprintf('Method \'%s\' not found in %s', $name, \get_class($this->inner)));
-    }
-
-    /**
      * @inheritDoc
      */
     public function getDatetimeRemoved()

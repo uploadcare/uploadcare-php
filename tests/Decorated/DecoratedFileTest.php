@@ -30,11 +30,15 @@ class DecoratedFileTest extends TestCase
         $this->serializer = SerializerFactory::create();
     }
 
-    protected function fakeApi()
+    protected function fakeApi($responses = [])
     {
-        $handler = new MockHandler([
-            new Response(200, [], stream_for(DataFile::fopen('file-info.json', 'rb'))),
-        ]);
+        if (empty($responses)) {
+            $responses = [
+                new Response(200, [], stream_for(DataFile::fopen('file-info.json', 'rb'))),
+            ];
+        }
+
+        $handler = new MockHandler($responses);
         $client = new Client(['handler' => HandlerStack::create($handler)]);
         $config = new Configuration(
             'public-key',
@@ -54,5 +58,87 @@ class DecoratedFileTest extends TestCase
 
         $decoratedFile = new \Uploadcare\File($fileInfo, $this->fakeApi());
         self::assertInstanceOf(FileInfoInterface::class, $decoratedFile->store());
+    }
+
+    public function commonMethods()
+    {
+        return [
+            ['getDatetimeRemoved'],
+            ['getDatetimeStored'],
+            ['getDatetimeUploaded'],
+            ['getImageInfo'],
+            ['isImage'],
+            ['isReady'],
+            ['getMimeType'],
+            ['getOriginalFileUrl'],
+            ['getOriginalFilename'],
+            ['getSize'],
+            ['getUrl'],
+            ['getUuid'],
+            ['getVariations'],
+            ['getVideoInfo'],
+            ['getSource'],
+            ['getRekognitionInfo'],
+        ];
+    }
+
+    /**
+     * @dataProvider commonMethods
+     *
+     * @param string $method
+     * @noinspection PhpParamsInspection
+     */
+    public function testParentMethods($method)
+    {
+        $fileInfo = $this->serializer->deserialize(DataFile::contents('file-info.json'), File::class);
+        $decoratedFile = new \Uploadcare\File($fileInfo, $this->fakeApi());
+
+        self::assertSame($fileInfo->{$method}(), $decoratedFile->{$method}());
+    }
+
+    public function testStoreActiveFile()
+    {
+        $responses = [
+            new Response(200, [], stream_for(DataFile::fopen('file-info.json', 'rb'))),
+            new Response(200, [], stream_for(DataFile::fopen('file-info.json', 'rb'))),
+        ];
+        $api = $this->fakeApi($responses);
+        $result = $api->fileInfo(\uuid_create());
+        self::assertInstanceOf(\Uploadcare\File::class, $result);
+        self::assertInstanceOf(\Uploadcare\File::class, $result->store());
+    }
+
+    public function testDeleteActiveFile()
+    {
+        $responses = [
+            new Response(200, [], stream_for(DataFile::fopen('file-info.json', 'rb'))),
+            new Response(200, [], stream_for(DataFile::fopen('file-info.json', 'rb'))),
+        ];
+        $api = $this->fakeApi($responses);
+        $result = $api->fileInfo(\uuid_create());
+        self::assertInstanceOf(\Uploadcare\File::class, $result);
+        self::assertInstanceOf(File::class, $result->delete());
+    }
+
+    public function testActiveFileCopyToLocalStorage()
+    {
+        $responses = [
+            new Response(200, [], stream_for(DataFile::fopen('file-info.json', 'rb'))),
+            new Response(200, [], stream_for(DataFile::fopen('copy-to-local-storage-api-response.json', 'rb'))),
+        ];
+        $api = $this->fakeApi($responses);
+        $result = $api->fileInfo(\uuid_create());
+        self::assertInstanceOf(\Uploadcare\File::class, $result->copyToLocalStorage());
+    }
+
+    public function testActiveFileCopyToRemoteStorage()
+    {
+        $responses = [
+            new Response(200, [], stream_for(DataFile::fopen('file-info.json', 'rb'))),
+            new Response(200, [], stream_for(DataFile::fopen('copy-to-remote-storage-api-response.json', 'rb'))),
+        ];
+        $api = $this->fakeApi($responses);
+        $result = $api->fileInfo(\uuid_create());
+        self::assertContains('//', $result->copyToRemoteStorage('some target'));
     }
 }

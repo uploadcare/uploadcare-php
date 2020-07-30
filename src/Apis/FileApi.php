@@ -112,7 +112,7 @@ class FileApi extends AbstractApi implements FileApiInterface
         }
         $response = $this->request('DELETE', \sprintf('/files/%s/', $id));
 
-        return $this->deserializeFileInfo($response);
+        return $this->deserializeFileInfo($response, false);
     }
 
     /**
@@ -207,7 +207,7 @@ class FileApi extends AbstractApi implements FileApiInterface
             throw new \RuntimeException('Unable to deserialize response. Call to support');
         }
 
-        return $result;
+        return new FileDecorator($result, $this);
     }
 
     /**
@@ -274,10 +274,11 @@ class FileApi extends AbstractApi implements FileApiInterface
 
     /**
      * @param ResponseInterface $response
+     * @param bool              $activeFile Whether convert to Active File
      *
      * @return FileInfoInterface
      */
-    private function deserializeFileInfo(ResponseInterface $response)
+    private function deserializeFileInfo(ResponseInterface $response, $activeFile = true)
     {
         $result = $this->configuration->getSerializer()
             ->deserialize($response->getBody()->getContents(), File::class);
@@ -285,6 +286,6 @@ class FileApi extends AbstractApi implements FileApiInterface
             throw new \RuntimeException('Unable to deserialize response. Call to support');
         }
 
-        return new FileDecorator($result, $this);
+        return $activeFile ? new FileDecorator($result, $this) : $result;
     }
 }

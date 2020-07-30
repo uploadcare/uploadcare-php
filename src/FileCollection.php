@@ -40,11 +40,12 @@ class FileCollection extends AbstractCollection
 
     /**
      * @param array<array-key, object> $elements
+     *
      * @return AbstractCollection
      */
     protected function createFrom(array $elements)
     {
-        return new File\FileCollection($elements);
+        return new static(new File\FileCollection($elements), $this->api);
     }
 
     /**
@@ -52,14 +53,20 @@ class FileCollection extends AbstractCollection
      */
     public static function elementClass()
     {
-        return \Uploadcare\File\File::class;
+        return File::class;
     }
 
+    /**
+     * @return Interfaces\Response\BatchFileResponseInterface|Response\BatchFileResponse
+     */
     public function store()
     {
         return $this->api->batchStoreFile($this->inner);
     }
 
+    /**
+     * @return Interfaces\Response\BatchFileResponseInterface
+     */
     public function delete()
     {
         return $this->api->batchDeleteFile($this->inner);
