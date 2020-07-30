@@ -40,7 +40,7 @@ class DeserializerTest extends TestCase
      */
     protected function getImageInfoJson(array $additionalData = [])
     {
-        $data = \json_decode(\file_get_contents(\dirname(__DIR__) . '/_data/file-example.json'), true);
+        $data = \json_decode(\file_get_contents(\dirname(__DIR__) . '/_data/file-info.json'), true);
         $imageInfo = $data['image_info'];
         foreach ($additionalData as $key => $value) {
             $imageInfo[$key] = $value;
@@ -69,18 +69,18 @@ class DeserializerTest extends TestCase
         /** @var ImageInfo $object */
         $object = $serializer->deserialize($imageInfo, ImageInfo::class);
 
-        $this->assertInstanceOf(ImageInfo::class, $object);
+        self::assertInstanceOf(ImageInfo::class, $object);
 
-        $this->assertEquals('RGB', $object->getColorMode());
-        $this->assertNull($object->getOrientation());
-        $this->assertEquals('JPEG', $object->getFormat());
-        $this->assertTrue($object->isSequence());
-        $this->assertEquals(500, $object->getHeight());
-        $this->assertEquals(800, $object->getWidth());
-        $this->assertEquals($lat, $object->getGeoLocation()->getLatitude());
-        $this->assertEquals($lon, $object->getGeoLocation()->getLongitude());
-        $this->assertInstanceOf(\DateTimeInterface::class, $object->getDatetimeOriginal());
-        $this->assertEquals([144, 144], $object->getDpi());
+        self::assertEquals('RGB', $object->getColorMode());
+        self::assertNull($object->getOrientation());
+        self::assertEquals('JPEG', $object->getFormat());
+        self::assertTrue($object->isSequence());
+        self::assertEquals(500, $object->getHeight());
+        self::assertEquals(800, $object->getWidth());
+        self::assertEquals($lat, $object->getGeoLocation()->getLatitude());
+        self::assertEquals($lon, $object->getGeoLocation()->getLongitude());
+        self::assertInstanceOf(\DateTimeInterface::class, $object->getDatetimeOriginal());
+        self::assertEquals([144, 144], $object->getDpi());
     }
 
     public function testNotSerializableClass()

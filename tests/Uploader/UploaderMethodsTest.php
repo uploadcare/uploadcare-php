@@ -11,13 +11,11 @@ use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Uploadcare\Configuration;
-use Uploadcare\File\UploadedFileCollection;
-use Uploadcare\Interfaces\Response\FileGroupResponseInterface;
-use Uploadcare\Interfaces\UploadedFileInterface;
+use Uploadcare\Interfaces\File\FileInfoInterface;
 use Uploadcare\Security\Signature;
 use Uploadcare\Serializer\Serializer;
 use Uploadcare\Serializer\SnackCaseConverter;
-use Uploadcare\Uploader;
+use Uploadcare\Uploader\Uploader;
 
 class UploaderMethodsTest extends TestCase
 {
@@ -41,7 +39,7 @@ class UploaderMethodsTest extends TestCase
      */
     protected function makeClient($response)
     {
-        $fileResponse = new Response(200, ['Content-Type' => 'application/json'], \file_get_contents(\dirname(__DIR__) . '/_data/uploaded-file.json'));
+        $fileResponse = new Response(200, ['Content-Type' => 'application/json'], \file_get_contents(\dirname(__DIR__) . '/_data/file-info.json'));
         $handler = new MockHandler([$response, $fileResponse]);
 
         return new Client(['handler' => HandlerStack::create($handler)]);
@@ -61,21 +59,21 @@ class UploaderMethodsTest extends TestCase
         return new Uploader($config);
     }
 
-    public function testSuccessDirectUpload()
+    public function testFromPathMethod()
+    {
+        $path = \dirname(__DIR__) . '/_data/test.jpg';
+        $body = ['file' => \uuid_create()];
+
+        $uploader = $this->makeUploaderWithResponse($body);
+        self::assertInstanceOf(FileInfoInterface::class, $uploader->fromPath($path));
+    }
+
+    public function testFromUrlMethod()
     {
         $body = ['file' => \uuid_create()];
         $uploader = $this->makeUploaderWithResponse($body);
-        $directUpload = (new \ReflectionObject($uploader))->getMethod('directUpload');
-        $directUpload->setAccessible(true);
-        $handle = \fopen(\dirname(__DIR__) . '/_data/test.jpg', 'rb');
 
-        /** @var ResponseInterface $result */
-        $result = $directUpload->invokeArgs($uploader, [$handle]);
-        self::assertInstanceOf(ResponseInterface::class, $result);
-        $responseContent = $result->getBody()->getContents();
-        self::assertNotEmpty($responseContent);
-
-        self::assertEquals($body, \json_decode($responseContent, true));
+        self::assertInstanceOf(FileInfoInterface::class, $uploader->fromUrl('https://httpbin.org/image/jpeg'));
     }
 
     public function testFromResourceMethod()
@@ -84,18 +82,7 @@ class UploaderMethodsTest extends TestCase
         $uploader = $this->makeUploaderWithResponse($body);
 
         $handle = \fopen(\dirname(__DIR__) . '/_data/test.jpg', 'rb');
-        $result = $uploader->fromResource($handle);
-
-        self::assertInstanceOf(UploadedFileInterface::class, $result);
-    }
-
-    public function testFromPathMethod()
-    {
-        $body = ['file' => \uuid_create()];
-        $uploader = $this->makeUploaderWithResponse($body);
-        $result = $uploader->fromPath(\dirname(__DIR__) . '/_data/test.jpg');
-
-        self::assertInstanceOf(UploadedFileInterface::class, $result);
+        self::assertInstanceOf(FileInfoInterface::class, $uploader->fromResource($handle));
     }
 
     public function testFromContentMethod()
@@ -103,58 +90,7 @@ class UploaderMethodsTest extends TestCase
         $body = ['file' => \uuid_create()];
         $uploader = $this->makeUploaderWithResponse($body);
         $content = \file_get_contents(\dirname(__DIR__) . '/_data/test.jpg');
-        $result = $uploader->fromContent($content);
 
-        self::assertInstanceOf(UploadedFileInterface::class, $result);
-    }
-
-    public function testFromUrl()
-    {
-        $body = ['file' => \uuid_create()];
-        $uploader = $this->makeUploaderWithResponse($body);
-        $result = $uploader->fromUrl('https://httpbin.org/image/jpeg');
-
-        self::assertInstanceOf(UploadedFileInterface::class, $result);
-    }
-
-    public function testIfResponseSuccessButWrong()
-    {
-        $this->expectException(\RuntimeException::class);
-
-        $body = ['not-a-file' => \uuid_create()];
-        $uploader = $this->makeUploaderWithResponse($body);
-
-        $handle = \fopen(\dirname(__DIR__) . '/_data/test.jpg', 'rb');
-        $uploader->fromResource($handle);
-
-        $this->expectExceptionMessageRegExp('Call to support');
-    }
-
-    public function testSuccessCreateGroup()
-    {
-        $data = \file_get_contents(\dirname(__DIR__) . '/_data/upload-create-group-response.json');
-        $response = new Response(200, ['Content-Type' => 'application/json'], $data);
-        $client = $this->makeClient($response);
-        $config = $this->makeConfiguration($client);
-
-        $uploader = new Uploader($config);
-        $result = $uploader->groupFiles(['foo', 'bar']);
-        self::assertInstanceOf(FileGroupResponseInterface::class, $result);
-        self::assertInstanceOf(UploadedFileCollection::class, $result->getFiles());
-        self::assertCount(1, $result->getFiles());
-    }
-
-    public function testSuccessGroupInfo()
-    {
-        $data = \file_get_contents(\dirname(__DIR__) . '/_data/upload-group-info-response.json');
-        $response = new Response(200, ['Content-Type' => 'application/json'], $data);
-        $client = $this->makeClient($response);
-        $config = $this->makeConfiguration($client);
-
-        $uploader = new Uploader($config);
-        $result = $uploader->groupInfo('some-group-id');
-        self::assertInstanceOf(FileGroupResponseInterface::class, $result);
-        self::assertInstanceOf(UploadedFileCollection::class, $result->getFiles());
-        self::assertCount(1, $result->getFiles());
+        self::assertInstanceOf(FileInfoInterface::class, $uploader->fromContent($content));
     }
 }

@@ -2,7 +2,7 @@
 
 namespace Uploadcare\Interfaces;
 
-use Uploadcare\Interfaces\Response\FileGroupResponseInterface;
+use Uploadcare\Interfaces\File\FileInfoInterface;
 
 interface UploaderInterface
 {
@@ -14,20 +14,6 @@ interface UploaderInterface
     const UPLOADCARE_DEFAULT_STORE = 'auto';
 
     /**
-     * @param array $files
-     *
-     * @return FileGroupResponseInterface
-     */
-    public function groupFiles(array $files);
-
-    /**
-     * @param string $groupId
-     *
-     * @return FileGroupResponseInterface
-     */
-    public function groupInfo($groupId);
-
-    /**
      * Upload file from local path.
      *
      * @param string      $path
@@ -35,7 +21,7 @@ interface UploaderInterface
      * @param string|null $filename
      * @param string      $store
      *
-     * @return UploadedFileInterface
+     * @return FileInfoInterface
      */
     public function fromPath($path, $mimeType = null, $filename = null, $store = 'auto');
 
@@ -47,7 +33,7 @@ interface UploaderInterface
      * @param string|null $filename
      * @param string      $store
      *
-     * @return UploadedFileInterface
+     * @return FileInfoInterface
      */
     public function fromUrl($url, $mimeType = null, $filename = null, $store = 'auto');
 
@@ -59,7 +45,7 @@ interface UploaderInterface
      * @param string|null $filename
      * @param string      $store
      *
-     * @return UploadedFileInterface
+     * @return FileInfoInterface
      */
     public function fromResource($handle, $mimeType = null, $filename = null, $store = 'auto');
 
@@ -71,7 +57,7 @@ interface UploaderInterface
      * @param string|null $filename
      * @param string      $store
      *
-     * @return UploadedFileInterface
+     * @return FileInfoInterface
      */
     public function fromContent($content, $mimeType = null, $filename = null, $store = 'auto');
 }

@@ -1,0 +1,24 @@
+{
+  "next": "https://api.uploadcare.com/groups/?from=2016-11-09T14%3A30%3A22.421889%2B00%3A00&limit=3&offset=0",
+  "previous": null,
+  "total": 399307,
+  "per_page": 2,
+  "results": [
+    {
+      "id": "dd43982b-5447-44b2-86f6-1c3b52afa0ff~53",
+      "datetime_created": "2018-07-25T14:14:37.583654Z",
+      "datetime_stored": null,
+      "files_count": 53,
+      "cdn_url": "https://ucarecdn.com/dd43982b-5447-44b2-86f6-1c3b52afa0ff~53/",
+      "url": "https://api.uploadcare.com/groups/dd43982b-5447-44b2-86f6-1c3b52afa0ff~53/"
+    },
+    {
+      "id": "dd43982b-5447-44b2-86f6-1c3b52afa0ff~53",
+      "datetime_created": "2018-07-25T14:14:37.583654Z",
+      "datetime_stored": null,
+      "files_count": 53,
+      "cdn_url": "https://ucarecdn.com/dd43982b-5447-44b2-86f6-1c3b52afa0ff~53/",
+      "url": "https://api.uploadcare.com/groups/dd43982b-5447-44b2-86f6-1c3b52afa0ff~53/"
+    }
+  ]
+}

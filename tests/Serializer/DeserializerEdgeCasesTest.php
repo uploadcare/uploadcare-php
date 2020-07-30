@@ -32,7 +32,7 @@ class DeserializerEdgeCasesTest extends TestCase
     {
         $this->tz = \ini_get('date.timezone');
         $this->startResponse = \dirname(__DIR__) . '/_data/startResponse.json';
-        $this->example = \dirname(__DIR__) . '/_data/file-example.json';
+        $this->example = \dirname(__DIR__) . '/_data/file-info.json';
     }
 
     public function tearDown()
@@ -60,8 +60,8 @@ class DeserializerEdgeCasesTest extends TestCase
     {
         $data = \file_get_contents($this->startResponse);
         $result = $this->getSerializer()->deserialize($data);
-        $this->assertArrayHasKey('uuid', $result);
-        $this->assertArrayHasKey('parts', $result);
+        self::assertArrayHasKey('uuid', $result);
+        self::assertArrayHasKey('parts', $result);
     }
 
     public function testInvalidClassGiven()
@@ -86,8 +86,8 @@ class DeserializerEdgeCasesTest extends TestCase
         $result = $this->getSerializer()->deserialize($this->getImageInfoString(), ImageInfo::class, [
             Serializer::EXCLUDE_PROPERTY_KEY => ['colorMode'],
         ]);
-        $this->assertInstanceOf(ImageInfo::class, $result);
-        $this->assertEmpty($result->getColorMode());
+        self::assertInstanceOf(ImageInfo::class, $result);
+        self::assertEmpty($result->getColorMode());
     }
 
     /**
@@ -113,7 +113,7 @@ class DeserializerEdgeCasesTest extends TestCase
         if (PHP_MAJOR_VERSION <= 5) {
             $this->expectOutputString('You should set your date.timezone in php.ini');
         }
-        $this->assertInstanceOf(\DateTime::class, $result);
+        self::assertInstanceOf(\DateTime::class, $result);
     }
 
     public function testDenormalizeWrongDate()

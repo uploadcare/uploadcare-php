@@ -5,6 +5,7 @@ namespace Uploadcare;
 use GuzzleHttp\ClientInterface;
 use Uploadcare\Client\ClientFactory;
 use Uploadcare\Interfaces\ClientFactoryInterface;
+use Uploadcare\Interfaces\ConfigurationInterface;
 use Uploadcare\Interfaces\Serializer\SerializerFactoryInterface;
 use Uploadcare\Interfaces\Serializer\SerializerInterface;
 use Uploadcare\Interfaces\SignatureInterface;
@@ -14,7 +15,7 @@ use Uploadcare\Serializer\SerializerFactory;
 /**
  * Uploadcare Api Configuration.
  */
-class Configuration
+class Configuration implements ConfigurationInterface
 {
     const LIBRARY_VERSION = 'v3.0.0';
     const API_BASE_URL = 'api.uploadcare.com';
@@ -93,7 +94,7 @@ class Configuration
         $info = [
             '{lib-version}' => self::LIBRARY_VERSION,
             '{publicKey}' => $this->publicKey,
-            '{lang-version}' => sprintf('%s.%s.%s', PHP_MAJOR_VERSION, PHP_MINOR_VERSION, PHP_RELEASE_VERSION)
+            '{lang-version}' => sprintf('%s.%s.%s', PHP_MAJOR_VERSION, PHP_MINOR_VERSION, PHP_RELEASE_VERSION),
         ];
         $value = \strtr(self::USER_AGENT_TEMPLATE, $info);
 

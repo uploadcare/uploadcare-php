@@ -4,7 +4,7 @@ require_once \dirname(__DIR__) . '/vendor/autoload.php';
 
 use Symfony\Component\Dotenv\Dotenv;
 use Uploadcare\Configuration;
-use Uploadcare\Uploader;
+use Uploadcare\Uploader\Uploader;
 
 (new Dotenv())->loadEnv(__DIR__ . '/.env');
 

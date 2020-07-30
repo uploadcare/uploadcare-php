@@ -11,7 +11,7 @@ use Uploadcare\Interfaces\File\FileInfoInterface;
  *
  * @see https://uploadcare.com/api-refs/rest-api/v0.6.0/#operation/filesList
  */
-interface FileListResponseInterface
+interface ListResponseInterface
 {
     /**
      * Next page URL.
@@ -47,6 +47,7 @@ interface FileListResponseInterface
      * @see FileInfoInterface
      *
      * @return CollectionInterface|FileCollection[]
+     * @psalm-return CollectionInterface
      */
     public function getResults();
 }

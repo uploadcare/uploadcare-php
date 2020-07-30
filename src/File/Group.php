@@ -1,16 +1,14 @@
 <?php
 
-namespace Uploadcare\Response;
+namespace Uploadcare\File;
 
-use Uploadcare\File\UploadedFileCollection;
-use Uploadcare\Interfaces\Response\FileGroupResponseInterface;
+use Uploadcare\Interfaces\GroupInterface;
 use Uploadcare\Interfaces\SerializableInterface;
-use Uploadcare\Interfaces\UploadedFileInterface;
 
 /**
- * File Group Response.
+ * Files group.
  */
-class FileGroupResponse implements FileGroupResponseInterface, SerializableInterface
+final class Group implements GroupInterface, SerializableInterface
 {
     /**
      * @var string
@@ -23,7 +21,7 @@ class FileGroupResponse implements FileGroupResponseInterface, SerializableInter
     private $datetimeCreated;
 
     /**
-     * @var \DateTime
+     * @var \DateTime|null
      */
     private $datetimeStored;
 
@@ -43,15 +41,8 @@ class FileGroupResponse implements FileGroupResponseInterface, SerializableInter
     private $url;
 
     /**
-     * @var UploadedFileCollection
+     * @return array|string[]
      */
-    private $files;
-
-    public function __construct()
-    {
-        $this->files = new UploadedFileCollection();
-    }
-
     public static function rules()
     {
         return [
@@ -59,9 +50,8 @@ class FileGroupResponse implements FileGroupResponseInterface, SerializableInter
             'datetimeCreated' => \DateTime::class,
             'datetimeStored' => \DateTime::class,
             'filesCount' => 'int',
-            'cdnUrl' => 'sting',
+            'cdnUrl' => 'string',
             'url' => 'string',
-            'files' => UploadedFileCollection::class,
         ];
     }
 
@@ -76,7 +66,7 @@ class FileGroupResponse implements FileGroupResponseInterface, SerializableInter
     /**
      * @param string $id
      *
-     * @return FileGroupResponse
+     * @return Group
      */
     public function setId($id)
     {
@@ -96,7 +86,7 @@ class FileGroupResponse implements FileGroupResponseInterface, SerializableInter
     /**
      * @param \DateTime $datetimeCreated
      *
-     * @return FileGroupResponse
+     * @return Group
      */
     public function setDatetimeCreated($datetimeCreated)
     {
@@ -106,7 +96,7 @@ class FileGroupResponse implements FileGroupResponseInterface, SerializableInter
     }
 
     /**
-     * @return \DateTime
+     * @return \DateTime|null
      */
     public function getDatetimeStored()
     {
@@ -114,9 +104,9 @@ class FileGroupResponse implements FileGroupResponseInterface, SerializableInter
     }
 
     /**
-     * @param \DateTime $datetimeStored
+     * @param \DateTime|null $datetimeStored
      *
-     * @return FileGroupResponse
+     * @return Group
      */
     public function setDatetimeStored($datetimeStored)
     {
@@ -136,7 +126,7 @@ class FileGroupResponse implements FileGroupResponseInterface, SerializableInter
     /**
      * @param int $filesCount
      *
-     * @return FileGroupResponse
+     * @return Group
      */
     public function setFilesCount($filesCount)
     {
@@ -156,7 +146,7 @@ class FileGroupResponse implements FileGroupResponseInterface, SerializableInter
     /**
      * @param string $cdnUrl
      *
-     * @return FileGroupResponse
+     * @return Group
      */
     public function setCdnUrl($cdnUrl)
     {
@@ -176,33 +166,11 @@ class FileGroupResponse implements FileGroupResponseInterface, SerializableInter
     /**
      * @param string $url
      *
-     * @return FileGroupResponse
+     * @return Group
      */
     public function setUrl($url)
     {
         $this->url = $url;
-
-        return $this;
-    }
-
-    /**
-     * @return UploadedFileCollection
-     */
-    public function getFiles()
-    {
-        return $this->files;
-    }
-
-    /**
-     * @param UploadedFileInterface $file
-     *
-     * @return $this
-     */
-    public function addFile(UploadedFileInterface $file)
-    {
-        if (!$this->files->contains($file)) {
-            $this->files->add($file);
-        }
 
         return $this;
     }

@@ -4,7 +4,7 @@ namespace Tests\Serializer;
 
 use PHPUnit\Framework\TestCase;
 use Uploadcare\Interfaces\File\FileInfoInterface;
-use Uploadcare\Interfaces\Response\FileListResponseInterface;
+use Uploadcare\Interfaces\Response\ListResponseInterface;
 use Uploadcare\Response\FileListResponse;
 use Uploadcare\Serializer\Serializer;
 use Uploadcare\Serializer\SnackCaseConverter;
@@ -26,9 +26,9 @@ class DeserializeCollectionTest extends TestCase
         $content = \file_get_contents($this->path);
         $serializer = new Serializer(new SnackCaseConverter());
 
-        /** @var FileListResponseInterface $result */
+        /** @var ListResponseInterface $result */
         $result = $serializer->deserialize($content, FileListResponse::class);
-        self::assertInstanceOf(FileListResponseInterface::class, $result);
+        self::assertInstanceOf(ListResponseInterface::class, $result);
         self::assertInstanceOf(FileInfoInterface::class, $result->getResults()->first());
     }
 }

@@ -1,27 +1,29 @@
 <?php
 
-namespace Uploadcare;
+namespace Uploadcare\Uploader;
 
 use GuzzleHttp\Exception\GuzzleException;
 use Psr\Http\Message\ResponseInterface;
 use Uploadcare\Exception\HttpException;
 use Uploadcare\Exception\InvalidArgumentException;
-use Uploadcare\Interfaces\UploadedFileInterface;
+use Uploadcare\Interfaces\File\FileInfoInterface;
 use Uploadcare\MultipartResponse\MultipartStartResponse;
 
 class Uploader extends AbstractUploader
 {
     /**
-     * Below this size direct upload is possible, above — multipart upload.
+     * Below this size direct upload is possible, above — multipart upload (100 Mb).
+     *
+     * @see https://uploadcare.com/api-refs/upload-api/#operation/multipartFileUploadStart
      */
-    const MULTIPART_UPLOAD_SIZE = 10485760;
+    const MULTIPART_UPLOAD_SIZE = 1024 * 1024 * 100;
 
     /**
-     * Multipart upload chunk size.
+     * Multipart upload chunk size (5 Mb).
      *
      * @see https://uploadcare.com/api-refs/upload-api/#tag/Upload/paths/%3Cpresigned-url-x%3E/put
      */
-    const PART_SIZE = 5242880;
+    const PART_SIZE = 1024 * 1024 * 5;
 
     /**
      * @param resource    $handle
@@ -29,7 +31,7 @@ class Uploader extends AbstractUploader
      * @param string|null $filename
      * @param string|null $store
      *
-     * @return UploadedFileInterface
+     * @return FileInfoInterface
      */
     public function fromResource($handle, $mimeType = null, $filename = null, $store = 'auto')
     {
@@ -43,13 +45,15 @@ class Uploader extends AbstractUploader
         }
 
         $this->rewind($handle);
+        $arrayKey = 'file';
         if (($fileSize = $this->getSize($handle)) >= self::MULTIPART_UPLOAD_SIZE) {
             $response = $this->uploadByParts($handle, $fileSize, $mimeType, $filename, $store === 'auto' ? null : $store);
+            $arrayKey = 'uuid';
         } else {
             $response = $this->directUpload($handle, $mimeType, $filename, $store);
         }
 
-        return $this->serializeFileResponse($response);
+        return $this->serializeFileResponse($response, $arrayKey);
     }
 
     /**

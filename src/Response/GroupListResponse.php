@@ -2,12 +2,15 @@
 
 namespace Uploadcare\Response;
 
-use Uploadcare\File\FileCollection;
+use Uploadcare\File\GroupCollection;
 use Uploadcare\Interfaces\File\CollectionInterface;
 use Uploadcare\Interfaces\Response\ListResponseInterface;
 use Uploadcare\Interfaces\SerializableInterface;
 
-final class FileListResponse implements ListResponseInterface, SerializableInterface
+/**
+ * GroupList Response.
+ */
+final class GroupListResponse implements ListResponseInterface, SerializableInterface
 {
     /**
      * @var string|null
@@ -30,14 +33,9 @@ final class FileListResponse implements ListResponseInterface, SerializableInter
     private $perPage;
 
     /**
-     * @var CollectionInterface|FileCollection
+     * @var CollectionInterface|GroupCollection
      */
     private $results;
-
-    public function __construct()
-    {
-        $this->results = new FileCollection();
-    }
 
     public static function rules()
     {
@@ -46,12 +44,17 @@ final class FileListResponse implements ListResponseInterface, SerializableInter
             'previous' => 'string',
             'total' => 'int',
             'perPage' => 'int',
-            'results' => FileCollection::class,
+            'results' => GroupCollection::class,
         ];
     }
 
+    public function __construct()
+    {
+        $this->results = new GroupCollection();
+    }
+
     /**
-     * @inheritDoc
+     * @return string|null
      */
     public function getNext()
     {
@@ -59,41 +62,9 @@ final class FileListResponse implements ListResponseInterface, SerializableInter
     }
 
     /**
-     * @inheritDoc
-     */
-    public function getPrevious()
-    {
-        return $this->previous;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getTotal()
-    {
-        return $this->total;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getPerPage()
-    {
-        return $this->perPage;
-    }
-
-    /**
-     * @return CollectionInterface
-     */
-    public function getResults()
-    {
-        return $this->results;
-    }
-
-    /**
      * @param string|null $next
      *
-     * @return FileListResponse
+     * @return GroupListResponse
      */
     public function setNext($next)
     {
@@ -103,9 +74,17 @@ final class FileListResponse implements ListResponseInterface, SerializableInter
     }
 
     /**
+     * @return string|null
+     */
+    public function getPrevious()
+    {
+        return $this->previous;
+    }
+
+    /**
      * @param string|null $previous
      *
-     * @return FileListResponse
+     * @return GroupListResponse
      */
     public function setPrevious($previous)
     {
@@ -115,9 +94,17 @@ final class FileListResponse implements ListResponseInterface, SerializableInter
     }
 
     /**
+     * @return int
+     */
+    public function getTotal()
+    {
+        return $this->total;
+    }
+
+    /**
      * @param int $total
      *
-     * @return FileListResponse
+     * @return GroupListResponse
      */
     public function setTotal($total)
     {
@@ -127,15 +114,31 @@ final class FileListResponse implements ListResponseInterface, SerializableInter
     }
 
     /**
+     * @return int
+     */
+    public function getPerPage()
+    {
+        return $this->perPage;
+    }
+
+    /**
      * @param int $perPage
      *
-     * @return FileListResponse
+     * @return GroupListResponse
      */
     public function setPerPage($perPage)
     {
         $this->perPage = $perPage;
 
         return $this;
+    }
+
+    /**
+     * @return CollectionInterface
+     */
+    public function getResults()
+    {
+        return $this->results;
     }
 
     public function addResult($result)
@@ -150,9 +153,9 @@ final class FileListResponse implements ListResponseInterface, SerializableInter
     /**
      * @param CollectionInterface $results
      *
-     * @return self
+     * @return GroupListResponse
      */
-    public function setResults(CollectionInterface $results)
+    public function setResults($results)
     {
         $this->results = $results;
 

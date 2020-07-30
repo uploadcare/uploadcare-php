@@ -13,7 +13,7 @@ use Uploadcare\Configuration;
 use Uploadcare\Exception\InvalidArgumentException;
 use Uploadcare\Security\Signature;
 use Uploadcare\Serializer\SerializerFactory;
-use Uploadcare\Uploader;
+use Uploadcare\Uploader\Uploader;
 
 class UploaderServiceTest extends TestCase
 {
@@ -149,7 +149,7 @@ class UploaderServiceTest extends TestCase
 
     public function testUploadFromExistingFile()
     {
-        $path = \dirname(__DIR__) . '/_data/file-example.json';
+        $path = \dirname(__DIR__) . '/_data/file-info.json';
         /** @var resource $result */
         $result = $this->getMockUploader()->fromPath($path);
 
@@ -179,7 +179,7 @@ class UploaderServiceTest extends TestCase
 
     public function testGetSizeMethod()
     {
-        $path = \dirname(__DIR__) . '/_data/file-example.json';
+        $path = \dirname(__DIR__) . '/_data/file-info.json';
         $size = \filesize($path);
         $handle = \fopen($path, 'rb');
 

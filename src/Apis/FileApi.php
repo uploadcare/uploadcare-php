@@ -1,91 +1,35 @@
 <?php
 
-namespace Uploadcare;
+namespace Uploadcare\Apis;
 
-use GuzzleHttp\Exception\GuzzleException;
-use function GuzzleHttp\Psr7\stream_for;
 use Psr\Http\Message\ResponseInterface;
-use Uploadcare\Exception\HttpException;
+use Uploadcare\Exception\InvalidArgumentException;
+use Uploadcare\File as FileDecorator;
 use Uploadcare\File\File;
+use Uploadcare\File\FileCollection;
+use Uploadcare\FileCollection as FileCollectionDecorator;
 use Uploadcare\Interfaces\Api\FileApiInterface;
+use Uploadcare\Interfaces\File\CollectionInterface;
 use Uploadcare\Interfaces\File\FileInfoInterface;
 use Uploadcare\Interfaces\Response\BatchFileResponseInterface;
-use Uploadcare\Interfaces\Response\FileListResponseInterface;
+use Uploadcare\Interfaces\Response\ListResponseInterface;
 use Uploadcare\Response\BatchFileResponse;
 use Uploadcare\Response\FileListResponse;
 
-final class FileApi implements FileApiInterface
+/**
+ * File Api.
+ */
+class FileApi extends AbstractApi implements FileApiInterface
 {
-    const API_VERSION = '0.5';
-
-    /**
-     * @var Configuration
-     */
-    private $configuration;
-
-    public function __construct(Configuration $configuration)
-    {
-        $this->configuration = $configuration;
-    }
-
-    /**
-     * @param string $method
-     * @param string $uri
-     * @param array  $data
-     *
-     * @return ResponseInterface
-     */
-    protected function request($method, $uri, array $data = [])
-    {
-        $date = \date_create();
-
-        $stringData = '';
-        $parameters = [];
-        if (isset($data['body'])) {
-            $stringData = \json_encode($data['body']);
-            $parameters['body'] = stream_for($data['body']);
-            unset($data['body']);
-        }
-        $uriForSign = $uri;
-        if (isset($data['query'])) {
-            $uriForSign .= '?' . \http_build_query($data['query']);
-        }
-
-        $headers = $this->configuration->getAuthHeaders($method, $uriForSign, $stringData, 'application/json', $date);
-        $headers['Accept'] = \sprintf('application/vnd.uploadcare-v%s+json', self::API_VERSION);
-        $headers = \array_merge($this->configuration->getHeaders(), $headers);
-        if (\strpos('http', $uri) !== 0) {
-            $uri = \sprintf('https://%s/%s', Configuration::API_BASE_URL, $uri);
-        }
-
-        $parameters = [
-            'headers' => $headers,
-        ];
-        $parameters = \array_merge($data, $parameters);
-
-        try {
-            return $this->configuration->getClient()->request($method, $uri, $parameters);
-        } catch (GuzzleException $e) {
-            throw new HttpException('', 0, ($e instanceof \Exception) ? $e : null);
-        }
-    }
-
     /**
      * @inheritDoc
      */
-    public function nextPage(FileListResponseInterface $response)
+    public function nextPage(ListResponseInterface $response)
     {
-        if (($next = $response->getNext()) === null) {
+        $parameters = $this->nextParameters($response);
+        if ($parameters === null) {
             return null;
         }
-
-        $query = \parse_url($next);
-        if (!isset($query['query']) || empty($query['query'])) {
-            return null;
-        }
-        $query = (string) $query['query'];
-        $parameters = [];
-        \parse_str($query, $parameters);
 
         /** @noinspection VariableFunctionsUsageInspection */
         $result = \call_user_func_array([$this, 'listFiles'], [
@@ -97,7 +41,7 @@ final class FileApi implements FileApiInterface
             isset($parameters['removed']) ? (bool) $parameters['removed'] : null,
         ]);
 
-        return $result instanceof FileListResponseInterface ? $result : null;
+        return $result instanceof ListResponseInterface ? $result : null;
     }
 
     /**
@@ -110,7 +54,7 @@ final class FileApi implements FileApiInterface
      * @param bool|null       $stored    `true` to only include files that were stored, `false` to include temporary ones. The default is unset: both stored and not stored files are returned.
      * @param bool            $removed   `true` to only include removed files in the response, `false` to include existing files. Defaults to false.
      *
-     * @return FileListResponseInterface
+     * @return ListResponseInterface
      */
     public function listFiles($limit = 100, $orderBy = 'datetime_uploaded', $from = null, $addFields = [], $stored = null, $removed = false)
     {
@@ -131,6 +75,8 @@ final class FileApi implements FileApiInterface
         if (!$result instanceof FileListResponse) {
             throw new \RuntimeException('Unable to deserialize response. Call to support');
         }
+        $activeCollection = new FileCollectionDecorator($result->getResults(), $this);
+        $result->setResults($activeCollection);
 
         return $result;
     }
@@ -138,12 +84,15 @@ final class FileApi implements FileApiInterface
     /**
      * Store a single file by UUID.
      *
-     * @param string $id file UUID
+     * @param string|FileInfoInterface $id file UUID
      *
      * @return FileInfoInterface
      */
     public function storeFile($id)
     {
+        if ($id instanceof FileInfoInterface) {
+            $id = $id->getUuid();
+        }
         $response = $this->request('PUT', \sprintf('/files/%s/storage/', $id));
 
         return $this->deserializeFileInfo($response);
@@ -152,15 +101,18 @@ final class FileApi implements FileApiInterface
     /**
      * Remove individual files. Returns file info.
      *
-     * @param string $id file UUID
+     * @param string|FileInfoInterface $id file UUID
      *
      * @return FileInfoInterface
      */
     public function deleteFile($id)
     {
+        if ($id instanceof FileInfoInterface) {
+            $id = $id->getUuid();
+        }
         $response = $this->request('DELETE', \sprintf('/files/%s/', $id));
 
-        return $this->deserializeFileInfo($response);
+        return $this->deserializeFileInfo($response, false);
     }
 
     /**
@@ -181,31 +133,35 @@ final class FileApi implements FileApiInterface
      * Store multiple files in one step.
      * Up to 100 files are supported per request.
      *
-     * @param array $ids array of files UUIDs to store
+     * @param array|CollectionInterface $ids array of files UUIDs to store
      *
      * @return BatchFileResponseInterface
      */
-    public function batchStoreFile(array $ids)
+    public function batchStoreFile($ids)
     {
-        $response = $this->request('PUT', '/files/storage/', $ids);
+        $response = $this->request('PUT', '/files/storage/', $this->convertCollection($ids));
         $result = $this->configuration->getSerializer()
             ->deserialize($response->getBody()->getContents(), BatchFileResponse::class);
 
         if (!$result instanceof BatchFileResponseInterface) {
             throw new \RuntimeException('Unable to deserialize response. Call to support');
         }
+        if ($result instanceof BatchFileResponse) {
+            $activeCollection = new FileCollectionDecorator($result->getResult(), $this);
+            $result->setResult($activeCollection);
+        }
 
         return $result;
     }
 
     /**
-     * @param array $ids array of files UUIDs to store
+     * @param array|CollectionInterface $ids array of files UUIDs to store
      *
      * @return BatchFileResponseInterface
      */
-    public function batchDeleteFile(array $ids)
+    public function batchDeleteFile($ids)
     {
-        $response = $this->request('DELETE', '/files/storage/', $ids);
+        $response = $this->request('DELETE', '/files/storage/', $this->convertCollection($ids));
         $result = $this->configuration->getSerializer()
             ->deserialize($response->getBody()->getContents(), BatchFileResponse::class);
 
@@ -219,16 +175,23 @@ final class FileApi implements FileApiInterface
     /**
      * Copy original files or their modified versions to default storage. Source files MAY either be stored or just uploaded and MUST NOT be deleted.
      *
-     * @param string $source a CDN URL or just UUID of a file subjected to copy
-     * @param bool   $store  the parameter only applies to the Uploadcare storage and MUST be boolean
+     * @param string|FileInfoInterface $source a CDN URL or just UUID of a file subjected to copy
+     * @param bool                     $store  the parameter only applies to the Uploadcare storage and MUST be boolean
      *
-     * @return FileInfoInterface|object
+     * @return FileInfoInterface
      */
     public function copyToLocalStorage($source, $store)
     {
+        if ($source instanceof FileInfoInterface) {
+            $source = $source->getUuid();
+        }
+        if (!\uuid_is_valid($source)) {
+            throw new InvalidArgumentException(\sprintf('Uuid \'%s\' for request not valid', $source));
+        }
+
         $response = $this->request('POST', '/files/local_copy/', [
             'source' => $source,
-            'store' => $store,
+            'store' => (bool) $store,
         ]);
 
         // Hack
@@ -244,19 +207,26 @@ final class FileApi implements FileApiInterface
             throw new \RuntimeException('Unable to deserialize response. Call to support');
         }
 
-        return $result;
+        return new FileDecorator($result, $this);
     }
 
     /**
-     * @param string $source     a CDN URL or just UUID of a file subjected to copy
-     * @param string $target     Identifies a custom storage name related to your project. Implies you are copying a file to a specified custom storage. Keep in mind you can have multiple storage's associated with a single S3 bucket.
-     * @param bool   $makePublic true to make copied files available via public links, false to reverse the behavior
-     * @param string $pattern    Enum: "${default}" "${auto_filename}" "${effects}" "${filename}" "${uuid}" "${ext}" The parameter is used to specify file names Uploadcare passes to a custom storage. In case the parameter is omitted, we use pattern of your custom storage. Use any combination of allowed values.
+     * @param string|FileInfoInterface $source     a CDN URL or just UUID of a file subjected to copy
+     * @param string                   $target     Identifies a custom storage name related to your project. Implies you are copying a file to a specified custom storage. Keep in mind you can have multiple storage's associated with a single S3 bucket.
+     * @param bool                     $makePublic true to make copied files available via public links, false to reverse the behavior
+     * @param string                   $pattern    Enum: "${default}" "${auto_filename}" "${effects}" "${filename}" "${uuid}" "${ext}" The parameter is used to specify file names Uploadcare passes to a custom storage. In case the parameter is omitted, we use pattern of your custom storage. Use any combination of allowed values.
      *
      * @return string
      */
-    public function copyToRemoteStorage($source, $target, $makePublic = null, $pattern = null)
+    public function copyToRemoteStorage($source, $target, $makePublic = true, $pattern = null)
     {
+        if ($source instanceof FileInfoInterface) {
+            $source = $source->getUuid();
+        }
+        if (!\uuid_is_valid($source)) {
+            throw new InvalidArgumentException(\sprintf('Uuid \'%s\' for request not valid', $source));
+        }
+
         $parameters = [
             'source' => $source,
             'target' => $target,
@@ -280,7 +250,35 @@ final class FileApi implements FileApiInterface
         return (string) $result['result'];
     }
 
-    private function deserializeFileInfo(ResponseInterface $response)
+    /**
+     * @param array|CollectionInterface $ids
+     *
+     * @return array<array-key, string>
+     */
+    protected function convertCollection($ids)
+    {
+        $values = [];
+        if (!\is_array($ids) && !$ids instanceof FileCollection) {
+            throw new InvalidArgumentException(\vsprintf('First argument for %s must be an instance of %s or array, %s given', [__METHOD__, FileCollection::class, \is_object($ids) ? \get_class($ids) : \gettype($ids)]));
+        }
+        foreach ($ids as $id) {
+            if ($id instanceof FileInfoInterface) {
+                $values[] = $id->getUuid();
+            } elseif (\uuid_is_valid($id)) {
+                $values[] = $id;
+            }
+        }
+
+        return $values;
+    }
+
+    /**
+     * @param ResponseInterface $response
+     * @param bool              $activeFile Whether convert to Active File
+     *
+     * @return FileInfoInterface
+     */
+    private function deserializeFileInfo(ResponseInterface $response, $activeFile = true)
     {
         $result = $this->configuration->getSerializer()
             ->deserialize($response->getBody()->getContents(), File::class);
@@ -288,6 +286,6 @@ final class FileApi implements FileApiInterface
             throw new \RuntimeException('Unable to deserialize response. Call to support');
         }
 
-        return $result;
+        return $activeFile ? new FileDecorator($result, $this) : $result;
     }
 }
