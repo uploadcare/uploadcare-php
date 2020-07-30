@@ -4,6 +4,8 @@ namespace Uploadcare\Apis;
 
 use Uploadcare\Exception\HttpException;
 use Uploadcare\File\Group;
+use Uploadcare\Group as GroupDecorator;
+use Uploadcare\GroupCollection;
 use Uploadcare\Interfaces\Api\GroupApiInterface;
 use Uploadcare\Interfaces\File\FileInfoInterface;
 use Uploadcare\Interfaces\GroupInterface;
@@ -57,7 +59,7 @@ class GroupApi extends AbstractApi implements GroupApiInterface
             throw new \RuntimeException('Unable to deserialize response. Call to support');
         }
 
-        return $result;
+        return new GroupDecorator($result, $this);
     }
 
     /**
@@ -74,9 +76,11 @@ class GroupApi extends AbstractApi implements GroupApiInterface
         $result = $this->configuration->getSerializer()
             ->deserialize($response->getBody()->getContents(), GroupListResponse::class);
 
-        if (!$result instanceof ListResponseInterface) {
+        if (!$result instanceof GroupListResponse) {
             throw new \RuntimeException('Unable to deserialize response. Call to support');
         }
+        $activeCollection = new GroupCollection($result->getResults(), $this);
+        $result->setResults($activeCollection);
 
         return $result;
     }
@@ -95,7 +99,7 @@ class GroupApi extends AbstractApi implements GroupApiInterface
             throw new \RuntimeException('Unable to deserialize response. Call to support');
         }
 
-        return $result;
+        return new GroupDecorator($result, $this);
     }
 
     /**

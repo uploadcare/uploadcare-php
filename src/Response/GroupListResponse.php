@@ -10,7 +10,7 @@ use Uploadcare\Interfaces\SerializableInterface;
 /**
  * GroupList Response.
  */
-class GroupListResponse implements ListResponseInterface, SerializableInterface
+final class GroupListResponse implements ListResponseInterface, SerializableInterface
 {
     /**
      * @var string|null
@@ -139,6 +139,15 @@ class GroupListResponse implements ListResponseInterface, SerializableInterface
     public function getResults()
     {
         return $this->results;
+    }
+
+    public function addResult($result)
+    {
+        if (!$this->results->contains($result)) {
+            $this->results[] = $result;
+        }
+
+        return $this;
     }
 
     /**

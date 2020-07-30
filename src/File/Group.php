@@ -8,7 +8,7 @@ use Uploadcare\Interfaces\SerializableInterface;
 /**
  * Files group.
  */
-class Group implements GroupInterface, SerializableInterface
+final class Group implements GroupInterface, SerializableInterface
 {
     /**
      * @var string
