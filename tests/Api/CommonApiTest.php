@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Tests\Api;
-
 
 use GuzzleHttp\ClientInterface;
 use PHPUnit\Framework\TestCase;
@@ -10,6 +8,7 @@ use Uploadcare\Api;
 use Uploadcare\Configuration;
 use Uploadcare\Interfaces\Api\FileApiInterface;
 use Uploadcare\Interfaces\Api\GroupApiInterface;
+use Uploadcare\Interfaces\Api\ProjectApiInterface;
 use Uploadcare\Interfaces\SignatureInterface;
 use Uploadcare\Interfaces\UploaderInterface;
 use Uploadcare\Serializer\SerializerFactory;
@@ -52,5 +51,10 @@ class CommonApiTest extends TestCase
     {
         $api = Api::create('public-key', 'private-key');
         self::assertInstanceOf(Api::class, $api);
+    }
+
+    public function testProjectApi()
+    {
+        self::assertInstanceOf(ProjectApiInterface::class, (new Api($this->configuration))->project());
     }
 }

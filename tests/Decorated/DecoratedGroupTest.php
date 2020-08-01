@@ -7,13 +7,12 @@ use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\TestCase;
-use ReflectionObject;
 use Tests\DataFile;
 use Uploadcare\Apis\GroupApi;
 use Uploadcare\Configuration;
 use Uploadcare\File\File;
-use Uploadcare\GroupCollection;
 use Uploadcare\Group;
+use Uploadcare\GroupCollection;
 use Uploadcare\Interfaces\Serializer\SerializerInterface;
 use Uploadcare\Security\Signature;
 use Uploadcare\Serializer\SerializerFactory;
@@ -71,7 +70,9 @@ class DecoratedGroupTest extends TestCase
 
     /**
      * @dataProvider provideMethods
+     *
      * @param string $method
+     *
      * @throws \ReflectionException
      */
     public function testGroupMethods($method)
@@ -80,7 +81,7 @@ class DecoratedGroupTest extends TestCase
             new Response(200, [], DataFile::contents('group/group-info-response.json')),
         ]);
         $group = $api->groupInfo(\uuid_create());
-        $innerProperty = (new ReflectionObject($group))->getProperty('inner');
+        $innerProperty = (new \ReflectionObject($group))->getProperty('inner');
         $innerProperty->setAccessible(true);
         $inner = $innerProperty->getValue($group);
 
@@ -95,7 +96,7 @@ class DecoratedGroupTest extends TestCase
         $group = (new \Uploadcare\File\Group())->addFile($file);
 
         $collection = new GroupCollection(new \Uploadcare\File\GroupCollection(), $this->fakeApi());
-        $createFrom = (new ReflectionObject($collection))->getMethod('createFrom');
+        $createFrom = (new \ReflectionObject($collection))->getMethod('createFrom');
         $createFrom->setAccessible(true);
 
         $result = $createFrom->invokeArgs($collection, [[$group]]);

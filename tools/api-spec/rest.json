@@ -69,13 +69,6 @@
             "name": "accept",
             "schema": {
               "description": "Version header.",
-              "schema": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "application/vnd.uploadcare-v0.6+json"
-                ]
-              },
               "example": "application/vnd.uploadcare-v0.6+json"
             },
             "required": true
@@ -695,13 +688,6 @@
             "name": "accept",
             "schema": {
               "description": "Version header.",
-              "schema": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "application/vnd.uploadcare-v0.6+json"
-                ]
-              },
               "example": "application/vnd.uploadcare-v0.6+json"
             },
             "required": true
@@ -1140,13 +1126,6 @@
             "name": "accept",
             "schema": {
               "description": "Version header.",
-              "schema": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "application/vnd.uploadcare-v0.6+json"
-                ]
-              },
               "example": "application/vnd.uploadcare-v0.6+json"
             },
             "required": true
@@ -1281,13 +1260,6 @@
             "name": "accept",
             "schema": {
               "description": "Version header.",
-              "schema": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "application/vnd.uploadcare-v0.6+json"
-                ]
-              },
               "example": "application/vnd.uploadcare-v0.6+json"
             },
             "required": true
@@ -1768,13 +1740,6 @@
             "name": "accept",
             "schema": {
               "description": "Version header.",
-              "schema": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "application/vnd.uploadcare-v0.6+json"
-                ]
-              },
               "example": "application/vnd.uploadcare-v0.6+json"
             },
             "required": true
@@ -2224,13 +2189,6 @@
             "name": "accept",
             "schema": {
               "description": "Version header.",
-              "schema": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "application/vnd.uploadcare-v0.6+json"
-                ]
-              },
               "example": "application/vnd.uploadcare-v0.6+json"
             },
             "required": true
@@ -2631,21 +2589,7 @@
                 "schema": {
                   "oneOf": [
                     {
-                      "description": "Simple authentication over HTTP is forbidden. Please, use HTTPS or signed requests instead.",
-                      "content": {
-                        "application/json": {
-                          "schema": {
-                            "type": "object",
-                            "properties": {
-                              "detail": {
-                                "type": "string",
-                                "example": "Simple authentication over HTTP is forbidden. Please, use HTTPS or signed requests instead.",
-                                "default": "Simple authentication over HTTP is forbidden. Please, use HTTPS or signed requests instead."
-                              }
-                            }
-                          }
-                        }
-                      }
+                      "description": "Simple authentication over HTTP is forbidden. Please, use HTTPS or signed requests instead."
                     },
                     {
                       "type": "object",
@@ -2745,13 +2689,6 @@
             "name": "accept",
             "schema": {
               "description": "Version header.",
-              "schema": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "application/vnd.uploadcare-v0.6+json"
-                ]
-              },
               "example": "application/vnd.uploadcare-v0.6+json"
             },
             "required": true
@@ -3152,21 +3089,7 @@
                 "schema": {
                   "oneOf": [
                     {
-                      "description": "Simple authentication over HTTP is forbidden. Please, use HTTPS or signed requests instead.",
-                      "content": {
-                        "application/json": {
-                          "schema": {
-                            "type": "object",
-                            "properties": {
-                              "detail": {
-                                "type": "string",
-                                "example": "Simple authentication over HTTP is forbidden. Please, use HTTPS or signed requests instead.",
-                                "default": "Simple authentication over HTTP is forbidden. Please, use HTTPS or signed requests instead."
-                              }
-                            }
-                          }
-                        }
-                      }
+                      "description": "Simple authentication over HTTP is forbidden. Please, use HTTPS or signed requests instead."
                     },
                     {
                       "type": "object",
@@ -3309,13 +3232,6 @@
             "name": "accept",
             "schema": {
               "description": "Version header.",
-              "schema": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "application/vnd.uploadcare-v0.6+json"
-                ]
-              },
               "example": "application/vnd.uploadcare-v0.6+json"
             },
             "required": true
@@ -3809,13 +3725,6 @@
             "name": "accept",
             "schema": {
               "description": "Version header.",
-              "schema": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "application/vnd.uploadcare-v0.6+json"
-                ]
-              },
               "example": "application/vnd.uploadcare-v0.6+json"
             },
             "required": true
@@ -3862,48 +3771,10 @@
                 "schema": {
                   "anyOf": [
                     {
-                      "description": "Simple authentication over HTTP is forbidden. Please, use HTTPS or signed requests instead.",
-                      "content": {
-                        "application/json": {
-                          "schema": {
-                            "type": "object",
-                            "properties": {
-                              "detail": {
-                                "type": "string",
-                                "example": "Simple authentication over HTTP is forbidden. Please, use HTTPS or signed requests instead.",
-                                "default": "Simple authentication over HTTP is forbidden. Please, use HTTPS or signed requests instead."
-                              }
-                            }
-                          }
-                        }
-                      }
+                      "description": "Simple authentication over HTTP is forbidden. Please, use HTTPS or signed requests instead."
                     },
                     {
-                      "description": "Possible errors for file copy endpoint.",
-                      "content": {
-                        "application/json": {
-                          "schema": {
-                            "type": "object",
-                            "properties": {
-                              "detail": {
-                                "type": "string",
-                                "enum": [
-                                  "Bad `source` parameter. Use UUID or CDN URL.",
-                                  "`source` parameter is required.",
-                                  "Project has no storage with provided name.",
-                                  "`store` parameter should be `true` or `false`.",
-                                  "Invalid pattern provided: `pattern_value`",
-                                  "Invalid pattern provided: Invalid character in a pattern.",
-                                  "File is not ready yet.",
-                                  "Copying of large files is not supported at the moment.",
-                                  "Not allowed on your current plan."
-                                ],
-                                "example": "File is not ready yet."
-                              }
-                            }
-                          }
-                        }
-                      }
+                      "description": "Possible errors for file copy endpoint."
                     }
                   ]
                 },
@@ -4002,13 +3873,6 @@
             "name": "accept",
             "schema": {
               "description": "Version header.",
-              "schema": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "application/vnd.uploadcare-v0.6+json"
-                ]
-              },
               "example": "application/vnd.uploadcare-v0.6+json"
             },
             "required": true
@@ -4251,13 +4115,6 @@
             "name": "accept",
             "schema": {
               "description": "Version header.",
-              "schema": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "application/vnd.uploadcare-v0.6+json"
-                ]
-              },
               "example": "application/vnd.uploadcare-v0.6+json"
             },
             "required": true
@@ -4437,13 +4294,6 @@
             "name": "accept",
             "schema": {
               "description": "Version header.",
-              "schema": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "application/vnd.uploadcare-v0.6+json"
-                ]
-              },
               "example": "application/vnd.uploadcare-v0.6+json"
             },
             "required": true
@@ -4466,7 +4316,7 @@
               "application/json": {
                 "schema": {
                   "description": "A list of groups, paginated.",
-                  "content": {
+                  "example": {
                     "application/json": {
                       "schema": {
                         "type": "object",
@@ -4688,13 +4538,6 @@
             "name": "Accept",
             "schema": {
               "description": "Version header.",
-              "schema": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "application/vnd.uploadcare-v0.6+json"
-                ]
-              },
               "example": "application/vnd.uploadcare-v0.6+json"
             },
             "required": true
@@ -4842,13 +4685,6 @@
             "name": "accept",
             "schema": {
               "description": "Version header.",
-              "schema": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "application/vnd.uploadcare-v0.6+json"
-                ]
-              },
               "example": "application/vnd.uploadcare-v0.6+json"
             },
             "required": true
@@ -4925,38 +4761,10 @@
                 "schema": {
                   "oneOf": [
                     {
-                      "description": "Simple authentication over HTTP is forbidden. Please, use HTTPS or signed requests instead.",
-                      "content": {
-                        "application/json": {
-                          "schema": {
-                            "type": "object",
-                            "properties": {
-                              "detail": {
-                                "type": "string",
-                                "example": "Simple authentication over HTTP is forbidden. Please, use HTTPS or signed requests instead.",
-                                "default": "Simple authentication over HTTP is forbidden. Please, use HTTPS or signed requests instead."
-                              }
-                            }
-                          }
-                        }
-                      }
+                      "description": "Simple authentication over HTTP is forbidden. Please, use HTTPS or signed requests instead."
                     },
                     {
-                      "description": "Webhooks are not available for your subscription plan.",
-                      "content": {
-                        "application/json": {
-                          "schema": {
-                            "type": "object",
-                            "properties": {
-                              "detail": {
-                                "type": "string",
-                                "example": "You can\"t use webhooks",
-                                "default": "You can\"t use webhooks"
-                              }
-                            }
-                          }
-                        }
-                      }
+                      "description": "Webhooks are not available for your subscription plan."
                     }
                   ]
                 },
@@ -5052,13 +4860,6 @@
             "name": "accept",
             "schema": {
               "description": "Version header.",
-              "schema": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "application/vnd.uploadcare-v0.6+json"
-                ]
-              },
               "example": "application/vnd.uploadcare-v0.6+json"
             },
             "required": true
@@ -5163,7 +4964,7 @@
             "description": "Simple auth. on HTTP or webhooks permission or endpoint errors.",
             "content": {
               "application/json": {
-                "schema": {
+                "example": {
                   "oneOf": [
                     {
                       "description": "Simple authentication over HTTP is forbidden. Please, use HTTPS or signed requests instead.",
@@ -5483,13 +5284,6 @@
             "name": "accept",
             "schema": {
               "description": "Version header.",
-              "schema": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "application/vnd.uploadcare-v0.6+json"
-                ]
-              },
               "example": "application/vnd.uploadcare-v0.6+json"
             },
             "required": true
@@ -5523,7 +5317,7 @@
             "description": "Simple auth. on HTTP or webhooks permission or endpoint errors.",
             "content": {
               "application/json": {
-                "schema": {
+                "example": {
                   "oneOf": [
                     {
                       "description": "Simple authentication over HTTP is forbidden. Please, use HTTPS or signed requests instead.",
@@ -5679,13 +5473,6 @@
             "name": "accept",
             "schema": {
               "description": "Version header.",
-              "schema": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "application/vnd.uploadcare-v0.6+json"
-                ]
-              },
               "example": "application/vnd.uploadcare-v0.6+json"
             },
             "required": true
@@ -5802,38 +5589,10 @@
                 "schema": {
                   "oneOf": [
                     {
-                      "description": "Simple authentication over HTTP is forbidden. Please, use HTTPS or signed requests instead.",
-                      "content": {
-                        "application/json": {
-                          "schema": {
-                            "type": "object",
-                            "properties": {
-                              "detail": {
-                                "type": "string",
-                                "example": "Simple authentication over HTTP is forbidden. Please, use HTTPS or signed requests instead.",
-                                "default": "Simple authentication over HTTP is forbidden. Please, use HTTPS or signed requests instead."
-                              }
-                            }
-                          }
-                        }
-                      }
+                      "description": "Simple authentication over HTTP is forbidden. Please, use HTTPS or signed requests instead."
                     },
                     {
-                      "description": "Document conversion feature is not available for this project.",
-                      "content": {
-                        "application/json": {
-                          "schema": {
-                            "type": "object",
-                            "properties": {
-                              "detail": {
-                                "type": "string",
-                                "example": "Document conversion feature is not available for this project.",
-                                "default": "Document conversion feature is not available for this project."
-                              }
-                            }
-                          }
-                        }
-                      }
+                      "description": "Document conversion feature is not available for this project."
                     },
                     {
                       "type": "object",
@@ -5931,13 +5690,6 @@
             "name": "accept",
             "schema": {
               "description": "Version header.",
-              "schema": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "application/vnd.uploadcare-v0.6+json"
-                ]
-              },
               "example": "application/vnd.uploadcare-v0.6+json"
             },
             "required": true
@@ -5997,38 +5749,10 @@
                 "schema": {
                   "oneOf": [
                     {
-                      "description": "Simple authentication over HTTP is forbidden. Please, use HTTPS or signed requests instead.",
-                      "content": {
-                        "application/json": {
-                          "schema": {
-                            "type": "object",
-                            "properties": {
-                              "detail": {
-                                "type": "string",
-                                "example": "Simple authentication over HTTP is forbidden. Please, use HTTPS or signed requests instead.",
-                                "default": "Simple authentication over HTTP is forbidden. Please, use HTTPS or signed requests instead."
-                              }
-                            }
-                          }
-                        }
-                      }
+                      "description": "Simple authentication over HTTP is forbidden. Please, use HTTPS or signed requests instead."
                     },
                     {
-                      "description": "Document conversion feature is not available for this project.",
-                      "content": {
-                        "application/json": {
-                          "schema": {
-                            "type": "object",
-                            "properties": {
-                              "detail": {
-                                "type": "string",
-                                "example": "Document conversion feature is not available for this project.",
-                                "default": "Document conversion feature is not available for this project."
-                              }
-                            }
-                          }
-                        }
-                      }
+                      "description": "Document conversion feature is not available for this project."
                     }
                   ]
                 },
@@ -6154,13 +5878,6 @@
             "name": "accept",
             "schema": {
               "description": "Version header.",
-              "schema": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "application/vnd.uploadcare-v0.6+json"
-                ]
-              },
               "example": "application/vnd.uploadcare-v0.6+json"
             },
             "required": true
@@ -6284,38 +6001,10 @@
                 "schema": {
                   "oneOf": [
                     {
-                      "description": "Simple authentication over HTTP is forbidden. Please, use HTTPS or signed requests instead.",
-                      "content": {
-                        "application/json": {
-                          "schema": {
-                            "type": "object",
-                            "properties": {
-                              "detail": {
-                                "type": "string",
-                                "example": "Simple authentication over HTTP is forbidden. Please, use HTTPS or signed requests instead.",
-                                "default": "Simple authentication over HTTP is forbidden. Please, use HTTPS or signed requests instead."
-                              }
-                            }
-                          }
-                        }
-                      }
+                      "description": "Simple authentication over HTTP is forbidden. Please, use HTTPS or signed requests instead."
                     },
                     {
-                      "description": "Video conversion feature is not available for this project.",
-                      "content": {
-                        "application/json": {
-                          "schema": {
-                            "type": "object",
-                            "properties": {
-                              "detail": {
-                                "type": "string",
-                                "example": "Video conversion feature is not available for this project.",
-                                "default": "Video conversion feature is not available for this project."
-                              }
-                            }
-                          }
-                        }
-                      }
+                      "description": "Video conversion feature is not available for this project."
                     },
                     {
                       "type": "object",
@@ -6414,13 +6103,6 @@
             "name": "accept",
             "schema": {
               "description": "Version header.",
-              "schema": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "application/vnd.uploadcare-v0.6+json"
-                ]
-              },
               "example": "application/vnd.uploadcare-v0.6+json"
             },
             "required": true
@@ -6486,38 +6168,10 @@
                 "schema": {
                   "oneOf": [
                     {
-                      "description": "Simple authentication over HTTP is forbidden. Please, use HTTPS or signed requests instead.",
-                      "content": {
-                        "application/json": {
-                          "schema": {
-                            "type": "object",
-                            "properties": {
-                              "detail": {
-                                "type": "string",
-                                "example": "Simple authentication over HTTP is forbidden. Please, use HTTPS or signed requests instead.",
-                                "default": "Simple authentication over HTTP is forbidden. Please, use HTTPS or signed requests instead."
-                              }
-                            }
-                          }
-                        }
-                      }
+                      "description": "Simple authentication over HTTP is forbidden. Please, use HTTPS or signed requests instead."
                     },
                     {
-                      "description": "Video conversion feature is not available for this project.",
-                      "content": {
-                        "application/json": {
-                          "schema": {
-                            "type": "object",
-                            "properties": {
-                              "detail": {
-                                "type": "string",
-                                "example": "Video conversion feature is not available for this project.",
-                                "default": "Video conversion feature is not available for this project."
-                              }
-                            }
-                          }
-                        }
-                      }
+                      "description": "Video conversion feature is not available for this project."
                     }
                   ]
                 },

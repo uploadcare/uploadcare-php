@@ -4,8 +4,10 @@ namespace Uploadcare;
 
 use Uploadcare\Apis\FileApi;
 use Uploadcare\Apis\GroupApi;
+use Uploadcare\Apis\ProjectApi;
 use Uploadcare\Interfaces\Api\FileApiInterface;
 use Uploadcare\Interfaces\Api\GroupApiInterface;
+use Uploadcare\Interfaces\Api\ProjectApiInterface;
 use Uploadcare\Interfaces\ConfigurationInterface;
 use Uploadcare\Interfaces\UploaderInterface;
 use Uploadcare\Uploader\Uploader;
@@ -31,6 +33,11 @@ class Api
     private $uploader;
 
     /**
+     * @var ProjectApiInterface
+     */
+    private $projectApi;
+
+    /**
      * @param string $publicKey
      * @param string $privateKey
      *
@@ -53,6 +60,7 @@ class Api
         $this->fileApi = new FileApi($configuration);
         $this->groupApi = new GroupApi($configuration);
         $this->uploader = new Uploader($configuration);
+        $this->projectApi = new ProjectApi($configuration);
     }
 
     /**
@@ -69,6 +77,14 @@ class Api
     public function group()
     {
         return $this->groupApi;
+    }
+
+    /**
+     * @return ProjectApiInterface
+     */
+    public function project()
+    {
+        return $this->projectApi;
     }
 
     /**
