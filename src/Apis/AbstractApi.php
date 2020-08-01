@@ -69,6 +69,11 @@ abstract class AbstractApi
             $parameters['body'] = stream_for($data['body']);
             unset($data['body']);
         }
+        if (isset($data['form_params'])) {
+            $stringData = \json_encode($data['form_params']);
+            $parameters['form_params'] = $data['form_params'];
+            unset($data['form_params']);
+        }
         $uriForSign = $uri;
         if (isset($data['query'])) {
             $uriForSign .= '?' . \http_build_query($data['query']);

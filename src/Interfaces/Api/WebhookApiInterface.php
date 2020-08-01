@@ -27,11 +27,12 @@ interface WebhookApiInterface
     public function createWebhook($targetUrl, $isActive = true, $event = 'file.uploaded');
 
     /**
-     * @param WebhookInterface $webhook
+     * @param int   $id
+     * @param array $parameters
      *
      * @return WebhookInterface
      */
-    public function updateWebhook(WebhookInterface $webhook);
+    public function updateWebhook($id, array $parameters);
 
     /**
      * @param string $targetUrl

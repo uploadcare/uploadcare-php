@@ -17,10 +17,17 @@ class WebhookApi extends AbstractApi implements WebhookApiInterface
     public function listWebhooks()
     {
         $response = $this->request('GET', 'webhooks/');
-        $result = $this->configuration->getSerializer()
-            ->deserialize($response->getBody()->getContents(), WebhookCollection::class);
-        if (!$result instanceof WebhookCollection) {
-            throw new \RuntimeException('Unable to deserialize response. Call to support');
+        $webhooks = $this->configuration->getSerializer()
+            ->deserialize($response->getBody()->getContents());
+
+        $result = new WebhookCollection();
+        foreach ($webhooks as $webhook) {
+            $obj = $this->configuration->getSerializer()
+                ->deserialize(\json_encode($webhook), Webhook::class);
+
+            if ($obj instanceof Webhook) {
+                $result->add($obj);
+            }
         }
 
         return new WebhookCollectionDecorator($result, $this);
@@ -39,14 +46,8 @@ class WebhookApi extends AbstractApi implements WebhookApiInterface
             ],
         ]);
 
-        // Hack
-        $result = $this->configuration->getSerializer()
-            ->deserialize($response->getBody()->getContents());
-        if (!\is_array($result) || !\array_key_exists('hook', $result)) {
-            throw new \RuntimeException('Unable to deserialize response. Call to support');
-        }
         $webhook = $this->configuration->getSerializer()
-            ->deserialize($result['hook'], Webhook::class);
+            ->deserialize($response->getBody()->getContents(), Webhook::class);
 
         if (!$webhook instanceof WebhookInterface) {
             throw new \RuntimeException('Unable to deserialize response. Call to support');
@@ -58,15 +59,22 @@ class WebhookApi extends AbstractApi implements WebhookApiInterface
     /**
      * @inheritDoc
      */
-    public function updateWebhook(WebhookInterface $webhook)
+    public function updateWebhook($id, array $parameters)
     {
-        $uri = \sprintf('webhooks/%s/', $webhook->getId());
+        $uri = \sprintf('webhooks/%s/', $id);
+        $formData = [];
+        if (isset($parameters['target_url'])) {
+            $formData['target_url'] = (string) $parameters['target_url'];
+        }
+        if (isset($parameters['event'])) {
+            $formData['event'] = (string) $parameters['event'];
+        }
+        if (isset($parameters['is_active'])) {
+            $formData['is_active'] = (bool) $parameters['is_active'];
+        }
+
         $response = $this->request('PUT', $uri, [
-            'form_params' => [
-                'target_url' => $webhook->getTargetUrl(),
-                'project' => $webhook->getProject(),
-                'is_active' => $webhook->isActive(),
-            ],
+            'form_params' => $formData,
         ]);
 
         $result = $this->configuration->getSerializer()
