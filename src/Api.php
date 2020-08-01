@@ -5,9 +5,11 @@ namespace Uploadcare;
 use Uploadcare\Apis\FileApi;
 use Uploadcare\Apis\GroupApi;
 use Uploadcare\Apis\ProjectApi;
+use Uploadcare\Apis\WebhookApi;
 use Uploadcare\Interfaces\Api\FileApiInterface;
 use Uploadcare\Interfaces\Api\GroupApiInterface;
 use Uploadcare\Interfaces\Api\ProjectApiInterface;
+use Uploadcare\Interfaces\Api\WebhookApiInterface;
 use Uploadcare\Interfaces\ConfigurationInterface;
 use Uploadcare\Interfaces\UploaderInterface;
 use Uploadcare\Uploader\Uploader;
@@ -38,6 +40,11 @@ class Api
     private $projectApi;
 
     /**
+     * @var WebhookApiInterface
+     */
+    private $webhookApi;
+
+    /**
      * @param string $publicKey
      * @param string $privateKey
      *
@@ -61,6 +68,7 @@ class Api
         $this->groupApi = new GroupApi($configuration);
         $this->uploader = new Uploader($configuration);
         $this->projectApi = new ProjectApi($configuration);
+        $this->webhookApi = new WebhookApi($configuration);
     }
 
     /**
@@ -93,5 +101,13 @@ class Api
     public function uploader()
     {
         return $this->uploader;
+    }
+
+    /**
+     * @return WebhookApiInterface
+     */
+    public function webhook()
+    {
+        return $this->webhookApi;
     }
 }

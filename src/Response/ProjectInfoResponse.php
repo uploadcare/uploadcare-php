@@ -5,7 +5,7 @@ namespace Uploadcare\Response;
 use Uploadcare\Interfaces\Response\ProjectInfoInterface;
 use Uploadcare\Interfaces\SerializableInterface;
 
-class ProjectInfoResponse implements ProjectInfoInterface, SerializableInterface
+final class ProjectInfoResponse implements ProjectInfoInterface, SerializableInterface
 {
     /**
      * @var array
