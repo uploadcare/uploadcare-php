@@ -2,6 +2,8 @@
 
 namespace Uploadcare\File;
 
+use Uploadcare\Interfaces\File\CollectionInterface;
+use Uploadcare\Interfaces\File\FileInfoInterface;
 use Uploadcare\Interfaces\GroupInterface;
 use Uploadcare\Interfaces\SerializableInterface;
 
@@ -41,6 +43,11 @@ final class Group implements GroupInterface, SerializableInterface
     private $url;
 
     /**
+     * @var FileCollection|CollectionInterface
+     */
+    private $files;
+
+    /**
      * @return array|string[]
      */
     public static function rules()
@@ -52,7 +59,13 @@ final class Group implements GroupInterface, SerializableInterface
             'filesCount' => 'int',
             'cdnUrl' => 'string',
             'url' => 'string',
+            'files' => FileCollection::class,
         ];
+    }
+
+    public function __construct()
+    {
+        $this->files = new FileCollection();
     }
 
     /**
@@ -173,5 +186,19 @@ final class Group implements GroupInterface, SerializableInterface
         $this->url = $url;
 
         return $this;
+    }
+
+    public function addFile(FileInfoInterface $fileInfo)
+    {
+        if (!$this->files->contains($fileInfo)) {
+            $this->files->add($fileInfo);
+        }
+
+        return $this;
+    }
+
+    public function getFiles()
+    {
+        return $this->files;
     }
 }

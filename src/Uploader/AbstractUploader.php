@@ -48,6 +48,25 @@ abstract class AbstractUploader implements UploaderInterface
     }
 
     /**
+     * @param $id
+     *
+     * @return ResponseInterface
+     */
+    public function groupInfo($id)
+    {
+        $parameters = [
+            'pub_key' => $this->configuration->getPublicKey(),
+            'group_id' => $id,
+        ];
+
+        try {
+            return $this->sendRequest('GET', 'group/info/', ['query' => $parameters]);
+        } catch (GuzzleException $e) {
+            throw new HttpException('', 0, ($e instanceof \Exception ? $e : null));
+        }
+    }
+
+    /**
      * Upload file from resource opened by `\fopen()`.
      *
      * @param resource    $handle

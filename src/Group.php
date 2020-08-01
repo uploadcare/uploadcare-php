@@ -2,7 +2,9 @@
 
 namespace Uploadcare;
 
+use Uploadcare\Apis\FileApi;
 use Uploadcare\Apis\GroupApi;
+use Uploadcare\Interfaces\ConfigurationInterface;
 use Uploadcare\Interfaces\GroupInterface;
 
 /**
@@ -20,10 +22,31 @@ class Group implements GroupInterface
      */
     private $api;
 
+    /**
+     * @var ConfigurationInterface|null
+     */
+    private $configuration;
+
+    /**
+     * @param GroupInterface $inner
+     * @param GroupApi       $api
+     */
     public function __construct(GroupInterface $inner, GroupApi $api)
     {
         $this->inner = $inner;
         $this->api = $api;
+    }
+
+    /**
+     * @param ConfigurationInterface $configuration
+     *
+     * @return $this
+     */
+    public function setConfiguration(ConfigurationInterface $configuration)
+    {
+        $this->configuration = $configuration;
+
+        return $this;
     }
 
     /**
@@ -80,5 +103,17 @@ class Group implements GroupInterface
     public function getUrl()
     {
         return $this->inner->getUrl();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getFiles()
+    {
+        if ($this->configuration === null) {
+            return $this->inner->getFiles();
+        }
+
+        return new FileCollection($this->inner->getFiles(), new FileApi($this->configuration));
     }
 }

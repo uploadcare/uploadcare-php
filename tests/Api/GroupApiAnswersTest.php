@@ -13,6 +13,7 @@ use Uploadcare\Configuration;
 use Uploadcare\File\File;
 use Uploadcare\File\FileCollection;
 use Uploadcare\File\Group;
+use Uploadcare\Interfaces\File\CollectionInterface;
 use Uploadcare\Interfaces\GroupInterface;
 use Uploadcare\Response\GroupListResponse;
 use Uploadcare\Security\Signature;
@@ -65,6 +66,8 @@ class GroupApiAnswersTest extends TestCase
         self::assertInstanceOf(GroupInterface::class, $result);
         self::assertNotEmpty($result->getId());
         self::assertNotEmpty($result->getFilesCount());
+        self::assertInstanceOf(CollectionInterface::class, $result->getFiles());
+        self::assertInstanceOf(\Uploadcare\File::class, $result->getFiles()->first());
     }
 
     public function provideGroupsForStore()

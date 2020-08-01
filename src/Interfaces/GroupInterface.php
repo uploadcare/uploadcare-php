@@ -2,6 +2,8 @@
 
 namespace Uploadcare\Interfaces;
 
+use Uploadcare\Interfaces\File\CollectionInterface;
+
 /**
  * Group of files.
  */
@@ -48,4 +50,9 @@ interface GroupInterface
      * @return string
      */
     public function getUrl();
+
+    /**
+     * @return CollectionInterface<array-key, \Uploadcare\Interfaces\File\FileInfoInterface>
+     */
+    public function getFiles();
 }

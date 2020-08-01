@@ -59,7 +59,7 @@ class GroupApi extends AbstractApi implements GroupApiInterface
             throw new \RuntimeException('Unable to deserialize response. Call to support');
         }
 
-        return new GroupDecorator($result, $this);
+        return (new GroupDecorator($result, $this))->setConfiguration($this->configuration);
     }
 
     /**
@@ -90,8 +90,7 @@ class GroupApi extends AbstractApi implements GroupApiInterface
      */
     public function groupInfo($id)
     {
-        $uri = \sprintf('/groups/%s/', $id);
-        $response = $this->request('GET', $uri);
+        $response = (new Uploader($this->configuration))->groupInfo($id);
         $result = $this->configuration->getSerializer()
             ->deserialize($response->getBody()->getContents(), Group::class);
 
@@ -99,7 +98,7 @@ class GroupApi extends AbstractApi implements GroupApiInterface
             throw new \RuntimeException('Unable to deserialize response. Call to support');
         }
 
-        return new GroupDecorator($result, $this);
+        return (new GroupDecorator($result, $this))->setConfiguration($this->configuration);
     }
 
     /**
