@@ -79,9 +79,6 @@ class Uploader extends AbstractUploader
         try {
             $response = $this->sendRequest('POST', 'base/', $parameters);
         } catch (GuzzleException $e) {
-            if (\is_resource($handle)) {
-                \fclose($handle);
-            }
             throw new HttpException('', 0, ($e instanceof \Exception ? $e : null));
         }
         if (\is_resource($handle)) {
