@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Tests\Decorated;
-
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
@@ -41,7 +39,9 @@ class DecoratedWebhookTest extends TestCase
 
     /**
      * @dataProvider commonMethods
+     *
      * @param $method
+     *
      * @throws \ReflectionException
      */
     public function testCommonMethods($method)

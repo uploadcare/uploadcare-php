@@ -69,6 +69,12 @@ abstract class AbstractApi
             $parameters['form_params'] = $data['form_params'];
             unset($data['form_params']);
         }
+        if (isset($data['body'])) {
+            $stringData = $data['body'];
+            $parameters['body'] = $data['body'];
+            unset($data['body']);
+        }
+
         $uriForSign = $uri;
         if (isset($data['query'])) {
             $uriForSign .= '?' . \http_build_query($data['query']);

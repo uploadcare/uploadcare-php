@@ -39,7 +39,7 @@ class Signature implements SignatureInterface
     {
         $signString = $this->getExpire()->getTimestamp();
 
-        return \hash_hmac(SignatureInterface::SIGN_ALGORITHM, $signString, $this->privateKey);
+        return \hash_hmac(SignatureInterface::SIGN_ALGORITHM, (string) $signString, $this->privateKey);
     }
 
     /**
