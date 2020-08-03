@@ -5,11 +5,11 @@ namespace Uploadcare\Response;
 use Uploadcare\File\FileCollection;
 use Uploadcare\Interfaces\File\CollectionInterface;
 use Uploadcare\Interfaces\File\FileInfoInterface;
-use Uploadcare\Interfaces\Response\BatchFileResponseInterface;
+use Uploadcare\Interfaces\Response\BatchResponseInterface;
 use Uploadcare\Interfaces\Response\ResponseProblemInterface;
 use Uploadcare\Interfaces\SerializableInterface;
 
-final class BatchFileResponse implements BatchFileResponseInterface, SerializableInterface
+final class BatchFileResponse implements BatchResponseInterface, SerializableInterface
 {
     /**
      * @var string

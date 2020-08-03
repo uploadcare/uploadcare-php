@@ -32,14 +32,10 @@ class HttpException extends \RuntimeException
             $messages[] = $message;
         }
         switch (true) {
-            case $exception instanceof ConnectException:
-                $messages[] = $this->messageString($exception->getRequest(), 'cannot connect to host');
-                break;
             case $exception instanceof TooManyRedirectsException:
-                $messages[] = $this->messageString($exception->getRequest(), 'too many redirects');
-                break;
             case $exception instanceof ClientException:
-                $messages[] = $this->messageString($exception->getRequest(), 'bad request');
+            case $exception instanceof ConnectException:
+                $messages[] = $this->messageString($exception->getRequest(), $exception->getMessage());
                 break;
             case $exception instanceof ServerException:
                 $messages[] = $this->messageString($exception->getRequest(), 'server error');
@@ -57,6 +53,6 @@ class HttpException extends \RuntimeException
             $message = 'fail';
         }
 
-        return \sprintf('%s: %s', \GuzzleHttp\Psr7\str($request), $message);
+        return \sprintf('%s: %s', (string) $request->getUri(), $message);
     }
 }

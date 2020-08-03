@@ -57,7 +57,7 @@ class FileCollection extends AbstractCollection
     }
 
     /**
-     * @return Interfaces\Response\BatchFileResponseInterface|Response\BatchFileResponse
+     * @return Interfaces\Response\BatchResponseInterface|Response\BatchFileResponse
      */
     public function store()
     {
@@ -65,7 +65,7 @@ class FileCollection extends AbstractCollection
     }
 
     /**
-     * @return Interfaces\Response\BatchFileResponseInterface
+     * @return Interfaces\Response\BatchResponseInterface
      */
     public function delete()
     {

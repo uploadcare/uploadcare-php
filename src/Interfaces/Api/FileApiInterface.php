@@ -4,7 +4,7 @@ namespace Uploadcare\Interfaces\Api;
 
 use Uploadcare\Interfaces\File\CollectionInterface;
 use Uploadcare\Interfaces\File\FileInfoInterface;
-use Uploadcare\Interfaces\Response\BatchFileResponseInterface;
+use Uploadcare\Interfaces\Response\BatchResponseInterface;
 use Uploadcare\Interfaces\Response\ListResponseInterface;
 
 interface FileApiInterface
@@ -65,14 +65,14 @@ interface FileApiInterface
      *
      * @param array|CollectionInterface $ids array of files UUIDs or FileCollection to store
      *
-     * @return BatchFileResponseInterface
+     * @return BatchResponseInterface
      */
     public function batchStoreFile($ids);
 
     /**
      * @param array|CollectionInterface $ids array of files UUIDs to store
      *
-     * @return BatchFileResponseInterface
+     * @return BatchResponseInterface
      */
     public function batchDeleteFile($ids);
 

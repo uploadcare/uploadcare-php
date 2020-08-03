@@ -3,7 +3,6 @@
 namespace Uploadcare\Apis;
 
 use GuzzleHttp\Exception\GuzzleException;
-use function GuzzleHttp\Psr7\stream_for;
 use Psr\Http\Message\ResponseInterface;
 use Uploadcare\Configuration;
 use Uploadcare\Exception\HttpException;
@@ -15,7 +14,7 @@ use Uploadcare\Interfaces\Response\ListResponseInterface;
  */
 abstract class AbstractApi
 {
-    const API_VERSION = '0.5';
+    const API_VERSION = '0.6';
 
     /**
      * @var ConfigurationInterface
@@ -64,16 +63,18 @@ abstract class AbstractApi
 
         $stringData = '';
         $parameters = [];
-        if (isset($data['body'])) {
-            $stringData = \json_encode($data['body']);
-            $parameters['body'] = stream_for($data['body']);
-            unset($data['body']);
-        }
+
         if (isset($data['form_params'])) {
             $stringData = \json_encode($data['form_params']);
             $parameters['form_params'] = $data['form_params'];
             unset($data['form_params']);
         }
+        if (isset($data['body'])) {
+            $stringData = $data['body'];
+            $parameters['body'] = $data['body'];
+            unset($data['body']);
+        }
+
         $uriForSign = $uri;
         if (isset($data['query'])) {
             $uriForSign .= '?' . \http_build_query($data['query']);
@@ -86,9 +87,7 @@ abstract class AbstractApi
             $uri = \sprintf('https://%s/%s', Configuration::API_BASE_URL, $uri);
         }
 
-        $parameters = [
-            'headers' => $headers,
-        ];
+        $parameters['headers'] = $headers;
         $parameters = \array_merge($data, $parameters);
 
         try {

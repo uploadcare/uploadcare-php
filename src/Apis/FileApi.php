@@ -11,7 +11,7 @@ use Uploadcare\FileCollection as FileCollectionDecorator;
 use Uploadcare\Interfaces\Api\FileApiInterface;
 use Uploadcare\Interfaces\File\CollectionInterface;
 use Uploadcare\Interfaces\File\FileInfoInterface;
-use Uploadcare\Interfaces\Response\BatchFileResponseInterface;
+use Uploadcare\Interfaces\Response\BatchResponseInterface;
 use Uploadcare\Interfaces\Response\ListResponseInterface;
 use Uploadcare\Response\BatchFileResponse;
 use Uploadcare\Response\FileListResponse;
@@ -135,7 +135,7 @@ class FileApi extends AbstractApi implements FileApiInterface
      *
      * @param array|CollectionInterface $ids array of files UUIDs to store
      *
-     * @return BatchFileResponseInterface
+     * @return BatchResponseInterface
      */
     public function batchStoreFile($ids)
     {
@@ -143,7 +143,7 @@ class FileApi extends AbstractApi implements FileApiInterface
         $result = $this->configuration->getSerializer()
             ->deserialize($response->getBody()->getContents(), BatchFileResponse::class);
 
-        if (!$result instanceof BatchFileResponseInterface) {
+        if (!$result instanceof BatchResponseInterface) {
             throw new \RuntimeException('Unable to deserialize response. Call to support');
         }
         if ($result instanceof BatchFileResponse) {
@@ -157,7 +157,7 @@ class FileApi extends AbstractApi implements FileApiInterface
     /**
      * @param array|CollectionInterface $ids array of files UUIDs to store
      *
-     * @return BatchFileResponseInterface
+     * @return BatchResponseInterface
      */
     public function batchDeleteFile($ids)
     {
@@ -165,7 +165,7 @@ class FileApi extends AbstractApi implements FileApiInterface
         $result = $this->configuration->getSerializer()
             ->deserialize($response->getBody()->getContents(), BatchFileResponse::class);
 
-        if (!$result instanceof BatchFileResponseInterface) {
+        if (!$result instanceof BatchResponseInterface) {
             throw new \RuntimeException('Unable to deserialize response. Call to support');
         }
 

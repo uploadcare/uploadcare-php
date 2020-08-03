@@ -12,7 +12,7 @@ use Uploadcare\Apis\FileApi;
 use Uploadcare\Configuration;
 use Uploadcare\Interfaces\File\CollectionInterface;
 use Uploadcare\Interfaces\File\FileInfoInterface;
-use Uploadcare\Interfaces\Response\BatchFileResponseInterface;
+use Uploadcare\Interfaces\Response\BatchResponseInterface;
 use Uploadcare\Interfaces\Response\ListResponseInterface;
 use Uploadcare\Interfaces\Response\ResponseProblemInterface;
 use Uploadcare\Response\FileListResponse;
@@ -125,7 +125,7 @@ class FileApiAnswersTest extends TestCase
         ];
         $result = (new FileApi($this->getConfig($client)))->batchStoreFile($ids);
 
-        self::assertInstanceOf(BatchFileResponseInterface::class, $result);
+        self::assertInstanceOf(BatchResponseInterface::class, $result);
         self::assertInstanceOf(ResponseProblemInterface::class, $result->getProblems()[0]);
         self::assertInstanceOf(CollectionInterface::class, $result->getResult());
         self::assertInstanceOf(FileInfoInterface::class, $result->getResult()->first());
@@ -140,7 +140,7 @@ class FileApiAnswersTest extends TestCase
         ];
         $result = (new FileApi($this->getConfig($client)))->batchDeleteFile($ids);
 
-        self::assertInstanceOf(BatchFileResponseInterface::class, $result);
+        self::assertInstanceOf(BatchResponseInterface::class, $result);
         self::assertInstanceOf(ResponseProblemInterface::class, $result->getProblems()[0]);
         self::assertInstanceOf(CollectionInterface::class, $result->getResult());
         self::assertInstanceOf(FileInfoInterface::class, $result->getResult()->first());

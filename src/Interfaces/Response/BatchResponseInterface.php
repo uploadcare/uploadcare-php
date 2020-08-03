@@ -9,7 +9,7 @@ use Uploadcare\Interfaces\File\CollectionInterface;
  *
  * @see https://uploadcare.com/api-refs/rest-api/v0.6.0/#operation/filesStoring
  */
-interface BatchFileResponseInterface
+interface BatchResponseInterface
 {
     /**
      * Response status (usually 'ok').

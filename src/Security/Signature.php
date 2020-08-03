@@ -37,9 +37,9 @@ class Signature implements SignatureInterface
      */
     public function getSignature()
     {
-        $signString = $this->privateKey . $this->getExpire()->getTimestamp();
+        $signString = $this->getExpire()->getTimestamp();
 
-        return \hash_hmac(SignatureInterface::SIGN_ALGORITHM, $signString, $this->privateKey);
+        return \hash_hmac(SignatureInterface::SIGN_ALGORITHM, (string) $signString, $this->privateKey);
     }
 
     /**
@@ -69,11 +69,15 @@ class Signature implements SignatureInterface
      */
     public function getAuthHeaderString($method, $uri, $data, $contentType = 'application/json', $date = null)
     {
+        $uri = \sprintf('/%s', \ltrim($uri, '/'));
+        $data = \md5($data);
+        $dateString = $this->getDateHeaderString($date);
+
         $signString = \implode("\n", [
             $method,
-            \md5($data),
+            $data,
             $contentType,
-            $this->getDateHeaderString($date),
+            $dateString,
             $uri,
         ]);
 
