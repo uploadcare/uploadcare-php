@@ -2,10 +2,12 @@
 
 namespace Uploadcare\Apis;
 
+use Uploadcare\Conversion\ConversionStatus;
 use Uploadcare\Exception\ConversionException;
 use Uploadcare\Exception\InvalidArgumentException;
 use Uploadcare\Interfaces\Api\ConversionApiInterface;
 use Uploadcare\Interfaces\Conversion\ConversionRequest;
+use Uploadcare\Interfaces\Conversion\ConversionStatusInterface;
 use Uploadcare\Interfaces\Conversion\ConvertedItemInterface;
 use Uploadcare\Interfaces\Conversion\DocumentConversionRequestInterface;
 use Uploadcare\Interfaces\File\FileInfoInterface;
@@ -18,6 +20,28 @@ use Uploadcare\Response\BatchConvertDocumentResponse;
  */
 class ConversionApi extends AbstractApi implements ConversionApiInterface
 {
+    /**
+     * @param int|ConvertedItemInterface $id
+     *
+     * @return ConversionStatusInterface
+     */
+    public function documentJobStatus($id)
+    {
+        if ($id instanceof ConvertedItemInterface) {
+            $id = (int) $id->getToken();
+        }
+
+        $response = $this->request('GET', \sprintf('/convert/document/status/%s/', $id));
+        $result = $this->configuration->getSerializer()
+            ->deserialize($response->getBody()->getContents(), ConversionStatus::class);
+
+        if (!$result instanceof ConversionStatusInterface) {
+            throw new \RuntimeException('Unable to deserialize response. Call to support');
+        }
+
+        return $result;
+    }
+
     /**
      * @inheritDoc
      *
@@ -91,6 +115,11 @@ class ConversionApi extends AbstractApi implements ConversionApiInterface
     public function batchConvertVideo($collection)
     {
         // TODO: Implement batchConvertVideo() method.
+    }
+
+    public function videoJobStatus($id)
+    {
+        // TODO: Implement method
     }
 
     /**

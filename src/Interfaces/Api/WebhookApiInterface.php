@@ -28,7 +28,7 @@ interface WebhookApiInterface
 
     /**
      * @param int   $id
-     * @param array $parameters
+     * @param array $parameters Parameters for update: string `target_url`, bool `is_active`
      *
      * @return WebhookInterface
      */

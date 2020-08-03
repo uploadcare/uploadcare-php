@@ -16,7 +16,9 @@ use Uploadcare\Conversion\DocumentConvertCollection;
 use Uploadcare\Exception\InvalidArgumentException;
 use Uploadcare\File\FileCollection;
 use Uploadcare\Interfaces\Conversion\ConversionRequest;
+use Uploadcare\Interfaces\Conversion\ConversionStatusInterface;
 use Uploadcare\Interfaces\Conversion\DocumentConversionRequestInterface;
+use Uploadcare\Interfaces\Conversion\StatusResultInterface;
 use Uploadcare\Interfaces\File\FileInfoInterface;
 use Uploadcare\Interfaces\Response\BatchResponseInterface;
 use Uploadcare\Interfaces\Response\ResponseProblemInterface;
@@ -104,5 +106,22 @@ class ConversionApiMethodsTest extends TestCase
         self::assertInstanceOf(DocumentConvertCollection::class, $result->getResult());
         self::assertNotEmpty($result->getProblems());
         self::assertInstanceOf(ResponseProblemInterface::class, $result->getProblems()[0]);
+    }
+
+    public function testConversionStatusResult()
+    {
+        $api = $this->fakeApi([
+            new Response(200, [], DataFile::contents('conversion/conversion-status.json')),
+        ]);
+        $item = $this->createMock(ConvertedItem::class);
+        $item->method('getToken')->willReturn(\random_int(65535, 1065535));
+
+        $result = $api->documentJobStatus($item);
+        self::assertInstanceOf(ConversionStatusInterface::class, $result);
+        self::assertEmpty($result->getError());
+        self::assertNotEmpty($result->getStatus());
+        self::assertInstanceOf(StatusResultInterface::class, $result->getResult());
+        self::assertNotEmpty($result->getResult()->getUuid());
+        self::assertEmpty($result->getResult()->getThumbnailsGroupUuid());
     }
 }
