@@ -3,6 +3,8 @@
 namespace Uploadcare\Interfaces\Api;
 
 use Uploadcare\Interfaces\Conversion\ConversionRequest;
+use Uploadcare\Interfaces\Conversion\ConversionStatusInterface;
+use Uploadcare\Interfaces\Conversion\ConvertedItemInterface;
 use Uploadcare\Interfaces\Conversion\DocumentConversionRequestInterface;
 use Uploadcare\Interfaces\Conversion\VideoConversionRequestInterface;
 use Uploadcare\Interfaces\File\CollectionInterface;
@@ -35,6 +37,13 @@ interface ConversionApiInterface
     public function batchConvertDocuments($collection, ConversionRequest $request);
 
     /**
+     * @param ConvertedItemInterface|int $id
+     *
+     * @return ConversionStatusInterface
+     */
+    public function documentJobStatus($id);
+
+    /**
      * @param FileInfoInterface|string $file
      * @param bool                     $throwError
      *
@@ -50,4 +59,11 @@ interface ConversionApiInterface
      * @return BatchResponseInterface
      */
     public function batchConvertVideo($collection);
+
+    /**
+     * @param $id
+     *
+     * @return mixed
+     */
+    public function videoJobStatus($id);
 }

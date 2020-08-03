@@ -34,6 +34,7 @@ class Webhook implements WebhookInterface
 
     /**
      * @param $url
+     *
      * @return WebhookInterface
      */
     public function updateUrl($url)
