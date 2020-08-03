@@ -50,7 +50,7 @@ class FileApiAnswersTest extends TestCase
 
         $mock = new MockHandler([
             new Response($status, [
-                'Content-Type' => \sprintf('application/vnd.uploadcare-v%s+json', FileApi::API_VERSION),
+                'Content-Type' => \sprintf('application/vnd.uploadcare-v%s+json', Configuration::API_VERSION),
                 'Access-Control-Allow-Origin' => 'https://uploadcare.com',
             ], \file_get_contents($filePath)),
         ]);
@@ -166,7 +166,7 @@ class FileApiAnswersTest extends TestCase
     public function testApiNextPageNotNull()
     {
         $headers = [
-            'Content-Type' => \sprintf('application/vnd.uploadcare-v%s+json', FileApi::API_VERSION),
+            'Content-Type' => \sprintf('application/vnd.uploadcare-v%s+json', Configuration::API_VERSION),
             'Access-Control-Allow-Origin' => 'https://uploadcare.com',
         ];
         $content = $this->fileContents('file-list-api-response.json');
@@ -191,7 +191,7 @@ class FileApiAnswersTest extends TestCase
         $source = \json_decode($this->fileContents('file-list-api-response.json'), true);
         $source['next'] = null;
         $response = new Response(200, [
-            'Content-Type' => \sprintf('application/vnd.uploadcare-v%s+json', FileApi::API_VERSION),
+            'Content-Type' => \sprintf('application/vnd.uploadcare-v%s+json', Configuration::API_VERSION),
             'Access-Control-Allow-Origin' => 'https://uploadcare.com',
         ], \json_encode($source));
         $handler = new MockHandler([$response]);

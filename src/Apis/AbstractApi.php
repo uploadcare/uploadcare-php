@@ -14,8 +14,6 @@ use Uploadcare\Interfaces\Response\ListResponseInterface;
  */
 abstract class AbstractApi
 {
-    const API_VERSION = '0.6';
-
     /**
      * @var ConfigurationInterface
      */
@@ -65,7 +63,7 @@ abstract class AbstractApi
         $parameters = [];
 
         if (isset($data['form_params'])) {
-            $stringData = \json_encode($data['form_params']);
+            $stringData = \http_build_query($data['form_params']);
             $parameters['form_params'] = $data['form_params'];
             unset($data['form_params']);
         }
@@ -79,9 +77,15 @@ abstract class AbstractApi
         if (isset($data['query'])) {
             $uriForSign .= '?' . \http_build_query($data['query']);
         }
+        $contentType = 'application/json';
 
-        $headers = $this->configuration->getAuthHeaders($method, $uriForSign, $stringData, 'application/json', $date);
-        $headers['Accept'] = \sprintf('application/vnd.uploadcare-v%s+json', self::API_VERSION);
+        if (isset($data['Content-Type'])) {
+            $contentType = $data['Content-Type'];
+            unset($data['Content-Type']);
+        }
+
+        $headers = $this->configuration->getAuthHeaders($method, $uriForSign, $stringData, $contentType, $date);
+        $headers['Accept'] = \sprintf('application/vnd.uploadcare-v%s+json', Configuration::API_VERSION);
         $headers = \array_merge($this->configuration->getHeaders(), $headers);
         if (\strpos('http', $uri) !== 0) {
             $uri = \sprintf('https://%s/%s', Configuration::API_BASE_URL, $uri);

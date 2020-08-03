@@ -18,6 +18,7 @@ use Uploadcare\Serializer\SerializerFactory;
 class Configuration implements ConfigurationInterface
 {
     const LIBRARY_VERSION = 'v3.0.0';
+    const API_VERSION = '0.6';
     const API_BASE_URL = 'api.uploadcare.com';
     const USER_AGENT_TEMPLATE = 'PHPUploadcare/{lib-version}/{publicKey} (PHP/{lang-version})';
 
