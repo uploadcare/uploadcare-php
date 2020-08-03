@@ -44,6 +44,7 @@ class WebhookApi extends AbstractApi implements WebhookApiInterface
                 'event' => $event,
                 'is_active' => $isActive,
             ],
+            'Content-Type' => 'application/x-www-form-urlencoded',
         ]);
 
         $webhook = $this->configuration->getSerializer()
@@ -75,6 +76,7 @@ class WebhookApi extends AbstractApi implements WebhookApiInterface
 
         $response = $this->request('PUT', $uri, [
             'form_params' => $formData,
+            'Content-Type' => 'application/x-www-form-urlencoded',
         ]);
 
         $result = $this->configuration->getSerializer()

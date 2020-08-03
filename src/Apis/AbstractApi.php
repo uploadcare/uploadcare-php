@@ -61,11 +61,13 @@ abstract class AbstractApi
 
         $stringData = '';
         $parameters = [];
+        $contentType = 'application/json';
 
         if (isset($data['form_params'])) {
             $stringData = \http_build_query($data['form_params']);
             $parameters['form_params'] = $data['form_params'];
             unset($data['form_params']);
+            $contentType = 'application/x-www-form-urlencoded';
         }
         if (isset($data['body'])) {
             $stringData = $data['body'];
@@ -77,7 +79,6 @@ abstract class AbstractApi
         if (isset($data['query'])) {
             $uriForSign .= '?' . \http_build_query($data['query']);
         }
-        $contentType = 'application/json';
 
         if (isset($data['Content-Type'])) {
             $contentType = $data['Content-Type'];

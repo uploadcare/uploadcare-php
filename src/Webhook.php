@@ -24,9 +24,37 @@ class Webhook implements WebhookInterface
         $this->api = $api;
     }
 
+    /**
+     * @return void
+     */
     public function delete()
     {
         $this->api->deleteWebhook($this->getTargetUrl());
+    }
+
+    /**
+     * @param $url
+     * @return WebhookInterface
+     */
+    public function updateUrl($url)
+    {
+        return $this->api->updateWebhook($this->getId(), ['target_url' => $url]);
+    }
+
+    /**
+     * @return WebhookInterface
+     */
+    public function activate()
+    {
+        return $this->api->updateWebhook($this->getId(), ['is_active' => true]);
+    }
+
+    /**
+     * @return WebhookInterface
+     */
+    public function deactivate()
+    {
+        return $this->api->updateWebhook($this->getId(), ['is_active' => false]);
     }
 
     /**
