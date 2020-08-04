@@ -11,6 +11,8 @@ use Uploadcare\Interfaces\Conversion\VideoEncodingRequestInterface;
 class VideoEncodingRequest implements VideoEncodingRequestInterface
 {
     const MAX_THUMBS = 50;
+    const DEFAULT_RESIZE_MODE = 'preserve_ratio';
+    const DEFAULT_END_TIME = 'end';
 
     /**
      * @var string[] Possible resizes for video

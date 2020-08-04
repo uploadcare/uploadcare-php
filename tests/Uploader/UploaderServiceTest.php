@@ -165,6 +165,9 @@ class UploaderServiceTest extends TestCase
         $this->expectExceptionMessageRegExp('Unable to open');
     }
 
+    /**
+     * @group local-only
+     */
     public function testUploadFromValidUrl()
     {
         $url = 'https://httpbin.org/gzip';
@@ -177,6 +180,11 @@ class UploaderServiceTest extends TestCase
         self::assertTrue(\is_resource($this->getMockUploader()->fromContent($content)));
     }
 
+    /**
+     * @group local-only
+     *
+     * @throws \ReflectionException
+     */
     public function testGetSizeMethod()
     {
         $path = \dirname(__DIR__) . '/_data/file-info.json';

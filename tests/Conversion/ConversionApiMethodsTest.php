@@ -10,9 +10,9 @@ use PHPUnit\Framework\TestCase;
 use Tests\DataFile;
 use Uploadcare\Apis\ConversionApi;
 use Uploadcare\Configuration;
+use Uploadcare\Conversion\ConvertedCollection;
 use Uploadcare\Conversion\ConvertedItem;
 use Uploadcare\Conversion\DocumentConversionRequest;
-use Uploadcare\Conversion\DocumentConvertCollection;
 use Uploadcare\Exception\InvalidArgumentException;
 use Uploadcare\File\FileCollection;
 use Uploadcare\Interfaces\Conversion\ConversionRequest;
@@ -103,7 +103,7 @@ class ConversionApiMethodsTest extends TestCase
 
         $result = $api->batchConvertDocuments($files, $request);
         self::assertInstanceOf(BatchResponseInterface::class, $result);
-        self::assertInstanceOf(DocumentConvertCollection::class, $result->getResult());
+        self::assertInstanceOf(ConvertedCollection::class, $result->getResult());
         self::assertNotEmpty($result->getProblems());
         self::assertInstanceOf(ResponseProblemInterface::class, $result->getProblems()[0]);
     }

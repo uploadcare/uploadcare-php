@@ -2,8 +2,8 @@
 
 namespace Uploadcare\Response;
 
+use Uploadcare\Conversion\ConvertedCollection;
 use Uploadcare\Conversion\ConvertedItem;
-use Uploadcare\Conversion\DocumentConvertCollection;
 use Uploadcare\Interfaces\File\CollectionInterface;
 use Uploadcare\Interfaces\Response\BatchResponseInterface;
 use Uploadcare\Interfaces\Response\ResponseProblemInterface;
@@ -12,7 +12,7 @@ use Uploadcare\Interfaces\SerializableInterface;
 /**
  * Response for conversion request.
  */
-class BatchConvertDocumentResponse implements BatchResponseInterface, SerializableInterface
+class BatchConversionResponse implements BatchResponseInterface, SerializableInterface
 {
     /**
      * @var ResponseProblemInterface[]
@@ -27,14 +27,14 @@ class BatchConvertDocumentResponse implements BatchResponseInterface, Serializab
     public function __construct()
     {
         $this->problems = [];
-        $this->result = new DocumentConvertCollection();
+        $this->result = new ConvertedCollection();
     }
 
     public static function rules()
     {
         return [
             'problems' => 'array',
-            'result' => DocumentConvertCollection::class,
+            'result' => ConvertedCollection::class,
         ];
     }
 

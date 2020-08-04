@@ -6,7 +6,6 @@ use Uploadcare\Interfaces\Conversion\ConversionRequest;
 use Uploadcare\Interfaces\Conversion\ConversionStatusInterface;
 use Uploadcare\Interfaces\Conversion\ConvertedItemInterface;
 use Uploadcare\Interfaces\Conversion\DocumentConversionRequestInterface;
-use Uploadcare\Interfaces\Conversion\VideoEncodingRequestInterface;
 use Uploadcare\Interfaces\File\CollectionInterface;
 use Uploadcare\Interfaces\File\FileInfoInterface;
 use Uploadcare\Interfaces\Response\BatchResponseInterface;
@@ -19,8 +18,8 @@ interface ConversionApiInterface
     /**
      * Request a document conversion.
      *
-     * @param FileInfoInterface|string                                                             $file
-     * @param ConversionRequest|DocumentConversionRequestInterface|VideoEncodingRequestInterface $request
+     * @param FileInfoInterface|string                             $file
+     * @param ConversionRequest|DocumentConversionRequestInterface $request
      *
      * @return object
      *
@@ -29,8 +28,8 @@ interface ConversionApiInterface
     public function convertDocument($file, ConversionRequest $request);
 
     /**
-     * @param CollectionInterface|array                                                            $collection
-     * @param ConversionRequest|DocumentConversionRequestInterface|VideoEncodingRequestInterface $request
+     * @param CollectionInterface|array                            $collection
+     * @param ConversionRequest|DocumentConversionRequestInterface $request
      *
      * @return BatchResponseInterface
      */
@@ -45,23 +44,24 @@ interface ConversionApiInterface
 
     /**
      * @param FileInfoInterface|string $file
-     * @param bool                     $throwError
+     * @param ConversionRequest        $request
      *
      * @return object
      *
      * @throws \RuntimeException
      */
-    public function convertVideo($file, $throwError = true);
+    public function convertVideo($file, ConversionRequest $request);
 
     /**
      * @param CollectionInterface|array $collection
+     * @param ConversionRequest         $request
      *
      * @return BatchResponseInterface
      */
-    public function batchConvertVideo($collection);
+    public function batchConvertVideo($collection, ConversionRequest $request);
 
     /**
-     * @param $id
+     * @param int|ConvertedItemInterface $id
      *
      * @return mixed
      */
