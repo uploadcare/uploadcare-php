@@ -6,7 +6,7 @@ use Uploadcare\Interfaces\Conversion\ConversionRequest;
 use Uploadcare\Interfaces\Conversion\ConversionStatusInterface;
 use Uploadcare\Interfaces\Conversion\ConvertedItemInterface;
 use Uploadcare\Interfaces\Conversion\DocumentConversionRequestInterface;
-use Uploadcare\Interfaces\Conversion\VideoConversionRequestInterface;
+use Uploadcare\Interfaces\Conversion\VideoEncodingRequestInterface;
 use Uploadcare\Interfaces\File\CollectionInterface;
 use Uploadcare\Interfaces\File\FileInfoInterface;
 use Uploadcare\Interfaces\Response\BatchResponseInterface;
@@ -20,7 +20,7 @@ interface ConversionApiInterface
      * Request a document conversion.
      *
      * @param FileInfoInterface|string                                                             $file
-     * @param ConversionRequest|DocumentConversionRequestInterface|VideoConversionRequestInterface $request
+     * @param ConversionRequest|DocumentConversionRequestInterface|VideoEncodingRequestInterface $request
      *
      * @return object
      *
@@ -30,7 +30,7 @@ interface ConversionApiInterface
 
     /**
      * @param CollectionInterface|array                                                            $collection
-     * @param ConversionRequest|DocumentConversionRequestInterface|VideoConversionRequestInterface $request
+     * @param ConversionRequest|DocumentConversionRequestInterface|VideoEncodingRequestInterface $request
      *
      * @return BatchResponseInterface
      */
