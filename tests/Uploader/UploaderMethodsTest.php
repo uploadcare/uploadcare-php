@@ -68,6 +68,9 @@ class UploaderMethodsTest extends TestCase
         self::assertInstanceOf(FileInfoInterface::class, $uploader->fromPath($path));
     }
 
+    /**
+     * @group local-only
+     */
     public function testFromUrlMethod()
     {
         $body = ['file' => \uuid_create()];

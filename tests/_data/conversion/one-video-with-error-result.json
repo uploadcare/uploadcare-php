@@ -1,0 +1,15 @@
+{
+  "problems": [
+    {
+      "13cd56e2-f6d7-4c66-ab1b-ffd13cd6646d": "Bad path \"13cd56e2-f6d7-4c66-ab1b-ffd13cd6646d\". Use :uuid/video/"
+    }
+  ],
+  "result": [
+    {
+      "original_source": "d52d7136-a2e5-4338-9f45-affbf83b857d/video/-/format/ogg/-/quality/best/",
+      "token": 445630631,
+      "thumbnails_group_uuid": "575ed4e8-f4e8-4c14-a58b-1527b6d9ee46~1",
+      "uuid": "d52d7136-a2e5-4338-9f45-affbf83b857d"
+    }
+  ]
+}

@@ -10,18 +10,22 @@ use PHPUnit\Framework\TestCase;
 use Tests\DataFile;
 use Uploadcare\Apis\ConversionApi;
 use Uploadcare\Configuration;
+use Uploadcare\Conversion\ConvertedCollection;
 use Uploadcare\Conversion\ConvertedItem;
 use Uploadcare\Conversion\DocumentConversionRequest;
-use Uploadcare\Conversion\DocumentConvertCollection;
+use Uploadcare\Conversion\VideoEncodingRequest;
+use Uploadcare\Exception\ConversionException;
 use Uploadcare\Exception\InvalidArgumentException;
 use Uploadcare\File\FileCollection;
 use Uploadcare\Interfaces\Conversion\ConversionRequest;
 use Uploadcare\Interfaces\Conversion\ConversionStatusInterface;
+use Uploadcare\Interfaces\Conversion\ConvertedItemInterface;
 use Uploadcare\Interfaces\Conversion\DocumentConversionRequestInterface;
 use Uploadcare\Interfaces\Conversion\StatusResultInterface;
 use Uploadcare\Interfaces\File\FileInfoInterface;
 use Uploadcare\Interfaces\Response\BatchResponseInterface;
 use Uploadcare\Interfaces\Response\ResponseProblemInterface;
+use Uploadcare\Response\BatchConversionResponse;
 use Uploadcare\Security\Signature;
 use Uploadcare\Serializer\SerializerFactory;
 
@@ -103,7 +107,7 @@ class ConversionApiMethodsTest extends TestCase
 
         $result = $api->batchConvertDocuments($files, $request);
         self::assertInstanceOf(BatchResponseInterface::class, $result);
-        self::assertInstanceOf(DocumentConvertCollection::class, $result->getResult());
+        self::assertInstanceOf(ConvertedCollection::class, $result->getResult());
         self::assertNotEmpty($result->getProblems());
         self::assertInstanceOf(ResponseProblemInterface::class, $result->getProblems()[0]);
     }
@@ -123,5 +127,117 @@ class ConversionApiMethodsTest extends TestCase
         self::assertInstanceOf(StatusResultInterface::class, $result->getResult());
         self::assertNotEmpty($result->getResult()->getUuid());
         self::assertEmpty($result->getResult()->getThumbnailsGroupUuid());
+    }
+
+    public function testVideoConversionStatusResult()
+    {
+        $api = $this->fakeApi([
+            new Response(200, [], DataFile::contents('conversion/video-conversion-status.json')),
+        ]);
+        $item = $this->createMock(ConvertedItem::class);
+        $item->method('getToken')->willReturn(\random_int(65535, 1065535));
+
+        $result = $api->videoJobStatus($item);
+        self::assertEmpty($result->getError());
+        self::assertNotEmpty($result->getStatus());
+        self::assertInstanceOf(StatusResultInterface::class, $result->getResult());
+        self::assertNotEmpty($result->getResult()->getThumbnailsGroupUuid());
+    }
+
+    public function testVideoConversionStatusError()
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $api = $this->fakeApi();
+        $item = 'not-an-int';
+        $api->videoJobStatus($item);
+
+        $this->expectExceptionMessageRegExp('Conversion result ID must be a number');
+    }
+
+    public function testConvertVideo()
+    {
+        $api = $this->fakeApi([
+            new Response(200, [], DataFile::contents('conversion/one-video-no-error-result.json')),
+        ]);
+        $request = new VideoEncodingRequest();
+        $result = $api->convertVideo(\uuid_create(), $request);
+
+        self::assertInstanceOf(ConvertedItemInterface::class, $result);
+        self::assertNotEmpty($result->getUuid());
+        self::assertNotEmpty($result->getThumbnailsGroupUuid());
+    }
+
+    public function testErrorDuringVideoConversion()
+    {
+        $api = $this->fakeApi([
+            new Response(200, [], DataFile::contents('conversion/one-video-with-error-result.json')),
+        ]);
+        $request = new VideoEncodingRequest();
+        $result = $api->convertVideo(\uuid_create(), $request);
+
+        self::assertInstanceOf(ResponseProblemInterface::class, $result);
+        self::assertNotEmpty($result->getReason());
+    }
+
+    public function testErrorAndThrowExceptionInVideoConvert()
+    {
+        $this->expectException(ConversionException::class);
+        $api = $this->fakeApi([
+            new Response(200, [], DataFile::contents('conversion/one-video-with-error-result.json')),
+        ]);
+        $request = (new VideoEncodingRequest())->setThrowError(true);
+        $api->convertVideo(\uuid_create(), $request);
+    }
+
+    public function testWrongTypeInVideoEncodingRequest()
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $api = $this->fakeApi();
+        $file = $this->createMock(FileInfoInterface::class);
+        $request = $this->createMock(ConversionRequest::class);
+        $api->convertVideo($file, $request);
+    }
+
+    public function testWrongFileInVideoConversionRequest()
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $api = $this->fakeApi();
+        $request = $this->createMock(ConversionRequest::class);
+        $api->convertVideo('not-an-uuid', $request);
+    }
+
+    public function testBatchConvertVideo()
+    {
+        $api = $this->fakeApi([
+            new Response(200, [], DataFile::contents('conversion/batch-video-conversion-result.json')),
+        ]);
+        $request = new VideoEncodingRequest();
+        $file = $this->createMock(FileInfoInterface::class);
+        $file->method('getUuid')->willReturn(\uuid_create());
+        $collection = new FileCollection([$file]);
+        $result = $api->batchConvertVideo($collection, $request);
+
+        self::assertInstanceOf(BatchConversionResponse::class, $result);
+        self::assertNotEmpty($result->getResult());
+        self::assertNotEmpty($result->getProblems());
+        self::assertNotEmpty($result->getResult());
+    }
+
+    public function testWrongRequestInBatchVideoConversionResponse()
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $api = $this->fakeApi();
+        $request = $this->createMock(ConversionRequest::class);
+        $api->batchConvertVideo([\uuid_create()], $request);
+    }
+
+    public function testWrongFileInBatchVideoConversionResponse()
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $api = $this->fakeApi();
+        $request = new VideoEncodingRequest();
+        $api->batchConvertVideo(['not-valid-uuid'], $request);
+        $this->expectExceptionMessageRegExp('Collection has no valid files or uuid\'s');
     }
 }

@@ -7,7 +7,7 @@ use Uploadcare\File\AbstractCollection;
 /**
  * Collection for conversion requests.
  */
-class DocumentConvertCollection extends AbstractCollection
+class ConvertedCollection extends AbstractCollection
 {
     /**
      * @var array<array-key, \Uploadcare\Interfaces\Conversion\ConvertedItemInterface>
