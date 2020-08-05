@@ -21,6 +21,7 @@ use Uploadcare\Response\ResponseProblem;
 
 /**
  * Conversion Api.
+ *
  * @see https://uploadcare.com/api-refs/rest-api/v0.6.0/#tag/Conversion
  */
 class ConversionApi extends AbstractApi implements ConversionApiInterface
@@ -29,6 +30,7 @@ class ConversionApi extends AbstractApi implements ConversionApiInterface
      * @param int|ConvertedItemInterface $id
      *
      * @return ConversionStatusInterface
+     *
      * @see https://uploadcare.com/api-refs/rest-api/v0.6.0/#tag/Conversion/paths/~1convert~1document~1status~1{token}~1/get
      */
     public function documentJobStatus($id)
@@ -54,6 +56,7 @@ class ConversionApi extends AbstractApi implements ConversionApiInterface
      * @return ConvertedItemInterface|ResponseProblemInterface
      *
      * @throws \RuntimeException|InvalidArgumentException
+     *
      * @see https://uploadcare.com/api-refs/rest-api/v0.6.0/#operation/documentConvert
      */
     public function convertDocument($file, ConversionRequest $request)
@@ -111,7 +114,9 @@ class ConversionApi extends AbstractApi implements ConversionApiInterface
     /**
      * @param FileInfoInterface|string
      * @param ConversionRequest|VideoEncodingRequestInterface $request
+     *
      * @return ConversionResult|ResponseProblemInterface
+     *
      * @see https://uploadcare.com/api-refs/rest-api/v0.6.0/#operation/videoConvert
      */
     public function convertVideo($file, ConversionRequest $request)
@@ -194,6 +199,7 @@ class ConversionApi extends AbstractApi implements ConversionApiInterface
 
     /**
      * @inheritDoc
+     *
      * @see https://uploadcare.com/api-refs/rest-api/v0.6.0/#operation/videoConvertStatus
      */
     public function videoJobStatus($id)

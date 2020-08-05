@@ -240,5 +240,4 @@ class ConversionApiMethodsTest extends TestCase
         $api->batchConvertVideo(['not-valid-uuid'], $request);
         $this->expectExceptionMessageRegExp('Collection has no valid files or uuid\'s');
     }
-
 }

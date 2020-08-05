@@ -70,8 +70,9 @@ class BatchConversionResponse implements BatchResponseInterface, SerializableInt
                 }
             }
 
-            if ($item instanceof ResponseProblemInterface)
+            if ($item instanceof ResponseProblemInterface) {
                 $this->addProblem($item);
+            }
         }
     }
 

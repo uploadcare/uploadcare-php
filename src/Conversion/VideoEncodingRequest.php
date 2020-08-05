@@ -94,6 +94,7 @@ class VideoEncodingRequest implements VideoEncodingRequestInterface
 
     /**
      * @param bool $throwError
+     *
      * @return $this
      */
     public function setThrowError($throwError)
@@ -113,6 +114,7 @@ class VideoEncodingRequest implements VideoEncodingRequestInterface
 
     /**
      * @param bool $store
+     *
      * @return $this
      */
     public function setStore($store)
