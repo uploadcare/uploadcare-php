@@ -68,7 +68,7 @@ final class VideoUrlBuilder
      */
     protected function formatPart()
     {
-        return \sprintf('/-/format/%s', $this->request->getFormat());
+        return \sprintf('/-/format/%s', $this->request->getTargetFormat());
     }
 
     /**

@@ -75,6 +75,54 @@ class VideoEncodingRequest implements VideoEncodingRequestInterface
     private $thumbs = 1;
 
     /**
+     * @var bool
+     */
+    private $throwError = false;
+
+    /**
+     * @var bool
+     */
+    private $store = true;
+
+    /**
+     * @return bool
+     */
+    public function throwError()
+    {
+        return $this->throwError;
+    }
+
+    /**
+     * @param bool $throwError
+     * @return $this
+     */
+    public function setThrowError($throwError)
+    {
+        $this->throwError = (bool) $throwError;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function store()
+    {
+        return $this->store;
+    }
+
+    /**
+     * @param bool $store
+     * @return $this
+     */
+    public function setStore($store)
+    {
+        $this->store = (bool) $store;
+
+        return $this;
+    }
+
+    /**
      * @return int|null
      */
     public function getHorizontalSize()
@@ -181,7 +229,7 @@ class VideoEncodingRequest implements VideoEncodingRequestInterface
     /**
      * @return string
      */
-    public function getFormat()
+    public function getTargetFormat()
     {
         return $this->format;
     }
@@ -191,7 +239,7 @@ class VideoEncodingRequest implements VideoEncodingRequestInterface
      *
      * @return VideoEncodingRequest
      */
-    public function setFormat($format)
+    public function setTargetFormat($format)
     {
         if (!\array_key_exists($format, \array_flip(self::$formats))) {
             throw new InvalidArgumentException(\sprintf('Format \'%s\' is invalid. Use one of %s', $format, \implode(', ', self::$formats)));

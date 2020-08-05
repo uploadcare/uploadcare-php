@@ -139,8 +139,8 @@ class VideoEncodingRequestTest extends TestCase
         $formats->setAccessible(true);
         $format = \array_rand(\array_flip($formats->getValue($request)), 1);
 
-        self::assertInstanceOf(VideoEncodingRequestInterface::class, $request->setFormat($format));
-        self::assertEquals($format, $request->getFormat());
+        self::assertInstanceOf(VideoEncodingRequestInterface::class, $request->setTargetFormat($format));
+        self::assertEquals($format, $request->getTargetFormat());
     }
 
     public function provideWrongFormat()
@@ -163,7 +163,7 @@ class VideoEncodingRequestTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $request = new VideoEncodingRequest();
-        $request->setFormat($format);
+        $request->setTargetFormat($format);
         $this->expectExceptionMessageRegExp('is invalid. Use one of');
     }
 

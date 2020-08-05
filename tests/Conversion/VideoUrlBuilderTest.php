@@ -44,19 +44,19 @@ class VideoUrlBuilderTest extends TestCase
             [
                 '/video/-/format/ogg/-/thumbs~1/',
                 (new VideoEncodingRequest())
-                    ->setFormat('ogg'),
+                    ->setTargetFormat('ogg'),
             ],
             [
                 '/video/-/quality/normal/-/format/ogg/-/thumbs~1/',
                 (new VideoEncodingRequest())
                     ->setQuality('normal')
-                    ->setFormat('ogg'),
+                    ->setTargetFormat('ogg'),
             ],
             [
                 '/video/-/format/mp4/-/cut/80:00.0/end/-/thumbs~1/',
                 (new VideoEncodingRequest())
                     ->setStartTime('80:00.0')
-                    ->setFormat('mp4')
+                    ->setTargetFormat('mp4')
                     ->setThumbs(1),
             ],
             [

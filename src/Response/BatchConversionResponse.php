@@ -56,10 +56,22 @@ class BatchConversionResponse implements BatchResponseInterface, SerializableInt
     public function setProblems(array $problems)
     {
         foreach ($problems as $k => $problem) {
-            $item = (new ResponseProblem())
-                ->setId($k)
-                ->setReason($problem);
-            $this->addProblem($item);
+            $item = null;
+            if (\is_string($problem)) {
+                $item = (new ResponseProblem())
+                    ->setId($k)
+                    ->setReason($problem);
+            }
+            if (\is_array($problem)) {
+                foreach ($problem as $sKey => $sValue) {
+                    $item = (new ResponseProblem())
+                        ->setId($sKey)
+                        ->setReason($sValue);
+                }
+            }
+
+            if ($item instanceof ResponseProblemInterface)
+                $this->addProblem($item);
         }
     }
 

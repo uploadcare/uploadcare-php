@@ -5,7 +5,7 @@ namespace Uploadcare\Interfaces\Conversion;
 /**
  * Request for video encoding.
  */
-interface VideoEncodingRequestInterface
+interface VideoEncodingRequestInterface extends ConversionRequest
 {
     /**
      * @return int|null
@@ -26,11 +26,6 @@ interface VideoEncodingRequestInterface
      * @return string|null
      */
     public function getQuality();
-
-    /**
-     * @return string
-     */
-    public function getFormat();
 
     /**
      * @return string|null
