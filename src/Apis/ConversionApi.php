@@ -112,7 +112,7 @@ class ConversionApi extends AbstractApi implements ConversionApiInterface
     }
 
     /**
-     * @param FileInfoInterface|string
+     * @param FileInfoInterface|string                        $file
      * @param ConversionRequest|VideoEncodingRequestInterface $request
      *
      * @return ConversionResult|ResponseProblemInterface

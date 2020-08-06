@@ -8,6 +8,7 @@ use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\TestCase;
 use Tests\DataFile;
+use Uploadcare\Api;
 use Uploadcare\Apis\ConversionApi;
 use Uploadcare\Configuration;
 use Uploadcare\Conversion\ConvertedCollection;
@@ -17,6 +18,7 @@ use Uploadcare\Conversion\VideoEncodingRequest;
 use Uploadcare\Exception\ConversionException;
 use Uploadcare\Exception\InvalidArgumentException;
 use Uploadcare\File\FileCollection;
+use Uploadcare\Interfaces\Api\ConversionApiInterface;
 use Uploadcare\Interfaces\Conversion\ConversionRequest;
 use Uploadcare\Interfaces\Conversion\ConversionStatusInterface;
 use Uploadcare\Interfaces\Conversion\ConvertedItemInterface;
@@ -239,5 +241,11 @@ class ConversionApiMethodsTest extends TestCase
         $request = new VideoEncodingRequest();
         $api->batchConvertVideo(['not-valid-uuid'], $request);
         $this->expectExceptionMessageRegExp('Collection has no valid files or uuid\'s');
+    }
+
+    public function testMainApiMethod()
+    {
+        $api = new Api(Configuration::create('public', 'private'));
+        self::assertInstanceOf(ConversionApiInterface::class, $api->conversion());
     }
 }

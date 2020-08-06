@@ -37,7 +37,7 @@ interface WebhookApiInterface
     /**
      * @param string $targetUrl
      *
-     * @return void
+     * @return bool
      */
     public function deleteWebhook($targetUrl);
 }
