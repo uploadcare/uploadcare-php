@@ -94,8 +94,10 @@ class WebhookApi extends AbstractApi implements WebhookApiInterface
      */
     public function deleteWebhook($targetUrl)
     {
-        $this->request('DELETE', 'webhooks/unsubscribe/', [
+        $response = $this->request('DELETE', 'webhooks/unsubscribe/', [
             'form_params' => ['target_url' => $targetUrl],
         ]);
+
+        return $response->getStatusCode() === 204;
     }
 }

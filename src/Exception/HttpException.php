@@ -2,10 +2,6 @@
 
 namespace Uploadcare\Exception;
 
-use GuzzleHttp\Exception\ClientException;
-use GuzzleHttp\Exception\ConnectException;
-use GuzzleHttp\Exception\ServerException;
-use GuzzleHttp\Exception\TooManyRedirectsException;
 use Psr\Http\Message\RequestInterface;
 
 class HttpException extends \RuntimeException
@@ -31,17 +27,10 @@ class HttpException extends \RuntimeException
         if (!empty($message)) {
             $messages[] = $message;
         }
-        switch (true) {
-            case $exception instanceof TooManyRedirectsException:
-            case $exception instanceof ClientException:
-            case $exception instanceof ConnectException:
-                $messages[] = $this->messageString($exception->getRequest(), $exception->getMessage());
-                break;
-            case $exception instanceof ServerException:
-                $messages[] = $this->messageString($exception->getRequest(), 'server error');
-                break;
-            default:
-                break;
+        $messages[] = $exception->getMessage();
+
+        if (\method_exists($exception, 'getRequest') && $exception->getRequest() instanceof RequestInterface) {
+            $messages[] = $this->messageString($exception->getRequest(), $exception->getMessage());
         }
 
         return \implode("\n", $messages);
@@ -50,7 +39,7 @@ class HttpException extends \RuntimeException
     private function messageString(RequestInterface $request, $message = '')
     {
         if (empty($message)) {
-            $message = 'fail';
+            $message = 'Fail';
         }
 
         return \sprintf('%s: %s', (string) $request->getUri(), $message);

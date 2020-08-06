@@ -74,4 +74,19 @@ class DecoratedFileCollectionTest extends TestCase
         self::assertInstanceOf(BatchFileResponse::class, $deleted);
         self::assertInstanceOf(File\File::class, $deleted->getResult()->first());
     }
+
+    public function testCollectionCreateFrom()
+    {
+        $file = SerializerFactory::create()->deserialize(DataFile::contents('file-info.json'), File\File::class);
+        $collection = new FileCollection(new File\FileCollection([$file]), $this->fakeApi());
+        $createFrom = (new \ReflectionObject($collection))->getMethod('createFrom');
+        $createFrom->setAccessible(true);
+
+        self::assertEquals($collection, $createFrom->invokeArgs($collection, [[$file]]));
+    }
+
+    public function testElementClass()
+    {
+        self::assertEquals(File::class, FileCollection::elementClass());
+    }
 }

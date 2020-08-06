@@ -25,11 +25,11 @@ class Webhook implements WebhookInterface
     }
 
     /**
-     * @return void
+     * @return bool
      */
     public function delete()
     {
-        $this->api->deleteWebhook($this->getTargetUrl());
+        return $this->api->deleteWebhook($this->getTargetUrl());
     }
 
     /**

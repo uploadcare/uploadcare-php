@@ -7,6 +7,9 @@ use Uploadcare\Interfaces\Api\WebhookApiInterface;
 use Uploadcare\Interfaces\File\CollectionInterface;
 use Uploadcare\Interfaces\Response\WebhookInterface;
 
+/**
+ * Collection of webhooks.
+ */
 class WebhookCollection extends AbstractCollection
 {
     /**
@@ -35,6 +38,11 @@ class WebhookCollection extends AbstractCollection
         }
     }
 
+    /**
+     * @param array $elements
+     *
+     * @return $this|AbstractCollection
+     */
     protected function createFrom(array $elements)
     {
         return new static(new Response\WebhookCollection($elements), $this->api);

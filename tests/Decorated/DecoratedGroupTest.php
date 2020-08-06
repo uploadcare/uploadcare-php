@@ -53,7 +53,11 @@ class DecoratedGroupTest extends TestCase
             new Response(200),
             new Response(200, [], DataFile::contents('group/group-info-response.json')),
         ]);
-        self::assertInstanceOf(Group::class, $api->storeGroup(\uuid_create()));
+        $group = SerializerFactory::create()->deserialize(DataFile::contents('group/group-info-response.json'), \Uploadcare\File\Group::class);
+        /** @noinspection PhpParamsInspection */
+        $decorated = new Group($group, $api);
+
+        self::assertInstanceOf(Group::class, $decorated->store());
     }
 
     public function provideMethods()

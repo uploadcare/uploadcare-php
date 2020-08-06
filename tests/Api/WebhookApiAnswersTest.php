@@ -12,6 +12,8 @@ use Uploadcare\Apis\WebhookApi;
 use Uploadcare\Configuration;
 use Uploadcare\Interfaces\File\CollectionInterface;
 use Uploadcare\Interfaces\Response\WebhookInterface;
+use Uploadcare\Response\WebhookCollection;
+use Uploadcare\Response\WebhookResponse;
 use Uploadcare\Security\Signature;
 use Uploadcare\Serializer\SerializerFactory;
 
@@ -57,5 +59,20 @@ class WebhookApiAnswersTest extends TestCase
         ]);
         $result = $api->updateWebhook(14, ['target_url' => 'https://new.localhost']);
         self::assertInstanceOf(WebhookInterface::class, $result);
+    }
+
+    public function testGroupCreateFrom()
+    {
+        $wh = $this->createMock(WebhookInterface::class);
+        $collection = new WebhookCollection([$wh]);
+        $createFrom = (new \ReflectionObject($collection))->getMethod('createFrom');
+        $createFrom->setAccessible(true);
+
+        self::assertEquals($collection, $createFrom->invokeArgs($collection, [[$wh]]));
+    }
+
+    public function testGroupElementClass()
+    {
+        self::assertEquals(WebhookResponse::class, WebhookCollection::elementClass());
     }
 }
