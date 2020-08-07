@@ -4,6 +4,7 @@ namespace Uploadcare;
 
 use GuzzleHttp\ClientInterface;
 use Uploadcare\Client\ClientFactory;
+use Uploadcare\Interfaces\AuthUrl\AuthUrlConfigInterface;
 use Uploadcare\Interfaces\ClientFactoryInterface;
 use Uploadcare\Interfaces\ConfigurationInterface;
 use Uploadcare\Interfaces\Serializer\SerializerFactoryInterface;
@@ -43,6 +44,11 @@ class Configuration implements ConfigurationInterface
     private $serializer;
 
     /**
+     * @var AuthUrlConfigInterface|null
+     */
+    private $authUrlConfig;
+
+    /**
      * @param string                          $publicKey         Uploadcare API public key
      * @param string                          $privateKey        Uploadcare API private key
      * @param array                           $clientOptions     Parameters for Http client (proxy, special headers, etc.)
@@ -74,6 +80,18 @@ class Configuration implements ConfigurationInterface
         $this->secureSignature = $secureSignature;
         $this->client = $client;
         $this->serializer = $serializer;
+    }
+
+    /**
+     * @param AuthUrlConfigInterface $config
+     *
+     * @return $this
+     */
+    public function setAuthUrlConfig(AuthUrlConfigInterface $config)
+    {
+        $this->authUrlConfig = $config;
+
+        return $this;
     }
 
     /**
@@ -150,5 +168,13 @@ class Configuration implements ConfigurationInterface
             'Authorization' => \sprintf('Uploadcare %s:%s', $this->getPublicKey(), $this->getSecureSignature()->getAuthHeaderString($method, $uri, $data, $contentType, $date)),
             'Content-Type' => $contentType,
         ];
+    }
+
+    /**
+     * @return AuthUrlConfigInterface|null
+     */
+    public function getAuthUrlConfig()
+    {
+        return $this->authUrlConfig;
     }
 }

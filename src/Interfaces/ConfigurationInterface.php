@@ -3,6 +3,7 @@
 namespace Uploadcare\Interfaces;
 
 use GuzzleHttp\ClientInterface;
+use Uploadcare\Interfaces\AuthUrl\AuthUrlConfigInterface;
 use Uploadcare\Interfaces\Serializer\SerializerInterface;
 
 /**
@@ -47,4 +48,9 @@ interface ConfigurationInterface
      * @return array
      */
     public function getAuthHeaders($method, $uri, $data, $contentType = 'application/json', $date = null);
+
+    /**
+     * @return AuthUrlConfigInterface|null
+     */
+    public function getAuthUrlConfig();
 }
