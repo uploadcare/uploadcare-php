@@ -109,7 +109,7 @@ First of, files can be uploaded **from URL**. The following returns an instance 
 
 ```php
 $url = 'https://httpbin.org/image/jpeg';
-$result = $uploader->fromUrl($url, 'image/jpeg'); // In success $result will contains uploaded file uuid
+$result = $uploader->fromUrl($url, 'image/jpeg'); // In success $result will contains instance of Uploadcare\File class (see below)
 
 echo \sprintf("File from url %s uploaded successfully \n", $url);
 echo \sprintf("Uploaded file ID: %s\n", $result);
@@ -119,7 +119,7 @@ Another way of uploading files is **from a path**,
 
 ```php
 $path = __DIR__ . '/squirrel.jpg';
-$result = $uploader->fromPath($path, 'image/jpeg');  // In success $result will contains uploaded file uuid
+$result = $uploader->fromPath($path, 'image/jpeg');  // In success $result will contains uploaded Uploadcare\File class
 ```
 
 This will also do when using file pointers,
@@ -140,6 +140,17 @@ $result = $uploader->fromContent(\file_get_contents($path), 'image/jpeg');
 
 If you have a large (more than 100Mb / 10485760 bytes) file, the uploader will automatically process it with [multipart upload](https://uploadcare.com/api-refs/upload-api/#operation/multipartFileUploadStart). Note that it will take more than usual time, and we are not recommend do this from web-environment.
 
+#### `Uploadcare\File` class
+
+This class implements `Uploadcare\Interfaces\File\FileInfoInterface` and has additional (besides the interface) methods:
+
+- `store()` — store this file in storage. Returns `Uploadcare\File` object;
+- `delete()` — delete this file. Returns `Uploadcare\File` object;
+- `copyToLocalStorage($store = true)` — copy this file to local storage;
+- `copyToRemoteStorage($target, $makePublic = true, $pattern = null)` — copy this file to remote storage;
+
+All those operations are accessible through File API, but through `Uploadcare\File` object too.
+
 ## File operations
 
 For any type of file operation you should create the `Uploadcare\Api` instance with configuration object and call the `file()` method:
@@ -151,7 +162,7 @@ $fileApi = (new \Uploadcare\Api($config))->file();
 
 After that, you can access to file operation methods
 
-- `listFiles($limit = 100, $orderBy = 'datetime_uploaded', $from = null, $addFields = [], $stored = null, $removed = false)` — list of four files. Returns `Uploadcare\Interfaces\Response\FileListResponseInterface`. Each element of collection is a `Uploadcare\Interfaces\File\FileInfoInterface`. Arguments:
+- `listFiles($limit = 100, $orderBy = 'datetime_uploaded', $from = null, $addFields = [], $stored = null, $removed = false)` — list of four files. Returns `Uploadcare\FileCollection` instance. Each element of collection is a `Uploadcare\File`. Arguments:
     - int             `$limit`     A preferred amount of files in a list for a single response. Defaults to 100, while the maximum is 1000.
     - string          `$orderBy`   specifies the way to sort files in a returned list
     - string|int|null `$from`      A starting point for filtering files. The value depends on your $orderBy parameter value.
@@ -167,7 +178,7 @@ After that, you can access to file operation methods
       $files = $page->getResults(); 
     }
     ```
-- `storeFile(string $id)` — Store a single file by UUID. Returns `FileInfoInterface`.
+- `storeFile(string $id)` — Store a single file by UUID. Returns the `Uploadcare\File` (`FileInfoInterface`).
     Takes file UUID as argument.
 - `deleteFile(string $id)` — Remove individual files. Returns file info.
     Takes file UUID as argument.
@@ -199,8 +210,64 @@ After that, you can access to group operation methods
 
 - `createGroup($files)` — Creates file group. You can pass the array of ID's or `Uploadcare\File\FileCollection` as argument. Returns `Uploadcare\File\Group` object.
 - `listGroups($limit, $asc = true)` — Get a paginated list of groups. Default limit is 100, default order is order by creation datetime. You can reverse order with `$asc = false`. Returns `Uploadcare\Response\GroupListResponse`
-- `groupInfo($id)` — Gets a file group info by UUID. Returns `Uploadcare\File\Group` object.
-- `storeGroup($id)` — Mark all files in a group as stored. Returns `Uploadcare\File\Group` object.
+- `groupInfo($id)` — Gets a file group info by UUID. Returns `Uploadcare\Group` object.
+- `storeGroup($id)` — Mark all files in a group as stored. Returns `Uploadcare\Group` object.
+
+### Project operations
+
+As usual, Project API accessible by main API object
+
+```php
+$config = \Uploadcare\Configuration::create($_ENV['UPLOADCARE_PUBLIC_KEY'], $_ENV['UPLOADCARE_PRIVATE_KEY']);
+$projectApi = (new \Uploadcare\Api($config))->project();
+```
+
+You can get the project information by call `getProjectInfo` method:
+
+```php
+$projectInfo = $projectApi->getProjectInfo();
+```
+
+Now, `$projectInfo` variable contains `Uploadcare\Interfaces\Response\ProjectInfoInterface` implementation with next methods:
+
+- `getCollaborators()` — array with collaborators information. Keys are Collaborator emails and values are Collaborator names;
+- `getName()` — project name as string;
+- `getPubKey()` — project public key as string;
+- `isAutostoreEnabled()` — is project files stores automatically;
+
+### Webhooks operations
+
+Call the webhook API:
+
+```php
+$config = \Uploadcare\Configuration::create($_ENV['UPLOADCARE_PUBLIC_KEY'], $_ENV['UPLOADCARE_PRIVATE_KEY']);
+$webhookApi = (new \Uploadcare\Api($config))->webhook();
+```
+
+And methods are:
+
+- `listWebhooks()` — returns list of project webhooks as instance of `Uploadcare\WebhookCollection` class. Each element of this collection is instance of `Uploadcare\Webhook` class (see below);
+- `createWebhook($targetUrl, $isActive = true, $event = 'file.uploaded')` — creates new webhook for the event. Returns `Uploadcare\Webhook` class.
+- `updateWebhook($id, array $parameters)` — updates an existing webhook with parameters. Parameters can be:
+    - `target_url` — Target callback url;
+    - `event` — only `file.uploaded` event are valid and supported right now;
+    - `is_active` — webhook activity status;
+- `deleteWebhook` — deletes webhook by url;
+
+#### `Uploadcare\Webhook` class
+
+This class implements `Uploadcare\Interfaces\Response\WebhookInterface` and has additional (besides the interface) methods:
+
+- `delete()` — deletes webhook. Calls `Uploadcare\Interfaces\Api\WebhookApiInterface::deleteWebhook()` under the hood;
+- `updateUrl($url)` — updates webhook with new URL (`WebhookApiInterface::updateWebhook()`);
+- `activate()` — sets webhook active (`WebhookApiInterface::updateWebhook()`);
+- `deactivate()` — sets webhook not active (`WebhookApiInterface::updateWebhook()`);
+
+### Conversion operations
+
+You can convert documents, images and video files with Conversion API. 
+
+--------------------------------------------------------------------
 
 ### Tests
 
