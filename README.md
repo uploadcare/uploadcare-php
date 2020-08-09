@@ -85,7 +85,7 @@ As you can see, the factory method is more convenient for standard usage.
 
 ## Usage
 
-You can find all usage examples in `example-project` directory.
+You can find full usage example in [Uploadcare example project](https://github.com/uploadcare/uploadcare-php-example)
 
 For all types of actions, you should create the Api object first:
 
