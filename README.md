@@ -162,7 +162,7 @@ $fileApi = (new \Uploadcare\Api($config))->file();
 
 After that, you can access to file operation methods
 
-- `listFiles($limit = 100, $orderBy = 'datetime_uploaded', $from = null, $addFields = [], $stored = null, $removed = false)` — list of four files. Returns `Uploadcare\FileCollection` instance. Each element of collection is a `Uploadcare\File`. Arguments:
+- `listFiles($limit = 100, $orderBy = 'datetime_uploaded', $from = null, $addFields = [], $stored = null, $removed = false)` — list of four files. Returns `Uploadcare\FileCollection` instance (see below). Each element of collection is a `Uploadcare\File`. Arguments:
     - int             `$limit`     A preferred amount of files in a list for a single response. Defaults to 100, while the maximum is 1000.
     - string          `$orderBy`   specifies the way to sort files in a returned list
     - string|int|null `$from`      A starting point for filtering files. The value depends on your $orderBy parameter value.
@@ -196,6 +196,13 @@ After that, you can access to file operation methods
     - `$pattern` — The parameter is used to specify file names Uploadcare passes to a custom storage. In case the parameter is omitted, we use pattern of your custom storage. Use any combination of allowed values.
     
 See [original API documentation](https://uploadcare.com/api-refs/rest-api/v0.6.0/#tag/File) for details.
+
+#### `Uploadcare\FileCollection` class
+
+This class implements `Uploadcare\Interfaces\File\CollectionInterface` and has additional (besides the interface) methods:
+
+- `store()` — sores all files in collection. Calls `FileApi::batchStoreFile()` under the hood;
+- `delete()` — deletes all files in collection.
 
 ## Group operations
 

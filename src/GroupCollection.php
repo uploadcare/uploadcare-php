@@ -23,6 +23,7 @@ class GroupCollection extends File\AbstractCollection
 
     public function __construct(CollectionInterface $inner, GroupApi $api)
     {
+        $this->elements = [];
         $this->inner = $inner;
         $this->api = $api;
         $this->decorateElements();

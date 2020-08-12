@@ -24,6 +24,7 @@ class WebhookCollection extends AbstractCollection
 
     public function __construct(CollectionInterface $inner, WebhookApiInterface $api)
     {
+        $this->elements = [];
         $this->inner = $inner;
         $this->api = $api;
         $this->decorateElements();
