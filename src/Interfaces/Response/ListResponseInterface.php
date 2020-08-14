@@ -46,7 +46,7 @@ interface ListResponseInterface
      *
      * @see FileInfoInterface
      *
-     * @return CollectionInterface|FileCollection[]
+     * @return CollectionInterface|FileCollection|FileInfoInterface[]
      * @psalm-return CollectionInterface
      */
     public function getResults();
