@@ -139,7 +139,7 @@ class FileApi extends AbstractApi implements FileApiInterface
      */
     public function batchStoreFile($ids)
     {
-        $response = $this->request('PUT', '/files/storage/', $this->convertCollection($ids));
+        $response = $this->request('PUT', '/files/storage/', ['body' => \json_encode($this->convertCollection($ids))]);
         $result = $this->configuration->getSerializer()
             ->deserialize($response->getBody()->getContents(), BatchFileResponse::class);
 
@@ -161,7 +161,7 @@ class FileApi extends AbstractApi implements FileApiInterface
      */
     public function batchDeleteFile($ids)
     {
-        $response = $this->request('DELETE', '/files/storage/', $this->convertCollection($ids));
+        $response = $this->request('DELETE', '/files/storage/', ['body' => \json_encode($this->convertCollection($ids))]);
         $result = $this->configuration->getSerializer()
             ->deserialize($response->getBody()->getContents(), BatchFileResponse::class);
 
