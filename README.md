@@ -14,6 +14,10 @@ Uploadcare PHP integration handles uploads by wrapping Upload and REST APIs.
 * [Usage](#usage)
   * [Uploading files](#uploading-files)
   * [File operations](#file-operations)
+  * [Group operations](#group-operations)
+  * [Project operations](#project-operations)
+  * [Webhooks](#webhooks-operations)
+  * [Conversion](#conversion-operations)
   * [Tests](#tests)
 * [Useful links](#useful-links)
 
