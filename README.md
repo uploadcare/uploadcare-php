@@ -186,10 +186,10 @@ After that, you can access to file operation methods
     Takes array of file UUID's as argument.
 - `batchStoreFile(array $ids)` — Used to store multiple files in one step. Supports up to 100 files per request. Takes array of file UUID's as argument.
 - `batchDeleteFile(array $ids)` — Used to delete multiple files in one step. Array of file UUID's as argument 
-- `copyToLocalStorage(string $source, bool $store)` — Used to copy original files or their modified versions to default storage. Arguments:
+- `copyToLocalStorage(string $source, bool $store)` — Used to copy original files, or their modified versions to default storage. Arguments:
     - `$source` — A CDN URL or just UUID of a file subjected to copy.
     - `$store` — Parameter only applies to the Uploadcare storage
-- `copyToRemoteStorage(string $source, string $target, bool $makePublic = true, string $pattern = '${default}')` — copy original files or their modified versions to a custom storage. Arguments:
+- `copyToRemoteStorage(string $source, string $target, bool $makePublic = true, string $pattern = '${default}')` — copy original files, or their modified versions to a custom storage. Arguments:
     - `$source` — CDN URL or just UUID of a file subjected to copy.
     - `$target` — Identifies a custom storage name related to your project. Implies you are copying a file to a specified custom storage. Keep in mind you can have multiple storages associated with a single S3 bucket.
     - `$makePublic` — `true` to make copied files available via public links, `false` to reverse the behavior.
@@ -197,12 +197,24 @@ After that, you can access to file operation methods
     
 See [original API documentation](https://uploadcare.com/api-refs/rest-api/v0.6.0/#tag/File) for details.
 
-#### `Uploadcare\FileCollection` class
+### `Uploadcare\FileCollection` class
 
 This class implements `Uploadcare\Interfaces\File\CollectionInterface` and has additional (besides the interface) methods:
 
 - `store()` — sores all files in collection. Calls `FileApi::batchStoreFile()` under the hood;
 - `delete()` — deletes all files in collection.
+
+Each file in collection is an object of `Uploadcare\File` class.
+
+### `Uploadcare\File` class
+
+This class implements `FileInfoInterface` and has additional methods for file operations:
+- `store()` — stores the current file;
+- `delete()` — deletes the current file;
+- `copyToLocalStorage($store = true)` — copies the current file to default storage;
+- `copyToRemoteStorage($target, $makePublic = true, $pattern = null)` — copies the current file to custom storage;
+
+As you can see, additional methods helps you to call API methods without direct API calls.
 
 ## Group operations
 
@@ -215,12 +227,18 @@ $groupApi = (new \Uploadcare\Api($config))->group();
 
 After that, you can access to group operation methods
 
-- `createGroup($files)` — Creates file group. You can pass the array of ID's or `Uploadcare\File\FileCollection` as argument. Returns `Uploadcare\File\Group` object.
+- `createGroup($files)` — Creates file group. You can pass the array of IDs or `Uploadcare\File\FileCollection` as argument. Returns `Uploadcare\File\Group` object.
 - `listGroups($limit, $asc = true)` — Get a paginated list of groups. Default limit is 100, default order is order by creation datetime. You can reverse order with `$asc = false`. Returns `Uploadcare\Response\GroupListResponse`
 - `groupInfo($id)` — Gets a file group info by UUID. Returns `Uploadcare\Group` object.
 - `storeGroup($id)` — Mark all files in a group as stored. Returns `Uploadcare\Group` object.
 
-### Project operations
+### `Uploadcare\Group` class
+
+This class implements `Uploadcare\Interfaces\GroupInterface` and has additional method `store()` — applies the store operation for the group. Calls `GroupApi::store group`;
+
+The `getFiles()` method of the `Uploadcare\Group` object returns [FileCollection](#uploadcarefilecollection-class).
+
+## Project operations
 
 As usual, Project API accessible by main API object
 
@@ -242,7 +260,7 @@ Now, `$projectInfo` variable contains `Uploadcare\Interfaces\Response\ProjectInf
 - `getPubKey()` — project public key as string;
 - `isAutostoreEnabled()` — is project files stores automatically;
 
-### Webhooks operations
+## Webhooks operations
 
 Call the webhook API:
 
@@ -270,13 +288,58 @@ This class implements `Uploadcare\Interfaces\Response\WebhookInterface` and has 
 - `activate()` — sets webhook active (`WebhookApiInterface::updateWebhook()`);
 - `deactivate()` — sets webhook not active (`WebhookApiInterface::updateWebhook()`);
 
-### Conversion operations
+## Conversion operations
 
 You can convert documents, images and video files with Conversion API. 
 
+### Documents and images conversion
+
+You should make object for conversion request:
+
+```php
+$request = new \Uploadcare\Conversion\DocumentConversionRequest('pdf');
+```
+
+Default arguments is:
+- `$targetFormat = 'pdf'` — target format
+- `$throwError = false` — if set to `true`, wrong request will throw exception, otherwise, return null;
+- `$store = true` — whether conversion result will store in default storage;
+- `$pageNumber = 1` — in case you convert multi-page (PDF, for example) document to image, this parameter defines the source document page to conversion;
+
+After that, you can covert your file:
+
+```php
+$config = \Uploadcare\Configuration::create($_ENV['UPLOADCARE_PUBLIC_KEY'], $_ENV['UPLOADCARE_PRIVATE_KEY']);
+$convertor = (new \Uploadcare\Api($config))->conversion();
+$result = $convertor->convertDocument($file, $request);
+```
+
+Result will contain one of two objects:
+- `ConvertedItemInterface` object with conversion result in case of successful operation, or
+- `ResponseProblemInterface` object in case of error (and `$throwError` in request sets to `false`).
+
+The `ConvertedItemInterface` will contains UUID of converted document and token with conversion job ID. You can request the conversion job status with this ID (or `ConvertedItemInterface` object itself):
+
+```php
+$status = $convertor->documentJobStatus($result); // or $result->getToken()
+```
+
+This status object will implement `ConversionStatusInterface` with methods:
+- `getStatus()` — status string. Pending, processing, finished, failed or canceled;
+- `getError()` — string in case of error or null;
+- `getResult()` — `StatusResultInterface` object.
+
+You can request conversion for several documents:
+
+```php
+$result = $convertor->batchConvertDocuments($files, $request);
+```
+
+`$files` can be the array / collection of file IDs or FileInfo objects and result will be the implementation of `BatchResponseInterface`.
+
 --------------------------------------------------------------------
 
-### Tests
+## Tests
 
 PHP 5.6+ tests can be found in the "tests" directory. All tests based on PHPUnit, so you must have it installed on your system to use those.
 
