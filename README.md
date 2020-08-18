@@ -337,6 +337,35 @@ $result = $convertor->batchConvertDocuments($files, $request);
 
 `$files` can be the array / collection of file IDs or FileInfo objects and result will be the implementation of `BatchResponseInterface`.
 
+### Video conversion
+
+Get the conversion API as in previous step and make `VideoEncodingRequest`
+
+```php
+$request = new \Uploadcare\Conversion\VideoEncodingRequest();
+```
+
+You can set various parameters for this request trough object setters:
+
+```php
+$request = (new \Uploadcare\Conversion\VideoEncodingRequest())
+    ->setHorizontalSize(1024)           // Sets the horizontal size for result.
+    ->setVerticalSize(768)              // Sets the vertical size of result.
+    ->setResizeMode('preserve_ratio')   // Sets the resize mode. Mode can be one of 'preserve_ratio', 'change_ratio', 'scale_crop', 'add_padding'
+    ->setQuality('normal')              // Sets result quality. Can be one of 'normal', 'better', 'best', 'lighter', 'lightest'
+    ->setTargetFormat('mp4')            // Sets the target format. Can be one of 'webm', 'ogg', 'mp4'. Default 'mp4'
+    ->setStartTime('0:0')               // Sets the start time. Time string must be an `HHH:MM:SS.sss` or `MM:SS.sss`
+    ->setEndTime('22:44')               // Sets the end time. String format like start time string
+    ->setThumbs(2)                      // Sets count of video thumbs. Default 1, max 50
+    ->setStore(true)                    // Tells store result at conversion ends. Default is true
+```
+
+If you not set any option to conversion request, the defaults will be mp4 format, full length and normal quality.
+
+As a result of Conversion API `convertVideo` method you will get the `ConversionResult` or `ResponseProblem` object. `ConversionResult` object will contain the `uuid` and `token`. You can use token to request status of video conversion job with `videoJobStatus` method.
+
+Also you can request a batch video conversion with `batchConvertVideo` method. First argument must be a collection of FileInfo or file uuid's, second — `VideoEncodingRequest` object.
+
 --------------------------------------------------------------------
 
 ## Tests
