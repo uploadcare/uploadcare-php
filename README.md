@@ -29,9 +29,9 @@ Uploadcare PHP integration handles uploads by wrapping Upload and REST APIs.
 
 ## Install
 
-Prior to installing `uploadcare-php` check if you're using the [Composer](getcomposer.org) dependency manager for PHP. If not, we well recommend you considering it.
+Prior to installing `uploadcare-php` get the [Composer](getcomposer.org) dependency manager for PHP because it'll simplify installation.
 
-**Step 1** — update your `composer.json` with next line:
+**Step 1** — update your `composer.json`:
 
 ```js
 "require": {
@@ -45,7 +45,7 @@ Prior to installing `uploadcare-php` check if you're using the [Composer](getcom
 php composer.phar update
 ```
 
-**Step 3** — define your Uploadcare public and secret API [keys](https://uploadcare.com/documentation/keys/) in your preferred way — for example, put it to the `$_ENV` variable:
+**Step 3** — define your Uploadcare public and secret API [keys](https://uploadcare.com/documentation/keys/) in a way you prefer (e.g., by using a `$_ENV` variable):
 
 ```php
 # config.php
@@ -53,7 +53,7 @@ $_ENV['UPLOADCARE_PUBLIC_KEY'] = '<your public key>';
 $_ENV['UPLOADCARE_PRIVATE_KEY'] = '<your private key>';
 ```
 
-**Step 4** — include the standard composer autoload file:
+**Step 4** — include a standard composer autoload file:
 
 ```php
 require_once 'vendor/autoload.php';
@@ -65,17 +65,17 @@ require_once 'vendor/autoload.php';
 $configuration = Uploadcare\Configuration::create($_ENV['UPLOADCARE_PUBLIC_KEY'], $_ENV['UPLOADCARE_PRIVATE_KEY']);
 ```
 
-All further operations performed using the configuration object.
+All further operations will use this configuration object.
 
 ## Configuration object
 
-There is a few ways to make valid configuration object. First (and recommended) — use static method of class:
+There are a few ways to make a valid configuration object. We recommend using the static method of the class:
 
 ```php
 $configuration = \Uploadcare\Configuration::create('<your public key>', '<your private key>');
 ```
 
-Or you can create the Security signature, Http client and Serializer classes explicitly and then create a configuration:
+Alternatively, you can create a Security signature, HTTP client, and Serializer classes explicitly. Then create a configuration:
 
 ```php
 $sign = new \Uploadcare\Security\Signature('<your private key>', 3600); // Must be an instance of \Uploadcare\Interfaces\SignatureInterface
@@ -89,9 +89,9 @@ As you can see, the factory method is more convenient for standard usage.
 
 ## Usage
 
-You can find full usage example in [Uploadcare example project](https://github.com/uploadcare/uploadcare-php-example)
+You can find the full example in this [Uploadcare example project](https://github.com/uploadcare/uploadcare-php-example).
 
-For all types of actions, you should create the Api object first:
+First, create an API object:
 
 ```php
 $configuration = \Uploadcare\Configuration::create($_ENV['UPLOADCARE_PUBLIC_KEY'], $_ENV['UPLOADCARE_PRIVATE_KEY']);
@@ -102,38 +102,38 @@ $api = new \Uploadcare\Api($configuration);
 
 This section describes multiple ways of uploading files to Uploadcare.
 
-You can use the core API-object for any type of upload:
+You can use the core API object for any upload type:
 
 ```php
 $configuration = \Uploadcare\Configuration::create($_ENV['UPLOADCARE_PUBLIC_KEY'], $_ENV['UPLOADCARE_PRIVATE_KEY']);
 $uploader = (new \Uploadcare\Api($configuration))->uploader();
 ```
 
-First of, files can be uploaded **from URL**. The following returns an instance of `Uploadcare\File`,
+First of all, files can be uploaded **from URL**. The following code returns an instance of `Uploadcare\File`,
 
 ```php
 $url = 'https://httpbin.org/image/jpeg';
-$result = $uploader->fromUrl($url, 'image/jpeg'); // In success $result will contains instance of Uploadcare\File class (see below)
+$result = $uploader->fromUrl($url, 'image/jpeg'); // If success, $result will contain instance of Uploadcare\File class (see below)
 
-echo \sprintf("File from url %s uploaded successfully \n", $url);
+echo \sprintf("File from URL %s uploaded successfully \n", $url);
 echo \sprintf("Uploaded file ID: %s\n", $result);
 ```
 
-Another way of uploading files is **from a path**,
+Another way of uploading files is by using **a path**,
 
 ```php
 $path = __DIR__ . '/squirrel.jpg';
 $result = $uploader->fromPath($path, 'image/jpeg');  // In success $result will contains uploaded Uploadcare\File class
 ```
 
-This will also do when using file pointers,
+It’s also relevant when using file pointers,
 
 ```php
 $path = __DIR__ . '/squirrel.jpg';
 $result = $uploader->fromResource(\fopen($path, 'rb'), 'image/jpeg');
 ```
 
-There's also an option of uploading a file **from its contents**. This will require you to provide MIME-type,
+There's an option of uploading a file **from its contents**. You’ll need to specify MIME-types as well:
 
 ```php
 $path = __DIR__ . '/squirrel.jpg';
@@ -142,38 +142,38 @@ $result = $uploader->fromContent(\file_get_contents($path), 'image/jpeg');
 
 ### Multipart upload
 
-If you have a large (more than 100Mb / 10485760 bytes) file, the uploader will automatically process it with [multipart upload](https://uploadcare.com/api-refs/upload-api/#operation/multipartFileUploadStart). Note that it will take more than usual time, and we are not recommend do this from web-environment.
+If you have a large file (more than 100Mb / 10485760 bytes), the uploader will automatically process it with a [multipart upload](https://uploadcare.com/api-refs/upload-api/#operation/multipartFileUploadStart). It'll take more time to upload, and also we don’t recommend it for a web environment.
 
 #### `Uploadcare\File` class
 
-This class implements `Uploadcare\Interfaces\File\FileInfoInterface` and has additional (besides the interface) methods:
+This class implements `Uploadcare\Interfaces\File\FileInfoInterface` and it has additional methods (besides the interface):
 
-- `store()` — store this file in storage. Returns `Uploadcare\File` object;
-- `delete()` — delete this file. Returns `Uploadcare\File` object;
-- `copyToLocalStorage($store = true)` — copy this file to local storage;
-- `copyToRemoteStorage($target, $makePublic = true, $pattern = null)` — copy this file to remote storage;
+- `store()` — Stores this file in storage. Returns `Uploadcare\File` object.
+- `delete()` — Deletes this file. Returns `Uploadcare\File` object.
+- `copyToLocalStorage($store = true)` — Copies this file to local storage.
+- `copyToRemoteStorage($target, $makePublic = true, $pattern = null)` — Copies this file to remote storage.
 
-All those operations are accessible through File API, but through `Uploadcare\File` object too.
+All these operations are accessible via File API, and you can access them through the `Uploadcare\File` object as well.
 
 ## File operations
 
-For any type of file operation you should create the `Uploadcare\Api` instance with configuration object and call the `file()` method:
+For any file operation type, you’ll need to create an `Uploadcare\Api`  instance with configuration object and call the `file()` method:
 
 ```php
 $config = \Uploadcare\Configuration::create($_ENV['UPLOADCARE_PUBLIC_KEY'], $_ENV['UPLOADCARE_PRIVATE_KEY']);
 $fileApi = (new \Uploadcare\Api($config))->file();
 ```
 
-After that, you can access to file operation methods
+After that, you can access to file operation methods:
 
-- `listFiles($limit = 100, $orderBy = 'datetime_uploaded', $from = null, $addFields = [], $stored = null, $removed = false)` — list of four files. Returns `Uploadcare\FileCollection` instance (see below). Each element of collection is a `Uploadcare\File`. Arguments:
+- `listFiles($limit = 100, $orderBy = 'datetime_uploaded', $from = null, $addFields = [], $stored = null, $removed = false)` — a list of files. Returns an `Uploadcare\FileCollection` instance (see below). Each element of collection is an `Uploadcare\File`. Arguments:
     - int             `$limit`     A preferred amount of files in a list for a single response. Defaults to 100, while the maximum is 1000.
-    - string          `$orderBy`   specifies the way to sort files in a returned list
-    - string|int|null `$from`      A starting point for filtering files. The value depends on your $orderBy parameter value.
-    - array           `$addFields` Add special fields to the file object
-    - bool|null       `$stored`    `true` to only include files that were stored, `false` to include temporary ones. The default is unset: both stored and not stored files will be returned.
-    - bool            `$removed`   `true` to only include removed files in the response, `false` to include existing files. Defaults is false.
-- `nextPage(FileListResponseInterface $response)` — next page from previous answer, if next page are exists. You can use it in simple `while` loop, for example:     
+    - string          `$orderBy`   Specifies the way to sort files in a returned list.
+    - string|int|null `$from`      A starting point for a file filter. The value depends on your `$orderBy` parameter value.
+    - array           `$addFields` Adds special fields to the file object.
+    - bool|null       `$stored`    `true` includes the only stored files, `false` includes temporary files. If not set (default): both stored and not stored files will be included.
+    - bool            `$removed`   `true` to only include removed files in the response, `false` to include existing files. The default value is false.
+- `nextPage(FileListResponseInterface $response)` — next page from previous answer, if next pages exist. You can use it in a simple `while` loop, for example:     
     ```php
     $config = \Uploadcare\Configuration::create($_ENV['UPLOADCARE_PUBLIC_KEY'], $_ENV['UPLOADCARE_PRIVATE_KEY']);
     $fileApi = new \Uploadcare\Apis\FileApi($config);
@@ -182,87 +182,87 @@ After that, you can access to file operation methods
       $files = $page->getResults(); 
     }
     ```
-- `storeFile(string $id)` — Store a single file by UUID. Returns the `Uploadcare\File` (`FileInfoInterface`).
-    Takes file UUID as argument.
-- `deleteFile(string $id)` — Remove individual files. Returns file info.
-    Takes file UUID as argument.
+- `storeFile(string $id)` — Stores a single file by UUID. Returns the `Uploadcare\File` (`FileInfoInterface`).
+    Takes file UUID as an argument.
+- `deleteFile(string $id)` — Removes individual files. Returns file info.
+    Takes file UUID as an argument.
 - `fileInfo(string $id)` — Once you obtain a list of files, you might want to acquire some file-specific info. Returns `FileInfoInterface`.
-    Takes array of file UUID's as argument.
-- `batchStoreFile(array $ids)` — Used to store multiple files in one step. Supports up to 100 files per request. Takes array of file UUID's as argument.
-- `batchDeleteFile(array $ids)` — Used to delete multiple files in one step. Array of file UUID's as argument 
-- `copyToLocalStorage(string $source, bool $store)` — Used to copy original files, or their modified versions to default storage. Arguments:
+    Takes array of file UUID's as an argument.
+- `batchStoreFile(array $ids)` — Used to store multiple files in one step. Supports up to 100 files per request. Takes an array of file UUID's as an argument.
+- `batchDeleteFile(array $ids)` — Used to delete multiple files in one step. Takes an array of file UUID's as an argument.
+- `copyToLocalStorage(string $source, bool $store)` — Used to copy original files, or their modified versions to a default storage. Arguments:
     - `$source` — A CDN URL or just UUID of a file subjected to copy.
-    - `$store` — Parameter only applies to the Uploadcare storage
-- `copyToRemoteStorage(string $source, string $target, bool $makePublic = true, string $pattern = '${default}')` — copy original files, or their modified versions to a custom storage. Arguments:
-    - `$source` — CDN URL or just UUID of a file subjected to copy.
-    - `$target` — Identifies a custom storage name related to your project. Implies you are copying a file to a specified custom storage. Keep in mind you can have multiple storages associated with a single S3 bucket.
+    - `$store` Parameter only applies to the Uploadcare storage.
+- `copyToRemoteStorage(string $source, string $target, bool $makePublic = true, string $pattern = '${default}')` — copies original files, or their modified versions to a custom storage. Arguments:
+    - `$source` — CDN URL or just UUID of a file that’s being copied.
+    - `$target` — Defines a custom storage name related to your project and implies you are copying a file to a specified custom storage. Keep in mind that you can have multiple storages associated with one S3 bucket.
     - `$makePublic` — `true` to make copied files available via public links, `false` to reverse the behavior.
-    - `$pattern` — The parameter is used to specify file names Uploadcare passes to a custom storage. In case the parameter is omitted, we use pattern of your custom storage. Use any combination of allowed values.
+    - `$pattern` — The parameter is used to specify file names Uploadcare passes to a custom storage. In case when the parameter is omitted, we use a pattern of your custom storage. Use any combination of allowed values.
     
-See [original API documentation](https://uploadcare.com/api-refs/rest-api/v0.6.0/#tag/File) for details.
+See the [API documentation](https://uploadcare.com/api-refs/rest-api/v0.6.0/#tag/File) for more details.
 
 ### `Uploadcare\FileCollection` class
 
-This class implements `Uploadcare\Interfaces\File\CollectionInterface` and has additional (besides the interface) methods:
+This class implements `Uploadcare\Interfaces\File\CollectionInterface` and has additional methods besides the interface:
 
-- `store()` — sores all files in collection. Calls `FileApi::batchStoreFile()` under the hood;
-- `delete()` — deletes all files in collection.
+- `store()` — Stores all files in a collection. Calls `FileApi::batchStoreFile()` under the hood.
+- `delete()` — Deletes all files in a collection.
 
-Each file in collection is an object of `Uploadcare\File` class.
+Each file in the collection is an object of the `Uploadcare\File` class.
 
 ### `Uploadcare\File` class
 
 This class implements `FileInfoInterface` and has additional methods for file operations:
-- `store()` — stores the current file;
-- `delete()` — deletes the current file;
-- `copyToLocalStorage($store = true)` — copies the current file to default storage;
-- `copyToRemoteStorage($target, $makePublic = true, $pattern = null)` — copies the current file to custom storage;
+- `store()` — Stores the current file.
+- `delete()` — Deletes the current file.
+- `copyToLocalStorage($store = true)` — Copies the current file to the default storage.
+- `copyToRemoteStorage($target, $makePublic = true, $pattern = null)` — Copies the current file to a custom storage;
 
-As you can see, additional methods helps you to call API methods without direct API calls.
+As you can see, additional methods help you to call API methods without direct API calls.
 
 ## Group operations
 
-For any type of group operation you should create the `Uploadcare\Api` instance with configuration object and call the `group()` method:
+For any type of group operation you need to create an `Uploadcare\Api` instance with a configuration object and call the `group()` method:
 
 ```php
 $config = \Uploadcare\Configuration::create($_ENV['UPLOADCARE_PUBLIC_KEY'], $_ENV['UPLOADCARE_PRIVATE_KEY']);
 $groupApi = (new \Uploadcare\Api($config))->group();
 ```
 
-After that, you can access to group operation methods
+After that, you can access group operation methods:
 
-- `createGroup($files)` — Creates file group. You can pass the array of IDs or `Uploadcare\File\FileCollection` as argument. Returns `Uploadcare\File\Group` object.
-- `listGroups($limit, $asc = true)` — Get a paginated list of groups. Default limit is 100, default order is order by creation datetime. You can reverse order with `$asc = false`. Returns `Uploadcare\Response\GroupListResponse`
-- `groupInfo($id)` — Gets a file group info by UUID. Returns `Uploadcare\Group` object.
-- `storeGroup($id)` — Mark all files in a group as stored. Returns `Uploadcare\Group` object.
+- `createGroup($files)` — Creates a file group. You can pass the array of IDs or `Uploadcare\File\FileCollection` as an argument. Returns an `Uploadcare\File\Group` object.
+- `listGroups($limit, $asc = true)` — Gets a paginated list of groups. The default limit is 100, and the default sorting is by the date and time created (ascending). You can reverse the sorting order to descending dates with `$asc = false`. Returns `Uploadcare\Response\GroupListResponse`.
+- `groupInfo($id)` — Gets a file group info by UUID. Returns an `Uploadcare\Group` object.
+- `storeGroup($id)` — Marks all files in a group as stored. Returns an `Uploadcare\Group` object.
 
 ### `Uploadcare\Group` class
 
-This class implements `Uploadcare\Interfaces\GroupInterface` and has additional method `store()` — applies the store operation for the group. Calls `GroupApi::store group`;
+This class implements `Uploadcare\Interfaces\GroupInterface` aand has an additional `store()` method that applies the store operation to the group. Calls `GroupApi::store group`;
 
 The `getFiles()` method of the `Uploadcare\Group` object returns [FileCollection](#uploadcarefilecollection-class).
 
 ## Project operations
 
-As usual, Project API accessible by main API object
+As usual, Project API is accessible by the main API object:
 
 ```php
 $config = \Uploadcare\Configuration::create($_ENV['UPLOADCARE_PUBLIC_KEY'], $_ENV['UPLOADCARE_PRIVATE_KEY']);
 $projectApi = (new \Uploadcare\Api($config))->project();
 ```
 
-You can get the project information by call `getProjectInfo` method:
+You can get the project information by calling the `getProjectInfo` method:
 
 ```php
 $projectInfo = $projectApi->getProjectInfo();
 ```
 
-Now, `$projectInfo` variable contains `Uploadcare\Interfaces\Response\ProjectInfoInterface` implementation with next methods:
+Now, the `$projectInfo` variable contains the `Uploadcare\Interfaces\Response\ProjectInfoInterface` implementation with the following methods:
 
-- `getCollaborators()` — array with collaborators information. Keys are Collaborator emails and values are Collaborator names;
-- `getName()` — project name as string;
-- `getPubKey()` — project public key as string;
-- `isAutostoreEnabled()` — is project files stores automatically;
+- `getCollaborators()` — Array with collaborators information. Keys are collaborator emails and values are collaborator names.
+- `getName()` — Project name as a string.
+- `getPubKey()` — Project public key as string.
+- `isAutostoreEnabled()` — Returns `true` if the project files are stored automatically.
 
 ## Webhooks operations
 
@@ -273,42 +273,43 @@ $config = \Uploadcare\Configuration::create($_ENV['UPLOADCARE_PUBLIC_KEY'], $_EN
 $webhookApi = (new \Uploadcare\Api($config))->webhook();
 ```
 
-And methods are:
+The methods are:
 
-- `listWebhooks()` — returns list of project webhooks as instance of `Uploadcare\WebhookCollection` class. Each element of this collection is instance of `Uploadcare\Webhook` class (see below);
-- `createWebhook($targetUrl, $isActive = true, $event = 'file.uploaded')` — creates new webhook for the event. Returns `Uploadcare\Webhook` class.
-- `updateWebhook($id, array $parameters)` — updates an existing webhook with parameters. Parameters can be:
-    - `target_url` — Target callback url;
-    - `event` — only `file.uploaded` event are valid and supported right now;
-    - `is_active` — webhook activity status;
-- `deleteWebhook` — deletes webhook by url;
+- `listWebhooks()` — Returns a list of project webhooks as an instance of an `Uploadcare\WebhookCollection` class. Each element of this collection is an instance of a `Uploadcare\Webhook` class (see below);
+- `createWebhook($targetUrl, $isActive = true, $event = 'file.uploaded')` — Creates a new webhook for the event. Returns the `Uploadcare\Webhook` class.
+- `updateWebhook($id, array $parameters)` — Updates an existing webhook with these parameters. Parameters can be:
+    - `target_url` — A target callback URL;
+    - `event` — The only `file.uploaded` event is supported at the moment.
+    - `is_active` — Returns the webhook activity status.
+- `deleteWebhook` — Deletes a webhook by URL.
 
 #### `Uploadcare\Webhook` class
 
-This class implements `Uploadcare\Interfaces\Response\WebhookInterface` and has additional (besides the interface) methods:
+This class implements `Uploadcare\Interfaces\Response\WebhookInterface` and has additional methods besides the interface:
 
-- `delete()` — deletes webhook. Calls `Uploadcare\Interfaces\Api\WebhookApiInterface::deleteWebhook()` under the hood;
-- `updateUrl($url)` — updates webhook with new URL (`WebhookApiInterface::updateWebhook()`);
-- `activate()` — sets webhook active (`WebhookApiInterface::updateWebhook()`);
-- `deactivate()` — sets webhook not active (`WebhookApiInterface::updateWebhook()`);
+- `delete()` — Deletes a webhook. Calls `Uploadcare\Interfaces\Api\WebhookApiInterface::deleteWebhook()` under the hood;
+- `updateUrl($url)` — Updates a webhook with a new URL (`WebhookApiInterface::updateWebhook()`).
+- `activate()` — Sets a webhook active (`WebhookApiInterface::updateWebhook()`).
+- `deactivate()` — Sets a webhook as not active (`WebhookApiInterface::updateWebhook()`).
 
 ## Conversion operations
 
-You can convert documents, images and video files with Conversion API. 
+You can convert documents, images, and video files with Conversion API.
 
 ### Documents and images conversion
 
-You should make object for conversion request:
+Create a new object for a subsequent conversion request:
 
 ```php
 $request = new \Uploadcare\Conversion\DocumentConversionRequest('pdf');
 ```
 
-Default arguments is:
-- `$targetFormat = 'pdf'` — target format
-- `$throwError = false` — if set to `true`, wrong request will throw exception, otherwise, return null;
-- `$store = true` — whether conversion result will store in default storage;
-- `$pageNumber = 1` — in case you convert multi-page (PDF, for example) document to image, this parameter defines the source document page to conversion;
+The default arguments and examples are:
+
+- `$targetFormat = 'pdf'` — Target format.
+- `$throwError = false` — If set to `true`, a wrong request will throw an exception, otherwise, it'll return null.
+- `$store = true` —  The conversion results will go to your default storage.
+- `$pageNumber = 1` — Specifies pages to convert in multi-page documents.
 
 After that, you can covert your file:
 
@@ -322,34 +323,34 @@ Result will contain one of two objects:
 - `ConvertedItemInterface` object with conversion result in case of successful operation, or
 - `ResponseProblemInterface` object in case of error (and `$throwError` in request sets to `false`).
 
-The `ConvertedItemInterface` will contains UUID of converted document and token with conversion job ID. You can request the conversion job status with this ID (or `ConvertedItemInterface` object itself):
+The `ConvertedItemInterface` will contain a UUID of converted document and token with conversion job ID. You can request the conversion job status with this ID (or the `ConvertedItemInterface` object itself):
 
 ```php
 $status = $convertor->documentJobStatus($result); // or $result->getToken()
 ```
 
-This status object will implement `ConversionStatusInterface` with methods:
-- `getStatus()` — status string. Pending, processing, finished, failed or canceled;
-- `getError()` — string in case of error or null;
-- `getResult()` — `StatusResultInterface` object.
+This status object will implement `ConversionStatusInterface` with these methods:
+- `getStatus()` — Status string. Pending, processing, finished, failed or canceled.
+- `getError()` — An error string in case of error or null.
+- `getResult()` — The `StatusResultInterface` object.
 
-You can request conversion for several documents:
+You can request batch conversion to process multiple documents:
 
 ```php
 $result = $convertor->batchConvertDocuments($files, $request);
 ```
 
-`$files` can be the array / collection of file IDs or FileInfo objects and result will be the implementation of `BatchResponseInterface`.
+`$files` can be an array / collection of file IDs or FileInfo objects and the result will be the implementation of `BatchResponseInterface`.
 
 ### Video conversion
 
-Get the conversion API as in previous step and make `VideoEncodingRequest`
+Get the conversion API as in the previous step and perform `VideoEncodingRequest`
 
 ```php
 $request = new \Uploadcare\Conversion\VideoEncodingRequest();
 ```
 
-You can set various parameters for this request trough object setters:
+You can set various parameters for this request through the object setters:
 
 ```php
 $request = (new \Uploadcare\Conversion\VideoEncodingRequest())
@@ -364,21 +365,25 @@ $request = (new \Uploadcare\Conversion\VideoEncodingRequest())
     ->setStore(true)                    // Tells store result at conversion ends. Default is true
 ```
 
-If you not set any option to conversion request, the defaults will be mp4 format, full length and normal quality.
+If you don’t set any option to conversion request, the defaults will be as follows: mp4 format, full length and normal quality.
 
-As a result of Conversion API `convertVideo` method you will get the `ConversionResult` or `ResponseProblem` object. `ConversionResult` object will contain the `uuid` and `token`. You can use token to request status of video conversion job with `videoJobStatus` method.
+As a result of the Conversion API `convertVideo` method, you will get the `ConversionResult` or `ResponseProblemobject`. ConversionResult object that contains the `uuid` and `token`. You can use a token to request the status of a video conversion job with `videoJobStatus` method.
 
-Also you can request a batch video conversion with `batchConvertVideo` method. First argument must be a collection of FileInfo or file uuid's, second — `VideoEncodingRequest` object.
+Also, you can request a batch video conversion with `batchConvertVideo` method. The first argument must be a collection of FileInfo or file uuid's, and the second — `VideoEncodingRequest` object.
 
 --------------------------------------------------------------------
 
 ## Tests
 
-PHP 5.6+ tests can be found in the "tests" directory. All tests based on PHPUnit, so you must have it installed on your system to use those.
+PHP 5.6+ tests can be found in the "tests" directory. All tests are based on PHPUnit, so you need to have it installed prior to running tests.
 
-Tests can be executed using the `vendor/bin/phpunit --exclude-group local-only` command.
+Run tests with this command:
 
-`--exclude-group local-only` parameter means that test will not send the real API-requests. If you want to run all tests, you should create the `.env.local` file in `tests` directory and place to this file variables with your real public and private API keys.
+```bash
+`vendor/bin/phpunit --exclude-group local-only`
+```
+
+`--exclude-group local-only` means that a test will not send real API-requests. If you want to run all tests, create the `.env.local` file in the `tests` directory and place the following variables with your real public and private API keys:
 
 ```dotenv
 # tests/.env.local
