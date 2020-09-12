@@ -35,13 +35,13 @@ abstract class AbstractUploader implements UploaderInterface
     {
         $parameters = [
             'files' => $files,
-            self::UPLOADCARE_PUB_KEY_KEY => $this->configuration->getPublicKey(),
+            'pub_key' => $this->configuration->getPublicKey(),
             self::UPLOADCARE_SIGNATURE_KEY => $this->configuration->getSecureSignature()->getSignature(),
             self::UPLOADCARE_EXPIRE_KEY => $this->configuration->getSecureSignature()->getExpire()->getTimestamp(),
         ];
 
         try {
-            return $this->sendRequest('POST', 'group/', $parameters);
+            return $this->sendRequest('POST', 'group/', ['form_params' => $parameters]);
         } catch (GuzzleException $e) {
             throw new HttpException('', 0, ($e instanceof \Exception ? $e : null));
         }
