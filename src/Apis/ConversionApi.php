@@ -72,8 +72,8 @@ class ConversionApi extends AbstractApi implements ConversionApiInterface
             throw new InvalidArgumentException(\sprintf('\'%s\' is a not valid UUID', $file));
         }
 
-        $conversionString = $this->makeDocumentConversionUrl($file, $request);
-        $result = $this->requestDocumentConversion([$conversionString]);
+        $conversionParams = $this->makeDocumentConversionUrl([$file], $request);
+        $result = $this->requestDocumentConversion($conversionParams);
         if (!empty($result->getProblems())) {
             $problem = \array_values($result->getProblems())[0];
 
@@ -96,7 +96,7 @@ class ConversionApi extends AbstractApi implements ConversionApiInterface
             throw new \RuntimeException(\sprintf('Request parameter must implements %s interface', DocumentConversionRequestInterface::class));
         }
 
-        $params = [];
+        $files = [];
         foreach ($collection as $item) {
             if ($item instanceof FileInfoInterface) {
                 $item = $item->getUuid();
@@ -105,8 +105,9 @@ class ConversionApi extends AbstractApi implements ConversionApiInterface
                 continue;
             }
 
-            $params[] = $this->makeDocumentConversionUrl($item, $request);
+            $files[] = $item;
         }
+        $params = $this->makeDocumentConversionUrl($files, $request);
 
         return $this->requestDocumentConversion($params);
     }
@@ -236,14 +237,14 @@ class ConversionApi extends AbstractApi implements ConversionApiInterface
     }
 
     /**
-     * @param array $urls
+     * @param array $conversionParams
      *
      * @return BatchResponseInterface
      */
-    private function requestDocumentConversion(array $urls)
+    private function requestDocumentConversion(array $conversionParams)
     {
         $response = $this->request('POST', 'convert/document/', [
-            'body' => \json_encode($urls),
+            'body' => \json_encode($conversionParams),
         ]);
 
         $result = $this->configuration->getSerializer()
@@ -257,18 +258,26 @@ class ConversionApi extends AbstractApi implements ConversionApiInterface
     }
 
     /**
-     * @param string                             $id      File ID
+     * @param array                              $ids      File ID's
      * @param DocumentConversionRequestInterface $request
      *
-     * @return string
+     * @return array
      */
-    private function makeDocumentConversionUrl($id, DocumentConversionRequestInterface $request)
+    private function makeDocumentConversionUrl($ids, DocumentConversionRequestInterface $request)
     {
-        $conversionString = \sprintf('%s/document/-/format/%s', $id, $request->getTargetFormat());
-        if (($page = $request->getPageNumber()) !== null && \array_key_exists($request->getTargetFormat(), \array_flip(['jpg', 'png']))) {
-            $conversionString = \sprintf('%s/page/%d/', $conversionString, $page);
+        $patch = [];
+        foreach ($ids as $id) {
+            $conversionString = \sprintf('%s/document/-/format/%s', $id, $request->getTargetFormat());
+            if (($page = $request->getPageNumber()) !== null && \array_key_exists($request->getTargetFormat(), \array_flip(['jpg', 'png']))) {
+                $patch[] = \sprintf('%s/-/page/%d/', $conversionString, $page);
+            } else {
+                $patch[] = $conversionString;
+            }
         }
 
-        return $conversionString;
+        return [
+            'paths' => $patch,
+            'store' => $request->store(),
+        ];
     }
 }

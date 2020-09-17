@@ -88,7 +88,7 @@ abstract class AbstractApi
         $headers = $this->configuration->getAuthHeaders($method, $uriForSign, $stringData, $contentType, $date);
         $headers['Accept'] = \sprintf('application/vnd.uploadcare-v%s+json', Configuration::API_VERSION);
         $headers = \array_merge($this->configuration->getHeaders(), $headers);
-        if (\strpos('http', $uri) !== 0) {
+        if (\strpos($uri, 'http') !== 0) {
             $uri = \sprintf('https://%s/%s', Configuration::API_BASE_URL, $uri);
         }
 
