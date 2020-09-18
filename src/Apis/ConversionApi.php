@@ -2,7 +2,6 @@
 
 namespace Uploadcare\Apis;
 
-use Uploadcare\Conversion\ConversionResult;
 use Uploadcare\Conversion\ConversionStatus;
 use Uploadcare\Conversion\VideoUrlBuilder;
 use Uploadcare\Exception\ConversionException;
@@ -116,7 +115,7 @@ class ConversionApi extends AbstractApi implements ConversionApiInterface
      * @param FileInfoInterface|string                        $file
      * @param ConversionRequest|VideoEncodingRequestInterface $request
      *
-     * @return ConversionResult|ResponseProblemInterface
+     * @return ConvertedItemInterface|ResponseProblemInterface
      *
      * @see https://uploadcare.com/api-refs/rest-api/v0.6.0/#operation/videoConvert
      */
@@ -135,8 +134,13 @@ class ConversionApi extends AbstractApi implements ConversionApiInterface
 
         $conversionUrl = $this->makeVideoConversionUrl($request);
         $fileUrl = \sprintf('%s/%s', $file, \ltrim($conversionUrl, '/'));
+
+        $requestBody = [
+            'store' => $request->store(),
+            'paths' => [$fileUrl],
+        ];
         $response = $this->request('POST', '/convert/video/', [
-            'body' => \json_encode([$fileUrl]),
+            'body' => \json_encode($requestBody),
         ]);
         $result = $this->configuration->getSerializer()
             ->deserialize($response->getBody()->getContents(), BatchConversionResponse::class);
@@ -169,7 +173,7 @@ class ConversionApi extends AbstractApi implements ConversionApiInterface
         }
         $conversionUrl = $this->makeVideoConversionUrl($request);
 
-        $params = [];
+        $urls = [];
         foreach ($collection as $item) {
             if ($item instanceof FileInfoInterface) {
                 $item = $item->getUuid();
@@ -178,14 +182,18 @@ class ConversionApi extends AbstractApi implements ConversionApiInterface
                 continue;
             }
 
-            $params[] = \sprintf('%s/%s', $item, \ltrim($conversionUrl, '/'));
+            $urls[] = \sprintf('%s/%s', $item, \ltrim($conversionUrl, '/'));
         }
-        if (empty($params)) {
+        if (empty($urls)) {
             throw new InvalidArgumentException('Collection has no valid files or uuid\'s');
         }
+        $requestBody = [
+            'store' => $request->store(),
+            'paths' => $urls,
+        ];
 
         $response = $this->request('POST', '/convert/video/', [
-            'body' => \json_encode($params),
+            'body' => \json_encode($requestBody),
         ]);
 
         $result = $this->configuration->getSerializer()
@@ -258,7 +266,7 @@ class ConversionApi extends AbstractApi implements ConversionApiInterface
     }
 
     /**
-     * @param array                              $ids      File ID's
+     * @param array                              $ids     File ID's
      * @param DocumentConversionRequestInterface $request
      *
      * @return array
