@@ -9,6 +9,8 @@ use Uploadcare\File\File;
 use Uploadcare\File\FileCollection;
 use Uploadcare\FileCollection as FileCollectionDecorator;
 use Uploadcare\Interfaces\Api\FileApiInterface;
+use Uploadcare\Interfaces\AuthUrl\AuthUrlConfigInterface;
+use Uploadcare\Interfaces\AuthUrl\UrlGeneratorInterface;
 use Uploadcare\Interfaces\File\CollectionInterface;
 use Uploadcare\Interfaces\File\FileInfoInterface;
 use Uploadcare\Interfaces\Response\BatchResponseInterface;
@@ -270,6 +272,21 @@ class FileApi extends AbstractApi implements FileApiInterface
         }
 
         return $values;
+    }
+
+    /**
+     * @param UrlGeneratorInterface    $generator
+     * @param FileInfoInterface|string $id
+     *
+     * @return string|null
+     */
+    public function generateSecureUrl(UrlGeneratorInterface $generator, $id)
+    {
+        if (!($authConfig = $this->configuration->getAuthUrlConfig()) instanceof AuthUrlConfigInterface) {
+            return null;
+        }
+
+        return $generator->getUrl($authConfig, $id);
     }
 
     /**

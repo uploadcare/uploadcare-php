@@ -18,6 +18,7 @@ Uploadcare PHP integration handles uploads by wrapping Upload and REST APIs.
   * [Project operations](#project-operations)
   * [Webhooks](#webhooks-operations)
   * [Conversion](#conversion-operations)
+  * [Authenticated URLs](#authenticated-urls)
   * [Tests](#tests)
 * [Useful links](#useful-links)
 
@@ -370,6 +371,39 @@ If you don’t set any option to conversion request, the defaults will be as fol
 As a result of the Conversion API `convertVideo` method, you will get the `ConversionResult` or `ResponseProblemobject`. ConversionResult object that contains the `uuid` and `token`. You can use a token to request the status of a video conversion job with `videoJobStatus` method.
 
 Also, you can request a batch video conversion with `batchConvertVideo` method. The first argument must be a collection of FileInfo or file uuid's, and the second — `VideoEncodingRequest` object.
+
+## Authenticated URLs
+
+You can use your own custom domain and CDN provider for deliver files with authenticated URLs (see [original documentation](https://uploadcare.com/docs/security/secure_delivery/)).
+
+To generate authenticated URL from the library, you should do this:
+
+- make a configuration as usual;
+- make `Uploadcare\AuthUrl\AuthUrlConfig` object. This object will provide token, expire timestamp and your custom domain for URL generator. `$token` and `$timestamp` in constructor and in setters can be strings or callable objects;
+- generate secure url from `FileApi::generateSecureUrl(UrlGeneratorInterface $generator, $id)` or from `Uploadcare\File::generateSecureUrl(UrlGeneratorInterface $generator)`
+
+For example:
+
+```php
+use Uploadcare\Configuration;
+use Uploadcare\AuthUrl\AuthUrlConfig;
+use Uploadcare\Api;
+use Uploadcare\AuthUrl\AkamaiUrlGenerator;
+use Uploadcare\AuthUrl\KeyCdnUrlGenerator;
+
+$config = Configuration::create($_ENV['UPLOADCARE_PUBLIC_KEY'], $_ENV['UPLOADCARE_PRIVATE_KEY']);
+$authUrlConfig = (new AuthUrlConfig('https://mydomain.com'))
+    ->setToken(function () { return \random_bytes(48) })
+    ->setTimeStamp(function () { return \date_create()->add(\date_interval_create_from_date_string('+1 hour'))->getTimestamp() });
+$api = new Api($config);
+$file = $api->file()->listFiles()->getResults()->first();
+
+// Get secure url from file
+$secureUrl = $file->generateSecureUrl(new KeyCdnUrlGenerator()); // you can use KeyCdnUrlGenerator or AkamaiUrlGenerator
+
+// Or from API instance
+$secureUrlFromApi = $api->file()->generateSecureUrl(new AkamaiUrlGenerator(), $file);
+```
 
 --------------------------------------------------------------------
 

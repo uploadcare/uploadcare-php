@@ -3,6 +3,7 @@
 namespace Uploadcare;
 
 use Uploadcare\Apis\FileApi;
+use Uploadcare\AuthUrl\AbstractUrlGenerator;
 use Uploadcare\Interfaces\File\FileInfoInterface;
 
 /**
@@ -66,6 +67,16 @@ class File implements FileInfoInterface
     public function copyToRemoteStorage($target, $makePublic = true, $pattern = null)
     {
         return $this->api->copyToRemoteStorage($this->inner->getUuid(), $target, $makePublic, $pattern);
+    }
+
+    /**
+     * @param AbstractUrlGenerator $generator
+     *
+     * @return string|null
+     */
+    public function generateSecureUrl(AbstractUrlGenerator $generator)
+    {
+        return $this->api->generateSecureUrl($generator, $this->inner);
     }
 
     /**
