@@ -35,34 +35,20 @@ class UrlGeneratorConfigTest extends TestCase
 
     public function testStringAuthConfigCreation()
     {
-        self::markTestSkipped('Change logic');
-
         $ts = \date_create()->getTimestamp();
-        $config = new AuthUrlConfig('host.domain.com', 'some-token', $ts);
+        /** @var \PHPUnit_Framework_MockObject_MockObject|TokenInterface $token */
+        $token = $this->getMockBuilder(TokenInterface::class)
+            ->setMethods(['getToken', 'getExpired'])
+            ->getMock()
+        ;
+        $token->method('getToken')
+            ->willReturn('some-token');
+        $token->method('getExpired')
+            ->willReturn($ts);
+
+        $config = new AuthUrlConfig('host.domain.com', $token);
         self::assertEquals($ts, $config->getTimeStamp());
         self::assertEquals('some-token', $config->getToken());
         self::assertEquals('host.domain.com', $config->getCdnUrl());
-    }
-
-    public function testCallableAuthConfigCreation()
-    {
-        self::markTestSkipped('Change logic');
-
-        $ts = static function () {
-            return \date_create()->getTimestamp();
-        };
-        $token = [$this, 'getToken'];
-
-        $validTs = $ts();
-        $validToken = $token();
-
-        $config = new AuthUrlConfig('host.domain.com', $token, $ts);
-        self::assertEquals($validTs, $config->getTimeStamp());
-        self::assertEquals($validToken, $config->getToken());
-    }
-
-    public function getToken()
-    {
-        return 'some-token';
     }
 }

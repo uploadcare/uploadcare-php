@@ -23,7 +23,16 @@ class UrlGenerationTest extends TestCase
     protected function setUp()
     {
         parent::setUp();
-        $authUrlConfig = new AuthUrlConfig('host.domain.com', $this->createMock(TokenInterface::class));
+
+        /** @var \PHPUnit_Framework_MockObject_MockObject|TokenInterface $token */
+        $token = $this->getMockBuilder(TokenInterface::class)
+            ->getMock();
+        $token->method('getToken')
+            ->willReturn('some-token');
+        $token->method('getExpired')
+            ->willReturn(\date_create()->add(\date_interval_create_from_date_string('+30 minutes'))->getTimestamp());
+
+        $authUrlConfig = new AuthUrlConfig('host.domain.com', $token);
         $this->config = Configuration::create('public-key', 'private-key');
         $this->config->setAuthUrlConfig($authUrlConfig);
     }
@@ -45,8 +54,6 @@ class UrlGenerationTest extends TestCase
      */
     public function testAkamaiUrlGenerator($generator)
     {
-        self::markTestSkipped('Change logic');
-
         $ac = $this->config->getAuthUrlConfig();
         self::assertInstanceOf(AuthUrlConfigInterface::class, $ac);
 

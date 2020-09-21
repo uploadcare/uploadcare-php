@@ -76,8 +76,8 @@ class AkamaiToken implements TokenInterface
      */
     public function __construct($key, $window = 300)
     {
-        $this->key = $key;
-        $this->window = $window;
+        $this->setKey($key);
+        $this->setWindow($window);
     }
 
     /**
@@ -122,7 +122,7 @@ class AkamaiToken implements TokenInterface
         if (!\is_numeric($window) || (int) $window <= 0) {
             throw new TokenException('Window must me a number larger than 0');
         }
-        $this->window = $window;
+        $this->window = (int) $window;
 
         return $this;
     }
