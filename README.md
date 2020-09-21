@@ -17,8 +17,8 @@ Uploadcare PHP integration handles uploads by wrapping Upload and REST APIs.
   * [Group operations](#group-operations)
   * [Project operations](#project-operations)
   * [Webhooks](#webhooks-operations)
-  * [Conversion](#conversion-operations)
-  * [Authenticated URLs](#authenticated-urls)
+  * [Conversion operations](#conversion-operations)
+  * [Secure delivery](#secure-delivery)
   * [Tests](#tests)
 * [Useful links](#useful-links)
 
@@ -265,7 +265,7 @@ Now, the `$projectInfo` variable contains the `Uploadcare\Interfaces\Response\Pr
 - `getPubKey()` — Project public key as string.
 - `isAutostoreEnabled()` — Returns `true` if the project files are stored automatically.
 
-## Webhooks operations
+## Webhooks
 
 Call the webhook API:
 
@@ -295,9 +295,9 @@ This class implements `Uploadcare\Interfaces\Response\WebhookInterface` and has 
 
 ## Conversion operations
 
-You can convert documents, images, and video files with Conversion API.
+You can convert documents, images and encode video files with Conversion API.
 
-### Documents and images conversion
+### Document and image conversion
 
 Create a new object for a subsequent conversion request:
 
@@ -343,7 +343,7 @@ $result = $convertor->batchConvertDocuments($files, $request);
 
 `$files` can be an array / collection of file IDs or FileInfo objects and the result will be the implementation of `BatchResponseInterface`.
 
-### Video conversion
+### Video encoding
 
 Get the conversion API as in the previous step and perform `VideoEncodingRequest`
 
@@ -372,7 +372,7 @@ As a result of the Conversion API `convertVideo` method, you will get the `Conve
 
 Also, you can request a batch video conversion with `batchConvertVideo` method. The first argument must be a collection of FileInfo or file uuid's, and the second — `VideoEncodingRequest` object.
 
-## Authenticated URLs
+## Secure delivery
 
 You can use your own custom domain and CDN provider for deliver files with authenticated URLs (see [original documentation](https://uploadcare.com/docs/security/secure_delivery/)).
 
