@@ -11,7 +11,7 @@ use Uploadcare\Configuration;
 use Uploadcare\Interfaces\AuthUrl\AuthUrlConfigInterface;
 
 /**
- * Class UrlGenerationTest
+ * Class UrlGenerationTest.
  */
 class UrlGenerationTest extends TestCase
 {

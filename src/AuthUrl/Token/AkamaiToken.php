@@ -64,11 +64,6 @@ class AkamaiToken implements TokenInterface
     private $fieldDelimiter = '~';
 
     /**
-     * @var bool
-     */
-    private $earlyUrlEncoding = false;
-
-    /**
      * AkamaiToken constructor.
      *
      * @param string $key
@@ -219,7 +214,7 @@ class AkamaiToken implements TokenInterface
     public function setAcl($acl)
     {
         if ($this->url !== null) {
-            throw new TokenException('Cannot set both an ACL and a URL at the same time');
+            throw new TokenException('Cannot set both an URL and a ACL at the same time');
         }
 
         $this->acl = $acl;
@@ -331,26 +326,6 @@ class AkamaiToken implements TokenInterface
     }
 
     /**
-     * @return bool
-     */
-    public function isEarlyUrlEncoding()
-    {
-        return $this->earlyUrlEncoding;
-    }
-
-    /**
-     * @param bool $earlyUrlEncoding
-     *
-     * @return AkamaiToken
-     */
-    public function setEarlyUrlEncoding($earlyUrlEncoding)
-    {
-        $this->earlyUrlEncoding = $earlyUrlEncoding;
-
-        return $this;
-    }
-
-    /**
      * Token string.
      *
      * @return string
@@ -386,6 +361,8 @@ class AkamaiToken implements TokenInterface
     /**
      * @param string          $fieldName
      * @param string|int|null $value
+     *
+     * @return string
      */
     private function makeField($fieldName, $value)
     {
@@ -422,11 +399,11 @@ class AkamaiToken implements TokenInterface
             throw new TokenException(\sprintf('IP must be a string, %s given', (\is_object($ip) ? \get_class($ip) : \gettype($ip))));
         }
 
-        $regex4 = '/^((\d|[1-9]\d|1\d{...}|2[0-4]\d|25[0-5])\\.){3}(\d|[1-9]\d|1\d{...}|2[0-4]\d|25[0-5])$/';
-        $regex6 = '/^((([0-9a-fA-F]){1,4})\\:){7}([0-9a-fA-F]){1,4}$/';
+        $regex4 = '/^(?:(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.){3}(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])$/';
+        $regex6 = '/(?:^|(?<=\s))(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))(?=\s|$)/m';
 
-        if (\preg_match($regex4, $ip) === false && preg_match($regex6, $ip) === false) {
-            throw new TokenException(\sprintf('Given IP \'%s\' is neither IPv4, nor IPv6', $ip));
+        if (\preg_match($regex4, $ip) === 0 && preg_match($regex6, $ip) === 0) {
+            throw new TokenException(\sprintf('Given IP \'%s\' neither IPv4, nor IPv6', $ip));
         }
     }
 }
