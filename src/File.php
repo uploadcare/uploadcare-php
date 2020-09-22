@@ -3,7 +3,6 @@
 namespace Uploadcare;
 
 use Uploadcare\Apis\FileApi;
-use Uploadcare\AuthUrl\AbstractUrlGenerator;
 use Uploadcare\Interfaces\File\FileInfoInterface;
 
 /**
@@ -70,13 +69,11 @@ class File implements FileInfoInterface
     }
 
     /**
-     * @param AbstractUrlGenerator $generator
-     *
      * @return string|null
      */
-    public function generateSecureUrl(AbstractUrlGenerator $generator)
+    public function generateSecureUrl()
     {
-        return $this->api->generateSecureUrl($generator, $this->inner);
+        return $this->api->generateSecureUrl($this->inner);
     }
 
     /**

@@ -379,8 +379,8 @@ You can use your own custom domain and CDN provider for deliver files with authe
 To generate authenticated URL from the library, you should do this:
 
 - make a configuration as usual;
-- make `Uploadcare\AuthUrl\AuthUrlConfig` object. This object will provide token, expire timestamp and your custom domain for URL generator. `$token` and `$timestamp` in constructor and in setters can be strings or callable objects;
-- generate secure url from `FileApi::generateSecureUrl(UrlGeneratorInterface $generator, $id)` or from `Uploadcare\File::generateSecureUrl(UrlGeneratorInterface $generator)`
+- make `Uploadcare\AuthUrl\AuthUrlConfig` object. This object will provide token, expire timestamp and your custom domain URL generator. `$token` in the constructor must be an instance of `Uploadcare\AuthUrl\Token\TokenInterface`;
+- generate secure url from `FileApi::generateSecureUrl($id)` or from `Uploadcare\File::generateSecureUrl()`
 
 For example:
 
@@ -388,21 +388,20 @@ For example:
 use Uploadcare\Configuration;
 use Uploadcare\AuthUrl\AuthUrlConfig;
 use Uploadcare\Api;
-use Uploadcare\AuthUrl\AkamaiUrlGenerator;
-use Uploadcare\AuthUrl\KeyCdnUrlGenerator;
+use Uploadcare\AuthUrl\Token\AkamaiToken;
 
-$config = Configuration::create($_ENV['UPLOADCARE_PUBLIC_KEY'], $_ENV['UPLOADCARE_PRIVATE_KEY']);
-$authUrlConfig = (new AuthUrlConfig('https://mydomain.com'))
-    ->setToken(function () { return \random_bytes(48) })
-    ->setTimeStamp(function () { return \date_create()->add(\date_interval_create_from_date_string('+1 hour'))->getTimestamp() });
+$authUrlConfig = new AuthUrlConfig('mydomain.com', new AkamaiToken('secretKey', 300));
+$config = Configuration::create($_ENV['UPLOADCARE_PUBLIC_KEY'], $_ENV['UPLOADCARE_PRIVATE_KEY'])
+    ->setAuthUrlConfig($authUrlConfig);
+
 $api = new Api($config);
 $file = $api->file()->listFiles()->getResults()->first();
 
 // Get secure url from file
-$secureUrl = $file->generateSecureUrl(new KeyCdnUrlGenerator()); // you can use KeyCdnUrlGenerator or AkamaiUrlGenerator
+$secureUrl = $file->generateSecureUrl(); // you can use KeyCdnUrlGenerator or AkamaiUrlGenerator
 
 // Or from API instance
-$secureUrlFromApi = $api->file()->generateSecureUrl(new AkamaiUrlGenerator(), $file);
+$secureUrlFromApi = $api->file()->generateSecureUrl($file);
 ```
 
 --------------------------------------------------------------------

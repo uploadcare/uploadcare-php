@@ -38,7 +38,7 @@ class UrlGeneratorConfigTest extends TestCase
         $ts = \date_create()->getTimestamp();
         /** @var \PHPUnit_Framework_MockObject_MockObject|TokenInterface $token */
         $token = $this->getMockBuilder(TokenInterface::class)
-            ->setMethods(['getToken', 'getExpired'])
+            ->setMethods(['getToken', 'getExpired', 'getUrlTemplate'])
             ->getMock()
         ;
         $token->method('getToken')

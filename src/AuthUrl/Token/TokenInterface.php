@@ -21,4 +21,11 @@ interface TokenInterface
      * @return int
      */
     public function getExpired();
+
+    /**
+     * URL template for CDN.
+     *
+     * @return string
+     */
+    public function getUrlTemplate();
 }

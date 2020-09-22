@@ -2,7 +2,6 @@
 
 namespace Uploadcare\Interfaces\Api;
 
-use Uploadcare\Interfaces\AuthUrl\UrlGeneratorInterface;
 use Uploadcare\Interfaces\File\CollectionInterface;
 use Uploadcare\Interfaces\File\FileInfoInterface;
 use Uploadcare\Interfaces\Response\BatchResponseInterface;
@@ -100,10 +99,9 @@ interface FileApiInterface
     /**
      * Generate secure URL for CDN custom domain.
      *
-     * @param UrlGeneratorInterface    $generator
      * @param FileInfoInterface|string $id
      *
      * @return string|null
      */
-    public function generateSecureUrl(UrlGeneratorInterface $generator, $id);
+    public function generateSecureUrl($id);
 }

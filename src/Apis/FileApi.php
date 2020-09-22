@@ -10,7 +10,6 @@ use Uploadcare\File\FileCollection;
 use Uploadcare\FileCollection as FileCollectionDecorator;
 use Uploadcare\Interfaces\Api\FileApiInterface;
 use Uploadcare\Interfaces\AuthUrl\AuthUrlConfigInterface;
-use Uploadcare\Interfaces\AuthUrl\UrlGeneratorInterface;
 use Uploadcare\Interfaces\File\CollectionInterface;
 use Uploadcare\Interfaces\File\FileInfoInterface;
 use Uploadcare\Interfaces\Response\BatchResponseInterface;
@@ -275,18 +274,30 @@ class FileApi extends AbstractApi implements FileApiInterface
     }
 
     /**
-     * @param UrlGeneratorInterface    $generator
      * @param FileInfoInterface|string $id
      *
      * @return string|null
      */
-    public function generateSecureUrl(UrlGeneratorInterface $generator, $id)
+    public function generateSecureUrl($id)
     {
         if (!($authConfig = $this->configuration->getAuthUrlConfig()) instanceof AuthUrlConfigInterface) {
             return null;
         }
 
-        return $generator->getUrl($authConfig, $id);
+        if ($id instanceof FileInfoInterface) {
+            $id = $id->getUuid();
+        }
+
+        if (!\uuid_is_valid($id)) {
+            throw new InvalidArgumentException(\sprintf('UUID %s is not valid', (\is_string($id) ? $id : \gettype($id))));
+        }
+
+        return \strtr($authConfig->getTokenGenerator()->getUrlTemplate(), [
+            '{cdn}' => $authConfig->getCdnUrl(),
+            '{uuid}' => $id,
+            '{timestamp}' => $authConfig->getTimeStamp(),
+            '{token}' => $authConfig->getToken(),
+        ]);
     }
 
     /**

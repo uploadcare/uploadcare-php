@@ -53,4 +53,10 @@ interface ConfigurationInterface
      * @return AuthUrlConfigInterface|null
      */
     public function getAuthUrlConfig();
+
+    /**
+     * @param AuthUrlConfigInterface $config
+     * @return ConfigurationInterface
+     */
+    public function setAuthUrlConfig(AuthUrlConfigInterface $config);
 }

@@ -10,6 +10,7 @@ namespace Uploadcare\AuthUrl\Token;
 class AkamaiToken implements TokenInterface
 {
     protected static $algorithms = ['sha256', 'sha1', 'md5'];
+    protected static $template = 'https://{cdn}/{uuid}/?token=exp={timestamp}~acl=/{uuid}/~hmac={token}';
 
     /**
      * @var string Encryption key
@@ -73,6 +74,14 @@ class AkamaiToken implements TokenInterface
     {
         $this->setKey($key);
         $this->setWindow($window);
+    }
+
+    /**
+     * @return string
+     */
+    public function getUrlTemplate()
+    {
+        return (string) \str_replace('~', $this->getFieldDelimiter(), self::$template);
     }
 
     /**

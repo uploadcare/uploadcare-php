@@ -29,19 +29,15 @@ class AuthUrlConfig implements AuthUrlConfigInterface
     public function __construct($cdnUrl, TokenInterface $token)
     {
         $this->cdnUrl = $cdnUrl;
-        $this->setTokenGenerator($token);
+        $this->token = $token;
     }
 
     /**
-     * @param TokenInterface $token
-     *
-     * @return $this
+     * @return TokenInterface
      */
-    public function setTokenGenerator($token)
+    public function getTokenGenerator()
     {
-        $this->token = $token;
-
-        return $this;
+        return $this->token;
     }
 
     /**

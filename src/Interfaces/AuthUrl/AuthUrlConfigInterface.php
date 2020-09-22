@@ -2,8 +2,15 @@
 
 namespace Uploadcare\Interfaces\AuthUrl;
 
+use Uploadcare\AuthUrl\Token\TokenInterface;
+
 interface AuthUrlConfigInterface
 {
+    /**
+     * @return TokenInterface
+     */
+    public function getTokenGenerator();
+
     /**
      * @return string
      */
