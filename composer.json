@@ -1,6 +1,6 @@
 {
   "name": "uploadcare/uploadcare-php",
-  "description": "Uploadcare API binding for PHP",
+  "description": "Uploadcare PHP integration handles uploads and further operations with files by wrapping Upload and REST APIs.",
   "type": "library",
   "license": "MIT",
   "authors": [
