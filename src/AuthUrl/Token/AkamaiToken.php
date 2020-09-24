@@ -25,7 +25,7 @@ class AkamaiToken implements TokenInterface
     /**
      * @var string Encryption algorithm
      */
-    private $algo = 'SHA256';
+    private $algo = 'sha256';
 
     /**
      * @var string|null Restrict the token to a specific IP address
@@ -391,10 +391,10 @@ class AkamaiToken implements TokenInterface
     {
         $bin = '';
         $i = 0;
-        while ($i < \strlen($str)) {
-            $bin .= \chr(\hexdec($str[$i] . $str[($i + 1)]));
+        do {
+            $bin .= \chr(\hexdec($str[$i].$str[($i + 1)]));
             $i += 2;
-        }
+        } while ($i < strlen($str));
 
         return $bin;
     }

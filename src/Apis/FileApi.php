@@ -3,6 +3,7 @@
 namespace Uploadcare\Apis;
 
 use Psr\Http\Message\ResponseInterface;
+use Uploadcare\AuthUrl\Token\AkamaiToken;
 use Uploadcare\Exception\InvalidArgumentException;
 use Uploadcare\File as FileDecorator;
 use Uploadcare\File\File;
@@ -292,11 +293,16 @@ class FileApi extends AbstractApi implements FileApiInterface
             throw new InvalidArgumentException(\sprintf('UUID %s is not valid', (\is_string($id) ? $id : \gettype($id))));
         }
 
-        return \strtr($authConfig->getTokenGenerator()->getUrlTemplate(), [
+        $generator = $authConfig->getTokenGenerator();
+        if ($generator instanceof AkamaiToken) {
+            $generator->setAcl($id);
+        }
+
+        return \strtr($generator->getUrlTemplate(), [
             '{cdn}' => $authConfig->getCdnUrl(),
             '{uuid}' => $id,
-            '{timestamp}' => $authConfig->getTimeStamp(),
-            '{token}' => $authConfig->getToken(),
+            '{timestamp}' => $generator->getExpired(),
+            '{token}' => $generator->getToken(),
         ]);
     }
 
