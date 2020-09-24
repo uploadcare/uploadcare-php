@@ -1,6 +1,6 @@
 # Uploadcare PHP
 
-Uploadcare PHP integration handles uploads by wrapping Upload and REST APIs.
+Uploadcare PHP integration handles uploads and further operations with files by wrapping Upload and REST APIs.
 
 [![Build Status][travis-img]][travis] [![Uploadcare stack on StackShare][stack-img]][stack]  
 
