@@ -4,7 +4,17 @@ All notable changes to this project will be documented in this file.
 The format is based now on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## Unreleased
+## [Unreleased]
+
+## [3.0.0] 
+### BREAKING CHANGES
+- You must update php to 5.6 or newer version
+- This **total new** version **has not** backward compatibility with previous!
+
+### Features
+- Add interfaces for all `File` and dependent classes;
+- Add [Guzzle http client](http://github.com/guzzle/guzzle) as standard client. You can override client with any `GuzzleHttp\ClientInterface` client implementation if you want;
+- T.B.D
 
 ## [2.4.1-rc] - 2020-06-02
 ### Added
@@ -195,3 +205,13 @@ This is last uploadcare-php version that will support php 5.2. Expect no feature
 - add `File->copy()`
 
 [widget changelog]: https://github.com/uploadcare/uploadcare-widget/blob/master/HISTORY.markdown
+
+[Unreleased]: https://github.com/uploadcare/uploadcare-php/compare/v2.4.1-rc...release-3.0
+[2.1.0]: https://github.com/uploadcare/uploadcare-php/releases/tag/v2.1.0
+[2.1.1]: https://github.com/uploadcare/uploadcare-php/compare/v2.1.0...v2.1.1
+[2.1.2]: https://github.com/uploadcare/uploadcare-php/compare/v2.1.1...v2.1.2
+[2.2.0]: https://github.com/uploadcare/uploadcare-php/compare/v2.1.2...v2.2.0
+[2.2.1]: https://github.com/uploadcare/uploadcare-php/compare/v2.2.0...v2.2.1
+[2.3.0]: https://github.com/uploadcare/uploadcare-php/compare/v2.2.1...v2.3.0
+[2.4.0-rc]: https://github.com/uploadcare/uploadcare-php/compare/v2.3.0...2.4.0-rc
+[2.4.1-rc]: https://github.com/uploadcare/uploadcare-php/compare/2.4.0-rc...v2.4.1-rc

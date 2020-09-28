@@ -1,0 +1,3649 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Upload API Reference",
+    "version": "2015-02-12",
+    "description": "An API that provides several ways of uploading files to Uploadcare‘s servers.\n",
+    "contact": {
+      "name": "API Support",
+      "email": "help@uploadcare.com"
+    },
+    "x-logo": {
+      "url": "https://ucarecdn.com/a539fa00-92d4-475d-a475-f14782e87422/logouploadapi.svg",
+      "backgroundColor": "#fafafa",
+      "altText": "Uploadcare Upload API Reference"
+    },
+    "x-meta": {
+      "title": "Upload API Reference — Uploadcare",
+      "description": "Complete reference documentation for the Uploadcare Upload API. Covers endpoints, requests, their params, and response examples."
+    }
+  },
+  "servers": [
+    {
+      "url": "https://upload.uploadcare.com",
+      "description": "Production Server"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Upload"
+    },
+    {
+      "name": "Groups"
+    },
+    {
+      "name": "Other APIs",
+      "description": "You can find the complete reference documentation for the REST API [here](/api-refs/rest-api/).\n"
+    }
+  ],
+  "paths": {
+    "/base/": {
+      "post": {
+        "tags": [
+          "Upload"
+        ],
+        "summary": "Direct uploads",
+        "description": "Direct upload comply with the RFC 7578 standard and work by making POST requests via HTTPS.",
+        "operationId": "baseUpload",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "array",
+                    "description": "Files",
+                    "items": {
+                      "type": "string",
+                      "description": "File content",
+                      "format": "binary"
+                    }
+                  },
+                  "UPLOADCARE_PUB_KEY": {
+                    "type": "string",
+                    "description": "A public key identifying an Uploadcare project your uploads will go to.",
+                    "example": "caa9d29da887ee88ffe6"
+                  },
+                  "UPLOADCARE_STORE": {
+                    "type": "string",
+                    "description": "Sets the file storing behavior. If nothing is sent, `0` is used. When developing an API client, we recommend to send `auto` according to the principle of least surprise. See [Storage Workflow](https://uploadcare.com/docs/file_uploads/widget/uploads_and_storage/#storage-workflow) for details.",
+                    "enum": [
+                      "0",
+                      "1",
+                      "auto"
+                    ],
+                    "default": "0",
+                    "example": "1"
+                  },
+                  "signature": {
+                    "type": "string",
+                    "description": "`signature` is a string sent along with your upload request. It requires your Uploadcare project secret key and hence should be crafted on your back end. See [Signed uploads](https://uploadcare.com/docs/api_reference/upload/signed_uploads/) for details.",
+                    "example": "04b29480233f4def5c875875b6bdc3b1"
+                  },
+                  "expire": {
+                    "type": "number",
+                    "description": "`expire` sets the time until your signature is valid. It is timestamp. See [Signed uploads](https://uploadcare.com/docs/api_reference/upload/signed_uploads/) for details.",
+                    "example": 1454902434
+                  }
+                },
+                "required": [
+                  "file",
+                  "UPLOADCARE_PUB_KEY"
+                ]
+              },
+              "examples": {
+                "one-file": {
+                  "value": {
+                    "UPLOADCARE_PUB_KEY": "demopublickey",
+                    "UPLOADCARE_STORE": "auto",
+                    "my_file.jpg": "@my_file.jpg"
+                  }
+                },
+                "two-files": {
+                  "value": {
+                    "UPLOADCARE_PUB_KEY": "demopublickey",
+                    "UPLOADCARE_STORE": "auto",
+                    "my_file.jpg": "@my_file.jpg",
+                    "other_file.jpg": "@other_file.jpg"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Uploaded file UUID.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "JSON contains uploaded file UUID.",
+                  "properties": {
+                    "file": {
+                      "type": "string",
+                      "format": "uuid"
+                    }
+                  },
+                  "example": {
+                    "file": "17be4678-dab7-4bc7-8753-28914a22960a"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Request parameters validation errors.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "description": "File is too large.",
+                      "content": {
+                        "text/plain": {
+                          "schema": {
+                            "type": "string",
+                            "default": "File is too large."
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "description": "`signature` is required.",
+                      "content": {
+                        "text/plain": {
+                          "schema": {
+                            "type": "string",
+                            "default": "`signature` is required."
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "description": "`expire` is required.",
+                      "content": {
+                        "text/plain": {
+                          "schema": {
+                            "type": "string",
+                            "default": "`expire` is required."
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "description": "`expire` must be a UNIX timestamp.",
+                      "content": {
+                        "text/plain": {
+                          "schema": {
+                            "type": "string",
+                            "default": "`expire` must be a UNIX timestamp."
+                          }
+                        }
+                      }
+                    }
+                  ]
+                },
+                "examples": {
+                  "file-too-large-error": {
+                    "value": "File is too large."
+                  },
+                  "signature-error": {
+                    "value": "`signature` is required."
+                  },
+                  "expire-required-error": {
+                    "value": "`expire` is required."
+                  },
+                  "expire-invalid-error": {
+                    "value": "`expire` must be a UNIX timestamp."
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "This is most common errors you can get by the HTTP 403 response code.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "Account has been blocked.",
+                    "Account has been blocked for nonpayment.",
+                    "Account has reached its limits.",
+                    "UPLOADCARE_PUB_KEY is required.",
+                    "UPLOADCARE_PUB_KEY is invalid.",
+                    "Autostore is disabled.",
+                    "Expired signature.",
+                    "Invalid signature."
+                  ]
+                },
+                "examples": {
+                  "account-blocked-error": {
+                    "value": "Account has been blocked."
+                  },
+                  "account-blocked-no-payment-error": {
+                    "value": "Account has been blocked for nonpayment."
+                  },
+                  "account-limits-error": {
+                    "value": "Account has reached its limits."
+                  },
+                  "pub-key-required-error": {
+                    "value": "UPLOADCARE_PUB_KEY is required."
+                  },
+                  "pub-key-invalid-error": {
+                    "value": "UPLOADCARE_PUB_KEY is invalid."
+                  },
+                  "signature-expired-error": {
+                    "value": "`signature` is required."
+                  },
+                  "signature-invalid-error": {
+                    "value": "Invalid signature."
+                  },
+                  "autostore-disabled-error": {
+                    "value": "Autostore is disabled."
+                  }
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Direct uploads only support files smaller than 100MB",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "default": "Direct uploads only support files smaller than 100MB"
+                },
+                "example": "Direct uploads only support files smaller than 100MB"
+              }
+            }
+          },
+          "429": {
+            "description": "Request was throttled.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "default": "Request was throttled."
+                },
+                "example": "Request was throttled."
+              }
+            }
+          }
+        }
+      }
+    },
+    "/submit/": {
+      "post": {
+        "tags": [
+          "Upload"
+        ],
+        "summary": "Direct form uploads",
+        "description": "If you do not want to use Uploadcare Widget or one of our API clients for all kinds of uploads, this is a way to route your web forms through Uploadcare, so that we upload files submitted with your form and resend that form with no actual files but their UUIDs to a URL of your choice.",
+        "operationId": "submitUpload",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "array",
+                    "description": "Files",
+                    "items": {
+                      "type": "string",
+                      "description": "File content",
+                      "format": "binary"
+                    }
+                  },
+                  "UPLOADCARE_PUB_KEY": {
+                    "type": "string",
+                    "description": "A public key identifying an Uploadcare project your uploads will go to.",
+                    "example": "caa9d29da887ee88ffe6"
+                  },
+                  "UPLOADCARE_STORE": {
+                    "type": "string",
+                    "description": "Sets the file storing behavior. If nothing is sent, `0` is used. When developing an API client, we recommend to send `auto` according to the principle of least surprise. See [Storage Workflow](https://uploadcare.com/docs/file_uploads/widget/uploads_and_storage/#storage-workflow) for details.",
+                    "enum": [
+                      "0",
+                      "1",
+                      "auto"
+                    ],
+                    "default": "0",
+                    "example": "1"
+                  },
+                  "UPLOADCARE_ACTION": {
+                    "type": "string",
+                    "description": "The URL to resubmit your form with file UUIDs to.",
+                    "format": "uri",
+                    "example": "https://my-app.com/my-form-handler/"
+                  },
+                  "signature": {
+                    "type": "string",
+                    "description": "`signature` is a string sent along with your upload request. It requires your Uploadcare project secret key and hence should be crafted on your back end. See [Signed uploads](https://uploadcare.com/docs/api_reference/upload/signed_uploads/) for details.",
+                    "example": "04b29480233f4def5c875875b6bdc3b1"
+                  },
+                  "expire": {
+                    "type": "number",
+                    "description": "`expire` sets the time until your signature is valid. It is timestamp. See [Signed uploads](https://uploadcare.com/docs/api_reference/upload/signed_uploads/) for details.",
+                    "example": 1454902434
+                  }
+                },
+                "required": [
+                  "file",
+                  "UPLOADCARE_PUB_KEY",
+                  "UPLOADCARE_ACTION"
+                ]
+              },
+              "examples": {
+                "oneFile": {
+                  "value": {
+                    "UPLOADCARE_PUB_KEY": "demopublickey",
+                    "UPLOADCARE_STORE": 1,
+                    "UPLOADCARE_ACTION": "https://my-app.com/my-form-handler/",
+                    "my_file.jpg": "@my_file.jpg"
+                  }
+                },
+                "twoFiles": {
+                  "value": {
+                    "UPLOADCARE_PUB_KEY": "demopublickey",
+                    "UPLOADCARE_STORE": 1,
+                    "UPLOADCARE_ACTION": "https://my-app.com/my-form-handler/",
+                    "my_file.jpg": "@my_file.jpg",
+                    "other_file.jpg": "@other_file.jpg"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Files successfully uploaded.",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "type": "string",
+                  "description": "HTML-code of the form to resubmit to your server.  All file fields are replaced with their respective UUIDs on form resend.",
+                  "example": "<form action=\"https://upload.staging0.uploadcare.com/\" method=\"post\" id=\"frm\"><input type=\"hidden\" name=\"papaya.jpg\" value=\"dcacc27f-7149-4af5-be51-adb5f97cb47e\"><input type=\"submit\" value=\"Proceed\"></form><script>document.getElementById(\\'frm\\').submit();</script>"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Parameters errors",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "type": "string",
+                      "enum": [
+                        "UPLOADCARE_ACTION is required.",
+                        "UPLOADCARE_ACTION should be a valid URL."
+                      ]
+                    },
+                    {
+                      "description": "File is too large.",
+                      "content": {
+                        "text/plain": {
+                          "schema": {
+                            "type": "string",
+                            "default": "File is too large."
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "description": "`signature` is required.",
+                      "content": {
+                        "text/plain": {
+                          "schema": {
+                            "type": "string",
+                            "default": "`signature` is required."
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "description": "`expire` is required.",
+                      "content": {
+                        "text/plain": {
+                          "schema": {
+                            "type": "string",
+                            "default": "`expire` is required."
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "description": "`expire` must be a UNIX timestamp.",
+                      "content": {
+                        "text/plain": {
+                          "schema": {
+                            "type": "string",
+                            "default": "`expire` must be a UNIX timestamp."
+                          }
+                        }
+                      }
+                    }
+                  ]
+                },
+                "examples": {
+                  "action-error": {
+                    "value": "UPLOADCARE_ACTION should be a valid URL."
+                  },
+                  "file-too-large-error": {
+                    "value": "File is too large."
+                  },
+                  "signature-error": {
+                    "value": "`signature` is required."
+                  },
+                  "expire-required-error": {
+                    "value": "`expire` is required."
+                  },
+                  "expire-invalid-error": {
+                    "value": "`expire` must be a UNIX timestamp."
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "This is most common errors you can get by the HTTP 403 response code.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "Account has been blocked.",
+                    "Account has been blocked for nonpayment.",
+                    "Account has reached its limits.",
+                    "UPLOADCARE_PUB_KEY is required.",
+                    "UPLOADCARE_PUB_KEY is invalid.",
+                    "Autostore is disabled.",
+                    "Expired signature.",
+                    "Invalid signature."
+                  ]
+                },
+                "examples": {
+                  "account-blocked-error": {
+                    "value": "Account has been blocked."
+                  },
+                  "account-blocked-no-payment-error": {
+                    "value": "Account has been blocked for nonpayment."
+                  },
+                  "account-limits-error": {
+                    "value": "Account has reached its limits."
+                  },
+                  "pub-key-required-error": {
+                    "value": "UPLOADCARE_PUB_KEY is required."
+                  },
+                  "pub-key-invalid-error": {
+                    "value": "UPLOADCARE_PUB_KEY is invalid."
+                  },
+                  "signature-expired-error": {
+                    "value": "`signature` is required."
+                  },
+                  "signature-invalid-error": {
+                    "value": "Invalid signature."
+                  },
+                  "autostore-disabled-error": {
+                    "value": "Autostore is disabled."
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Request was throttled.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "default": "Request was throttled."
+                },
+                "example": "Request was throttled."
+              }
+            }
+          }
+        }
+      }
+    },
+    "/multipart/start/": {
+      "post": {
+        "tags": [
+          "Upload"
+        ],
+        "summary": "Start multipart upload",
+        "description": "Multipart Uploads are useful when you are dealing with files larger than 100MB or explicitly want to use accelerated uploads.",
+        "operationId": "multipartFileUploadStart",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "description": "Multipart upload parameters used to start multipart upload.",
+                "properties": {
+                  "filename": {
+                    "type": "string",
+                    "description": "An original filename",
+                    "example": "myfile.mp4"
+                  },
+                  "size": {
+                    "type": "integer",
+                    "description": "Precise file size in bytes. Should not exceed your project file size cap.",
+                    "example": 27796904
+                  },
+                  "content_type": {
+                    "type": "string",
+                    "description": "A file MIME-type.",
+                    "example": "video/mp4"
+                  },
+                  "UPLOADCARE_STORE": {
+                    "type": "string",
+                    "description": "Sets the file storing behavior. If nothing is sent, `0` is used. When developing an API client, we recommend to send `auto` according to the principle of least surprise. See [Storage Workflow](https://uploadcare.com/docs/file_uploads/widget/uploads_and_storage/#storage-workflow) for details.",
+                    "enum": [
+                      "0",
+                      "1",
+                      "auto"
+                    ],
+                    "default": "0",
+                    "example": "1"
+                  },
+                  "UPLOADCARE_PUB_KEY": {
+                    "type": "string",
+                    "description": "A public key identifying an Uploadcare project your uploads will go to.",
+                    "example": "caa9d29da887ee88ffe6"
+                  },
+                  "signature": {
+                    "type": "string",
+                    "description": "`signature` is a string sent along with your upload request. It requires your Uploadcare project secret key and hence should be crafted on your back end. See [Signed uploads](https://uploadcare.com/docs/api_reference/upload/signed_uploads/) for details.",
+                    "example": "04b29480233f4def5c875875b6bdc3b1"
+                  },
+                  "expire": {
+                    "type": "number",
+                    "description": "`expire` sets the time until your signature is valid. It is timestamp. See [Signed uploads](https://uploadcare.com/docs/api_reference/upload/signed_uploads/) for details.",
+                    "example": 1454902434
+                  }
+                },
+                "required": [
+                  "filename",
+                  "content_type",
+                  "size",
+                  "UPLOADCARE_PUB_KEY"
+                ]
+              },
+              "example": {
+                "UPLOADCARE_PUB_KEY": "demopublickey",
+                "filename": "myfile.mp4",
+                "size": 27796904,
+                "content_type": "video/mp4",
+                "UPLOADCARE_STORE": "auto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Multipart upload start response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "parts": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "description": "Upload file parts here.",
+                        "format": "uri"
+                      }
+                    },
+                    "uuid": {
+                      "type": "string",
+                      "description": "Uploaded file UUID.",
+                      "format": "uuid"
+                    }
+                  },
+                  "example": {
+                    "parts": [
+                      "<presigned-url-1>",
+                      "<presigned-url-2>",
+                      "<presigned-url-3>",
+                      "<presigned-url-4>",
+                      "<presigned-url-5>"
+                    ],
+                    "uuid": "67947755-1584-4e3f-902b-d4e2bf76a841"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Request parameters validation errors.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "type": "string",
+                      "enum": [
+                        "The \"filename\" parameter is missing.",
+                        "The provided \"size\" should be an integer.",
+                        "File size exceeds your project limits, see Uploadcare pricing for details.",
+                        "File size should not be less than 10485760 bytes. Please use direct uploads instead.",
+                        "The \"content_type\" parameter is missing."
+                      ]
+                    },
+                    {
+                      "description": "`signature` is required.",
+                      "content": {
+                        "text/plain": {
+                          "schema": {
+                            "type": "string",
+                            "default": "`signature` is required."
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "description": "`expire` is required.",
+                      "content": {
+                        "text/plain": {
+                          "schema": {
+                            "type": "string",
+                            "default": "`expire` is required."
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "description": "`expire` must be a UNIX timestamp.",
+                      "content": {
+                        "text/plain": {
+                          "schema": {
+                            "type": "string",
+                            "default": "`expire` must be a UNIX timestamp."
+                          }
+                        }
+                      }
+                    }
+                  ]
+                },
+                "examples": {
+                  "parameters-error": {
+                    "value": "The provided \"size\" should be an integer."
+                  },
+                  "expire-required-error": {
+                    "value": "`expire` is required."
+                  },
+                  "expire-invalid-error": {
+                    "value": "`expire` must be a UNIX timestamp."
+                  },
+                  "signature-required-error": {
+                    "value": "`signature` is required."
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "This is most common errors you can get by the HTTP 403 response code.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "Account has been blocked.",
+                    "Account has been blocked for nonpayment.",
+                    "Account has reached its limits.",
+                    "UPLOADCARE_PUB_KEY is required.",
+                    "UPLOADCARE_PUB_KEY is invalid.",
+                    "Autostore is disabled.",
+                    "Expired signature.",
+                    "Invalid signature."
+                  ]
+                },
+                "examples": {
+                  "account-blocked-error": {
+                    "value": "Account has been blocked."
+                  },
+                  "account-blocked-no-payment-error": {
+                    "value": "Account has been blocked for nonpayment."
+                  },
+                  "account-limits-error": {
+                    "value": "Account has reached its limits."
+                  },
+                  "pub-key-required-error": {
+                    "value": "UPLOADCARE_PUB_KEY is required."
+                  },
+                  "pub-key-invalid-error": {
+                    "value": "UPLOADCARE_PUB_KEY is invalid."
+                  },
+                  "signature-expired-error": {
+                    "value": "`signature` is required."
+                  },
+                  "signature-invalid-error": {
+                    "value": "Invalid signature."
+                  },
+                  "autostore-disabled-error": {
+                    "value": "Autostore is disabled."
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Request was throttled.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "default": "Request was throttled."
+                },
+                "example": "Request was throttled."
+              }
+            }
+          }
+        }
+      }
+    },
+    "<presigned-url-x>": {
+      "put": {
+        "tags": [
+          "Upload"
+        ],
+        "summary": "Uploading individual file parts",
+        "description": "The second phase is about uploading file parts to the provided URLs. Each uploaded part should be 5MB (5242880 bytes) in size except for the last one that can be smaller. You can upload file parts in parallel provided the byte order stays unchanged. Make sure to define `Content-Type` header for your data.",
+        "requestBody": {
+          "content": {
+            "application/octet-stream": {
+              "schema": {
+                "type": "object",
+                "description": "Uploaded content part"
+              },
+              "example": "raw document part data"
+            }
+          }
+        }
+      }
+    },
+    "/multipart/complete/": {
+      "post": {
+        "tags": [
+          "Upload"
+        ],
+        "summary": "Complete multipart upload",
+        "description": "Complete multipart upload transaction when all files parts are uploaded.",
+        "operationId": "multipartFileUploadComplete",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "UPLOADCARE_PUB_KEY": {
+                    "type": "string",
+                    "description": "A public key identifying an Uploadcare project your uploads will go to.",
+                    "example": "caa9d29da887ee88ffe6"
+                  },
+                  "uuid": {
+                    "type": "string",
+                    "description": "Uploaded file UUID from multipart upload start response.",
+                    "format": "uuid",
+                    "example": "67947755-1584-4e3f-902b-d4e2bf76a841"
+                  }
+                },
+                "required": [
+                  "UPLOADCARE_PUB_KEY",
+                  "uuid"
+                ]
+              },
+              "example": {
+                "UPLOADCARE_PUB_KEY": "demopublickey",
+                "uuid": "67947755-1584-4e3f-902b-d4e2bf76a841"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "In a response, you get a JSON holding your uploaded file information.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "is_stored": {
+                      "type": "boolean",
+                      "description": "Is file is stored.",
+                      "example": true
+                    },
+                    "done": {
+                      "type": "integer",
+                      "description": "Currently uploaded file size in bytes.",
+                      "example": 145212
+                    },
+                    "file_id": {
+                      "type": "string",
+                      "format": "uuid",
+                      "description": "Same as `uuid`",
+                      "example": "575ed4e8-f4e8-4c14-a58b-1527b6d9ee46"
+                    },
+                    "total": {
+                      "type": "integer",
+                      "description": "Same as `size`.",
+                      "example": 145212
+                    },
+                    "size": {
+                      "type": "integer",
+                      "description": "File size in bytes.",
+                      "example": 145212
+                    },
+                    "uuid": {
+                      "type": "string",
+                      "format": "uuid",
+                      "description": "File UUID",
+                      "example": "575ed4e8-f4e8-4c14-a58b-1527b6d9ee46"
+                    },
+                    "is_image": {
+                      "type": "boolean",
+                      "description": "Is file is image.",
+                      "example": true
+                    },
+                    "filename": {
+                      "type": "string",
+                      "description": "Sanitized `original_filename`.",
+                      "example": "EU_4.jpg"
+                    },
+                    "video_info": {
+                      "nullable": true,
+                      "type": "object",
+                      "description": "Video metadata.",
+                      "properties": {
+                        "duration": {
+                          "type": "number",
+                          "description": "Video duration in milliseconds.",
+                          "example": 261827
+                        },
+                        "format": {
+                          "type": "string",
+                          "description": "Video format (MP4 for example).",
+                          "example": "mpeg4"
+                        },
+                        "bitrate": {
+                          "type": "number",
+                          "description": "Video bitrate.",
+                          "example": 393
+                        },
+                        "audio": {
+                          "type": "object",
+                          "description": "Audio stream metadata.",
+                          "nullable": true,
+                          "properties": {
+                            "bitrate": {
+                              "nullable": true,
+                              "type": "number",
+                              "description": "Audio stream metadata.",
+                              "example": 78
+                            },
+                            "codec": {
+                              "nullable": true,
+                              "type": "string",
+                              "description": "Audio stream codec.",
+                              "example": "aac"
+                            },
+                            "sample_rate": {
+                              "nullable": true,
+                              "type": "number",
+                              "description": "Audio stream sample rate.",
+                              "example": 44100
+                            },
+                            "channels": {
+                              "nullable": true,
+                              "type": "string",
+                              "description": "Audio stream number of channels.",
+                              "example": 2
+                            }
+                          }
+                        },
+                        "video": {
+                          "type": "object",
+                          "description": "Video stream metadata.",
+                          "properties": {
+                            "height": {
+                              "type": "number",
+                              "description": "Video stream image height.",
+                              "example": 360
+                            },
+                            "width": {
+                              "type": "number",
+                              "description": "Video stream image width.",
+                              "example": 640
+                            },
+                            "frame_rate": {
+                              "type": "number",
+                              "description": "Video stream frame rate.",
+                              "example": 25
+                            },
+                            "bitrate": {
+                              "type": "number",
+                              "description": "Video stream bitrate.",
+                              "example": 315
+                            },
+                            "codec": {
+                              "type": "string",
+                              "description": "Video stream codec.",
+                              "example": "h264"
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "is_ready": {
+                      "type": "boolean",
+                      "description": "Is file is ready to be used after upload.",
+                      "example": true
+                    },
+                    "original_filename": {
+                      "type": "string",
+                      "description": "Original file name taken from uploaded file.",
+                      "example": "EU_4.jpg"
+                    },
+                    "image_info": {
+                      "type": "object",
+                      "description": "Image metadata.",
+                      "nullable": true,
+                      "required": [
+                        "height",
+                        "width",
+                        "geo_location",
+                        "datetime_original",
+                        "format",
+                        "color_mode",
+                        "dpi",
+                        "orientation"
+                      ],
+                      "properties": {
+                        "height": {
+                          "type": "integer",
+                          "description": "Image height in pixels.",
+                          "example": 2352
+                        },
+                        "width": {
+                          "type": "integer",
+                          "description": "Image width in pixels.",
+                          "example": 2935
+                        },
+                        "geo_location": {
+                          "description": "Geo-location of image from EXIF.",
+                          "type": "object",
+                          "nullable": true,
+                          "properties": {
+                            "latitude": {
+                              "type": "number",
+                              "description": "Location latitude.",
+                              "example": -1.1884555555555556
+                            },
+                            "longitude": {
+                              "type": "number",
+                              "description": "Location longitude.",
+                              "example": 52.66996666666667
+                            }
+                          }
+                        },
+                        "datetime_original": {
+                          "nullable": true,
+                          "type": "string",
+                          "description": "Image date and time from EXIF.",
+                          "format": "date-time",
+                          "example": "2018-09-13T16:23:40.000Z"
+                        },
+                        "format": {
+                          "type": "string",
+                          "description": "Image format.",
+                          "example": "JPEG"
+                        },
+                        "color_mode": {
+                          "type": "string",
+                          "description": "Image color mode.",
+                          "enum": [
+                            "RGB",
+                            "RGBA",
+                            "RGBa",
+                            "RGBX",
+                            "L",
+                            "LA",
+                            "La",
+                            "P",
+                            "PA",
+                            "CMYK",
+                            "YCbCr",
+                            "HSV",
+                            "LAB"
+                          ],
+                          "example": "RGBA"
+                        },
+                        "dpi": {
+                          "nullable": true,
+                          "type": "array",
+                          "description": "Image DPI for two dimensions.",
+                          "items": {
+                            "type": "number",
+                            "example": 72
+                          },
+                          "example": [
+                            72,
+                            72
+                          ]
+                        },
+                        "orientation": {
+                          "nullable": true,
+                          "type": "number",
+                          "description": "Image orientation from EXIF.",
+                          "example": 6
+                        },
+                        "sequence": {
+                          "type": "boolean",
+                          "default": "Is image if sequence image(GIF for example).",
+                          "example": false
+                        }
+                      }
+                    },
+                    "mime_type": {
+                      "type": "string",
+                      "description": "File MIME-type.",
+                      "example": "image/jpeg"
+                    },
+                    "s3_bucket": {
+                      "type": "string",
+                      "nullable": true,
+                      "description": "Your custom user bucket on which file are stored. Only available of you setup foreign storage bucket for your project.",
+                      "example": "custom-s3-bucket-name"
+                    }
+                  },
+                  "example": {
+                    "is_stored": true,
+                    "done": 2667636,
+                    "file_id": "be3b4d5e-179d-460e-8a5d-69112ac86cbb",
+                    "total": 2667636,
+                    "size": 2667636,
+                    "uuid": "be3b4d5e-179d-460e-8a5d-69112ac86cbb",
+                    "is_image": true,
+                    "filename": "IMG_0412.JPG",
+                    "video_info": null,
+                    "is_ready": true,
+                    "original_filename": "IMG_0412.JPG",
+                    "image_info": {
+                      "orientation": 6,
+                      "format": "JPEG",
+                      "height": 4032,
+                      "width": 3024,
+                      "geo_location": {
+                        "latitude": 55.62013611111111,
+                        "longitude": 37.66299166666666
+                      },
+                      "datetime_original": "2018-08-20T08:59:50",
+                      "dpi": [
+                        72,
+                        72
+                      ]
+                    },
+                    "mime_type": "image/jpeg"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Request parameters validation errors.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "type": "string",
+                      "enum": [
+                        "The \"uuid\" parameter is missing.",
+                        "File has already been uploaded, try addressing it via UUID.",
+                        "Total size of uploaded file parts exceeds original file size.",
+                        "Total size of uploaded file parts is smaller than original file size.",
+                        "Could not complete your upload. Consider checking file part sizes."
+                      ]
+                    }
+                  ]
+                },
+                "examples": {
+                  "uuid-error": {
+                    "value": "The \"uuid\" parameter is missing."
+                  },
+                  "complete-error": {
+                    "value": "Could not complete your upload. Consider checking file part sizes."
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "This is most common errors you can get by the HTTP 403 response code.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "Account has been blocked.",
+                    "Account has been blocked for nonpayment.",
+                    "Account has reached its limits.",
+                    "UPLOADCARE_PUB_KEY is required.",
+                    "UPLOADCARE_PUB_KEY is invalid.",
+                    "Autostore is disabled.",
+                    "Expired signature.",
+                    "Invalid signature."
+                  ]
+                },
+                "examples": {
+                  "account-blocked-error": {
+                    "value": "Account has been blocked."
+                  },
+                  "account-blocked-no-payment-error": {
+                    "value": "Account has been blocked for nonpayment."
+                  },
+                  "account-limits-error": {
+                    "value": "Account has reached its limits."
+                  },
+                  "pub-key-required-error": {
+                    "value": "UPLOADCARE_PUB_KEY is required."
+                  },
+                  "pub-key-invalid-error": {
+                    "value": "UPLOADCARE_PUB_KEY is invalid."
+                  },
+                  "signature-expired-error": {
+                    "value": "`signature` is required."
+                  },
+                  "signature-invalid-error": {
+                    "value": "Invalid signature."
+                  },
+                  "autostore-disabled-error": {
+                    "value": "Autostore is disabled."
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "File with specified UUID not found.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "description": "404 File not found."
+                },
+                "example": "404 File not found."
+              }
+            }
+          }
+        }
+      }
+    },
+    "/from_url/": {
+      "post": {
+        "tags": [
+          "Upload"
+        ],
+        "summary": "Upload files from URLs",
+        "description": "Uploadcare allows fetching files from their URLs. Your users will then be able to attach file links in your application.",
+        "operationId": "fromURLUpload",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "required": [
+                  "source_url",
+                  "pub_key"
+                ],
+                "type": "object",
+                "properties": {
+                  "pub_key": {
+                    "type": "string",
+                    "description": "A public key identifying an Uploadcare project your uploads will go to.",
+                    "example": "caa9d29da887ee88ffe6"
+                  },
+                  "source_url": {
+                    "description": "Defines your source file URL, which should be a public HTTP or HTTPS link.",
+                    "type": "string",
+                    "format": "uri",
+                    "example": "http://abs.twimg.com/b/front_page/v1/EU_4.jpg"
+                  },
+                  "store": {
+                    "type": "string",
+                    "description": "Sets the file storing behavior. If nothing is sent, `0` is used. When developing an API client, we recommend to send `auto` according to the principle of least surprise. See [Storage Workflow](https://uploadcare.com/docs/file_uploads/widget/uploads_and_storage/#storage-workflow) for details.",
+                    "enum": [
+                      "0",
+                      "1",
+                      "auto"
+                    ],
+                    "default": "0",
+                    "example": "1"
+                  },
+                  "filename": {
+                    "description": "Sets the name for a file uploaded from URL. If not defined, the filename is obtained from either response headers or a source URL. Filename will be sanitized to the valid symbols: `abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789._`.",
+                    "type": "string",
+                    "example": "EU_4.jpg"
+                  },
+                  "check_URL_duplicates": {
+                    "description": "Runs the duplicate check and provides the immediate-download behavior.",
+                    "example": 1,
+                    "type": "string",
+                    "enum": [
+                      "0",
+                      "1"
+                    ]
+                  },
+                  "save_URL_duplicates": {
+                    "description": "Provides the save/update URL behavior. The parameter can be used if you believe a source_url will be used more than once. If you don’t explicitly define `save_URL_duplicates`, it is by default set to the value of `check_URL_duplicates`.",
+                    "type": "string",
+                    "enum": [
+                      "0",
+                      "1"
+                    ]
+                  },
+                  "signature": {
+                    "type": "string",
+                    "description": "`signature` is a string sent along with your upload request. It requires your Uploadcare project secret key and hence should be crafted on your back end. See [Signed uploads](https://uploadcare.com/docs/api_reference/upload/signed_uploads/) for details.",
+                    "example": "04b29480233f4def5c875875b6bdc3b1"
+                  },
+                  "expire": {
+                    "type": "number",
+                    "description": "`expire` sets the time until your signature is valid. It is timestamp. See [Signed uploads](https://uploadcare.com/docs/api_reference/upload/signed_uploads/) for details.",
+                    "example": 1454902434
+                  }
+                }
+              },
+              "example": {
+                "pub_key": "demopublickey",
+                "source_url": "https://bit.ly/2LJ2xOf"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Response structure depends on the `type` field of response JSON.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "allOf": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "enum": [
+                                "file_info"
+                              ]
+                            }
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "is_stored": {
+                              "type": "boolean",
+                              "description": "Is file is stored.",
+                              "example": true
+                            },
+                            "done": {
+                              "type": "integer",
+                              "description": "Currently uploaded file size in bytes.",
+                              "example": 145212
+                            },
+                            "file_id": {
+                              "type": "string",
+                              "format": "uuid",
+                              "description": "Same as `uuid`",
+                              "example": "575ed4e8-f4e8-4c14-a58b-1527b6d9ee46"
+                            },
+                            "total": {
+                              "type": "integer",
+                              "description": "Same as `size`.",
+                              "example": 145212
+                            },
+                            "size": {
+                              "type": "integer",
+                              "description": "File size in bytes.",
+                              "example": 145212
+                            },
+                            "uuid": {
+                              "type": "string",
+                              "format": "uuid",
+                              "description": "File UUID",
+                              "example": "575ed4e8-f4e8-4c14-a58b-1527b6d9ee46"
+                            },
+                            "is_image": {
+                              "type": "boolean",
+                              "description": "Is file is image.",
+                              "example": true
+                            },
+                            "filename": {
+                              "type": "string",
+                              "description": "Sanitized `original_filename`.",
+                              "example": "EU_4.jpg"
+                            },
+                            "video_info": {
+                              "nullable": true,
+                              "type": "object",
+                              "description": "Video metadata.",
+                              "properties": {
+                                "duration": {
+                                  "type": "number",
+                                  "description": "Video duration in milliseconds.",
+                                  "example": 261827
+                                },
+                                "format": {
+                                  "type": "string",
+                                  "description": "Video format (MP4 for example).",
+                                  "example": "mpeg4"
+                                },
+                                "bitrate": {
+                                  "type": "number",
+                                  "description": "Video bitrate.",
+                                  "example": 393
+                                },
+                                "audio": {
+                                  "type": "object",
+                                  "description": "Audio stream metadata.",
+                                  "nullable": true,
+                                  "properties": {
+                                    "bitrate": {
+                                      "nullable": true,
+                                      "type": "number",
+                                      "description": "Audio stream metadata.",
+                                      "example": 78
+                                    },
+                                    "codec": {
+                                      "nullable": true,
+                                      "type": "string",
+                                      "description": "Audio stream codec.",
+                                      "example": "aac"
+                                    },
+                                    "sample_rate": {
+                                      "nullable": true,
+                                      "type": "number",
+                                      "description": "Audio stream sample rate.",
+                                      "example": 44100
+                                    },
+                                    "channels": {
+                                      "nullable": true,
+                                      "type": "string",
+                                      "description": "Audio stream number of channels.",
+                                      "example": 2
+                                    }
+                                  }
+                                },
+                                "video": {
+                                  "type": "object",
+                                  "description": "Video stream metadata.",
+                                  "properties": {
+                                    "height": {
+                                      "type": "number",
+                                      "description": "Video stream image height.",
+                                      "example": 360
+                                    },
+                                    "width": {
+                                      "type": "number",
+                                      "description": "Video stream image width.",
+                                      "example": 640
+                                    },
+                                    "frame_rate": {
+                                      "type": "number",
+                                      "description": "Video stream frame rate.",
+                                      "example": 25
+                                    },
+                                    "bitrate": {
+                                      "type": "number",
+                                      "description": "Video stream bitrate.",
+                                      "example": 315
+                                    },
+                                    "codec": {
+                                      "type": "string",
+                                      "description": "Video stream codec.",
+                                      "example": "h264"
+                                    }
+                                  }
+                                }
+                              }
+                            },
+                            "is_ready": {
+                              "type": "boolean",
+                              "description": "Is file is ready to be used after upload.",
+                              "example": true
+                            },
+                            "original_filename": {
+                              "type": "string",
+                              "description": "Original file name taken from uploaded file.",
+                              "example": "EU_4.jpg"
+                            },
+                            "image_info": {
+                              "type": "object",
+                              "description": "Image metadata.",
+                              "nullable": true,
+                              "required": [
+                                "height",
+                                "width",
+                                "geo_location",
+                                "datetime_original",
+                                "format",
+                                "color_mode",
+                                "dpi",
+                                "orientation"
+                              ],
+                              "properties": {
+                                "height": {
+                                  "type": "integer",
+                                  "description": "Image height in pixels.",
+                                  "example": 2352
+                                },
+                                "width": {
+                                  "type": "integer",
+                                  "description": "Image width in pixels.",
+                                  "example": 2935
+                                },
+                                "geo_location": {
+                                  "description": "Geo-location of image from EXIF.",
+                                  "type": "object",
+                                  "nullable": true,
+                                  "properties": {
+                                    "latitude": {
+                                      "type": "number",
+                                      "description": "Location latitude.",
+                                      "example": -1.1884555555555556
+                                    },
+                                    "longitude": {
+                                      "type": "number",
+                                      "description": "Location longitude.",
+                                      "example": 52.66996666666667
+                                    }
+                                  }
+                                },
+                                "datetime_original": {
+                                  "nullable": true,
+                                  "type": "string",
+                                  "description": "Image date and time from EXIF.",
+                                  "format": "date-time",
+                                  "example": "2018-09-13T16:23:40.000Z"
+                                },
+                                "format": {
+                                  "type": "string",
+                                  "description": "Image format.",
+                                  "example": "JPEG"
+                                },
+                                "color_mode": {
+                                  "type": "string",
+                                  "description": "Image color mode.",
+                                  "enum": [
+                                    "RGB",
+                                    "RGBA",
+                                    "RGBa",
+                                    "RGBX",
+                                    "L",
+                                    "LA",
+                                    "La",
+                                    "P",
+                                    "PA",
+                                    "CMYK",
+                                    "YCbCr",
+                                    "HSV",
+                                    "LAB"
+                                  ],
+                                  "example": "RGBA"
+                                },
+                                "dpi": {
+                                  "nullable": true,
+                                  "type": "array",
+                                  "description": "Image DPI for two dimensions.",
+                                  "items": {
+                                    "type": "number",
+                                    "example": 72
+                                  },
+                                  "example": [
+                                    72,
+                                    72
+                                  ]
+                                },
+                                "orientation": {
+                                  "nullable": true,
+                                  "type": "number",
+                                  "description": "Image orientation from EXIF.",
+                                  "example": 6
+                                },
+                                "sequence": {
+                                  "type": "boolean",
+                                  "default": "Is image if sequence image(GIF for example).",
+                                  "example": false
+                                }
+                              }
+                            },
+                            "mime_type": {
+                              "type": "string",
+                              "description": "File MIME-type.",
+                              "example": "image/jpeg"
+                            },
+                            "s3_bucket": {
+                              "type": "string",
+                              "nullable": true,
+                              "description": "Your custom user bucket on which file are stored. Only available of you setup foreign storage bucket for your project.",
+                              "example": "custom-s3-bucket-name"
+                            }
+                          },
+                          "example": {
+                            "is_stored": true,
+                            "done": 2667636,
+                            "file_id": "be3b4d5e-179d-460e-8a5d-69112ac86cbb",
+                            "total": 2667636,
+                            "size": 2667636,
+                            "uuid": "be3b4d5e-179d-460e-8a5d-69112ac86cbb",
+                            "is_image": true,
+                            "filename": "IMG_0412.JPG",
+                            "video_info": null,
+                            "is_ready": true,
+                            "original_filename": "IMG_0412.JPG",
+                            "image_info": {
+                              "orientation": 6,
+                              "format": "JPEG",
+                              "height": 4032,
+                              "width": 3024,
+                              "geo_location": {
+                                "latitude": 55.62013611111111,
+                                "longitude": 37.66299166666666
+                              },
+                              "datetime_original": "2018-08-20T08:59:50",
+                              "dpi": [
+                                72,
+                                72
+                              ]
+                            },
+                            "mime_type": "image/jpeg"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "type": "object",
+                      "description": "`/from_url/` upload response.",
+                      "properties": {
+                        "token": {
+                          "type": "string",
+                          "description": "A token to identify a file for the upload status request.",
+                          "format": "uuid",
+                          "example": "945ebb27-1fd6-46c6-a859-b9893712d650"
+                        },
+                        "type": {
+                          "type": "string",
+                          "enum": [
+                            "token"
+                          ],
+                          "example": "token"
+                        }
+                      }
+                    }
+                  ]
+                },
+                "examples": {
+                  "from-URL-upload-response-file": {
+                    "value": {
+                      "type": "file_info",
+                      "is_stored": true,
+                      "done": 2667636,
+                      "file_id": "be3b4d5e-179d-460e-8a5d-69112ac86cbb",
+                      "total": 2667636,
+                      "size": 2667636,
+                      "uuid": "be3b4d5e-179d-460e-8a5d-69112ac86cbb",
+                      "is_image": true,
+                      "filename": "IMG_0412.JPG",
+                      "video_info": null,
+                      "is_ready": true,
+                      "original_filename": "IMG_0412.JPG",
+                      "image_info": {
+                        "orientation": 6,
+                        "format": "JPEG",
+                        "height": 4032,
+                        "width": 3024,
+                        "geo_location": {
+                          "latitude": 55.62013611111111,
+                          "longitude": 37.66299166666666
+                        },
+                        "datetime_original": "2018-08-20T08:59:50",
+                        "dpi": [
+                          72,
+                          72
+                        ]
+                      },
+                      "mime_type": "image/jpeg"
+                    }
+                  },
+                  "from-URL-upload-token": {
+                    "value": {
+                      "token": "945ebb27-1fd6-46c6-a859-b9893712d650",
+                      "type": "token"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Request parameters validation errors.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "type": "string",
+                      "enum": [
+                        "source_url is required.",
+                        "Failed to parse URL.",
+                        "No URL scheme supplied.",
+                        "Invalid URL scheme.",
+                        "Host does not exist.",
+                        "Source is blacklisted.",
+                        "URL host is malformed.",
+                        "Only public IPs are allowed."
+                      ]
+                    },
+                    {
+                      "description": "`signature` is required.",
+                      "content": {
+                        "text/plain": {
+                          "schema": {
+                            "type": "string",
+                            "default": "`signature` is required."
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "description": "`expire` is required.",
+                      "content": {
+                        "text/plain": {
+                          "schema": {
+                            "type": "string",
+                            "default": "`expire` is required."
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "description": "`expire` must be a UNIX timestamp.",
+                      "content": {
+                        "text/plain": {
+                          "schema": {
+                            "type": "string",
+                            "default": "`expire` must be a UNIX timestamp."
+                          }
+                        }
+                      }
+                    }
+                  ]
+                },
+                "examples": {
+                  "parameters-error": {
+                    "value": "Invalid URL scheme."
+                  },
+                  "expire-required-error": {
+                    "value": "`expire` is required."
+                  },
+                  "expire-invalid-error": {
+                    "value": "`expire` must be a UNIX timestamp."
+                  },
+                  "signature-required-error": {
+                    "value": "`signature` is required."
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Common errors for HTTP 403 response code.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "Account has been blocked.",
+                    "Account has been blocked for nonpayment.",
+                    "Account has reached its limits.",
+                    "pub_key is required.",
+                    "pub_key is invalid.",
+                    "Autostore is disabled.",
+                    "Expired signature.",
+                    "Invalid signature."
+                  ]
+                },
+                "examples": {
+                  "account-blocked-error": {
+                    "value": "Account has been blocked."
+                  },
+                  "account-blocked-no-payment-error": {
+                    "value": "Account has been blocked for nonpayment."
+                  },
+                  "account-limits-error": {
+                    "value": "Account has reached its limits."
+                  },
+                  "pub-key-required-error": {
+                    "value": "pub_key is required."
+                  },
+                  "pub-key-invalid-error": {
+                    "value": "pub_key is invalid."
+                  },
+                  "signature-expired-error": {
+                    "value": "`signature` is required."
+                  },
+                  "signature-invalid-error": {
+                    "value": "Invalid signature."
+                  },
+                  "autostore-disabled-error": {
+                    "value": "Autostore is disabled."
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Request was throttled.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "default": "Request was throttled."
+                },
+                "example": "Request was throttled."
+              }
+            }
+          }
+        }
+      }
+    },
+    "/from_url/status/": {
+      "get": {
+        "summary": "Check the status of a file uploaded from URL.",
+        "description": "This method handles file tokens you get when using the /from_url/ method.",
+        "tags": [
+          "Upload"
+        ],
+        "operationId": "fromURLUploadStatus",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "token",
+            "description": "Sets a token returned by the `/from_url/` method. This identifies upload.",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "required": true,
+            "example": "945ebb27-1fd6-46c6-a859-b9893712d650"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "If everything is ok and status is `success`, returns a JSON dictionary holding an uploaded file info. Here is a list of possible upload statuses are `unknown`, `waiting`, `progress`, `error`, `success`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "allOf": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "status": {
+                              "enum": [
+                                "success"
+                              ]
+                            }
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "is_stored": {
+                              "type": "boolean",
+                              "description": "Is file is stored.",
+                              "example": true
+                            },
+                            "done": {
+                              "type": "integer",
+                              "description": "Currently uploaded file size in bytes.",
+                              "example": 145212
+                            },
+                            "file_id": {
+                              "type": "string",
+                              "format": "uuid",
+                              "description": "Same as `uuid`",
+                              "example": "575ed4e8-f4e8-4c14-a58b-1527b6d9ee46"
+                            },
+                            "total": {
+                              "type": "integer",
+                              "description": "Same as `size`.",
+                              "example": 145212
+                            },
+                            "size": {
+                              "type": "integer",
+                              "description": "File size in bytes.",
+                              "example": 145212
+                            },
+                            "uuid": {
+                              "type": "string",
+                              "format": "uuid",
+                              "description": "File UUID",
+                              "example": "575ed4e8-f4e8-4c14-a58b-1527b6d9ee46"
+                            },
+                            "is_image": {
+                              "type": "boolean",
+                              "description": "Is file is image.",
+                              "example": true
+                            },
+                            "filename": {
+                              "type": "string",
+                              "description": "Sanitized `original_filename`.",
+                              "example": "EU_4.jpg"
+                            },
+                            "video_info": {
+                              "nullable": true,
+                              "type": "object",
+                              "description": "Video metadata.",
+                              "properties": {
+                                "duration": {
+                                  "type": "number",
+                                  "description": "Video duration in milliseconds.",
+                                  "example": 261827
+                                },
+                                "format": {
+                                  "type": "string",
+                                  "description": "Video format (MP4 for example).",
+                                  "example": "mpeg4"
+                                },
+                                "bitrate": {
+                                  "type": "number",
+                                  "description": "Video bitrate.",
+                                  "example": 393
+                                },
+                                "audio": {
+                                  "type": "object",
+                                  "description": "Audio stream metadata.",
+                                  "nullable": true,
+                                  "properties": {
+                                    "bitrate": {
+                                      "nullable": true,
+                                      "type": "number",
+                                      "description": "Audio stream metadata.",
+                                      "example": 78
+                                    },
+                                    "codec": {
+                                      "nullable": true,
+                                      "type": "string",
+                                      "description": "Audio stream codec.",
+                                      "example": "aac"
+                                    },
+                                    "sample_rate": {
+                                      "nullable": true,
+                                      "type": "number",
+                                      "description": "Audio stream sample rate.",
+                                      "example": 44100
+                                    },
+                                    "channels": {
+                                      "nullable": true,
+                                      "type": "string",
+                                      "description": "Audio stream number of channels.",
+                                      "example": 2
+                                    }
+                                  }
+                                },
+                                "video": {
+                                  "type": "object",
+                                  "description": "Video stream metadata.",
+                                  "properties": {
+                                    "height": {
+                                      "type": "number",
+                                      "description": "Video stream image height.",
+                                      "example": 360
+                                    },
+                                    "width": {
+                                      "type": "number",
+                                      "description": "Video stream image width.",
+                                      "example": 640
+                                    },
+                                    "frame_rate": {
+                                      "type": "number",
+                                      "description": "Video stream frame rate.",
+                                      "example": 25
+                                    },
+                                    "bitrate": {
+                                      "type": "number",
+                                      "description": "Video stream bitrate.",
+                                      "example": 315
+                                    },
+                                    "codec": {
+                                      "type": "string",
+                                      "description": "Video stream codec.",
+                                      "example": "h264"
+                                    }
+                                  }
+                                }
+                              }
+                            },
+                            "is_ready": {
+                              "type": "boolean",
+                              "description": "Is file is ready to be used after upload.",
+                              "example": true
+                            },
+                            "original_filename": {
+                              "type": "string",
+                              "description": "Original file name taken from uploaded file.",
+                              "example": "EU_4.jpg"
+                            },
+                            "image_info": {
+                              "type": "object",
+                              "description": "Image metadata.",
+                              "nullable": true,
+                              "required": [
+                                "height",
+                                "width",
+                                "geo_location",
+                                "datetime_original",
+                                "format",
+                                "color_mode",
+                                "dpi",
+                                "orientation"
+                              ],
+                              "properties": {
+                                "height": {
+                                  "type": "integer",
+                                  "description": "Image height in pixels.",
+                                  "example": 2352
+                                },
+                                "width": {
+                                  "type": "integer",
+                                  "description": "Image width in pixels.",
+                                  "example": 2935
+                                },
+                                "geo_location": {
+                                  "description": "Geo-location of image from EXIF.",
+                                  "type": "object",
+                                  "nullable": true,
+                                  "properties": {
+                                    "latitude": {
+                                      "type": "number",
+                                      "description": "Location latitude.",
+                                      "example": -1.1884555555555556
+                                    },
+                                    "longitude": {
+                                      "type": "number",
+                                      "description": "Location longitude.",
+                                      "example": 52.66996666666667
+                                    }
+                                  }
+                                },
+                                "datetime_original": {
+                                  "nullable": true,
+                                  "type": "string",
+                                  "description": "Image date and time from EXIF.",
+                                  "format": "date-time",
+                                  "example": "2018-09-13T16:23:40.000Z"
+                                },
+                                "format": {
+                                  "type": "string",
+                                  "description": "Image format.",
+                                  "example": "JPEG"
+                                },
+                                "color_mode": {
+                                  "type": "string",
+                                  "description": "Image color mode.",
+                                  "enum": [
+                                    "RGB",
+                                    "RGBA",
+                                    "RGBa",
+                                    "RGBX",
+                                    "L",
+                                    "LA",
+                                    "La",
+                                    "P",
+                                    "PA",
+                                    "CMYK",
+                                    "YCbCr",
+                                    "HSV",
+                                    "LAB"
+                                  ],
+                                  "example": "RGBA"
+                                },
+                                "dpi": {
+                                  "nullable": true,
+                                  "type": "array",
+                                  "description": "Image DPI for two dimensions.",
+                                  "items": {
+                                    "type": "number",
+                                    "example": 72
+                                  },
+                                  "example": [
+                                    72,
+                                    72
+                                  ]
+                                },
+                                "orientation": {
+                                  "nullable": true,
+                                  "type": "number",
+                                  "description": "Image orientation from EXIF.",
+                                  "example": 6
+                                },
+                                "sequence": {
+                                  "type": "boolean",
+                                  "default": "Is image if sequence image(GIF for example).",
+                                  "example": false
+                                }
+                              }
+                            },
+                            "mime_type": {
+                              "type": "string",
+                              "description": "File MIME-type.",
+                              "example": "image/jpeg"
+                            },
+                            "s3_bucket": {
+                              "type": "string",
+                              "nullable": true,
+                              "description": "Your custom user bucket on which file are stored. Only available of you setup foreign storage bucket for your project.",
+                              "example": "custom-s3-bucket-name"
+                            }
+                          },
+                          "example": {
+                            "is_stored": true,
+                            "done": 2667636,
+                            "file_id": "be3b4d5e-179d-460e-8a5d-69112ac86cbb",
+                            "total": 2667636,
+                            "size": 2667636,
+                            "uuid": "be3b4d5e-179d-460e-8a5d-69112ac86cbb",
+                            "is_image": true,
+                            "filename": "IMG_0412.JPG",
+                            "video_info": null,
+                            "is_ready": true,
+                            "original_filename": "IMG_0412.JPG",
+                            "image_info": {
+                              "orientation": 6,
+                              "format": "JPEG",
+                              "height": 4032,
+                              "width": 3024,
+                              "geo_location": {
+                                "latitude": 55.62013611111111,
+                                "longitude": 37.66299166666666
+                              },
+                              "datetime_original": "2018-08-20T08:59:50",
+                              "dpi": [
+                                72,
+                                72
+                              ]
+                            },
+                            "mime_type": "image/jpeg"
+                          }
+                        }
+                      ],
+                      "example": {
+                        "status": "success",
+                        "is_stored": true,
+                        "done": 2667636,
+                        "file_id": "be3b4d5e-179d-460e-8a5d-69112ac86cbb",
+                        "total": 2667636,
+                        "size": 2667636,
+                        "uuid": "be3b4d5e-179d-460e-8a5d-69112ac86cbb",
+                        "is_image": true,
+                        "filename": "IMG_0412.JPG",
+                        "video_info": null,
+                        "is_ready": true,
+                        "original_filename": "IMG_0412.JPG",
+                        "image_info": {
+                          "orientation": 6,
+                          "format": "JPEG",
+                          "height": 4032,
+                          "width": 3024,
+                          "geo_location": {
+                            "latitude": 55.62013611111111,
+                            "longitude": 37.66299166666666
+                          },
+                          "datetime_original": "2018-08-20T08:59:50",
+                          "dpi": [
+                            72,
+                            72
+                          ]
+                        },
+                        "mime_type": "image/jpeg"
+                      }
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "status": {
+                          "enum": [
+                            "progress"
+                          ]
+                        },
+                        "done": {
+                          "type": "number",
+                          "description": "Downloaded file bytes count."
+                        },
+                        "total": {
+                          "type": "number",
+                          "description": "Total downloading file bytes count."
+                        }
+                      }
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "status": {
+                          "enum": [
+                            "error"
+                          ]
+                        },
+                        "error": {
+                          "type": "string",
+                          "description": "File download error description."
+                        }
+                      }
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "status": {
+                          "enum": [
+                            "waiting",
+                            "unknown"
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                },
+                "examples": {
+                  "progress": {
+                    "value": {
+                      "status": "progress",
+                      "done": 100,
+                      "total": 150
+                    }
+                  },
+                  "error": {
+                    "value": {
+                      "status": "error",
+                      "error": "HTTPError: 404."
+                    }
+                  },
+                  "file": {
+                    "value": {
+                      "status": "success",
+                      "is_stored": true,
+                      "done": 2667636,
+                      "file_id": "be3b4d5e-179d-460e-8a5d-69112ac86cbb",
+                      "total": 2667636,
+                      "size": 2667636,
+                      "uuid": "be3b4d5e-179d-460e-8a5d-69112ac86cbb",
+                      "is_image": true,
+                      "filename": "IMG_0412.JPG",
+                      "video_info": null,
+                      "is_ready": true,
+                      "original_filename": "IMG_0412.JPG",
+                      "image_info": {
+                        "orientation": 6,
+                        "format": "JPEG",
+                        "height": 4032,
+                        "width": 3024,
+                        "geo_location": {
+                          "latitude": 55.62013611111111,
+                          "longitude": 37.66299166666666
+                        },
+                        "datetime_original": "2018-08-20T08:59:50",
+                        "dpi": [
+                          72,
+                          72
+                        ]
+                      },
+                      "mime_type": "image/jpeg"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "token is required.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "default": "token is required."
+                },
+                "example": "token is required."
+              }
+            }
+          }
+        }
+      }
+    },
+    "/info/": {
+      "get": {
+        "summary": "File info",
+        "description": "Return a JSON dictionary holding your file info.",
+        "tags": [
+          "Upload"
+        ],
+        "operationId": "fileUploadInfo",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "pub_key",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "A public key identifying an Uploadcare project your uploads will go to.",
+              "example": "caa9d29da887ee88ffe6"
+            },
+            "example": "demopublickey"
+          },
+          {
+            "in": "query",
+            "name": "file_id",
+            "description": "File UUID.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "example": "67947755-1584-4e3f-902b-d4e2bf76a841"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Uploaded file info JSON.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "is_stored": {
+                      "type": "boolean",
+                      "description": "Is file is stored.",
+                      "example": true
+                    },
+                    "done": {
+                      "type": "integer",
+                      "description": "Currently uploaded file size in bytes.",
+                      "example": 145212
+                    },
+                    "file_id": {
+                      "type": "string",
+                      "format": "uuid",
+                      "description": "Same as `uuid`",
+                      "example": "575ed4e8-f4e8-4c14-a58b-1527b6d9ee46"
+                    },
+                    "total": {
+                      "type": "integer",
+                      "description": "Same as `size`.",
+                      "example": 145212
+                    },
+                    "size": {
+                      "type": "integer",
+                      "description": "File size in bytes.",
+                      "example": 145212
+                    },
+                    "uuid": {
+                      "type": "string",
+                      "format": "uuid",
+                      "description": "File UUID",
+                      "example": "575ed4e8-f4e8-4c14-a58b-1527b6d9ee46"
+                    },
+                    "is_image": {
+                      "type": "boolean",
+                      "description": "Is file is image.",
+                      "example": true
+                    },
+                    "filename": {
+                      "type": "string",
+                      "description": "Sanitized `original_filename`.",
+                      "example": "EU_4.jpg"
+                    },
+                    "video_info": {
+                      "nullable": true,
+                      "type": "object",
+                      "description": "Video metadata.",
+                      "properties": {
+                        "duration": {
+                          "type": "number",
+                          "description": "Video duration in milliseconds.",
+                          "example": 261827
+                        },
+                        "format": {
+                          "type": "string",
+                          "description": "Video format (MP4 for example).",
+                          "example": "mpeg4"
+                        },
+                        "bitrate": {
+                          "type": "number",
+                          "description": "Video bitrate.",
+                          "example": 393
+                        },
+                        "audio": {
+                          "type": "object",
+                          "description": "Audio stream metadata.",
+                          "nullable": true,
+                          "properties": {
+                            "bitrate": {
+                              "nullable": true,
+                              "type": "number",
+                              "description": "Audio stream metadata.",
+                              "example": 78
+                            },
+                            "codec": {
+                              "nullable": true,
+                              "type": "string",
+                              "description": "Audio stream codec.",
+                              "example": "aac"
+                            },
+                            "sample_rate": {
+                              "nullable": true,
+                              "type": "number",
+                              "description": "Audio stream sample rate.",
+                              "example": 44100
+                            },
+                            "channels": {
+                              "nullable": true,
+                              "type": "string",
+                              "description": "Audio stream number of channels.",
+                              "example": 2
+                            }
+                          }
+                        },
+                        "video": {
+                          "type": "object",
+                          "description": "Video stream metadata.",
+                          "properties": {
+                            "height": {
+                              "type": "number",
+                              "description": "Video stream image height.",
+                              "example": 360
+                            },
+                            "width": {
+                              "type": "number",
+                              "description": "Video stream image width.",
+                              "example": 640
+                            },
+                            "frame_rate": {
+                              "type": "number",
+                              "description": "Video stream frame rate.",
+                              "example": 25
+                            },
+                            "bitrate": {
+                              "type": "number",
+                              "description": "Video stream bitrate.",
+                              "example": 315
+                            },
+                            "codec": {
+                              "type": "string",
+                              "description": "Video stream codec.",
+                              "example": "h264"
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "is_ready": {
+                      "type": "boolean",
+                      "description": "Is file is ready to be used after upload.",
+                      "example": true
+                    },
+                    "original_filename": {
+                      "type": "string",
+                      "description": "Original file name taken from uploaded file.",
+                      "example": "EU_4.jpg"
+                    },
+                    "image_info": {
+                      "type": "object",
+                      "description": "Image metadata.",
+                      "nullable": true,
+                      "required": [
+                        "height",
+                        "width",
+                        "geo_location",
+                        "datetime_original",
+                        "format",
+                        "color_mode",
+                        "dpi",
+                        "orientation"
+                      ],
+                      "properties": {
+                        "height": {
+                          "type": "integer",
+                          "description": "Image height in pixels.",
+                          "example": 2352
+                        },
+                        "width": {
+                          "type": "integer",
+                          "description": "Image width in pixels.",
+                          "example": 2935
+                        },
+                        "geo_location": {
+                          "description": "Geo-location of image from EXIF.",
+                          "type": "object",
+                          "nullable": true,
+                          "properties": {
+                            "latitude": {
+                              "type": "number",
+                              "description": "Location latitude.",
+                              "example": -1.1884555555555556
+                            },
+                            "longitude": {
+                              "type": "number",
+                              "description": "Location longitude.",
+                              "example": 52.66996666666667
+                            }
+                          }
+                        },
+                        "datetime_original": {
+                          "nullable": true,
+                          "type": "string",
+                          "description": "Image date and time from EXIF.",
+                          "format": "date-time",
+                          "example": "2018-09-13T16:23:40.000Z"
+                        },
+                        "format": {
+                          "type": "string",
+                          "description": "Image format.",
+                          "example": "JPEG"
+                        },
+                        "color_mode": {
+                          "type": "string",
+                          "description": "Image color mode.",
+                          "enum": [
+                            "RGB",
+                            "RGBA",
+                            "RGBa",
+                            "RGBX",
+                            "L",
+                            "LA",
+                            "La",
+                            "P",
+                            "PA",
+                            "CMYK",
+                            "YCbCr",
+                            "HSV",
+                            "LAB"
+                          ],
+                          "example": "RGBA"
+                        },
+                        "dpi": {
+                          "nullable": true,
+                          "type": "array",
+                          "description": "Image DPI for two dimensions.",
+                          "items": {
+                            "type": "number",
+                            "example": 72
+                          },
+                          "example": [
+                            72,
+                            72
+                          ]
+                        },
+                        "orientation": {
+                          "nullable": true,
+                          "type": "number",
+                          "description": "Image orientation from EXIF.",
+                          "example": 6
+                        },
+                        "sequence": {
+                          "type": "boolean",
+                          "default": "Is image if sequence image(GIF for example).",
+                          "example": false
+                        }
+                      }
+                    },
+                    "mime_type": {
+                      "type": "string",
+                      "description": "File MIME-type.",
+                      "example": "image/jpeg"
+                    },
+                    "s3_bucket": {
+                      "type": "string",
+                      "nullable": true,
+                      "description": "Your custom user bucket on which file are stored. Only available of you setup foreign storage bucket for your project.",
+                      "example": "custom-s3-bucket-name"
+                    }
+                  },
+                  "example": {
+                    "is_stored": true,
+                    "done": 2667636,
+                    "file_id": "be3b4d5e-179d-460e-8a5d-69112ac86cbb",
+                    "total": 2667636,
+                    "size": 2667636,
+                    "uuid": "be3b4d5e-179d-460e-8a5d-69112ac86cbb",
+                    "is_image": true,
+                    "filename": "IMG_0412.JPG",
+                    "video_info": null,
+                    "is_ready": true,
+                    "original_filename": "IMG_0412.JPG",
+                    "image_info": {
+                      "orientation": 6,
+                      "format": "JPEG",
+                      "height": 4032,
+                      "width": 3024,
+                      "geo_location": {
+                        "latitude": 55.62013611111111,
+                        "longitude": 37.66299166666666
+                      },
+                      "datetime_original": "2018-08-20T08:59:50",
+                      "dpi": [
+                        72,
+                        72
+                      ]
+                    },
+                    "mime_type": "image/jpeg"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "file_id is required.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "default": "file_id is required."
+                },
+                "example": "file_id is required."
+              }
+            }
+          },
+          "403": {
+            "description": "Common errors for HTTP 403 response code.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "Account has been blocked.",
+                    "Account has been blocked for nonpayment.",
+                    "Account has reached its limits.",
+                    "pub_key is required.",
+                    "pub_key is invalid.",
+                    "Autostore is disabled.",
+                    "Expired signature.",
+                    "Invalid signature."
+                  ]
+                },
+                "examples": {
+                  "account-blocked-error": {
+                    "value": "Account has been blocked."
+                  },
+                  "account-blocked-no-payment-error": {
+                    "value": "Account has been blocked for nonpayment."
+                  },
+                  "account-limits-error": {
+                    "value": "Account has reached its limits."
+                  },
+                  "pub-key-required-error": {
+                    "value": "pub_key is required."
+                  },
+                  "pub-key-invalid-error": {
+                    "value": "pub_key is invalid."
+                  },
+                  "signature-expired-error": {
+                    "value": "`signature` is required."
+                  },
+                  "signature-invalid-error": {
+                    "value": "Invalid signature."
+                  },
+                  "autostore-disabled-error": {
+                    "value": "Autostore is disabled."
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "file_id is invalid.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "default": "file_id is invalid."
+                },
+                "example": "file_id is invalid."
+              }
+            }
+          }
+        }
+      }
+    },
+    "/group/": {
+      "post": {
+        "summary": "Create files group",
+        "description": "Create files group from a set of files by using their UUIDs.",
+        "tags": [
+          "Groups"
+        ],
+        "operationId": "createFilesGroup",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "pub_key": {
+                    "type": "string",
+                    "description": "A public key identifying an Uploadcare project your uploads will go to.",
+                    "example": "caa9d29da887ee88ffe6"
+                  },
+                  "files[N]": {
+                    "type": "array",
+                    "description": "That parameter defines a set of files you want to join in a group. Each parameter can be a file UUID or a CDN URL, with or without applied Media Processing operations.",
+                    "items": {
+                      "oneOf": [
+                        {
+                          "type": "string",
+                          "format": "uuid",
+                          "example": "d6d34fa9-addd-472c-868d-2e5c105f9fcd"
+                        },
+                        {
+                          "type": "string",
+                          "format": "uri",
+                          "example": "d6d34fa9-addd-472c-868d-2e5c105f9fcd/-/resize/x800/"
+                        }
+                      ]
+                    }
+                  },
+                  "callback": {
+                    "type": "string",
+                    "description": "Sets the name of your JSONP callback function."
+                  },
+                  "signature": {
+                    "type": "string",
+                    "description": "`signature` is a string sent along with your upload request. It requires your Uploadcare project secret key and hence should be crafted on your back end. See [Signed uploads](https://uploadcare.com/docs/api_reference/upload/signed_uploads/) for details.",
+                    "example": "04b29480233f4def5c875875b6bdc3b1"
+                  },
+                  "expire": {
+                    "type": "number",
+                    "description": "`expire` sets the time until your signature is valid. It is timestamp. See [Signed uploads](https://uploadcare.com/docs/api_reference/upload/signed_uploads/) for details.",
+                    "example": 1454902434
+                  }
+                },
+                "required": [
+                  "files[N]",
+                  "pub_key"
+                ]
+              },
+              "example": {
+                "pub_key": "demopublickey",
+                "files[0]": "d6d34fa9-addd-472c-868d-2e5c105f9fcd",
+                "files[1]": "b1026315-8116-4632-8364-607e64fca723/-/resize/x800/"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Group created. Return a JSON or JSONP response with your group info.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Files group information object.",
+                  "properties": {
+                    "datetime_created": {
+                      "type": "string",
+                      "description": "When group was created.",
+                      "format": "date-time",
+                      "example": "2015-09-21T12:39:13.743Z"
+                    },
+                    "datetime_stored": {
+                      "nullable": true,
+                      "description": "When group was stored.",
+                      "type": "string",
+                      "format": "date-time",
+                      "example": "2015-09-21T12:39:13.743Z"
+                    },
+                    "files_count": {
+                      "type": "number",
+                      "description": "Number of files in group.",
+                      "example": 2
+                    },
+                    "cdn_url": {
+                      "type": "string",
+                      "format": "uri",
+                      "description": "CDN URL of the group.",
+                      "example": "http://www.ucarecdn.com/d52d7136-a2e5-4338-9f45-affbf83b857d~2/"
+                    },
+                    "files": {
+                      "type": "array",
+                      "description": "Objects holding your file info will have an additional field: default_effects. The field contains Image Transformations (in the form of a CDN URL) that were present in the file's CDN URL upon adding it to a group.",
+                      "nullable": true,
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "is_stored": {
+                            "type": "boolean",
+                            "description": "Is file is stored.",
+                            "example": true
+                          },
+                          "done": {
+                            "type": "integer",
+                            "description": "Currently uploaded file size in bytes.",
+                            "example": 145212
+                          },
+                          "file_id": {
+                            "type": "string",
+                            "format": "uuid",
+                            "description": "Same as `uuid`",
+                            "example": "575ed4e8-f4e8-4c14-a58b-1527b6d9ee46"
+                          },
+                          "total": {
+                            "type": "integer",
+                            "description": "Same as `size`.",
+                            "example": 145212
+                          },
+                          "size": {
+                            "type": "integer",
+                            "description": "File size in bytes.",
+                            "example": 145212
+                          },
+                          "uuid": {
+                            "type": "string",
+                            "format": "uuid",
+                            "description": "File UUID",
+                            "example": "575ed4e8-f4e8-4c14-a58b-1527b6d9ee46"
+                          },
+                          "is_image": {
+                            "type": "boolean",
+                            "description": "Is file is image.",
+                            "example": true
+                          },
+                          "filename": {
+                            "type": "string",
+                            "description": "Sanitized `original_filename`.",
+                            "example": "EU_4.jpg"
+                          },
+                          "video_info": {
+                            "nullable": true,
+                            "type": "object",
+                            "description": "Video metadata.",
+                            "properties": {
+                              "duration": {
+                                "type": "number",
+                                "description": "Video duration in milliseconds.",
+                                "example": 261827
+                              },
+                              "format": {
+                                "type": "string",
+                                "description": "Video format (MP4 for example).",
+                                "example": "mpeg4"
+                              },
+                              "bitrate": {
+                                "type": "number",
+                                "description": "Video bitrate.",
+                                "example": 393
+                              },
+                              "audio": {
+                                "type": "object",
+                                "description": "Audio stream metadata.",
+                                "nullable": true,
+                                "properties": {
+                                  "bitrate": {
+                                    "nullable": true,
+                                    "type": "number",
+                                    "description": "Audio stream metadata.",
+                                    "example": 78
+                                  },
+                                  "codec": {
+                                    "nullable": true,
+                                    "type": "string",
+                                    "description": "Audio stream codec.",
+                                    "example": "aac"
+                                  },
+                                  "sample_rate": {
+                                    "nullable": true,
+                                    "type": "number",
+                                    "description": "Audio stream sample rate.",
+                                    "example": 44100
+                                  },
+                                  "channels": {
+                                    "nullable": true,
+                                    "type": "string",
+                                    "description": "Audio stream number of channels.",
+                                    "example": 2
+                                  }
+                                }
+                              },
+                              "video": {
+                                "type": "object",
+                                "description": "Video stream metadata.",
+                                "properties": {
+                                  "height": {
+                                    "type": "number",
+                                    "description": "Video stream image height.",
+                                    "example": 360
+                                  },
+                                  "width": {
+                                    "type": "number",
+                                    "description": "Video stream image width.",
+                                    "example": 640
+                                  },
+                                  "frame_rate": {
+                                    "type": "number",
+                                    "description": "Video stream frame rate.",
+                                    "example": 25
+                                  },
+                                  "bitrate": {
+                                    "type": "number",
+                                    "description": "Video stream bitrate.",
+                                    "example": 315
+                                  },
+                                  "codec": {
+                                    "type": "string",
+                                    "description": "Video stream codec.",
+                                    "example": "h264"
+                                  }
+                                }
+                              }
+                            }
+                          },
+                          "is_ready": {
+                            "type": "boolean",
+                            "description": "Is file is ready to be used after upload.",
+                            "example": true
+                          },
+                          "original_filename": {
+                            "type": "string",
+                            "description": "Original file name taken from uploaded file.",
+                            "example": "EU_4.jpg"
+                          },
+                          "image_info": {
+                            "type": "object",
+                            "description": "Image metadata.",
+                            "nullable": true,
+                            "required": [
+                              "height",
+                              "width",
+                              "geo_location",
+                              "datetime_original",
+                              "format",
+                              "color_mode",
+                              "dpi",
+                              "orientation"
+                            ],
+                            "properties": {
+                              "height": {
+                                "type": "integer",
+                                "description": "Image height in pixels.",
+                                "example": 2352
+                              },
+                              "width": {
+                                "type": "integer",
+                                "description": "Image width in pixels.",
+                                "example": 2935
+                              },
+                              "geo_location": {
+                                "description": "Geo-location of image from EXIF.",
+                                "type": "object",
+                                "nullable": true,
+                                "properties": {
+                                  "latitude": {
+                                    "type": "number",
+                                    "description": "Location latitude.",
+                                    "example": -1.1884555555555556
+                                  },
+                                  "longitude": {
+                                    "type": "number",
+                                    "description": "Location longitude.",
+                                    "example": 52.66996666666667
+                                  }
+                                }
+                              },
+                              "datetime_original": {
+                                "nullable": true,
+                                "type": "string",
+                                "description": "Image date and time from EXIF.",
+                                "format": "date-time",
+                                "example": "2018-09-13T16:23:40.000Z"
+                              },
+                              "format": {
+                                "type": "string",
+                                "description": "Image format.",
+                                "example": "JPEG"
+                              },
+                              "color_mode": {
+                                "type": "string",
+                                "description": "Image color mode.",
+                                "enum": [
+                                  "RGB",
+                                  "RGBA",
+                                  "RGBa",
+                                  "RGBX",
+                                  "L",
+                                  "LA",
+                                  "La",
+                                  "P",
+                                  "PA",
+                                  "CMYK",
+                                  "YCbCr",
+                                  "HSV",
+                                  "LAB"
+                                ],
+                                "example": "RGBA"
+                              },
+                              "dpi": {
+                                "nullable": true,
+                                "type": "array",
+                                "description": "Image DPI for two dimensions.",
+                                "items": {
+                                  "type": "number",
+                                  "example": 72
+                                },
+                                "example": [
+                                  72,
+                                  72
+                                ]
+                              },
+                              "orientation": {
+                                "nullable": true,
+                                "type": "number",
+                                "description": "Image orientation from EXIF.",
+                                "example": 6
+                              },
+                              "sequence": {
+                                "type": "boolean",
+                                "default": "Is image if sequence image(GIF for example).",
+                                "example": false
+                              }
+                            }
+                          },
+                          "mime_type": {
+                            "type": "string",
+                            "description": "File MIME-type.",
+                            "example": "image/jpeg"
+                          },
+                          "s3_bucket": {
+                            "type": "string",
+                            "nullable": true,
+                            "description": "Your custom user bucket on which file are stored. Only available of you setup foreign storage bucket for your project.",
+                            "example": "custom-s3-bucket-name"
+                          }
+                        },
+                        "example": {
+                          "is_stored": true,
+                          "done": 2667636,
+                          "file_id": "be3b4d5e-179d-460e-8a5d-69112ac86cbb",
+                          "total": 2667636,
+                          "size": 2667636,
+                          "uuid": "be3b4d5e-179d-460e-8a5d-69112ac86cbb",
+                          "is_image": true,
+                          "filename": "IMG_0412.JPG",
+                          "video_info": null,
+                          "is_ready": true,
+                          "original_filename": "IMG_0412.JPG",
+                          "image_info": {
+                            "orientation": 6,
+                            "format": "JPEG",
+                            "height": 4032,
+                            "width": 3024,
+                            "geo_location": {
+                              "latitude": 55.62013611111111,
+                              "longitude": 37.66299166666666
+                            },
+                            "datetime_original": "2018-08-20T08:59:50",
+                            "dpi": [
+                              72,
+                              72
+                            ]
+                          },
+                          "mime_type": "image/jpeg"
+                        }
+                      }
+                    },
+                    "url": {
+                      "type": "string",
+                      "description": "Group API url - to get this info.",
+                      "format": "uri",
+                      "example": "https://api.uploadcare.com/groups/d52d7136-a2e5-4338-9f45-affbf83b857d~2/"
+                    },
+                    "id": {
+                      "type": "string",
+                      "description": "Group ID.",
+                      "example": "d52d7136-a2e5-4338-9f45-affbf83b857d~2"
+                    }
+                  },
+                  "example": {
+                    "id": "0d712319-b970-4602-850c-bae1ced521a6~1",
+                    "datetime_created": "2018-09-12T10:03:38.686710Z",
+                    "datetime_stored": null,
+                    "files_count": 1,
+                    "cdn_url": "https://ucarecdn.com/0d712319-b970-4602-850c-bae1ced521a6~1/",
+                    "url": "https://api.uploadcare.com/groups/0d712319-b970-4602-850c-bae1ced521a6~1/",
+                    "files": [
+                      {
+                        "default_effects": "resize/x800/",
+                        "is_stored": true,
+                        "done": 6513299,
+                        "file_id": "500196bc-9da5-4aaf-8f3e-70a4ce86edae",
+                        "total": 6513299,
+                        "size": 6513299,
+                        "uuid": "500196bc-9da5-4aaf-8f3e-70a4ce86edae",
+                        "is_image": true,
+                        "filename": "Circles3.gif",
+                        "video_info": null,
+                        "is_ready": true,
+                        "original_filename": "Circles-3.gif",
+                        "image_info": {
+                          "orientation": null,
+                          "format": "GIF",
+                          "height": 480,
+                          "width": 640,
+                          "geo_location": null,
+                          "datetime_original": null,
+                          "dpi": null
+                        },
+                        "mime_type": "image/gif"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Request parameters validation errors.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "type": "string",
+                      "enum": [
+                        "no files[N] parameters found.",
+                        "this is not valid file url: http://invalid/url.",
+                        "some files not found."
+                      ]
+                    },
+                    {
+                      "description": "`signature` is required.",
+                      "content": {
+                        "text/plain": {
+                          "schema": {
+                            "type": "string",
+                            "default": "`signature` is required."
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "description": "`expire` is required.",
+                      "content": {
+                        "text/plain": {
+                          "schema": {
+                            "type": "string",
+                            "default": "`expire` is required."
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "description": "`expire` must be a UNIX timestamp.",
+                      "content": {
+                        "text/plain": {
+                          "schema": {
+                            "type": "string",
+                            "default": "`expire` must be a UNIX timestamp."
+                          }
+                        }
+                      }
+                    }
+                  ]
+                },
+                "examples": {
+                  "parameters-errors": {
+                    "value": "this is not valid file url: http://invalid/url."
+                  },
+                  "signature-error": {
+                    "value": "`signature` is required."
+                  },
+                  "expire-required-error": {
+                    "value": "`expire` is required."
+                  },
+                  "expire-invalid-error": {
+                    "value": "`expire` must be a UNIX timestamp."
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Common errors for HTTP 403 response code.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "Account has been blocked.",
+                    "Account has been blocked for nonpayment.",
+                    "Account has reached its limits.",
+                    "pub_key is required.",
+                    "pub_key is invalid.",
+                    "Autostore is disabled.",
+                    "Expired signature.",
+                    "Invalid signature."
+                  ]
+                },
+                "examples": {
+                  "account-blocked-error": {
+                    "value": "Account has been blocked."
+                  },
+                  "account-blocked-no-payment-error": {
+                    "value": "Account has been blocked for nonpayment."
+                  },
+                  "account-limits-error": {
+                    "value": "Account has reached its limits."
+                  },
+                  "pub-key-required-error": {
+                    "value": "pub_key is required."
+                  },
+                  "pub-key-invalid-error": {
+                    "value": "pub_key is invalid."
+                  },
+                  "signature-expired-error": {
+                    "value": "`signature` is required."
+                  },
+                  "signature-invalid-error": {
+                    "value": "Invalid signature."
+                  },
+                  "autostore-disabled-error": {
+                    "value": "Autostore is disabled."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/group/info/": {
+      "get": {
+        "summary": "Files group info",
+        "description": "Such requests return a JSON dictionary holding your group info.",
+        "operationId": "filesGroupInfo",
+        "tags": [
+          "Groups"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "pub_key",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "A public key identifying an Uploadcare project your uploads will go to.",
+              "example": "caa9d29da887ee88ffe6"
+            },
+            "example": "demopublickey"
+          },
+          {
+            "in": "query",
+            "name": "group_id",
+            "description": "Group ID. Group IDs look like `UUID~N`.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "d52d7136-a2e5-4338-9f45-affbf83b857d~2"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON of requested group info.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Files group information object.",
+                  "properties": {
+                    "datetime_created": {
+                      "type": "string",
+                      "description": "When group was created.",
+                      "format": "date-time",
+                      "example": "2015-09-21T12:39:13.743Z"
+                    },
+                    "datetime_stored": {
+                      "nullable": true,
+                      "description": "When group was stored.",
+                      "type": "string",
+                      "format": "date-time",
+                      "example": "2015-09-21T12:39:13.743Z"
+                    },
+                    "files_count": {
+                      "type": "number",
+                      "description": "Number of files in group.",
+                      "example": 2
+                    },
+                    "cdn_url": {
+                      "type": "string",
+                      "format": "uri",
+                      "description": "CDN URL of the group.",
+                      "example": "http://www.ucarecdn.com/d52d7136-a2e5-4338-9f45-affbf83b857d~2/"
+                    },
+                    "files": {
+                      "type": "array",
+                      "description": "Objects holding your file info will have an additional field: default_effects. The field contains Image Transformations (in the form of a CDN URL) that were present in the file's CDN URL upon adding it to a group.",
+                      "nullable": true,
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "is_stored": {
+                            "type": "boolean",
+                            "description": "Is file is stored.",
+                            "example": true
+                          },
+                          "done": {
+                            "type": "integer",
+                            "description": "Currently uploaded file size in bytes.",
+                            "example": 145212
+                          },
+                          "file_id": {
+                            "type": "string",
+                            "format": "uuid",
+                            "description": "Same as `uuid`",
+                            "example": "575ed4e8-f4e8-4c14-a58b-1527b6d9ee46"
+                          },
+                          "total": {
+                            "type": "integer",
+                            "description": "Same as `size`.",
+                            "example": 145212
+                          },
+                          "size": {
+                            "type": "integer",
+                            "description": "File size in bytes.",
+                            "example": 145212
+                          },
+                          "uuid": {
+                            "type": "string",
+                            "format": "uuid",
+                            "description": "File UUID",
+                            "example": "575ed4e8-f4e8-4c14-a58b-1527b6d9ee46"
+                          },
+                          "is_image": {
+                            "type": "boolean",
+                            "description": "Is file is image.",
+                            "example": true
+                          },
+                          "filename": {
+                            "type": "string",
+                            "description": "Sanitized `original_filename`.",
+                            "example": "EU_4.jpg"
+                          },
+                          "video_info": {
+                            "nullable": true,
+                            "type": "object",
+                            "description": "Video metadata.",
+                            "properties": {
+                              "duration": {
+                                "type": "number",
+                                "description": "Video duration in milliseconds.",
+                                "example": 261827
+                              },
+                              "format": {
+                                "type": "string",
+                                "description": "Video format (MP4 for example).",
+                                "example": "mpeg4"
+                              },
+                              "bitrate": {
+                                "type": "number",
+                                "description": "Video bitrate.",
+                                "example": 393
+                              },
+                              "audio": {
+                                "type": "object",
+                                "description": "Audio stream metadata.",
+                                "nullable": true,
+                                "properties": {
+                                  "bitrate": {
+                                    "nullable": true,
+                                    "type": "number",
+                                    "description": "Audio stream metadata.",
+                                    "example": 78
+                                  },
+                                  "codec": {
+                                    "nullable": true,
+                                    "type": "string",
+                                    "description": "Audio stream codec.",
+                                    "example": "aac"
+                                  },
+                                  "sample_rate": {
+                                    "nullable": true,
+                                    "type": "number",
+                                    "description": "Audio stream sample rate.",
+                                    "example": 44100
+                                  },
+                                  "channels": {
+                                    "nullable": true,
+                                    "type": "string",
+                                    "description": "Audio stream number of channels.",
+                                    "example": 2
+                                  }
+                                }
+                              },
+                              "video": {
+                                "type": "object",
+                                "description": "Video stream metadata.",
+                                "properties": {
+                                  "height": {
+                                    "type": "number",
+                                    "description": "Video stream image height.",
+                                    "example": 360
+                                  },
+                                  "width": {
+                                    "type": "number",
+                                    "description": "Video stream image width.",
+                                    "example": 640
+                                  },
+                                  "frame_rate": {
+                                    "type": "number",
+                                    "description": "Video stream frame rate.",
+                                    "example": 25
+                                  },
+                                  "bitrate": {
+                                    "type": "number",
+                                    "description": "Video stream bitrate.",
+                                    "example": 315
+                                  },
+                                  "codec": {
+                                    "type": "string",
+                                    "description": "Video stream codec.",
+                                    "example": "h264"
+                                  }
+                                }
+                              }
+                            }
+                          },
+                          "is_ready": {
+                            "type": "boolean",
+                            "description": "Is file is ready to be used after upload.",
+                            "example": true
+                          },
+                          "original_filename": {
+                            "type": "string",
+                            "description": "Original file name taken from uploaded file.",
+                            "example": "EU_4.jpg"
+                          },
+                          "image_info": {
+                            "type": "object",
+                            "description": "Image metadata.",
+                            "nullable": true,
+                            "required": [
+                              "height",
+                              "width",
+                              "geo_location",
+                              "datetime_original",
+                              "format",
+                              "color_mode",
+                              "dpi",
+                              "orientation"
+                            ],
+                            "properties": {
+                              "height": {
+                                "type": "integer",
+                                "description": "Image height in pixels.",
+                                "example": 2352
+                              },
+                              "width": {
+                                "type": "integer",
+                                "description": "Image width in pixels.",
+                                "example": 2935
+                              },
+                              "geo_location": {
+                                "description": "Geo-location of image from EXIF.",
+                                "type": "object",
+                                "nullable": true,
+                                "properties": {
+                                  "latitude": {
+                                    "type": "number",
+                                    "description": "Location latitude.",
+                                    "example": -1.1884555555555556
+                                  },
+                                  "longitude": {
+                                    "type": "number",
+                                    "description": "Location longitude.",
+                                    "example": 52.66996666666667
+                                  }
+                                }
+                              },
+                              "datetime_original": {
+                                "nullable": true,
+                                "type": "string",
+                                "description": "Image date and time from EXIF.",
+                                "format": "date-time",
+                                "example": "2018-09-13T16:23:40.000Z"
+                              },
+                              "format": {
+                                "type": "string",
+                                "description": "Image format.",
+                                "example": "JPEG"
+                              },
+                              "color_mode": {
+                                "type": "string",
+                                "description": "Image color mode.",
+                                "enum": [
+                                  "RGB",
+                                  "RGBA",
+                                  "RGBa",
+                                  "RGBX",
+                                  "L",
+                                  "LA",
+                                  "La",
+                                  "P",
+                                  "PA",
+                                  "CMYK",
+                                  "YCbCr",
+                                  "HSV",
+                                  "LAB"
+                                ],
+                                "example": "RGBA"
+                              },
+                              "dpi": {
+                                "nullable": true,
+                                "type": "array",
+                                "description": "Image DPI for two dimensions.",
+                                "items": {
+                                  "type": "number",
+                                  "example": 72
+                                },
+                                "example": [
+                                  72,
+                                  72
+                                ]
+                              },
+                              "orientation": {
+                                "nullable": true,
+                                "type": "number",
+                                "description": "Image orientation from EXIF.",
+                                "example": 6
+                              },
+                              "sequence": {
+                                "type": "boolean",
+                                "default": "Is image if sequence image(GIF for example).",
+                                "example": false
+                              }
+                            }
+                          },
+                          "mime_type": {
+                            "type": "string",
+                            "description": "File MIME-type.",
+                            "example": "image/jpeg"
+                          },
+                          "s3_bucket": {
+                            "type": "string",
+                            "nullable": true,
+                            "description": "Your custom user bucket on which file are stored. Only available of you setup foreign storage bucket for your project.",
+                            "example": "custom-s3-bucket-name"
+                          }
+                        },
+                        "example": {
+                          "is_stored": true,
+                          "done": 2667636,
+                          "file_id": "be3b4d5e-179d-460e-8a5d-69112ac86cbb",
+                          "total": 2667636,
+                          "size": 2667636,
+                          "uuid": "be3b4d5e-179d-460e-8a5d-69112ac86cbb",
+                          "is_image": true,
+                          "filename": "IMG_0412.JPG",
+                          "video_info": null,
+                          "is_ready": true,
+                          "original_filename": "IMG_0412.JPG",
+                          "image_info": {
+                            "orientation": 6,
+                            "format": "JPEG",
+                            "height": 4032,
+                            "width": 3024,
+                            "geo_location": {
+                              "latitude": 55.62013611111111,
+                              "longitude": 37.66299166666666
+                            },
+                            "datetime_original": "2018-08-20T08:59:50",
+                            "dpi": [
+                              72,
+                              72
+                            ]
+                          },
+                          "mime_type": "image/jpeg"
+                        }
+                      }
+                    },
+                    "url": {
+                      "type": "string",
+                      "description": "Group API url - to get this info.",
+                      "format": "uri",
+                      "example": "https://api.uploadcare.com/groups/d52d7136-a2e5-4338-9f45-affbf83b857d~2/"
+                    },
+                    "id": {
+                      "type": "string",
+                      "description": "Group ID.",
+                      "example": "d52d7136-a2e5-4338-9f45-affbf83b857d~2"
+                    }
+                  },
+                  "example": {
+                    "id": "0d712319-b970-4602-850c-bae1ced521a6~1",
+                    "datetime_created": "2018-09-12T10:03:38.686710Z",
+                    "datetime_stored": null,
+                    "files_count": 1,
+                    "cdn_url": "https://ucarecdn.com/0d712319-b970-4602-850c-bae1ced521a6~1/",
+                    "url": "https://api.uploadcare.com/groups/0d712319-b970-4602-850c-bae1ced521a6~1/",
+                    "files": [
+                      {
+                        "default_effects": "resize/x800/",
+                        "is_stored": true,
+                        "done": 6513299,
+                        "file_id": "500196bc-9da5-4aaf-8f3e-70a4ce86edae",
+                        "total": 6513299,
+                        "size": 6513299,
+                        "uuid": "500196bc-9da5-4aaf-8f3e-70a4ce86edae",
+                        "is_image": true,
+                        "filename": "Circles3.gif",
+                        "video_info": null,
+                        "is_ready": true,
+                        "original_filename": "Circles-3.gif",
+                        "image_info": {
+                          "orientation": null,
+                          "format": "GIF",
+                          "height": 480,
+                          "width": 640,
+                          "geo_location": null,
+                          "datetime_original": null,
+                          "dpi": null
+                        },
+                        "mime_type": "image/gif"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "group_id is required.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "default": "group_id is required."
+                },
+                "example": "group_id is required."
+              }
+            }
+          },
+          "403": {
+            "description": "Public key errors",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "description": "UPLOADCARE_PUB_KEY is required.",
+                      "content": {
+                        "text/plain": {
+                          "schema": {
+                            "type": "string",
+                            "default": "UPLOADCARE_PUB_KEY is required."
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "description": "UPLOADCARE_PUB_KEY is invalid.",
+                      "content": {
+                        "text/plain": {
+                          "schema": {
+                            "type": "string",
+                            "default": "UPLOADCARE_PUB_KEY is invalid."
+                          }
+                        }
+                      }
+                    }
+                  ]
+                },
+                "examples": {
+                  "pub-key-required": {
+                    "value": "UPLOADCARE_PUB_KEY is required."
+                  },
+                  "pub-key-invalid": {
+                    "value": "UPLOADCARE_PUB_KEY is invalid."
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "group_id is invalid.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "default": "group_id is invalid."
+                },
+                "example": "group_id is invalid."
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {}
+}

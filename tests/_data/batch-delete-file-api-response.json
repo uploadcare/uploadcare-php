@@ -1,0 +1,34 @@
+{
+  "status": "ok",
+  "problems": {
+    "21975c81-7f57-4c7a-aef9-acfe28779f78": "Missing in the project",
+    "4j334o01-8bs3": "Invalid"
+  },
+  "result": [
+    {
+      "datetime_removed": null,
+      "datetime_stored": "2018-11-29T07:14:45.908017Z",
+      "datetime_uploaded": "2018-11-29T07:14:45.738895Z",
+      "image_info": {
+        "color_mode": "RGB",
+        "orientation": null,
+        "format": "JPEG",
+        "sequence": false,
+        "height": 5,
+        "width": 5,
+        "geo_location": null,
+        "datetime_original": null,
+        "dpi": null
+      },
+      "is_image": true,
+      "is_ready": true,
+      "mime_type": "application/octet-stream",
+      "original_file_url": "https://ucarecdn.com/d9f640b1-cf94-41b7-be91-62f4b550d881/papaya.jpg",
+      "original_filename": "papaya.jpg",
+      "size": 642,
+      "url": "https://api.uploadcare.com/files/d9f640b1-cf94-41b7-be91-62f4b550d881/",
+      "uuid": "d9f640b1-cf94-41b7-be91-62f4b550d881",
+      "source": null
+    }
+  ]
+}

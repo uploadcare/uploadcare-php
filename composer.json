@@ -1,47 +1,58 @@
 {
-    "name": "uploadcare/uploadcare-php",
-    "description": "Uploadcare API binding for PHP",
-    "license": "MIT",
-    "authors": [{
-        "name": "Uploadcare, Inc",
-        "email": "hello@uploadcare.com"
-    }],
-    "require": {
-        "php": ">=5.3",
-        "ext-curl": "*",
-        "ext-json": "*"
-    },
-    "require-dev": {
-        "friendsofphp/php-cs-fixer": "^2.2",
-        "phpunit/phpunit": "^4.8",
-        "squizlabs/php_codesniffer": ">=2.9.1,<4"
-    },
-    "minimum-stability": "dev",
-    "autoload": {
-        "psr-4": {
-            "Uploadcare\\": "src/Uploadcare/"
-        },
-        "files": [
-            "src/Functions/json_decode.php",
-            "src/Functions/curl_file.php"
-        ]
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "Tests\\": "tests"
-        }
-    },
-    "keywords": [
-        "files",
-        "upload",
-        "cdn",
-        "uploadcare",
-        "image management",
-        "cloud"
-    ],
-    "homepage": "https://uploadcare.com",
-    "support": {
-        "email": "help@uploadcare.com",
-        "issues": "https://github.com/uploadcare/uploadcare-php/issues"
+  "name": "uploadcare/uploadcare-php",
+  "description": "Uploadcare PHP integration handles uploads and further operations with files by wrapping Upload and REST APIs.",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Uploadcare, Inc",
+      "email": "hello@uploadcare.com"
     }
+  ],
+  "keywords": [
+    "files",
+    "upload",
+    "cdn",
+    "uploadcare",
+    "image management",
+    "cloud"
+  ],
+  "homepage": "https://uploadcare.com",
+  "support": {
+    "email": "help@uploadcare.com",
+    "issues": "https://github.com/uploadcare/uploadcare-php/issues"
+  },
+  "minimum-stability": "stable",
+  "require": {
+    "php": ">=5.6",
+    "ext-curl": "*",
+    "ext-json": "*",
+    "guzzlehttp/guzzle": "^6.5",
+    "guzzlehttp/psr7": "^1.6",
+    "symfony/polyfill-uuid": "^1.17"
+  },
+  "require-dev": {
+    "friendsofphp/php-cs-fixer": "^2.16",
+    "fzaninotto/faker": "^1.9",
+    "phpunit/phpunit": "^5.7||^7",
+    "symfony/dotenv": "^3.4",
+    "symfony/var-dumper": "^3.4"
+  },
+  "autoload": {
+    "psr-4": {
+      "Uploadcare\\": "./src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Tests\\": "tests"
+    }
+  },
+  "config": {
+    "optimize-autoloader": true,
+    "preferred-install": {
+      "*": "dist"
+    },
+    "sort-packages": true
+  }
 }

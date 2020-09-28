@@ -8,36 +8,20 @@ jobs:
   include:
 
     # EOL
-    - php: 5.3
-      dist: precise
-    - php: 5.4
-      dist: trusty
-    - php: 5.5
-      dist: trusty
     - php: 5.6
     - php: 7.0
 
     # Current
-    - php: 7.1
-    - php: 7.2
     - php: 7.3
-      dist: bionic
-
-    - stage: style checks
-      script: php vendor/bin/phpcs --standard=PSR2 src
-
-  allow_failures:
-    - stage: style checks
+    - php: 7.4
 
   fast_finish: false
 
-
 before_script:
-  - phpenv config-rm xdebug.ini  # disable xdebug
   - COMPOSER_MEMORY_LIMIT=-1 travis_retry composer install
 
 script:
-  php vendor/bin/phpunit
+  php vendor/bin/phpunit --exclude-group local-only
 
 notifications:
   email:
