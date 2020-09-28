@@ -5,12 +5,13 @@ namespace Uploadcare\AuthUrl\Token;
 /**
  * Akamai Token Generator.
  *
- * @see https://learn.akamai.com/en-us/webhelp/download-delivery/download-delivery-implementation-guide/GUID-EB3329D1-C7C5-4F23-9B69-1B1FBFEBF436.html
+ * @see https://uploadcare.com/docs/security/secure_delivery/
  */
 class AkamaiToken implements TokenInterface
 {
     protected static $algorithms = ['sha256', 'sha1', 'md5'];
     protected static $template = 'https://{cdn}/{uuid}/?token=exp={timestamp}~acl=/{uuid}/~hmac={token}';
+    protected static $fieldDelimiter = '~';
 
     /**
      * @var string Encryption key
@@ -28,41 +29,9 @@ class AkamaiToken implements TokenInterface
     private $algo = 'sha256';
 
     /**
-     * @var string|null Restrict the token to a specific IP address
-     */
-    private $ip = null;
-
-    private $startTime = 0;
-
-    /**
      * @var string|null Access control list
      */
     private $acl = null;
-
-    /**
-     * @var string|null Restrict the token to a specific URL
-     */
-    private $url = null;
-
-    /**
-     * @var string Restrict the token to a specific session ID
-     */
-    private $sessionId;
-
-    /**
-     * @var string|null Additional data
-     */
-    private $data = null;
-
-    /**
-     * @var string|null Salt
-     */
-    private $salt = null;
-
-    /**
-     * @var string Field delimiter
-     */
-    private $fieldDelimiter = '~';
 
     /**
      * AkamaiToken constructor.
@@ -81,7 +50,7 @@ class AkamaiToken implements TokenInterface
      */
     public function getUrlTemplate()
     {
-        return (string) \str_replace('~', $this->getFieldDelimiter(), self::$template);
+        return (string) \str_replace('~', self::$fieldDelimiter, self::$template);
     }
 
     /**
@@ -156,62 +125,14 @@ class AkamaiToken implements TokenInterface
     }
 
     /**
-     * @return string|null
-     */
-    public function getIp()
-    {
-        return $this->ip;
-    }
-
-    /**
-     * @param string|null $ip
-     *
-     * @return AkamaiToken
-     */
-    public function setIp($ip)
-    {
-        if ($ip === null) {
-            return $this;
-        }
-
-        $this->validateIp($ip);
-        $this->ip = $ip;
-
-        return $this;
-    }
-
-    /**
-     * @return int
-     */
-    public function getStartTime()
-    {
-        if ($this->startTime === 0) {
-            return \time();
-        }
-        if (\is_numeric($this->startTime) && $this->startTime > 0) {
-            return (int) $this->startTime;
-        }
-
-        throw new TokenException('Start time input invalid or out of range');
-    }
-
-    /**
-     * @param int $startTime
-     *
-     * @return AkamaiToken
-     */
-    public function setStartTime($startTime)
-    {
-        $this->startTime = $startTime;
-
-        return $this;
-    }
-
-    /**
-     * @return string|null
+     * @return string
      */
     public function getAcl()
     {
+        if ($this->acl === null) {
+            throw new TokenException('You must set file uuid as ACL to generate token');
+        }
+
         return $this->acl;
     }
 
@@ -222,139 +143,9 @@ class AkamaiToken implements TokenInterface
      */
     public function setAcl($acl)
     {
-        if ($this->url !== null) {
-            throw new TokenException('Cannot set both an URL and a ACL at the same time');
-        }
-
         $this->acl = $acl;
 
         return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getUrl()
-    {
-        return $this->url;
-    }
-
-    /**
-     * @param string|null $url
-     *
-     * @return AkamaiToken
-     */
-    public function setUrl($url)
-    {
-        if ($this->acl !== null) {
-            throw new TokenException('Cannot set both an ACL and a URL at the same time');
-        }
-        $this->url = $url;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getSessionId()
-    {
-        return $this->sessionId;
-    }
-
-    /**
-     * @param string $sessionId
-     *
-     * @return AkamaiToken
-     */
-    public function setSessionId($sessionId)
-    {
-        $this->sessionId = $sessionId;
-
-        return $this;
-    }
-
-    /**
-     * @return mixed|null
-     */
-    public function getData()
-    {
-        return $this->data;
-    }
-
-    /**
-     * @param string|null $data
-     *
-     * @return AkamaiToken
-     */
-    public function setData($data)
-    {
-        $this->data = $data;
-
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getSalt()
-    {
-        return $this->salt;
-    }
-
-    /**
-     * @param string|null $salt
-     *
-     * @return AkamaiToken
-     */
-    public function setSalt($salt)
-    {
-        $this->salt = $salt;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getFieldDelimiter()
-    {
-        return $this->fieldDelimiter;
-    }
-
-    /**
-     * @param string $fieldDelimiter
-     *
-     * @return AkamaiToken
-     */
-    public function setFieldDelimiter($fieldDelimiter)
-    {
-        $this->fieldDelimiter = $fieldDelimiter;
-
-        return $this;
-    }
-
-    /**
-     * Token string.
-     *
-     * @return string
-     */
-    public function getToken()
-    {
-        $token = $this->makeField('ip', $this->getIp());
-        $token .= $this->makeField('st', $this->getStartTime());
-        $token .= $this->makeField('exp', $this->getExpired());
-        $token .= $this->makeField('acl', $this->getAcl());
-        $token .= $this->makeField('id', $this->getSessionId());
-        $token .= $this->makeField('data', $this->getData());
-
-        $tokenDigest = $token
-            . $this->makeField('url', $this->getUrl())
-            . $this->makeField('salt', $this->getSalt());
-
-        $signature = \hash_hmac($this->getAlgo(), \rtrim($tokenDigest, $this->getFieldDelimiter()), $this->hex2bin($this->getKey()));
-
-        return $signature;
     }
 
     /**
@@ -364,7 +155,22 @@ class AkamaiToken implements TokenInterface
      */
     public function getExpired()
     {
-        return $this->getStartTime() + $this->getWindow();
+        return \time() + $this->getWindow();
+    }
+
+    /**
+     * Token string.
+     *
+     * @return string
+     */
+    public function getToken()
+    {
+        $token = $this->makeField('exp', $this->getExpired());
+        $token .= $this->makeField('acl', \sprintf('/%s/', $this->getAcl()));
+
+        $tokenDigest = \rtrim($token, self::$fieldDelimiter);
+
+        return \hash_hmac($this->getAlgo(), $tokenDigest, \hex2bin($this->getKey()));
     }
 
     /**
@@ -379,40 +185,6 @@ class AkamaiToken implements TokenInterface
             return '';
         }
 
-        return \sprintf('%s=%s%s', $fieldName, (string) $value, $this->getFieldDelimiter());
-    }
-
-    /**
-     * @param string $str
-     *
-     * @return string
-     */
-    private function hex2bin($str)
-    {
-        $bin = '';
-        $i = 0;
-        do {
-            $bin .= \chr(\hexdec($str[$i].$str[($i + 1)]));
-            $i += 2;
-        } while ($i < strlen($str));
-
-        return $bin;
-    }
-
-    /**
-     * @param mixed $ip
-     */
-    private function validateIp($ip)
-    {
-        if (!\is_string($ip)) {
-            throw new TokenException(\sprintf('IP must be a string, %s given', (\is_object($ip) ? \get_class($ip) : \gettype($ip))));
-        }
-
-        $regex4 = '/^(?:(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.){3}(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])$/';
-        $regex6 = '/(?:^|(?<=\s))(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))(?=\s|$)/m';
-
-        if (\preg_match($regex4, $ip) === 0 && preg_match($regex6, $ip) === 0) {
-            throw new TokenException(\sprintf('Given IP \'%s\' neither IPv4, nor IPv6', $ip));
-        }
+        return \sprintf('%s=%s%s', $fieldName, (string) $value, self::$fieldDelimiter);
     }
 }

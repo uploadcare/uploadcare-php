@@ -275,11 +275,12 @@ class FileApi extends AbstractApi implements FileApiInterface
     }
 
     /**
-     * @param FileInfoInterface|string $id
+     * @param FileInfoInterface|string $id     FileInfo instance or File UUID
+     * @param int                      $window Time window
      *
      * @return string|null
      */
-    public function generateSecureUrl($id)
+    public function generateSecureUrl($id, $window = 300)
     {
         if (!($authConfig = $this->configuration->getAuthUrlConfig()) instanceof AuthUrlConfigInterface) {
             return null;
@@ -296,6 +297,7 @@ class FileApi extends AbstractApi implements FileApiInterface
         $generator = $authConfig->getTokenGenerator();
         if ($generator instanceof AkamaiToken) {
             $generator->setAcl($id);
+            $generator->setWindow((int) $window);
         }
 
         return \strtr($generator->getUrlTemplate(), [
