@@ -52,7 +52,12 @@ class MultipartUploadTest extends TestCase
 
     public function testResponseExceptionInStartUpload()
     {
-        $exception = new ClientException('Wrong request', new Request('POST', 'uri'));
+        if (PHP_MAJOR_VERSION >= 7) {
+            $exception = new ClientException('Wrong request', new Request('POST', 'uri'), new Response(400));
+        } else {
+            $exception = new ClientException('Wrong request', new Request('POST', 'uri'));
+        }
+
         $uploader = $this->getMockUploader(['sendRequest']);
         $uploader
             ->expects(self::once())
@@ -69,7 +74,12 @@ class MultipartUploadTest extends TestCase
 
     public function testExceptionInUploadPartsMethod()
     {
-        $exception = new ClientException('Wrong request', new Request('POST', 'https://some-middleware-endpoint'));
+        if (PHP_MAJOR_VERSION >= 7) {
+            $exception = new ClientException('Wrong request', new Request('POST', 'https://some-middleware-endpoint'), new Response(400));
+        } else {
+            $exception = new ClientException('Wrong request', new Request('POST', 'https://some-middleware-endpoint'));
+        }
+
         $uploader = $this->getMockUploader(['sendRequest']);
         $uploader
             ->expects(self::once())
@@ -89,7 +99,12 @@ class MultipartUploadTest extends TestCase
 
     public function testExceptionInFinishUpload()
     {
-        $exception = new TooManyRedirectsException('Too many redirects', new Request('POST', 'https://final-endpoint'));
+        if (PHP_MAJOR_VERSION >= 7) {
+            $exception = new TooManyRedirectsException('Too many redirects', new Request('POST', 'https://final-endpoint'), new Response(400));
+        } else {
+            $exception = new TooManyRedirectsException('Too many redirects', new Request('POST', 'https://final-endpoint'));
+        }
+
         $uploader = $this->getMockUploader(['sendRequest']);
         $uploader
             ->expects(self::once())

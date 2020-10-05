@@ -213,6 +213,9 @@ class UploaderServiceTest extends TestCase
         return $this->getMockUploader($conf);
     }
 
+    /**
+     * @requires PHP <= 5
+     */
     public function testSendRequestMethodHeaders()
     {
         $uploader = $this->checkClientRequestArgument(2);
@@ -226,6 +229,9 @@ class UploaderServiceTest extends TestCase
         self::assertArrayHasKey('headers', $result);
     }
 
+    /**
+     * @requires PHP <= 5
+     */
     public function testSendRequestMethodUri()
     {
         $uploader = $this->checkClientRequestArgument(1);
