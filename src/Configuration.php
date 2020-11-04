@@ -49,6 +49,11 @@ class Configuration implements ConfigurationInterface
     private $authUrlConfig;
 
     /**
+     * @var string
+     */
+    private $frameworkVersion = null;
+
+    /**
      * @param string                          $publicKey         Uploadcare API public key
      * @param string                          $privateKey        Uploadcare API private key
      * @param array                           $clientOptions     Parameters for Http client (proxy, special headers, etc.)
@@ -60,10 +65,25 @@ class Configuration implements ConfigurationInterface
     public static function create($publicKey, $privateKey, array $clientOptions = [], ClientFactoryInterface $clientFactory = null, SerializerFactoryInterface $serializerFactory = null)
     {
         $signature = new Signature($privateKey);
+        $framework = isset($clientOptions['framework']) ? $clientOptions['framework'] : null;
         $client = $clientFactory !== null ? $clientFactory::createClient($clientOptions) : ClientFactory::createClient($clientOptions);
         $serializer = $serializerFactory !== null ? $serializerFactory::create() : SerializerFactory::create();
 
-        return new static($publicKey, $signature, $client, $serializer);
+        $config = new static($publicKey, $signature, $client, $serializer);
+        $config->setFrameworkOptions($framework);
+
+        return $config;
+    }
+
+    public function setFrameworkOptions($framework = null)
+    {
+        if (\is_array($framework)) {
+            $framework = \implode('/', $framework);
+        }
+
+        if (\is_string($framework)) {
+            $this->frameworkVersion = $framework;
+        }
     }
 
     /**
@@ -115,6 +135,10 @@ class Configuration implements ConfigurationInterface
             '{publicKey}' => $this->publicKey,
             '{lang-version}' => sprintf('%s.%s.%s', PHP_MAJOR_VERSION, PHP_MINOR_VERSION, PHP_RELEASE_VERSION),
         ];
+        if ($this->frameworkVersion !== null) {
+            $info['{lang-version}'] .= '; ' . $this->frameworkVersion;
+        }
+
         $value = \strtr(self::USER_AGENT_TEMPLATE, $info);
 
         $headers['User-Agent'] = $value;
