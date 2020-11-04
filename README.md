@@ -16,7 +16,7 @@ Uploadcare PHP integration handles uploads and further operations with files by 
   * [File operations](#file-operations)
   * [Group operations](#group-operations)
   * [Project operations](#project-operations)
-  * [Webhooks](#webhooks-operations)
+  * [Webhooks](#webhooks)
   * [Conversion operations](#conversion-operations)
   * [Secure delivery](#secure-delivery)
   * [Tests](#tests)
