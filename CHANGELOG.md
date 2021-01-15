@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [3.0.2]
+### Fix
+- Serialization for `originalFileUrl`
+
 ## [3.0.0] 
 ### BREAKING CHANGES
 - You must update php to 5.6 or newer version
@@ -215,3 +219,5 @@ This is last uploadcare-php version that will support php 5.2. Expect no feature
 [2.3.0]: https://github.com/uploadcare/uploadcare-php/compare/v2.2.1...v2.3.0
 [2.4.0-rc]: https://github.com/uploadcare/uploadcare-php/compare/v2.3.0...2.4.0-rc
 [2.4.1-rc]: https://github.com/uploadcare/uploadcare-php/compare/2.4.0-rc...v2.4.1-rc
+[3.0.0]: https://github.com/uploadcare/uploadcare-php/compare/v2.4.1-rc...v3.0.0
+[3.0.2]: https://github.com/uploadcare/uploadcare-php/compare/v3.0.0...v3.0.2
