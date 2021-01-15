@@ -4,21 +4,23 @@ All notable changes to this project will be documented in this file.
 The format is based now on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
-
 ## [3.0.2]
 ### Fix
-- Serialization for `originalFileUrl`
+- Serialization for `originalFileUrl`.
+
+## [3.0.1]
+### Fix
+- Added support for guzzlehttp/guzzle:^7.
 
 ## [3.0.0] 
 ### BREAKING CHANGES
-- You must update php to 5.6 or newer version
-- This **total new** version **has not** backward compatibility with previous!
+- You must update PHP to 5.6 or a newer version.
+- This **completely new** version **is not** backward compatibile with the previous one!
 
 ### Features
-- Add interfaces for all `File` and dependent classes;
-- Add [Guzzle http client](http://github.com/guzzle/guzzle) as standard client. You can override client with any `GuzzleHttp\ClientInterface` client implementation if you want;
-- T.B.D
+- Add interfaces for all `File` and dependent classes.
+- Add [Guzzle http client](http://github.com/guzzle/guzzle) as standard client. You can override client with any `GuzzleHttp\ClientInterface` client implementation if you want.
+- Full REST and Upload APIs coverage.
 
 ## [2.4.1-rc] - 2020-06-02
 ### Added
@@ -26,7 +28,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [2.4.0-rc] - 2020-01-13
 ### Added
-- Support for [signed uploads](https://uploadcare.com/docs/api_reference/upload/signed_uploads/).
+- Support for [signed uploads](https://uploadcare.com/docs/api_reference/upload/signed_uploads/)
 
 ## [2.3.0] - 2019-09-06
 ### Added
@@ -34,8 +36,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Allow to control "autostore" for local uploads
 
 ### Fixed
-- Wrong return type for `createRemoteCopy` method in `API.php`.
-As result is always casted to `string`, the return type should be `string`
+- Wrong return type for `createRemoteCopy` method in `API.php`. As result is always casted to `string`, the return type should be `string`
 
 ## [2.2.1] - 2018-05-14
 ### Deprecated
