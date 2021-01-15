@@ -1,8 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-The format is based now on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
-and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
+The format is based now on [Keep a
+Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to
+[Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [3.0.2]
 ### Fix
@@ -15,20 +16,25 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [3.0.0] 
 ### BREAKING CHANGES
 - You must update PHP to 5.6 or a newer version.
-- This **completely new** version **is not** backward compatibile with the previous one!
+- This **completely new** version **is not** backward compatibile with the
+  previous one!
 
 ### Features
 - Add interfaces for all `File` and dependent classes.
-- Add [Guzzle http client](http://github.com/guzzle/guzzle) as standard client. You can override client with any `GuzzleHttp\ClientInterface` client implementation if you want.
+- Add [Guzzle http client](http://github.com/guzzle/guzzle) as standard client.
+  You can override client with any `GuzzleHttp\ClientInterface` client
+  implementation if you want.
 - Full REST and Upload APIs coverage.
 
 ## [2.4.1-rc] - 2020-06-02
 ### Added
-- Support for [multipart uploads](https://uploadcare.com/api-refs/upload-api/#operation/multipartFileUploadStart)
+- Support for [multipart
+  uploads](https://uploadcare.com/api-refs/upload-api/#operation/multipartFileUploadStart)
 
 ## [2.4.0-rc] - 2020-01-13
 ### Added
-- Support for [signed uploads](https://uploadcare.com/docs/api_reference/upload/signed_uploads/)
+- Support for [signed
+  uploads](https://uploadcare.com/docs/api_reference/upload/signed_uploads/)
 
 ## [2.3.0] - 2019-09-06
 ### Added
@@ -36,11 +42,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Allow to control "autostore" for local uploads
 
 ### Fixed
-- Wrong return type for `createRemoteCopy` method in `API.php`. As result is always casted to `string`, the return type should be `string`
+- Wrong return type for `createRemoteCopy` method in `API.php`. As result is
+  always casted to `string`, the return type should be `string`
 
 ## [2.2.1] - 2018-05-14
 ### Deprecated
-- `$api->getUserAgent()` was deprecated and will be removed in next major version. Use `$api->getUserAgentHeader()` instead.
+- `$api->getUserAgent()` was deprecated and will be removed in next major
+  version. Use `$api->getUserAgentHeader()` instead.
 
 ## [2.2.0] - 2018-05-14
 ### Added
@@ -58,24 +66,29 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Hitting max throttling attempts if request was successful
 
 ## [2.1.2]
-- add `__isset()` to classes that have `__get()` that fixes class behaviours in PHP 7.0.6+ see [error description](https://bugs.php.net/bug.php?id=71359)
+- add `__isset()` to classes that have `__get()` that fixes class behaviours in
+  PHP 7.0.6+ see [error description](https://bugs.php.net/bug.php?id=71359)
 
 ## [2.1.1]
 - fix `File->op()`
 
 ## [2.1.0]
-- change `File->crop()` and `File->scaleCrop()` behaviou, now they throw exceptions if parameters `$width` or `$height` are 0 or not provided
+- change `File->crop()` and `File->scaleCrop()` behaviou, now they throw
+  exceptions if parameters `$width` or `$height` are 0 or not provided
 - add `File->getPath()` method
 - fix `Api->createRemoteCopy()` default behaviour
 
 ## [2.0.0]
-- use latest stable build of version 3 (see [widget changelog][widget changelog])
+- use latest stable build of version 3 (see [widget changelog][widget
+  changelog])
 - use REST API version 0.5
 - update pagination functions for files and groups
-- add batch files methods: `Api->storeMultipleFiles()` and `Api->deleteMultipleFiles()`
+- add batch files methods: `Api->storeMultipleFiles()` and
+  `Api->deleteMultipleFiles()`
 - add new copy methods: `Api->createLocalCopy()` and `Api->createRemoteCopy()`
 - add `Helper->deprecate()` method
-- change the signature of `Uploader->fromUrl()`, old signature is deprecated but will work until 3.0
+- change the signature of `Uploader->fromUrl()`, old signature is deprecated but
+  will work until 3.0
 - deprecate `File->copy()` and `File->copyTo()`
 - deprecate `Api->copyFile()`
 
@@ -90,7 +103,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - bump widget version to 2.8.2 (see [widget changelog][widget changelog])
 
 ## [1.5.2]
-- fix of throttled request exception (thanks to Alexey Scherbakov, https://github.com/lexabug)
+- fix of throttled request exception (thanks to Alexey Scherbakov,
+  https://github.com/lexabug)
 - fix of pagination logic
 
 ## [1.5.1]
@@ -102,8 +116,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [1.5.0]
 - upgrade server api usage to v0.4, add new style pagination support
 - add FileIterator
-- change logic of `Api->getFileList()`: it returns FileIterator object instead of array
-  and incoming parameters are now grouped in an array
+- change logic of `Api->getFileList()`: it returns FileIterator object instead
+  of array and incoming parameters are now grouped in an array
 - remove `Api->getFilePaginationInfo()`
 
 ## [1.4.1]
@@ -133,8 +147,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - bump widget version to 2.3.5 (see [widget changelog][widget changelog])
 
 ## [1.3.0]
-- **IMPORTANT:** backward incompatible changes in widget behavior introduced in 2.0.0, please read
-  [changelog entry](https://github.com/uploadcare/uploadcare-widget/blob/master/HISTORY.markdown#200-20022015)
+- **IMPORTANT:** backward incompatible changes in widget behavior introduced in
+  2.0.0, please read [changelog
+  entry](https://github.com/uploadcare/uploadcare-widget/blob/master/HISTORY.markdown#200-20022015)
   carefully
 - bump widget version to 2.3.4 (see [widget changelog][widget changelog])
 - allow CDN URLs in Group constructor
@@ -164,8 +179,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - bump widget version to 1.0.1 (see [widget changelog][widget changelog])
 
 ## [1.2.0]
-- bump widget version to 1.0.0 (see [widget changelog][widget changelog])
-    major feature is reponsive behavior of widget dialog
+- bump widget version to 1.0.0 (see [widget changelog][widget changelog]) major
+    feature is reponsive behavior of widget dialog
 
 ## [1.1.3]
 - allow setting custom CDN host
@@ -183,7 +198,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [1.0.9]
 
-This is last uploadcare-php version that will support php 5.2. Expect no features added, only bugs fixed.
+This is last uploadcare-php version that will support php 5.2. Expect no
+features added, only bugs fixed.
 - bump widget version to 0.18.1 (see [widget changelog][widget changelog])
 
 ## [1.0.8]
@@ -193,7 +209,8 @@ This is last uploadcare-php version that will support php 5.2. Expect no feature
 
 ## [1.0.7]
 
-- support `limit` param in `Api->getFileList()` and `Api->getFilePaginationInfo()`
+- support `limit` param in `Api->getFileList()` and
+  `Api->getFilePaginationInfo()`
 
 ## [1.0.6]
 
@@ -209,16 +226,20 @@ This is last uploadcare-php version that will support php 5.2. Expect no feature
 - add Groups API
 - add `File->copy()`
 
-[widget changelog]: https://github.com/uploadcare/uploadcare-widget/blob/master/HISTORY.markdown
+[widget changelog]:
+https://github.com/uploadcare/uploadcare-widget/blob/master/HISTORY.markdown
 
-[Unreleased]: https://github.com/uploadcare/uploadcare-php/compare/v2.4.1-rc...release-3.0
+[Unreleased]:
+https://github.com/uploadcare/uploadcare-php/compare/v2.4.1-rc...release-3.0
 [2.1.0]: https://github.com/uploadcare/uploadcare-php/releases/tag/v2.1.0
 [2.1.1]: https://github.com/uploadcare/uploadcare-php/compare/v2.1.0...v2.1.1
 [2.1.2]: https://github.com/uploadcare/uploadcare-php/compare/v2.1.1...v2.1.2
 [2.2.0]: https://github.com/uploadcare/uploadcare-php/compare/v2.1.2...v2.2.0
 [2.2.1]: https://github.com/uploadcare/uploadcare-php/compare/v2.2.0...v2.2.1
 [2.3.0]: https://github.com/uploadcare/uploadcare-php/compare/v2.2.1...v2.3.0
-[2.4.0-rc]: https://github.com/uploadcare/uploadcare-php/compare/v2.3.0...2.4.0-rc
-[2.4.1-rc]: https://github.com/uploadcare/uploadcare-php/compare/2.4.0-rc...v2.4.1-rc
+[2.4.0-rc]:
+https://github.com/uploadcare/uploadcare-php/compare/v2.3.0...2.4.0-rc
+[2.4.1-rc]:
+https://github.com/uploadcare/uploadcare-php/compare/2.4.0-rc...v2.4.1-rc
 [3.0.0]: https://github.com/uploadcare/uploadcare-php/compare/v2.4.1-rc...v3.0.0
 [3.0.2]: https://github.com/uploadcare/uploadcare-php/compare/v3.0.0...v3.0.2
