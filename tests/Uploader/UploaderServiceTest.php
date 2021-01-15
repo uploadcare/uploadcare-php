@@ -214,7 +214,7 @@ class UploaderServiceTest extends TestCase
     }
 
     /**
-     * @requires PHP <= 5
+     * @requires PHP <= 7
      */
     public function testSendRequestMethodHeaders()
     {
@@ -230,7 +230,7 @@ class UploaderServiceTest extends TestCase
     }
 
     /**
-     * @requires PHP <= 5
+     * @requires PHP <= 7
      */
     public function testSendRequestMethodUri()
     {

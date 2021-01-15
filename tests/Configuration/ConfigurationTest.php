@@ -77,4 +77,13 @@ class ConfigurationTest extends TestCase
         self::assertArrayHasKey('User-Agent', $result);
         self::assertSame($this->header, $result['User-Agent']);
     }
+
+    public function testHeaderWithFramework()
+    {
+        $conf = Configuration::create($this->publicKey, $this->privateKey, ['framework' => ['Symfony', '5.1']]);
+        $result = $conf->getHeaders();
+        self::assertArrayHasKey('User-Agent', $result);
+        self::assertContains('Symfony', $result['User-Agent']);
+        self::assertContains('5.1', $result['User-Agent']);
+    }
 }
