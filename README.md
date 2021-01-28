@@ -4,7 +4,7 @@ Uploadcare PHP integration handles uploads and further operations with files by 
 
 [![Build Status][travis-img]][travis] [![Uploadcare stack on StackShare][stack-img]][stack]  
 
-[travis-img]: https://api.travis-ci.org/uploadcare/uploadcare-php.svg?branch=release-3.0
+[travis-img]: https://api.travis-ci.org/uploadcare/uploadcare-php.svg?branch=master
 [travis]: https://travis-ci.org/uploadcare/uploadcare-php
 [stack-img]: http://img.shields.io/badge/tech-stack-0690fa.svg?style=flat
 [stack]: https://stackshare.io/uploadcare/stacks/
@@ -16,7 +16,7 @@ Uploadcare PHP integration handles uploads and further operations with files by 
   * [File operations](#file-operations)
   * [Group operations](#group-operations)
   * [Project operations](#project-operations)
-  * [Webhooks](#webhooks-operations)
+  * [Webhooks](#webhooks)
   * [Conversion operations](#conversion-operations)
   * [Secure delivery](#secure-delivery)
   * [Tests](#tests)

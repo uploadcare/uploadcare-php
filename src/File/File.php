@@ -100,6 +100,7 @@ final class File implements FileInfoInterface, SerializableInterface
         $this->isReady = false;
         $this->mimeType = '';
         $this->originalFilename = '';
+        $this->originalFileUrl = '';
         $this->size = 0;
         $this->url = '';
         $this->uuid = '';
@@ -116,6 +117,7 @@ final class File implements FileInfoInterface, SerializableInterface
             'isReady' => 'bool',
             'mimeType' => 'string',
             'originalFilename' => 'string',
+            'originalFileUrl' => 'string',
             'size' => 'int',
             'url' => 'string',
             'uuid' => 'string',
