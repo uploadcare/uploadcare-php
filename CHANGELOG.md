@@ -5,6 +5,10 @@ The format is based now on [Keep a
 Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to
 [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [3.0.3]
+### Fix
+- Fixed file copy methods between default Uploadcare storage and remote storage (Amazon s3)
+
 ## [3.0.2]
 ### Fix
 - Serialization for `originalFileUrl`.

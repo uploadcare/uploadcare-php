@@ -191,12 +191,12 @@ class FileApi extends AbstractApi implements FileApiInterface
             throw new InvalidArgumentException(\sprintf('Uuid \'%s\' for request not valid', $source));
         }
 
-        $response = $this->request('POST', '/files/local_copy/', [
+        $parameters = [
             'source' => $source,
             'store' => (bool) $store,
-        ]);
+        ];
+        $response = $this->request('POST', '/files/local_copy/', ['body' => \json_encode($parameters)]);
 
-        // Hack
         $data = \json_decode($response->getBody()->getContents(), true);
         if (!isset($data['result']) || !\is_array($data['result'])) {
             throw new \RuntimeException('Unable to deserialize response. Call to support');
@@ -240,7 +240,7 @@ class FileApi extends AbstractApi implements FileApiInterface
             $parameters['pattern'] = $pattern;
         }
 
-        $response = $this->request('POST', '/files/remote_copy/', $parameters);
+        $response = $this->request('POST', '/files/remote_copy/', ['body' => \json_encode($parameters)]);
 
         $result = $this->configuration->getSerializer()
             ->deserialize($response->getBody()->getContents());
