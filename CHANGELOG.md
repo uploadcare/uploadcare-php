@@ -7,7 +7,7 @@ Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to
 
 ## [3.0.3]
 ### Fix
-- Copy file from local (uploadcare) to remote (s3) storage and vise versa.
+- Fixed file copy methods between default Uploadcare storage and remote storage (Amazon s3)
 
 ## [3.0.2]
 ### Fix
