@@ -60,7 +60,7 @@ $_ENV['UPLOADCARE_PRIVATE_KEY'] = '<your private key>';
 require_once 'vendor/autoload.php';
 ```
 
-**Step 5** — create an object of the `Uploadcare\Configuratoin` class,
+**Step 5** — create an object of the `Uploadcare\Configuration` class,
 
 ```php
 $configuration = Uploadcare\Configuration::create($_ENV['UPLOADCARE_PUBLIC_KEY'], $_ENV['UPLOADCARE_PRIVATE_KEY']);
