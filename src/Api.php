@@ -53,13 +53,13 @@ class Api
 
     /**
      * @param string $publicKey
-     * @param string $privateKey
+     * @param string $secretKey
      *
      * @return Api
      */
-    public static function create($publicKey, $privateKey)
+    public static function create($publicKey, $secretKey)
     {
-        $configuration = Configuration::create($publicKey, $privateKey);
+        $configuration = Configuration::create($publicKey, $secretKey);
 
         return new static($configuration);
     }

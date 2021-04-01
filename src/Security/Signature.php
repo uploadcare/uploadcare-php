@@ -10,7 +10,7 @@ class Signature implements SignatureInterface
     /**
      * @var string
      */
-    private $privateKey;
+    private $secretKey;
 
     /**
      * @var \DateTimeInterface
@@ -18,12 +18,12 @@ class Signature implements SignatureInterface
     private $expired;
 
     /**
-     * @param string   $privateKey Uploadcare private key
+     * @param string   $secretKey Uploadcare private key
      * @param int|null $ttl        Signature time-to-life
      */
-    public function __construct($privateKey, $ttl = null)
+    public function __construct($secretKey, $ttl = null)
     {
-        $this->privateKey = $privateKey;
+        $this->secretKey = $secretKey;
         if ($ttl === null || $ttl > self::MAX_TTL) {
             $ttl = self::MAX_TTL;
         }
@@ -39,7 +39,7 @@ class Signature implements SignatureInterface
     {
         $signString = $this->getExpire()->getTimestamp();
 
-        return \hash_hmac(SignatureInterface::SIGN_ALGORITHM, (string) $signString, $this->privateKey);
+        return \hash_hmac(SignatureInterface::SIGN_ALGORITHM, (string) $signString, $this->secretKey);
     }
 
     /**
@@ -81,6 +81,6 @@ class Signature implements SignatureInterface
             $uri,
         ]);
 
-        return \hash_hmac(UploadcareAuthInterface::AUTH_ALGORITHM, $signString, $this->privateKey);
+        return \hash_hmac(UploadcareAuthInterface::AUTH_ALGORITHM, $signString, $this->secretKey);
     }
 }

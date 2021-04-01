@@ -18,7 +18,7 @@ use Uploadcare\Serializer\SerializerFactory;
  */
 class Configuration implements ConfigurationInterface
 {
-    const LIBRARY_VERSION = 'v3.0.0';
+    const LIBRARY_VERSION = 'v3.0.4';
     const API_VERSION = '0.6';
     const API_BASE_URL = 'api.uploadcare.com';
     const USER_AGENT_TEMPLATE = 'PHPUploadcare/{lib-version}/{publicKey} (PHP/{lang-version})';
@@ -55,16 +55,16 @@ class Configuration implements ConfigurationInterface
 
     /**
      * @param string                          $publicKey         Uploadcare API public key
-     * @param string                          $privateKey        Uploadcare API private key
+     * @param string                          $secretKey        Uploadcare API private key
      * @param array                           $clientOptions     Parameters for Http client (proxy, special headers, etc.)
      * @param ClientFactoryInterface|null     $clientFactory
      * @param SerializerFactoryInterface|null $serializerFactory
      *
      * @return Configuration
      */
-    public static function create($publicKey, $privateKey, array $clientOptions = [], ClientFactoryInterface $clientFactory = null, SerializerFactoryInterface $serializerFactory = null)
+    public static function create($publicKey, $secretKey, array $clientOptions = [], ClientFactoryInterface $clientFactory = null, SerializerFactoryInterface $serializerFactory = null)
     {
-        $signature = new Signature($privateKey);
+        $signature = new Signature($secretKey);
         $framework = isset($clientOptions['framework']) ? $clientOptions['framework'] : null;
         $client = $clientFactory !== null ? $clientFactory::createClient($clientOptions) : ClientFactory::createClient($clientOptions);
         $serializer = $serializerFactory !== null ? $serializerFactory::create() : SerializerFactory::create();
