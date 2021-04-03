@@ -233,7 +233,7 @@ class FileApi extends AbstractApi implements FileApiInterface
             'source' => $source,
             'target' => $target,
         ];
-        if (\is_bool($makePublic)) {
+        if ($makePublic) {
             $parameters['make_public'] = $makePublic;
         }
         if (\is_string($pattern)) {

@@ -9,7 +9,7 @@ use Uploadcare\Exception\InvalidArgumentException;
 use Uploadcare\Interfaces\File\FileInfoInterface;
 use Uploadcare\MultipartResponse\MultipartStartResponse;
 
-final class Uploader extends AbstractUploader
+class Uploader extends AbstractUploader
 {
     /**
      * Below this size direct upload is possible, above — multipart upload (100 Mb).
@@ -60,7 +60,7 @@ final class Uploader extends AbstractUploader
      * @param resource    $handle
      * @param string|null $mimeType
      * @param string|null $filename
-     * @param string|null $store
+     * @param string      $store
      *
      * @return ResponseInterface
      */

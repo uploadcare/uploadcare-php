@@ -16,7 +16,6 @@ use Uploadcare\Interfaces\File\FileInfoInterface;
 use Uploadcare\Interfaces\Response\BatchResponseInterface;
 use Uploadcare\Interfaces\Response\ResponseProblemInterface;
 use Uploadcare\Response\BatchConversionResponse;
-use Uploadcare\Response\ResponseProblem;
 
 /**
  * Conversion Api.
@@ -151,7 +150,7 @@ class ConversionApi extends AbstractApi implements ConversionApiInterface
 
         if (!empty($result->getProblems())) {
             $problem = \array_values($result->getProblems())[0];
-            $reason = $problem instanceof ResponseProblemInterface ? $problem->getReason() : (new ResponseProblem())->setReason('Unknown problem');
+            $reason = $problem instanceof ResponseProblemInterface ? $problem->getReason() : 'Unknown problem';
 
             if ($request->throwError()) {
                 throw new ConversionException($reason);

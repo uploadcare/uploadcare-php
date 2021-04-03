@@ -92,10 +92,10 @@ class AkamaiToken implements TokenInterface
      */
     public function setWindow(int $window): self
     {
-        if (!\is_numeric($window) || (int) $window <= 0) {
+        if ($window <= 0) {
             throw new TokenException('Window must me a number larger than 0');
         }
-        $this->window = (int) $window;
+        $this->window = $window;
 
         return $this;
     }

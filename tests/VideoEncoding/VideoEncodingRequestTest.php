@@ -30,7 +30,7 @@ class VideoEncodingRequestTest extends TestCase
     public function provideWrongSizes()
     {
         return [
-            ['not-an-int'],
+            [7],
             [473],
             [0],
         ];
@@ -150,7 +150,6 @@ class VideoEncodingRequestTest extends TestCase
             ['0'],
             [0],
             [1024],
-            [null],
         ];
     }
 

@@ -19,7 +19,7 @@ interface UploadcareAuthInterface
      *
      * @return string
      */
-    public function getDateHeaderString($date = null): string;
+    public function getDateHeaderString(?\DateTimeInterface $date = null): string;
 
     /**
      * Auth header.

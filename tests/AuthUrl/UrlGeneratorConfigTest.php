@@ -28,8 +28,8 @@ class UrlGeneratorConfigTest extends TestCase
     public function testEmptyAuthConfigCreation()
     {
         $config = new AuthUrlConfig('host.domain.com', $this->createMock(TokenInterface::class));
-        self::assertNull($config->getToken());
-        self::assertNull($config->getTimeStamp());
+        self::assertEmpty($config->getToken());
+        self::assertEquals(0, $config->getTimeStamp());
         self::assertEquals('host.domain.com', $config->getCdnUrl());
     }
 

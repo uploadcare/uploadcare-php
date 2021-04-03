@@ -223,7 +223,7 @@ final class File implements FileInfoInterface, SerializableInterface
      */
     public function setIsImage(bool $isImage): self
     {
-        $this->isImage = (bool) $isImage;
+        $this->isImage = $isImage;
 
         return $this;
     }
@@ -243,7 +243,7 @@ final class File implements FileInfoInterface, SerializableInterface
      */
     public function setIsReady(bool $isReady): self
     {
-        $this->isReady = (bool) $isReady;
+        $this->isReady = $isReady;
 
         return $this;
     }
