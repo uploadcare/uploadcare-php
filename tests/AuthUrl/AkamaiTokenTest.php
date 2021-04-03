@@ -3,7 +3,6 @@
 namespace Tests\AuthUrl;
 
 use PHPUnit\Framework\TestCase;
-use TypeError;
 use Uploadcare\AuthUrl\Token\AkamaiToken;
 use Uploadcare\AuthUrl\Token\TokenException;
 
@@ -36,7 +35,7 @@ class AkamaiTokenTest extends TestCase
 
     public function testSetWrongWindow()
     {
-        $this->expectException(TypeError::class);
+        $this->expectException(\TypeError::class);
         new AkamaiToken($this->key, 'not-a-number');
     }
 
