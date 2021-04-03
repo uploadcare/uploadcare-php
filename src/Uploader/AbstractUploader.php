@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Uploadcare\Uploader;
 
@@ -73,6 +73,7 @@ abstract class AbstractUploader implements UploaderInterface
      * @param string|null $mimeType
      * @param string|null $filename
      * @param string      $store
+     *
      * @throws InvalidArgumentException
      *
      * @return FileInfoInterface
@@ -86,6 +87,7 @@ abstract class AbstractUploader implements UploaderInterface
      * @param string|null $mimeType
      * @param string|null $filename
      * @param string      $store
+     *
      * @throws InvalidArgumentException
      *
      * @return FileInfoInterface
@@ -106,6 +108,7 @@ abstract class AbstractUploader implements UploaderInterface
      * @param string|null $mimeType
      * @param string|null $filename
      * @param string      $store
+     *
      * @throws InvalidArgumentException
      *
      * @return FileInfoInterface
@@ -127,6 +130,7 @@ abstract class AbstractUploader implements UploaderInterface
      * @param string|null $mimeType
      * @param string|null $filename
      * @param string      $store
+     *
      * @throws InvalidArgumentException
      *
      * @return FileInfoInterface

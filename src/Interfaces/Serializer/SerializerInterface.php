@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Uploadcare\Interfaces\Serializer;
 
@@ -12,7 +12,7 @@ interface SerializerInterface
      *
      * @throws \RuntimeException
      */
-    public function serialize($object, array $context = []);
+    public function serialize($object, array $context = []): string;
 
     /**
      * @param string      $string    Data string
@@ -23,5 +23,5 @@ interface SerializerInterface
      *
      * @throws \RuntimeException
      */
-    public function deserialize($string, $className = null, array $context = []);
+    public function deserialize(string $string, ?string $className = null, array $context = []);
 }

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Uploadcare;
 
@@ -50,25 +50,16 @@ class FileCollection extends AbstractCollection
         return new static(new File\FileCollection($elements), $this->api);
     }
 
-    /**
-     * @inheritDoc
-     */
     public static function elementClass(): string
     {
         return File::class;
     }
 
-    /**
-     * @return Interfaces\Response\BatchResponseInterface
-     */
-    public function store()
+    public function store(): BatchResponseInterface
     {
         return $this->api->batchStoreFile($this->inner);
     }
 
-    /**
-     * @return Interfaces\Response\BatchResponseInterface
-     */
     public function delete(): BatchResponseInterface
     {
         return $this->api->batchDeleteFile($this->inner);

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Uploadcare\Interfaces\AuthUrl;
 
@@ -12,5 +12,5 @@ interface UrlGeneratorInterface
      *
      * @return string
      */
-    public function getUrl(AuthUrlConfigInterface $config, $id);
+    public function getUrl(AuthUrlConfigInterface $config, $id): string;
 }

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Uploadcare\Conversion;
 
@@ -7,6 +7,7 @@ use Uploadcare\Interfaces\File\CollectionInterface;
 
 /**
  * Collection for conversion requests.
+ *
  * @psalm-template T of \Uploadcare\Interfaces\Conversion\ConvertedItemInterface
  */
 final class ConvertedCollection extends AbstractCollection

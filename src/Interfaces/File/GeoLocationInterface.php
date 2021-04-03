@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Uploadcare\Interfaces\File;
 
@@ -12,12 +12,12 @@ interface GeoLocationInterface
      *
      * @return float
      */
-    public function getLatitude();
+    public function getLatitude(): float;
 
     /**
      * Location longitude.
      *
      * @return float
      */
-    public function getLongitude();
+    public function getLongitude(): float;
 }

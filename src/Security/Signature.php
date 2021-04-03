@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Uploadcare\Security;
 
@@ -19,9 +19,9 @@ class Signature implements SignatureInterface
 
     /**
      * @param string   $secretKey Uploadcare private key
-     * @param int|null $ttl        Signature time-to-life
+     * @param int|null $ttl       Signature time-to-life
      */
-    public function __construct($secretKey, $ttl = null)
+    public function __construct(string $secretKey, int $ttl = null)
     {
         $this->secretKey = $secretKey;
         if ($ttl === null || $ttl > self::MAX_TTL) {
@@ -33,9 +33,9 @@ class Signature implements SignatureInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
-    public function getSignature()
+    public function getSignature(): string
     {
         $signString = $this->getExpire()->getTimestamp();
 
@@ -43,17 +43,17 @@ class Signature implements SignatureInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
-    public function getExpire()
+    public function getExpire(): \DateTimeInterface
     {
         return $this->expired;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
-    public function getDateHeaderString($date = null)
+    public function getDateHeaderString(?\DateTimeInterface $date = null): string
     {
         $now = new \DateTime();
         if ($date instanceof \DateTimeInterface) {
@@ -65,9 +65,9 @@ class Signature implements SignatureInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
-    public function getAuthHeaderString($method, $uri, $data, $contentType = 'application/json', $date = null)
+    public function getAuthHeaderString(string $method, string $uri, string $data, string $contentType = 'application/json', \DateTimeInterface $date = null): string
     {
         $uri = \sprintf('/%s', \ltrim($uri, '/'));
         $data = \md5($data);

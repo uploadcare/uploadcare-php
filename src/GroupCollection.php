@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Uploadcare;
 
@@ -41,17 +41,11 @@ class GroupCollection extends File\AbstractCollection
         }
     }
 
-    /**
-     * @inheritDoc
-     */
     protected function createFrom(array $elements): CollectionInterface
     {
         return new static(new File\GroupCollection($elements), $this->api);
     }
 
-    /**
-     * @inheritDoc
-     */
     public static function elementClass(): string
     {
         return Group::class;

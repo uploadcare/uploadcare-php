@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Uploadcare\File;
 
@@ -7,6 +7,7 @@ use Uploadcare\Interfaces\File\CollectionInterface;
 /**
  * Abstract Collection.
  * Contains common collection methods.
+ *
  * @psalm-template TKey of array-key
  * @psalm-template T
  */
@@ -62,6 +63,7 @@ abstract class AbstractCollection implements CollectionInterface
     /**
      * @param mixed $element
      * @psalm-suppress InvalidPropertyAssignmentValue
+     *
      * @return true
      */
     public function add($element): bool
@@ -73,7 +75,7 @@ abstract class AbstractCollection implements CollectionInterface
 
     /**
      * @param int|string $key
-     * @param mixed $value
+     * @param mixed      $value
      * @psalm-suppress InvalidPropertyAssignmentValue
      */
     public function set($key, $value): void

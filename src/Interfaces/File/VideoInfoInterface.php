@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Uploadcare\Interfaces\File;
 
@@ -12,33 +12,33 @@ interface VideoInfoInterface
      *
      * @return int
      */
-    public function getDuration();
+    public function getDuration(): int;
 
     /**
      * Video format (MP4 for example).
      *
      * @return string
      */
-    public function getFormat();
+    public function getFormat(): string;
 
     /**
      * Video bitrate.
      *
      * @return int
      */
-    public function getBitrate();
+    public function getBitrate(): int;
 
     /**
      * Audio stream metadata.
      *
      * @return AudioInterface|null
      */
-    public function getAudio();
+    public function getAudio(): ?AudioInterface;
 
     /**
      * Video stream metadata.
      *
      * @return VideoInterface
      */
-    public function getVideo();
+    public function getVideo(): VideoInterface;
 }

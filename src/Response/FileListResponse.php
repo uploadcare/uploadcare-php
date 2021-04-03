@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Uploadcare\Response;
 
@@ -51,7 +51,7 @@ final class FileListResponse implements ListResponseInterface, SerializableInter
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function getNext(): ?string
     {
@@ -59,7 +59,7 @@ final class FileListResponse implements ListResponseInterface, SerializableInter
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function getPrevious(): ?string
     {
@@ -67,7 +67,7 @@ final class FileListResponse implements ListResponseInterface, SerializableInter
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function getTotal(): int
     {
@@ -75,7 +75,7 @@ final class FileListResponse implements ListResponseInterface, SerializableInter
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function getPerPage(): int
     {

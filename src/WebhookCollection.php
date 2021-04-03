@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Uploadcare;
 
@@ -30,7 +30,7 @@ class WebhookCollection extends AbstractCollection
         $this->decorateElements();
     }
 
-    private function decorateElements()
+    private function decorateElements(): void
     {
         foreach ($this->inner->toArray() as $k => $value) {
             if ($value instanceof WebhookInterface) {

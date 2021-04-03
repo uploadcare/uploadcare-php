@@ -5,10 +5,14 @@ namespace Uploadcare\Response;
 use Uploadcare\File\AbstractCollection;
 use Uploadcare\Interfaces\File\CollectionInterface;
 
-class WebhookCollection extends AbstractCollection
+/**
+ * @psalm-template T of WebhookResponse
+ */
+final class WebhookCollection extends AbstractCollection
 {
     /**
-     * @var array<array-key, mixed>
+     * @var array<array-key,T>
+     * @psalm-suppress NonInvariantDocblockPropertyType
      */
     protected $elements;
 
@@ -17,17 +21,11 @@ class WebhookCollection extends AbstractCollection
         $this->elements = $elements;
     }
 
-    /**
-     * @inheritDoc
-     */
     protected function createFrom(array $elements): CollectionInterface
     {
-        return new static($elements);
+        return new WebhookCollection($elements);
     }
 
-    /**
-     * @inheritDoc
-     */
     public static function elementClass(): string
     {
         return WebhookResponse::class;

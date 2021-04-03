@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Uploadcare\File;
 
@@ -44,7 +44,7 @@ final class VideoInfo implements VideoInfoInterface, SerializableInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public static function rules(): array
     {
@@ -60,7 +60,7 @@ final class VideoInfo implements VideoInfoInterface, SerializableInterface
     /**
      * @return int
      */
-    public function getDuration()
+    public function getDuration(): int
     {
         return $this->duration;
     }
@@ -70,7 +70,7 @@ final class VideoInfo implements VideoInfoInterface, SerializableInterface
      *
      * @return VideoInfo
      */
-    public function setDuration($duration)
+    public function setDuration(int $duration): self
     {
         $this->duration = $duration;
 
@@ -80,7 +80,7 @@ final class VideoInfo implements VideoInfoInterface, SerializableInterface
     /**
      * @return string
      */
-    public function getFormat()
+    public function getFormat(): string
     {
         return $this->format;
     }
@@ -90,7 +90,7 @@ final class VideoInfo implements VideoInfoInterface, SerializableInterface
      *
      * @return VideoInfo
      */
-    public function setFormat($format)
+    public function setFormat(string $format): self
     {
         $this->format = $format;
 
@@ -100,7 +100,7 @@ final class VideoInfo implements VideoInfoInterface, SerializableInterface
     /**
      * @return int
      */
-    public function getBitrate()
+    public function getBitrate(): int
     {
         return $this->bitrate;
     }
@@ -110,7 +110,7 @@ final class VideoInfo implements VideoInfoInterface, SerializableInterface
      *
      * @return VideoInfo
      */
-    public function setBitrate($bitrate)
+    public function setBitrate(int $bitrate): self
     {
         $this->bitrate = $bitrate;
 
@@ -120,7 +120,7 @@ final class VideoInfo implements VideoInfoInterface, SerializableInterface
     /**
      * @return VideoInterface
      */
-    public function getVideo()
+    public function getVideo(): VideoInterface
     {
         return $this->video;
     }
@@ -130,7 +130,7 @@ final class VideoInfo implements VideoInfoInterface, SerializableInterface
      *
      * @return VideoInfo
      */
-    public function setVideo($video)
+    public function setVideo(VideoInterface $video): self
     {
         $this->video = $video;
 
@@ -140,7 +140,7 @@ final class VideoInfo implements VideoInfoInterface, SerializableInterface
     /**
      * @return AudioInterface
      */
-    public function getAudio()
+    public function getAudio(): AudioInterface
     {
         return $this->audio;
     }
@@ -150,7 +150,7 @@ final class VideoInfo implements VideoInfoInterface, SerializableInterface
      *
      * @return VideoInfo
      */
-    public function setAudio($audio)
+    public function setAudio(AudioInterface $audio): self
     {
         $this->audio = $audio;
 

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Uploadcare\Apis;
 
@@ -29,7 +29,7 @@ abstract class AbstractApi
      *
      * @return array|null
      */
-    protected function nextParameters(ListResponseInterface $response)
+    protected function nextParameters(ListResponseInterface $response): ?array
     {
         if (($next = $response->getNext()) === null) {
             return null;
@@ -55,7 +55,7 @@ abstract class AbstractApi
      *
      * @throws HttpException
      */
-    protected function request($method, $uri, array $data = [])
+    protected function request(string $method, string $uri, array $data = []): ResponseInterface
     {
         $date = \date_create();
 

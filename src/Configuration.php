@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Uploadcare;
 
@@ -18,10 +18,10 @@ use Uploadcare\Serializer\SerializerFactory;
  */
 class Configuration implements ConfigurationInterface
 {
-    const LIBRARY_VERSION = 'v3.0.4';
-    const API_VERSION = '0.6';
-    const API_BASE_URL = 'api.uploadcare.com';
-    const USER_AGENT_TEMPLATE = 'PHPUploadcare/{lib-version}/{publicKey} (PHP/{lang-version})';
+    public const LIBRARY_VERSION = 'v3.0.4';
+    public const API_VERSION = '0.6';
+    public const API_BASE_URL = 'api.uploadcare.com';
+    public const USER_AGENT_TEMPLATE = 'PHPUploadcare/{lib-version}/{publicKey} (PHP/{lang-version})';
 
     /**
      * @var string
@@ -55,7 +55,7 @@ class Configuration implements ConfigurationInterface
 
     /**
      * @param string                          $publicKey         Uploadcare API public key
-     * @param string                          $secretKey        Uploadcare API private key
+     * @param string                          $secretKey         Uploadcare API private key
      * @param array                           $clientOptions     Parameters for Http client (proxy, special headers, etc.)
      * @param ClientFactoryInterface|null     $clientFactory
      * @param SerializerFactoryInterface|null $serializerFactory
@@ -107,7 +107,7 @@ class Configuration implements ConfigurationInterface
      *
      * @return $this
      */
-    public function setAuthUrlConfig(AuthUrlConfigInterface $config): self
+    public function setAuthUrlConfig(AuthUrlConfigInterface $config): ConfigurationInterface
     {
         $this->authUrlConfig = $config;
 
@@ -147,7 +147,7 @@ class Configuration implements ConfigurationInterface
     /**
      * @return string
      */
-    public function getPublicKey()
+    public function getPublicKey(): string
     {
         return $this->publicKey;
     }
@@ -155,7 +155,7 @@ class Configuration implements ConfigurationInterface
     /**
      * @return SignatureInterface
      */
-    public function getSecureSignature()
+    public function getSecureSignature(): SignatureInterface
     {
         return $this->secureSignature;
     }
@@ -163,7 +163,7 @@ class Configuration implements ConfigurationInterface
     /**
      * @return ClientInterface
      */
-    public function getClient()
+    public function getClient(): ClientInterface
     {
         return $this->client;
     }
@@ -171,7 +171,7 @@ class Configuration implements ConfigurationInterface
     /**
      * @return SerializerInterface
      */
-    public function getSerializer()
+    public function getSerializer(): SerializerInterface
     {
         return $this->serializer;
     }
@@ -185,7 +185,7 @@ class Configuration implements ConfigurationInterface
      *
      * @return array
      */
-    public function getAuthHeaders($method, $uri, $data, $contentType = 'application/json', $date = null)
+    public function getAuthHeaders(string $method, string $uri, string $data, string $contentType = 'application/json', $date = null): array
     {
         return [
             'Date' => $this->getSecureSignature()->getDateHeaderString($date),
@@ -194,10 +194,7 @@ class Configuration implements ConfigurationInterface
         ];
     }
 
-    /**
-     * @return AuthUrlConfigInterface|null
-     */
-    public function getAuthUrlConfig()
+    public function getAuthUrlConfig(): ?AuthUrlConfigInterface
     {
         return $this->authUrlConfig;
     }

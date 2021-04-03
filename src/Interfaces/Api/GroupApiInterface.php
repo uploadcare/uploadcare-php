@@ -27,7 +27,7 @@ interface GroupApiInterface
      *
      * @throws HttpException
      */
-    public function createGroup($files);
+    public function createGroup(iterable $files): GroupInterface;
 
     /**
      * Get a paginated list of groups.

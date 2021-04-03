@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Uploadcare\Interfaces;
 
@@ -11,5 +11,5 @@ interface ClientFactoryInterface
      *
      * @return ClientInterface
      */
-    public static function createClient(array $options = []);
+    public static function createClient(array $options = []): ClientInterface;
 }

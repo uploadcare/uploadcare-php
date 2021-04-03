@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Uploadcare\Interfaces\Conversion;
 
@@ -10,15 +10,15 @@ interface ConversionRequest
     /**
      * @return string
      */
-    public function getTargetFormat();
+    public function getTargetFormat(): string;
 
     /**
      * @return bool
      */
-    public function throwError();
+    public function throwError(): bool;
 
     /**
      * @return bool
      */
-    public function store();
+    public function store(): bool;
 }

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Uploadcare\Apis;
 
@@ -18,7 +18,7 @@ use Uploadcare\Uploader\Uploader;
  */
 class GroupApi extends AbstractApi implements GroupApiInterface
 {
-    public function nextPage(ListResponseInterface $response)
+    public function nextPage(ListResponseInterface $response): ?ListResponseInterface
     {
         $parameters = $this->nextParameters($response);
         if ($parameters === null) {
@@ -28,16 +28,16 @@ class GroupApi extends AbstractApi implements GroupApiInterface
         /** @noinspection VariableFunctionsUsageInspection */
         $result = \call_user_func_array([$this, 'listGroups'], [
             isset($parameters['limit']) ? (int) $parameters['limit'] : 100,
-            isset($parameters['asc']) ? (bool) $parameters['asc'] : true,
+            !isset($parameters['asc']) || (bool) $parameters['asc'],
         ]);
 
         return $result instanceof ListResponseInterface ? $result : null;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
-    public function createGroup($files)
+    public function createGroup(iterable $files): GroupInterface
     {
         $request = [];
         foreach ($files as $file) {
@@ -63,9 +63,9 @@ class GroupApi extends AbstractApi implements GroupApiInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
-    public function listGroups($limit = 100, $asc = true)
+    public function listGroups($limit = 100, $asc = true): GroupListResponse
     {
         $parameters = [
             'limit' => (int) $limit,
@@ -86,9 +86,9 @@ class GroupApi extends AbstractApi implements GroupApiInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
-    public function groupInfo($id)
+    public function groupInfo($id): GroupInterface
     {
         $response = (new Uploader($this->configuration))->groupInfo($id);
         $result = $this->configuration->getSerializer()
@@ -102,9 +102,9 @@ class GroupApi extends AbstractApi implements GroupApiInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
-    public function storeGroup($id)
+    public function storeGroup($id): GroupInterface
     {
         if ($id instanceof GroupInterface) {
             $id = $id->getId();

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Uploadcare\File;
 
@@ -31,7 +31,7 @@ final class Audio implements AudioInterface, SerializableInterface
     private $channels;
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public static function rules(): array
     {
@@ -46,7 +46,7 @@ final class Audio implements AudioInterface, SerializableInterface
     /**
      * @return int|null
      */
-    public function getBitrate()
+    public function getBitrate(): ?int
     {
         return $this->bitrate;
     }
@@ -56,7 +56,7 @@ final class Audio implements AudioInterface, SerializableInterface
      *
      * @return Audio
      */
-    public function setBitrate($bitrate)
+    public function setBitrate(?int $bitrate): self
     {
         $this->bitrate = $bitrate;
 
@@ -66,7 +66,7 @@ final class Audio implements AudioInterface, SerializableInterface
     /**
      * @return string|null
      */
-    public function getCodec()
+    public function getCodec(): ?string
     {
         return $this->codec;
     }
@@ -76,7 +76,7 @@ final class Audio implements AudioInterface, SerializableInterface
      *
      * @return Audio
      */
-    public function setCodec($codec)
+    public function setCodec(?string $codec): self
     {
         $this->codec = $codec;
 
@@ -86,7 +86,7 @@ final class Audio implements AudioInterface, SerializableInterface
     /**
      * @return int|null
      */
-    public function getSampleRate()
+    public function getSampleRate(): ?int
     {
         return $this->sampleRate;
     }
@@ -96,7 +96,7 @@ final class Audio implements AudioInterface, SerializableInterface
      *
      * @return Audio
      */
-    public function setSampleRate($sampleRate)
+    public function setSampleRate(?int $sampleRate): self
     {
         $this->sampleRate = $sampleRate;
 
@@ -106,7 +106,7 @@ final class Audio implements AudioInterface, SerializableInterface
     /**
      * @return string|null
      */
-    public function getChannels()
+    public function getChannels(): ?string
     {
         return $this->channels;
     }
@@ -116,7 +116,7 @@ final class Audio implements AudioInterface, SerializableInterface
      *
      * @return Audio
      */
-    public function setChannels($channels)
+    public function setChannels(?string $channels): self
     {
         $this->channels = $channels;
 

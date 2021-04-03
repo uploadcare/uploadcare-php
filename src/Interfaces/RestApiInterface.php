@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Uploadcare\Interfaces;
 
@@ -28,7 +28,7 @@ interface RestApiInterface
      *
      * @return FileApiInterface
      */
-    public function getFileApi();
+    public function getFileApi(): FileApiInterface;
 
     /**
      * Group operations:
@@ -38,7 +38,7 @@ interface RestApiInterface
      *
      * @return GroupApiInterface
      */
-    public function getGroupApi();
+    public function getGroupApi(): GroupApiInterface;
 
     /**
      * Project operations:
@@ -46,7 +46,7 @@ interface RestApiInterface
      *
      * @return ProjectApiInterface
      */
-    public function getProjectApi();
+    public function getProjectApi(): ProjectApiInterface;
 
     /**
      * Webhook operations:
@@ -57,7 +57,7 @@ interface RestApiInterface
      *
      * @return WebhookApiInterface
      */
-    public function getWebhookApi();
+    public function getWebhookApi(): WebhookApiInterface;
 
     /**
      * Conversion operations:
@@ -68,5 +68,5 @@ interface RestApiInterface
      *
      * @return ConversionApiInterface
      */
-    public function getConversionApi();
+    public function getConversionApi(): ConversionApiInterface;
 }

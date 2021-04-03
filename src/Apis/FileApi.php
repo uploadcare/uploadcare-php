@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Uploadcare\Apis;
 
@@ -24,9 +24,9 @@ use Uploadcare\Response\FileListResponse;
 class FileApi extends AbstractApi implements FileApiInterface
 {
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
-    public function nextPage(ListResponseInterface $response)
+    public function nextPage(ListResponseInterface $response): ?ListResponseInterface
     {
         $parameters = $this->nextParameters($response);
         if ($parameters === null) {
@@ -58,7 +58,7 @@ class FileApi extends AbstractApi implements FileApiInterface
      *
      * @return ListResponseInterface
      */
-    public function listFiles($limit = 100, $orderBy = 'datetime_uploaded', $from = null, $addFields = [], $stored = null, $removed = false)
+    public function listFiles($limit = 100, $orderBy = 'datetime_uploaded', $from = null, $addFields = [], $stored = null, $removed = false): ListResponseInterface
     {
         $parameters = [
             'limit' => $limit,
@@ -90,7 +90,7 @@ class FileApi extends AbstractApi implements FileApiInterface
      *
      * @return FileInfoInterface
      */
-    public function storeFile($id)
+    public function storeFile($id): FileInfoInterface
     {
         if ($id instanceof FileInfoInterface) {
             $id = $id->getUuid();
@@ -107,7 +107,7 @@ class FileApi extends AbstractApi implements FileApiInterface
      *
      * @return FileInfoInterface
      */
-    public function deleteFile($id)
+    public function deleteFile($id): FileInfoInterface
     {
         if ($id instanceof FileInfoInterface) {
             $id = $id->getUuid();
@@ -124,7 +124,7 @@ class FileApi extends AbstractApi implements FileApiInterface
      *
      * @return FileInfoInterface
      */
-    public function fileInfo($id)
+    public function fileInfo($id): FileInfoInterface
     {
         $response = $this->request('GET', \sprintf('/files/%s/', $id));
 
@@ -139,7 +139,7 @@ class FileApi extends AbstractApi implements FileApiInterface
      *
      * @return BatchResponseInterface
      */
-    public function batchStoreFile($ids)
+    public function batchStoreFile($ids): BatchResponseInterface
     {
         $response = $this->request('PUT', '/files/storage/', ['body' => \json_encode($this->convertCollection($ids))]);
         $result = $this->configuration->getSerializer()
@@ -161,7 +161,7 @@ class FileApi extends AbstractApi implements FileApiInterface
      *
      * @return BatchResponseInterface
      */
-    public function batchDeleteFile($ids)
+    public function batchDeleteFile($ids): BatchResponseInterface
     {
         $response = $this->request('DELETE', '/files/storage/', ['body' => \json_encode($this->convertCollection($ids))]);
         $result = $this->configuration->getSerializer()
@@ -182,7 +182,7 @@ class FileApi extends AbstractApi implements FileApiInterface
      *
      * @return FileInfoInterface
      */
-    public function copyToLocalStorage($source, $store)
+    public function copyToLocalStorage($source, bool $store): FileInfoInterface
     {
         if ($source instanceof FileInfoInterface) {
             $source = $source->getUuid();
@@ -193,7 +193,7 @@ class FileApi extends AbstractApi implements FileApiInterface
 
         $parameters = [
             'source' => $source,
-            'store' => (bool) $store,
+            'store' => $store,
         ];
         $response = $this->request('POST', '/files/local_copy/', ['body' => \json_encode($parameters)]);
 
@@ -216,11 +216,11 @@ class FileApi extends AbstractApi implements FileApiInterface
      * @param string|FileInfoInterface $source     a CDN URL or just UUID of a file subjected to copy
      * @param string                   $target     Identifies a custom storage name related to your project. Implies you are copying a file to a specified custom storage. Keep in mind you can have multiple storage's associated with a single S3 bucket.
      * @param bool                     $makePublic true to make copied files available via public links, false to reverse the behavior
-     * @param string                   $pattern    Enum: "${default}" "${auto_filename}" "${effects}" "${filename}" "${uuid}" "${ext}" The parameter is used to specify file names Uploadcare passes to a custom storage. In case the parameter is omitted, we use pattern of your custom storage. Use any combination of allowed values.
+     * @param string|null              $pattern    Enum: "${default}" "${auto_filename}" "${effects}" "${filename}" "${uuid}" "${ext}" The parameter is used to specify file names Uploadcare passes to a custom storage. In case the parameter is omitted, we use pattern of your custom storage. Use any combination of allowed values.
      *
      * @return string
      */
-    public function copyToRemoteStorage($source, $target, $makePublic = true, $pattern = null)
+    public function copyToRemoteStorage($source, string $target, bool $makePublic = true, string $pattern = null): string
     {
         if ($source instanceof FileInfoInterface) {
             $source = $source->getUuid();
@@ -257,7 +257,7 @@ class FileApi extends AbstractApi implements FileApiInterface
      *
      * @return array<array-key, string>
      */
-    protected function convertCollection($ids)
+    protected function convertCollection($ids): array
     {
         $values = [];
         if (!\is_array($ids) && !$ids instanceof FileCollection) {
@@ -280,7 +280,7 @@ class FileApi extends AbstractApi implements FileApiInterface
      *
      * @return string|null
      */
-    public function generateSecureUrl($id, $window = 300)
+    public function generateSecureUrl($id, $window = 300): ?string
     {
         if (!($authConfig = $this->configuration->getAuthUrlConfig()) instanceof AuthUrlConfigInterface) {
             return null;
@@ -314,7 +314,7 @@ class FileApi extends AbstractApi implements FileApiInterface
      *
      * @return FileInfoInterface
      */
-    private function deserializeFileInfo(ResponseInterface $response, $activeFile = true)
+    private function deserializeFileInfo(ResponseInterface $response, $activeFile = true): FileInfoInterface
     {
         $result = $this->configuration->getSerializer()
             ->deserialize($response->getBody()->getContents(), File::class);

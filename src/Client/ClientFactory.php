@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Uploadcare\Client;
 
@@ -16,7 +16,7 @@ class ClientFactory implements ClientFactoryInterface
      *
      * @return ClientInterface
      */
-    public static function createClient(array $options = [])
+    public static function createClient(array $options = []): ClientInterface
     {
         return new Client($options);
     }

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Uploadcare\Apis;
 
@@ -32,10 +32,10 @@ class ConversionApi extends AbstractApi implements ConversionApiInterface
      *
      * @see https://uploadcare.com/api-refs/rest-api/v0.6.0/#tag/Conversion/paths/~1convert~1document~1status~1{token}~1/get
      */
-    public function documentJobStatus($id)
+    public function documentJobStatus($id): ConversionStatusInterface
     {
         if ($id instanceof ConvertedItemInterface) {
-            $id = (int) $id->getToken();
+            $id = $id->getToken();
         }
 
         $response = $this->request('GET', \sprintf('/convert/document/status/%s/', $id));
@@ -50,7 +50,7 @@ class ConversionApi extends AbstractApi implements ConversionApiInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @return ConvertedItemInterface|ResponseProblemInterface
      *
@@ -87,9 +87,9 @@ class ConversionApi extends AbstractApi implements ConversionApiInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
-    public function batchConvertDocuments($collection, ConversionRequest $request)
+    public function batchConvertDocuments($collection, ConversionRequest $request): BatchResponseInterface
     {
         if (!$request instanceof DocumentConversionRequestInterface) {
             throw new \RuntimeException(\sprintf('Request parameter must implements %s interface', DocumentConversionRequestInterface::class));
@@ -164,9 +164,9 @@ class ConversionApi extends AbstractApi implements ConversionApiInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
-    public function batchConvertVideo($collection, ConversionRequest $request)
+    public function batchConvertVideo($collection, ConversionRequest $request): BatchResponseInterface
     {
         if (!$request instanceof VideoEncodingRequestInterface) {
             throw new InvalidArgumentException(\sprintf('Conversion request of %s must implements the %s interface', __METHOD__, VideoEncodingRequestInterface::class));
@@ -207,7 +207,7 @@ class ConversionApi extends AbstractApi implements ConversionApiInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @see https://uploadcare.com/api-refs/rest-api/v0.6.0/#operation/videoConvertStatus
      */
@@ -237,7 +237,7 @@ class ConversionApi extends AbstractApi implements ConversionApiInterface
      *
      * @return string
      */
-    protected function makeVideoConversionUrl(VideoEncodingRequestInterface $request)
+    protected function makeVideoConversionUrl(VideoEncodingRequestInterface $request): string
     {
         $builder = new VideoUrlBuilder($request);
 
@@ -249,7 +249,7 @@ class ConversionApi extends AbstractApi implements ConversionApiInterface
      *
      * @return BatchResponseInterface
      */
-    private function requestDocumentConversion(array $conversionParams)
+    private function requestDocumentConversion(array $conversionParams): BatchResponseInterface
     {
         $response = $this->request('POST', 'convert/document/', [
             'body' => \json_encode($conversionParams),
@@ -271,7 +271,7 @@ class ConversionApi extends AbstractApi implements ConversionApiInterface
      *
      * @return array
      */
-    private function makeDocumentConversionUrl($ids, DocumentConversionRequestInterface $request)
+    private function makeDocumentConversionUrl($ids, DocumentConversionRequestInterface $request): array
     {
         $patch = [];
         foreach ($ids as $id) {

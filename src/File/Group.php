@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Uploadcare\File;
 
@@ -71,7 +71,7 @@ final class Group implements GroupInterface, SerializableInterface
     /**
      * @return string
      */
-    public function getId()
+    public function getId(): string
     {
         return $this->id;
     }
@@ -81,7 +81,7 @@ final class Group implements GroupInterface, SerializableInterface
      *
      * @return Group
      */
-    public function setId($id)
+    public function setId(string $id): self
     {
         $this->id = $id;
 
@@ -91,7 +91,7 @@ final class Group implements GroupInterface, SerializableInterface
     /**
      * @return \DateTime
      */
-    public function getDatetimeCreated()
+    public function getDatetimeCreated(): \DateTimeInterface
     {
         return $this->datetimeCreated;
     }
@@ -101,7 +101,7 @@ final class Group implements GroupInterface, SerializableInterface
      *
      * @return Group
      */
-    public function setDatetimeCreated($datetimeCreated)
+    public function setDatetimeCreated(\DateTimeInterface $datetimeCreated): self
     {
         $this->datetimeCreated = $datetimeCreated;
 
@@ -111,7 +111,7 @@ final class Group implements GroupInterface, SerializableInterface
     /**
      * @return \DateTime|null
      */
-    public function getDatetimeStored()
+    public function getDatetimeStored(): ?\DateTimeInterface
     {
         return $this->datetimeStored;
     }
@@ -121,7 +121,7 @@ final class Group implements GroupInterface, SerializableInterface
      *
      * @return Group
      */
-    public function setDatetimeStored($datetimeStored)
+    public function setDatetimeStored(?\DateTime $datetimeStored): self
     {
         $this->datetimeStored = $datetimeStored;
 
@@ -131,7 +131,7 @@ final class Group implements GroupInterface, SerializableInterface
     /**
      * @return int
      */
-    public function getFilesCount()
+    public function getFilesCount(): int
     {
         return $this->filesCount;
     }
@@ -141,7 +141,7 @@ final class Group implements GroupInterface, SerializableInterface
      *
      * @return Group
      */
-    public function setFilesCount($filesCount)
+    public function setFilesCount(int $filesCount): self
     {
         $this->filesCount = $filesCount;
 
@@ -151,7 +151,7 @@ final class Group implements GroupInterface, SerializableInterface
     /**
      * @return string
      */
-    public function getCdnUrl()
+    public function getCdnUrl(): string
     {
         return $this->cdnUrl;
     }
@@ -161,7 +161,7 @@ final class Group implements GroupInterface, SerializableInterface
      *
      * @return Group
      */
-    public function setCdnUrl($cdnUrl)
+    public function setCdnUrl(string $cdnUrl): self
     {
         $this->cdnUrl = $cdnUrl;
 
@@ -171,7 +171,7 @@ final class Group implements GroupInterface, SerializableInterface
     /**
      * @return string
      */
-    public function getUrl()
+    public function getUrl(): string
     {
         return $this->url;
     }
@@ -181,14 +181,14 @@ final class Group implements GroupInterface, SerializableInterface
      *
      * @return Group
      */
-    public function setUrl($url)
+    public function setUrl(string $url): self
     {
         $this->url = $url;
 
         return $this;
     }
 
-    public function addFile(FileInfoInterface $fileInfo)
+    public function addFile(FileInfoInterface $fileInfo): self
     {
         if (!$this->files->contains($fileInfo)) {
             $this->files->add($fileInfo);
@@ -197,7 +197,7 @@ final class Group implements GroupInterface, SerializableInterface
         return $this;
     }
 
-    public function getFiles()
+    public function getFiles(): CollectionInterface
     {
         return $this->files;
     }

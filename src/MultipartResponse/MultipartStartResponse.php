@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Uploadcare\MultipartResponse;
 
@@ -35,7 +35,7 @@ class MultipartStartResponse implements SerializableInterface
     /**
      * @return string
      */
-    public function getUuid()
+    public function getUuid(): string
     {
         return $this->uuid;
     }
@@ -45,7 +45,7 @@ class MultipartStartResponse implements SerializableInterface
      *
      * @return $this
      */
-    public function setUuid($uuid)
+    public function setUuid(string $uuid): self
     {
         $this->uuid = $uuid;
 
@@ -55,7 +55,7 @@ class MultipartStartResponse implements SerializableInterface
     /**
      * @return array|MultipartPreSignedUrl[]
      */
-    public function getParts()
+    public function getParts(): array
     {
         return $this->parts;
     }
@@ -65,7 +65,7 @@ class MultipartStartResponse implements SerializableInterface
      *
      * @return $this
      */
-    public function setParts(array $parts)
+    public function setParts(array $parts): self
     {
         foreach ($parts as $part) {
             $this->addPart($part);
@@ -79,7 +79,7 @@ class MultipartStartResponse implements SerializableInterface
      *
      * @return MultipartStartResponse
      */
-    public function addPart($part)
+    public function addPart(string $part): self
     {
         if (empty($part)) {
             return $this;

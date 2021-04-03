@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Uploadcare\File;
 
@@ -74,7 +74,7 @@ final class ImageInfo implements ImageInfoInterface, SerializableInterface
     /**
      * @return string|null
      */
-    public function getColorMode()
+    public function getColorMode(): ?string
     {
         return $this->colorMode;
     }
@@ -84,7 +84,7 @@ final class ImageInfo implements ImageInfoInterface, SerializableInterface
      *
      * @return ImageInfo
      */
-    public function setColorMode($colorMode)
+    public function setColorMode(?string $colorMode): self
     {
         $this->colorMode = $colorMode;
 
@@ -94,7 +94,7 @@ final class ImageInfo implements ImageInfoInterface, SerializableInterface
     /**
      * @return int|null
      */
-    public function getOrientation()
+    public function getOrientation(): ?int
     {
         return $this->orientation;
     }
@@ -104,7 +104,7 @@ final class ImageInfo implements ImageInfoInterface, SerializableInterface
      *
      * @return ImageInfo
      */
-    public function setOrientation($orientation)
+    public function setOrientation(?int $orientation): self
     {
         $this->orientation = $orientation;
 
@@ -114,7 +114,7 @@ final class ImageInfo implements ImageInfoInterface, SerializableInterface
     /**
      * @return string|null
      */
-    public function getFormat()
+    public function getFormat(): ?string
     {
         return $this->format;
     }
@@ -124,7 +124,7 @@ final class ImageInfo implements ImageInfoInterface, SerializableInterface
      *
      * @return ImageInfo
      */
-    public function setFormat($format)
+    public function setFormat(?string $format): self
     {
         $this->format = $format;
 
@@ -134,9 +134,9 @@ final class ImageInfo implements ImageInfoInterface, SerializableInterface
     /**
      * @return bool
      */
-    public function isSequence()
+    public function isSequence(): bool
     {
-        return (bool) $this->isSequence;
+        return $this->isSequence;
     }
 
     /**
@@ -144,9 +144,9 @@ final class ImageInfo implements ImageInfoInterface, SerializableInterface
      *
      * @return ImageInfo
      */
-    public function setIsSequence($isSequence)
+    public function setIsSequence(bool $isSequence): self
     {
-        $this->isSequence = (bool) $isSequence;
+        $this->isSequence = $isSequence;
 
         return $this;
     }
@@ -154,7 +154,7 @@ final class ImageInfo implements ImageInfoInterface, SerializableInterface
     /**
      * @return int|null
      */
-    public function getHeight()
+    public function getHeight(): ?int
     {
         return $this->height;
     }
@@ -164,7 +164,7 @@ final class ImageInfo implements ImageInfoInterface, SerializableInterface
      *
      * @return ImageInfo
      */
-    public function setHeight($height)
+    public function setHeight(?int $height): self
     {
         $this->height = $height;
 
@@ -174,7 +174,7 @@ final class ImageInfo implements ImageInfoInterface, SerializableInterface
     /**
      * @return int|null
      */
-    public function getWidth()
+    public function getWidth(): ?int
     {
         return $this->width;
     }
@@ -184,7 +184,7 @@ final class ImageInfo implements ImageInfoInterface, SerializableInterface
      *
      * @return ImageInfo
      */
-    public function setWidth($width)
+    public function setWidth(?int $width): self
     {
         $this->width = $width;
 
@@ -194,7 +194,7 @@ final class ImageInfo implements ImageInfoInterface, SerializableInterface
     /**
      * @return GeoLocationInterface|null
      */
-    public function getGeoLocation()
+    public function getGeoLocation(): ?GeoLocationInterface
     {
         return $this->geoLocation;
     }
@@ -204,7 +204,7 @@ final class ImageInfo implements ImageInfoInterface, SerializableInterface
      *
      * @return ImageInfo
      */
-    public function setGeoLocation($geoLocation)
+    public function setGeoLocation(?GeoLocationInterface $geoLocation): self
     {
         $this->geoLocation = $geoLocation;
 
@@ -214,7 +214,7 @@ final class ImageInfo implements ImageInfoInterface, SerializableInterface
     /**
      * @return \DateTimeInterface|null
      */
-    public function getDatetimeOriginal()
+    public function getDatetimeOriginal(): ?\DateTimeInterface
     {
         return $this->datetimeOriginal;
     }
@@ -224,7 +224,7 @@ final class ImageInfo implements ImageInfoInterface, SerializableInterface
      *
      * @return ImageInfo
      */
-    public function setDatetimeOriginal($datetimeOriginal)
+    public function setDatetimeOriginal(?\DateTimeInterface $datetimeOriginal): self
     {
         $this->datetimeOriginal = $datetimeOriginal;
 
@@ -234,7 +234,7 @@ final class ImageInfo implements ImageInfoInterface, SerializableInterface
     /**
      * @return null|array<array-key, int>
      */
-    public function getDpi()
+    public function getDpi(): ?array
     {
         return $this->dpi;
     }
@@ -244,7 +244,7 @@ final class ImageInfo implements ImageInfoInterface, SerializableInterface
      *
      * @return ImageInfo
      */
-    public function setDpi($dpi)
+    public function setDpi(?array $dpi): self
     {
         $this->dpi = $dpi;
 

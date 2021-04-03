@@ -1,9 +1,11 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Uploadcare;
 
 use Uploadcare\Apis\FileApi;
 use Uploadcare\Interfaces\File\FileInfoInterface;
+use Uploadcare\Interfaces\File\ImageInfoInterface;
+use Uploadcare\Interfaces\File\VideoInfoInterface;
 
 /**
  * File decorator.
@@ -33,7 +35,7 @@ class File implements FileInfoInterface
     /**
      * @return FileInfoInterface
      */
-    public function store()
+    public function store(): FileInfoInterface
     {
         return $this->api->storeFile($this->inner->getUuid());
     }
@@ -41,7 +43,7 @@ class File implements FileInfoInterface
     /**
      * @return FileInfoInterface
      */
-    public function delete()
+    public function delete(): FileInfoInterface
     {
         return $this->api->deleteFile($this->inner->getUuid());
     }
@@ -51,7 +53,7 @@ class File implements FileInfoInterface
      *
      * @return FileInfoInterface
      */
-    public function copyToLocalStorage($store = true)
+    public function copyToLocalStorage($store = true): FileInfoInterface
     {
         return $this->api->copyToLocalStorage($this->inner->getUuid(), $store);
     }
@@ -63,143 +65,92 @@ class File implements FileInfoInterface
      *
      * @return string
      */
-    public function copyToRemoteStorage($target, $makePublic = true, $pattern = null)
+    public function copyToRemoteStorage($target, $makePublic = true, $pattern = null): string
     {
         return $this->api->copyToRemoteStorage($this->inner->getUuid(), $target, $makePublic, $pattern);
     }
 
-    /**
-     * @return string|null
-     */
-    public function generateSecureUrl()
+    public function generateSecureUrl(): ?string
     {
         return $this->api->generateSecureUrl($this->inner);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getDatetimeRemoved()
+    public function getDatetimeRemoved(): ?\DateTimeInterface
     {
         return $this->inner->getDatetimeRemoved();
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getDatetimeStored()
+    public function getDatetimeStored(): ?\DateTimeInterface
     {
         return $this->inner->getDatetimeStored();
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getDatetimeUploaded()
+    public function getDatetimeUploaded(): ?\DateTimeInterface
     {
         return $this->inner->getDatetimeUploaded();
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getImageInfo()
+    public function getImageInfo(): ?ImageInfoInterface
     {
         return $this->inner->getImageInfo();
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function isImage()
+    public function isImage(): bool
     {
         return $this->inner->isImage();
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function isReady()
+    public function isReady(): bool
     {
         return $this->inner->isReady();
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getMimeType()
+    public function getMimeType(): ?string
     {
         return $this->inner->getMimeType();
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getOriginalFileUrl()
+    public function getOriginalFileUrl(): ?string
     {
         return $this->inner->getOriginalFileUrl();
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getOriginalFilename()
+    public function getOriginalFilename(): string
     {
         return $this->inner->getOriginalFilename();
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getSize()
+    public function getSize(): int
     {
         return $this->inner->getSize();
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getUrl()
+    public function getUrl(): string
     {
         return $this->inner->getUrl();
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getUuid()
+    public function getUuid(): string
     {
         return $this->inner->getUuid();
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getVariations()
+    public function getVariations(): ?array
     {
         return $this->inner->getVariations();
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getVideoInfo()
+    public function getVideoInfo(): ?VideoInfoInterface
     {
         return $this->inner->getVideoInfo();
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getSource()
+    public function getSource(): string
     {
         return $this->inner->getSource();
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getRekognitionInfo()
+    public function getRekognitionInfo(): array
     {
         return $this->inner->getRekognitionInfo();
     }

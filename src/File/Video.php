@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Uploadcare\File;
 
@@ -36,7 +36,7 @@ final class Video implements VideoInterface, SerializableInterface
     private $codec;
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public static function rules(): array
     {
@@ -52,7 +52,7 @@ final class Video implements VideoInterface, SerializableInterface
     /**
      * @return int
      */
-    public function getHeight()
+    public function getHeight(): int
     {
         return $this->height;
     }
@@ -62,7 +62,7 @@ final class Video implements VideoInterface, SerializableInterface
      *
      * @return Video
      */
-    public function setHeight($height)
+    public function setHeight(int $height): self
     {
         $this->height = $height;
 
@@ -72,7 +72,7 @@ final class Video implements VideoInterface, SerializableInterface
     /**
      * @return int
      */
-    public function getWidth()
+    public function getWidth(): int
     {
         return $this->width;
     }
@@ -82,7 +82,7 @@ final class Video implements VideoInterface, SerializableInterface
      *
      * @return Video
      */
-    public function setWidth($width)
+    public function setWidth(int $width): self
     {
         $this->width = $width;
 
@@ -92,7 +92,7 @@ final class Video implements VideoInterface, SerializableInterface
     /**
      * @return float
      */
-    public function getFrameRate()
+    public function getFrameRate(): float
     {
         return $this->frameRate;
     }
@@ -102,7 +102,7 @@ final class Video implements VideoInterface, SerializableInterface
      *
      * @return Video
      */
-    public function setFrameRate($frameRate)
+    public function setFrameRate(float $frameRate): self
     {
         $this->frameRate = $frameRate;
 
@@ -112,7 +112,7 @@ final class Video implements VideoInterface, SerializableInterface
     /**
      * @return int
      */
-    public function getBitrate()
+    public function getBitrate(): int
     {
         return $this->bitrate;
     }
@@ -122,7 +122,7 @@ final class Video implements VideoInterface, SerializableInterface
      *
      * @return Video
      */
-    public function setBitrate($bitrate)
+    public function setBitrate(int $bitrate): self
     {
         $this->bitrate = $bitrate;
 
@@ -132,7 +132,7 @@ final class Video implements VideoInterface, SerializableInterface
     /**
      * @return string
      */
-    public function getCodec()
+    public function getCodec(): string
     {
         return $this->codec;
     }
@@ -142,7 +142,7 @@ final class Video implements VideoInterface, SerializableInterface
      *
      * @return Video
      */
-    public function setCodec($codec)
+    public function setCodec(string $codec): self
     {
         $this->codec = $codec;
 

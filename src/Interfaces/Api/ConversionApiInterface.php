@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Uploadcare\Interfaces\Api;
 
@@ -33,14 +33,14 @@ interface ConversionApiInterface
      *
      * @return BatchResponseInterface
      */
-    public function batchConvertDocuments($collection, ConversionRequest $request);
+    public function batchConvertDocuments($collection, ConversionRequest $request): BatchResponseInterface;
 
     /**
      * @param ConvertedItemInterface|int $id
      *
      * @return ConversionStatusInterface
      */
-    public function documentJobStatus($id);
+    public function documentJobStatus($id): ConversionStatusInterface;
 
     /**
      * @param FileInfoInterface|string $file
@@ -58,7 +58,7 @@ interface ConversionApiInterface
      *
      * @return BatchResponseInterface
      */
-    public function batchConvertVideo($collection, ConversionRequest $request);
+    public function batchConvertVideo($collection, ConversionRequest $request): BatchResponseInterface;
 
     /**
      * @param int|ConvertedItemInterface $id

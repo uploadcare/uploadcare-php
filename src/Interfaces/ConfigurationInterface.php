@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Uploadcare\Interfaces;
 
@@ -13,30 +13,16 @@ interface ConfigurationInterface
 {
     /**
      * Http request headers.
-     *
-     * @return array
      */
-    public function getHeaders();
+    public function getHeaders(): array;
 
-    /**
-     * @return string
-     */
-    public function getPublicKey();
+    public function getPublicKey(): string;
 
-    /**
-     * @return SignatureInterface
-     */
-    public function getSecureSignature();
+    public function getSecureSignature(): SignatureInterface;
 
-    /**
-     * @return ClientInterface
-     */
-    public function getClient();
+    public function getClient(): ClientInterface;
 
-    /**
-     * @return SerializerInterface
-     */
-    public function getSerializer();
+    public function getSerializer(): SerializerInterface;
 
     /**
      * @param string                  $method
@@ -47,17 +33,9 @@ interface ConfigurationInterface
      *
      * @return array
      */
-    public function getAuthHeaders($method, $uri, $data, $contentType = 'application/json', $date = null);
+    public function getAuthHeaders(string $method, string $uri, string $data, string $contentType = 'application/json', $date = null): array;
 
-    /**
-     * @return AuthUrlConfigInterface|null
-     */
-    public function getAuthUrlConfig();
+    public function getAuthUrlConfig(): ?AuthUrlConfigInterface;
 
-    /**
-     * @param AuthUrlConfigInterface $config
-     *
-     * @return ConfigurationInterface
-     */
-    public function setAuthUrlConfig(AuthUrlConfigInterface $config);
+    public function setAuthUrlConfig(AuthUrlConfigInterface $config): ConfigurationInterface;
 }

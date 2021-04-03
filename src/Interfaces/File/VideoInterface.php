@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Uploadcare\Interfaces\File;
 
@@ -12,33 +12,33 @@ interface VideoInterface
      *
      * @return int
      */
-    public function getHeight();
+    public function getHeight(): int;
 
     /**
      * Video stream image width.
      *
      * @return int
      */
-    public function getWidth();
+    public function getWidth(): int;
 
     /**
      * Video stream frame rate.
      *
      * @return float
      */
-    public function getFrameRate();
+    public function getFrameRate(): float;
 
     /**
      * Video stream bitrate.
      *
      * @return int
      */
-    public function getBitrate();
+    public function getBitrate(): int;
 
     /**
      * Video stream codec.
      *
      * @return string
      */
-    public function getCodec();
+    public function getCodec(): string;
 }

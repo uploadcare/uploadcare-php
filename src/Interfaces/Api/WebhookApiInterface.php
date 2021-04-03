@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Uploadcare\Interfaces\Api;
 
@@ -15,7 +15,7 @@ interface WebhookApiInterface
     /**
      * @return CollectionInterface<array-key, WebhookInterface>
      */
-    public function listWebhooks();
+    public function listWebhooks(): CollectionInterface;
 
     /**
      * @param string $targetUrl
@@ -24,7 +24,7 @@ interface WebhookApiInterface
      *
      * @return WebhookInterface
      */
-    public function createWebhook($targetUrl, $isActive = true, $event = 'file.uploaded');
+    public function createWebhook($targetUrl, $isActive = true, $event = 'file.uploaded'): WebhookInterface;
 
     /**
      * @param int   $id
@@ -32,12 +32,12 @@ interface WebhookApiInterface
      *
      * @return WebhookInterface
      */
-    public function updateWebhook($id, array $parameters);
+    public function updateWebhook($id, array $parameters): WebhookInterface;
 
     /**
      * @param string $targetUrl
      *
      * @return bool
      */
-    public function deleteWebhook($targetUrl);
+    public function deleteWebhook($targetUrl): bool;
 }

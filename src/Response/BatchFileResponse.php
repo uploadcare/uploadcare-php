@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Uploadcare\Response;
 
@@ -42,14 +42,14 @@ final class BatchFileResponse implements BatchResponseInterface, SerializableInt
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
-    public function getStatus()
+    public function getStatus(): string
     {
         return $this->status;
     }
 
-    public function setStatus($status)
+    public function setStatus(string $status): self
     {
         $this->status = $status;
 
@@ -57,9 +57,9 @@ final class BatchFileResponse implements BatchResponseInterface, SerializableInt
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
-    public function getProblems()
+    public function getProblems(): array
     {
         return $this->problems;
     }
@@ -69,7 +69,7 @@ final class BatchFileResponse implements BatchResponseInterface, SerializableInt
      *
      * @return $this
      */
-    public function setProblems(array $problems)
+    public function setProblems(array $problems): self
     {
         foreach ($problems as $key => $value) {
             $item = (new ResponseProblem())
@@ -81,7 +81,7 @@ final class BatchFileResponse implements BatchResponseInterface, SerializableInt
         return $this;
     }
 
-    public function addProblem(ResponseProblemInterface $problem)
+    public function addProblem(ResponseProblemInterface $problem): self
     {
         if (!\in_array($problem, $this->problems, true)) {
             $this->problems[] = $problem;
@@ -91,9 +91,9 @@ final class BatchFileResponse implements BatchResponseInterface, SerializableInt
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
-    public function getResult()
+    public function getResult(): CollectionInterface
     {
         return $this->result;
     }
@@ -103,14 +103,14 @@ final class BatchFileResponse implements BatchResponseInterface, SerializableInt
      *
      * @return self
      */
-    public function setResult(CollectionInterface $fileCollection)
+    public function setResult(CollectionInterface $fileCollection): self
     {
         $this->result = $fileCollection;
 
         return $this;
     }
 
-    public function addResult(FileInfoInterface $fileInfo)
+    public function addResult(FileInfoInterface $fileInfo): self
     {
         if (!$this->result->contains($fileInfo)) {
             $this->result->add($fileInfo);

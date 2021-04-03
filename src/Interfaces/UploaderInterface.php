@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Uploadcare\Interfaces;
 
@@ -21,6 +21,7 @@ interface UploaderInterface
      * @param string|null $mimeType
      * @param string|null $filename
      * @param string      $store
+     *
      * @throws InvalidArgumentException
      *
      * @return FileInfoInterface
@@ -34,6 +35,7 @@ interface UploaderInterface
      * @param string|null $mimeType
      * @param string|null $filename
      * @param string      $store
+     *
      * @throws InvalidArgumentException
      *
      * @return FileInfoInterface
@@ -47,6 +49,7 @@ interface UploaderInterface
      * @param string|null $mimeType
      * @param string|null $filename
      * @param string      $store
+     *
      * @throws InvalidArgumentException
      *
      * @return FileInfoInterface
@@ -60,6 +63,7 @@ interface UploaderInterface
      * @param string|null $mimeType
      * @param string|null $filename
      * @param string      $store
+     *
      * @throws InvalidArgumentException
      *
      * @return FileInfoInterface

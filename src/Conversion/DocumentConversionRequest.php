@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Uploadcare\Conversion;
 
@@ -38,18 +38,18 @@ class DocumentConversionRequest implements DocumentConversionRequestInterface
      * @param bool   $store
      * @param int    $pageNumber
      */
-    public function __construct($targetFormat = 'pdf', $throwError = false, $store = true, $pageNumber = 1)
+    public function __construct(string $targetFormat = 'pdf', bool $throwError = false, bool $store = true, int $pageNumber = 1)
     {
-        $this->setTargetFormat((string) $targetFormat);
-        $this->setThrowError((bool) $throwError);
-        $this->setStore((bool) $store);
-        $this->setPageNumber((int) $pageNumber);
+        $this->setTargetFormat($targetFormat);
+        $this->setThrowError($throwError);
+        $this->setStore($store);
+        $this->setPageNumber($pageNumber);
     }
 
     /**
      * @return string
      */
-    public function getTargetFormat()
+    public function getTargetFormat(): string
     {
         return $this->targetFormat;
     }
@@ -59,7 +59,7 @@ class DocumentConversionRequest implements DocumentConversionRequestInterface
      *
      * @return DocumentConversionRequest
      */
-    public function setTargetFormat($targetFormat)
+    public function setTargetFormat(string $targetFormat): self
     {
         if (!\array_key_exists($targetFormat, \array_flip(self::$formats))) {
             throw new InvalidArgumentException(\sprintf('Format \'%s\' not supported. Supports formats are %s', $targetFormat, \implode(', ', self::$formats)));
@@ -73,7 +73,7 @@ class DocumentConversionRequest implements DocumentConversionRequestInterface
     /**
      * @return bool
      */
-    public function throwError()
+    public function throwError(): bool
     {
         return $this->throwError;
     }
@@ -83,7 +83,7 @@ class DocumentConversionRequest implements DocumentConversionRequestInterface
      *
      * @return DocumentConversionRequest
      */
-    public function setThrowError($throwError)
+    public function setThrowError(bool $throwError): self
     {
         $this->throwError = $throwError;
 
@@ -93,7 +93,7 @@ class DocumentConversionRequest implements DocumentConversionRequestInterface
     /**
      * @return bool
      */
-    public function store()
+    public function store(): bool
     {
         return $this->store;
     }
@@ -103,7 +103,7 @@ class DocumentConversionRequest implements DocumentConversionRequestInterface
      *
      * @return DocumentConversionRequest
      */
-    public function setStore($store)
+    public function setStore(bool $store): self
     {
         $this->store = $store;
 
@@ -113,7 +113,7 @@ class DocumentConversionRequest implements DocumentConversionRequestInterface
     /**
      * @return int
      */
-    public function getPageNumber()
+    public function getPageNumber(): int
     {
         return $this->pageNumber;
     }
@@ -123,7 +123,7 @@ class DocumentConversionRequest implements DocumentConversionRequestInterface
      *
      * @return DocumentConversionRequest
      */
-    public function setPageNumber($pageNumber)
+    public function setPageNumber(int $pageNumber): self
     {
         $this->pageNumber = $pageNumber;
 
