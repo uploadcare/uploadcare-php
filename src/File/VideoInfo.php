@@ -46,7 +46,7 @@ final class VideoInfo implements VideoInfoInterface, SerializableInterface
     /**
      * @inheritDoc
      */
-    public static function rules()
+    public static function rules(): array
     {
         return [
             'duration' => 'int',

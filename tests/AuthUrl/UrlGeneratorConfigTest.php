@@ -14,7 +14,7 @@ class UrlGeneratorConfigTest extends TestCase
      */
     private $config;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->config = Configuration::create('public-key', 'private-key');

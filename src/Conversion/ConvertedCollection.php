@@ -3,14 +3,17 @@
 namespace Uploadcare\Conversion;
 
 use Uploadcare\File\AbstractCollection;
+use Uploadcare\Interfaces\File\CollectionInterface;
 
 /**
  * Collection for conversion requests.
+ * @psalm-template T of \Uploadcare\Interfaces\Conversion\ConvertedItemInterface
  */
-class ConvertedCollection extends AbstractCollection
+final class ConvertedCollection extends AbstractCollection
 {
     /**
-     * @var array<array-key, \Uploadcare\Interfaces\Conversion\ConvertedItemInterface>
+     * @var array<array-key,T>
+     * @psalm-suppress NonInvariantDocblockPropertyType
      */
     protected $elements;
 
@@ -19,12 +22,12 @@ class ConvertedCollection extends AbstractCollection
         $this->elements = $elements;
     }
 
-    protected function createFrom(array $elements)
+    protected function createFrom(array $elements): CollectionInterface
     {
         return new static($elements);
     }
 
-    public static function elementClass()
+    public static function elementClass(): string
     {
         return ConvertedItem::class;
     }

@@ -30,7 +30,7 @@ class ConvertedItem implements ConvertedItemInterface, SerializableInterface
      */
     private $thumbnailsGroupUuid;
 
-    public static function rules()
+    public static function rules(): array
     {
         return [
             'originalSource' => 'string',

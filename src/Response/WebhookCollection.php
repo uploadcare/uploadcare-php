@@ -3,11 +3,12 @@
 namespace Uploadcare\Response;
 
 use Uploadcare\File\AbstractCollection;
+use Uploadcare\Interfaces\File\CollectionInterface;
 
 class WebhookCollection extends AbstractCollection
 {
     /**
-     * @var array<array-key, \Uploadcare\Interfaces\Response\WebhookInterface>
+     * @var array<array-key, mixed>
      */
     protected $elements;
 
@@ -19,7 +20,7 @@ class WebhookCollection extends AbstractCollection
     /**
      * @inheritDoc
      */
-    protected function createFrom(array $elements)
+    protected function createFrom(array $elements): CollectionInterface
     {
         return new static($elements);
     }
@@ -27,7 +28,7 @@ class WebhookCollection extends AbstractCollection
     /**
      * @inheritDoc
      */
-    public static function elementClass()
+    public static function elementClass(): string
     {
         return WebhookResponse::class;
     }

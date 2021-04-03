@@ -39,7 +39,7 @@ abstract class AbstractApi
         if (!isset($query['query']) || empty($query['query'])) {
             return null;
         }
-        $query = (string) $query['query'];
+        $query = $query['query'];
         $parameters = [];
         \parse_str($query, $parameters);
 

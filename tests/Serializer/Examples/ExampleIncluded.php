@@ -11,7 +11,7 @@ class ExampleIncluded implements SerializableInterface
      */
     private $dateTime;
 
-    public static function rules()
+    public static function rules(): array
     {
         return [
             'dateTime' => \DateTime::class,

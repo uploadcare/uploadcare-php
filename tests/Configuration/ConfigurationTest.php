@@ -12,7 +12,7 @@ class ConfigurationTest extends TestCase
     private $publicKey = 'demo-public-key';
     private $privateKey = 'demo-private-key';
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->header = \vsprintf('PHPUploadcare/%s/%s (PHP/%s)', [
@@ -83,7 +83,7 @@ class ConfigurationTest extends TestCase
         $conf = Configuration::create($this->publicKey, $this->privateKey, ['framework' => ['Symfony', '5.1']]);
         $result = $conf->getHeaders();
         self::assertArrayHasKey('User-Agent', $result);
-        self::assertContains('Symfony', $result['User-Agent']);
-        self::assertContains('5.1', $result['User-Agent']);
+        self::assertStringContainsString('Symfony', $result['User-Agent']);
+        self::assertStringContainsString('5.1', $result['User-Agent']);
     }
 }

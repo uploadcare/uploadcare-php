@@ -30,7 +30,7 @@ class BatchConversionResponse implements BatchResponseInterface, SerializableInt
         $this->result = new ConvertedCollection();
     }
 
-    public static function rules()
+    public static function rules(): array
     {
         return [
             'problems' => 'array',

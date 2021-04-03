@@ -32,7 +32,7 @@ final class BatchFileResponse implements BatchResponseInterface, SerializableInt
         $this->result = new FileCollection();
     }
 
-    public static function rules()
+    public static function rules(): array
     {
         return [
             'status' => 'string',

@@ -39,7 +39,7 @@ final class FileListResponse implements ListResponseInterface, SerializableInter
         $this->results = new FileCollection();
     }
 
-    public static function rules()
+    public static function rules(): array
     {
         return [
             'next' => 'string',
@@ -53,7 +53,7 @@ final class FileListResponse implements ListResponseInterface, SerializableInter
     /**
      * @inheritDoc
      */
-    public function getNext()
+    public function getNext(): ?string
     {
         return $this->next;
     }
@@ -61,7 +61,7 @@ final class FileListResponse implements ListResponseInterface, SerializableInter
     /**
      * @inheritDoc
      */
-    public function getPrevious()
+    public function getPrevious(): ?string
     {
         return $this->previous;
     }
@@ -69,7 +69,7 @@ final class FileListResponse implements ListResponseInterface, SerializableInter
     /**
      * @inheritDoc
      */
-    public function getTotal()
+    public function getTotal(): int
     {
         return $this->total;
     }
@@ -77,7 +77,7 @@ final class FileListResponse implements ListResponseInterface, SerializableInter
     /**
      * @inheritDoc
      */
-    public function getPerPage()
+    public function getPerPage(): int
     {
         return $this->perPage;
     }
@@ -85,7 +85,7 @@ final class FileListResponse implements ListResponseInterface, SerializableInter
     /**
      * @return CollectionInterface
      */
-    public function getResults()
+    public function getResults(): CollectionInterface
     {
         return $this->results;
     }
@@ -95,7 +95,7 @@ final class FileListResponse implements ListResponseInterface, SerializableInter
      *
      * @return FileListResponse
      */
-    public function setNext($next)
+    public function setNext(?string $next): self
     {
         $this->next = $next;
 
@@ -107,7 +107,7 @@ final class FileListResponse implements ListResponseInterface, SerializableInter
      *
      * @return FileListResponse
      */
-    public function setPrevious($previous)
+    public function setPrevious(?string $previous): self
     {
         $this->previous = $previous;
 
@@ -119,7 +119,7 @@ final class FileListResponse implements ListResponseInterface, SerializableInter
      *
      * @return FileListResponse
      */
-    public function setTotal($total)
+    public function setTotal(int $total): self
     {
         $this->total = $total;
 
@@ -131,17 +131,17 @@ final class FileListResponse implements ListResponseInterface, SerializableInter
      *
      * @return FileListResponse
      */
-    public function setPerPage($perPage)
+    public function setPerPage(int $perPage): self
     {
         $this->perPage = $perPage;
 
         return $this;
     }
 
-    public function addResult($result)
+    public function addResult($result): self
     {
-        if (!$this->results->contains($result)) {
-            $this->results[] = $result;
+        if ($result !== null && !$this->results->contains($result)) {
+            $this->results->add($result);
         }
 
         return $this;
@@ -152,7 +152,7 @@ final class FileListResponse implements ListResponseInterface, SerializableInter
      *
      * @return self
      */
-    public function setResults(CollectionInterface $results)
+    public function setResults(CollectionInterface $results): self
     {
         $this->results = $results;
 

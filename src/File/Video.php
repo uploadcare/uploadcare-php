@@ -38,7 +38,7 @@ final class Video implements VideoInterface, SerializableInterface
     /**
      * @inheritDoc
      */
-    public static function rules()
+    public static function rules(): array
     {
         return [
             'height' => 'int',

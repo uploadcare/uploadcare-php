@@ -36,8 +36,8 @@ class FileApi extends AbstractApi implements FileApiInterface
         /** @noinspection VariableFunctionsUsageInspection */
         $result = \call_user_func_array([$this, 'listFiles'], [
             isset($parameters['limit']) ? (int) $parameters['limit'] : 100,
-            isset($parameters['ordering']) ? $parameters['ordering'] : 'datetime_uploaded',
-            isset($parameters['from']) ? $parameters['from'] : null,
+            $parameters['ordering'] ?? 'datetime_uploaded',
+            $parameters['from'] ?? null,
             isset($parameters['add_fields']) ? (array) $parameters['add_fields'] : [],
             isset($parameters['stored']) ? (bool) $parameters['stored'] : null,
             isset($parameters['removed']) ? (bool) $parameters['removed'] : null,
@@ -67,7 +67,7 @@ class FileApi extends AbstractApi implements FileApiInterface
             'add_fields' => $addFields,
         ];
         if (\is_bool($stored)) {
-            $parameters['stored'] = (bool) $stored;
+            $parameters['stored'] = $stored;
         }
 
         $response = $this->request('GET', '/files/', ['query' => $parameters]);

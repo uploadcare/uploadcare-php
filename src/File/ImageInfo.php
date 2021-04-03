@@ -56,7 +56,7 @@ final class ImageInfo implements ImageInfoInterface, SerializableInterface
      */
     private $dpi;
 
-    public static function rules()
+    public static function rules(): array
     {
         return [
             'colorMode' => 'string',

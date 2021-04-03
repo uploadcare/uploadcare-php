@@ -27,7 +27,7 @@ class FileApiConvertCollectionTest extends TestCase
      *
      * @throws \ReflectionException
      */
-    protected function getConvertCollection(FileApi $api)
+    protected function getConvertCollection(FileApi $api): \ReflectionMethod
     {
         $convertCollection = (new \ReflectionObject($api))->getMethod('convertCollection');
         $convertCollection->setAccessible(true);
@@ -35,7 +35,7 @@ class FileApiConvertCollectionTest extends TestCase
         return $convertCollection;
     }
 
-    public function testWithStringIds()
+    public function testWithStringIds(): void
     {
         $ids = [\uuid_create(), \uuid_create(), 'not-a-uuid'];
         $api = $this->getFileApi();
@@ -46,7 +46,7 @@ class FileApiConvertCollectionTest extends TestCase
         self::assertNotContains('not-a-uuid', $result);
     }
 
-    public function testWithCollection()
+    public function testWithCollection(): void
     {
         $files = new FileCollection();
         $files->add((new File())->setUuid(\uuid_create()));
@@ -60,7 +60,7 @@ class FileApiConvertCollectionTest extends TestCase
         self::assertContains($uuid, $result);
     }
 
-    public function provideWrongData()
+    public function provideWrongData(): array
     {
         return [
             [false],
@@ -77,7 +77,7 @@ class FileApiConvertCollectionTest extends TestCase
      *
      * @throws \ReflectionException
      */
-    public function testExceptionWithWrongObject($item)
+    public function testExceptionWithWrongObject($item): void
     {
         $this->expectException(InvalidArgumentException::class);
         $api = $this->getFileApi();

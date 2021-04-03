@@ -10,7 +10,7 @@ class AkamaiTokenTest extends TestCase
 {
     private $key;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->key = \bin2hex(\random_bytes(32));

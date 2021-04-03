@@ -50,7 +50,7 @@ class AkamaiToken implements TokenInterface
      */
     public function getUrlTemplate()
     {
-        return (string) \str_replace('~', self::$fieldDelimiter, self::$template);
+        return \str_replace('~', self::$fieldDelimiter, self::$template);
     }
 
     /**

@@ -2,6 +2,8 @@
 
 namespace Uploadcare\File;
 
+use Uploadcare\Interfaces\File\CollectionInterface;
+
 /**
  * Group Collection.
  *
@@ -10,7 +12,8 @@ namespace Uploadcare\File;
 final class GroupCollection extends AbstractCollection
 {
     /**
-     * @var array<array-key, \Uploadcare\Interfaces\GroupInterface>
+     * @var array<array-key,T>
+     * @psalm-suppress NonInvariantDocblockPropertyType
      */
     protected $elements;
 
@@ -19,18 +22,12 @@ final class GroupCollection extends AbstractCollection
         $this->elements = $elements;
     }
 
-    /**
-     * @inheritDoc
-     */
-    protected function createFrom(array $elements)
+    protected function createFrom(array $elements): CollectionInterface
     {
         return new static($elements);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public static function elementClass()
+    public static function elementClass(): string
     {
         return Group::class;
     }

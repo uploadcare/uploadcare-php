@@ -106,7 +106,7 @@ final class File implements FileInfoInterface, SerializableInterface
         $this->uuid = '';
     }
 
-    public static function rules()
+    public static function rules(): array
     {
         return [
             'datetimeRemoved' => \DateTime::class,

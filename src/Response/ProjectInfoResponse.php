@@ -27,7 +27,7 @@ final class ProjectInfoResponse implements ProjectInfoInterface, SerializableInt
      */
     private $autostoreEnabled = true;
 
-    public static function rules()
+    public static function rules(): array
     {
         return [
             'collaborators' => 'array',

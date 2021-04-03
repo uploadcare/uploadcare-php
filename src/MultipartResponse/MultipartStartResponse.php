@@ -24,7 +24,7 @@ class MultipartStartResponse implements SerializableInterface
     /**
      * @return array|string[]
      */
-    public static function rules()
+    public static function rules(): array
     {
         return [
             'parts' => 'array',

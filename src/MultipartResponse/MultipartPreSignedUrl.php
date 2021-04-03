@@ -16,7 +16,7 @@ class MultipartPreSignedUrl implements SerializableInterface
      */
     private $url;
 
-    public static function rules()
+    public static function rules(): array
     {
         return [
             'url' => 'string',

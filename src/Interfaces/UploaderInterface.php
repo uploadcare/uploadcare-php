@@ -2,16 +2,17 @@
 
 namespace Uploadcare\Interfaces;
 
+use Uploadcare\Exception\InvalidArgumentException;
 use Uploadcare\Interfaces\File\FileInfoInterface;
 
 interface UploaderInterface
 {
-    const UPLOAD_BASE_URL = 'upload.uploadcare.com';
-    const UPLOADCARE_PUB_KEY_KEY = 'UPLOADCARE_PUB_KEY';
-    const UPLOADCARE_STORE_KEY = 'UPLOADCARE_STORE';
-    const UPLOADCARE_SIGNATURE_KEY = 'signature';
-    const UPLOADCARE_EXPIRE_KEY = 'expire';
-    const UPLOADCARE_DEFAULT_STORE = 'auto';
+    public const UPLOAD_BASE_URL = 'upload.uploadcare.com';
+    public const UPLOADCARE_PUB_KEY_KEY = 'UPLOADCARE_PUB_KEY';
+    public const UPLOADCARE_STORE_KEY = 'UPLOADCARE_STORE';
+    public const UPLOADCARE_SIGNATURE_KEY = 'signature';
+    public const UPLOADCARE_EXPIRE_KEY = 'expire';
+    public const UPLOADCARE_DEFAULT_STORE = 'auto';
 
     /**
      * Upload file from local path.
@@ -20,10 +21,11 @@ interface UploaderInterface
      * @param string|null $mimeType
      * @param string|null $filename
      * @param string      $store
+     * @throws InvalidArgumentException
      *
      * @return FileInfoInterface
      */
-    public function fromPath($path, $mimeType = null, $filename = null, $store = 'auto');
+    public function fromPath(string $path, string $mimeType = null, string $filename = null, string $store = 'auto'): FileInfoInterface;
 
     /**
      * Upload file from remote URL.
@@ -32,10 +34,11 @@ interface UploaderInterface
      * @param string|null $mimeType
      * @param string|null $filename
      * @param string      $store
+     * @throws InvalidArgumentException
      *
      * @return FileInfoInterface
      */
-    public function fromUrl($url, $mimeType = null, $filename = null, $store = 'auto');
+    public function fromUrl(string $url, string $mimeType = null, string $filename = null, string $store = 'auto'): FileInfoInterface;
 
     /**
      * Upload file from resource opened by `\fopen()`.
@@ -44,10 +47,11 @@ interface UploaderInterface
      * @param string|null $mimeType
      * @param string|null $filename
      * @param string      $store
+     * @throws InvalidArgumentException
      *
      * @return FileInfoInterface
      */
-    public function fromResource($handle, $mimeType = null, $filename = null, $store = 'auto');
+    public function fromResource($handle, string $mimeType = null, string $filename = null, string $store = 'auto'): FileInfoInterface;
 
     /**
      * Upload file from content string.
@@ -56,8 +60,9 @@ interface UploaderInterface
      * @param string|null $mimeType
      * @param string|null $filename
      * @param string      $store
+     * @throws InvalidArgumentException
      *
      * @return FileInfoInterface
      */
-    public function fromContent($content, $mimeType = null, $filename = null, $store = 'auto');
+    public function fromContent(string $content, string $mimeType = null, string $filename = null, string $store = 'auto'): FileInfoInterface;
 }

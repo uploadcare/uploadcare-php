@@ -44,12 +44,12 @@ class WebhookCollection extends AbstractCollection
      *
      * @return $this|AbstractCollection
      */
-    protected function createFrom(array $elements)
+    protected function createFrom(array $elements): CollectionInterface
     {
         return new static(new Response\WebhookCollection($elements), $this->api);
     }
 
-    public static function elementClass()
+    public static function elementClass(): string
     {
         return Webhook::class;
     }

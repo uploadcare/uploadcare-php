@@ -33,7 +33,7 @@ final class Audio implements AudioInterface, SerializableInterface
     /**
      * @inheritDoc
      */
-    public static function rules()
+    public static function rules(): array
     {
         return [
             'bitrate' => 'int',

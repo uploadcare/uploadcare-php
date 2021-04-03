@@ -49,7 +49,7 @@ class Configuration implements ConfigurationInterface
     private $authUrlConfig;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $frameworkVersion = null;
 
@@ -62,10 +62,10 @@ class Configuration implements ConfigurationInterface
      *
      * @return Configuration
      */
-    public static function create($publicKey, $secretKey, array $clientOptions = [], ClientFactoryInterface $clientFactory = null, SerializerFactoryInterface $serializerFactory = null)
+    public static function create(string $publicKey, string $secretKey, array $clientOptions = [], ClientFactoryInterface $clientFactory = null, SerializerFactoryInterface $serializerFactory = null): Configuration
     {
         $signature = new Signature($secretKey);
-        $framework = isset($clientOptions['framework']) ? $clientOptions['framework'] : null;
+        $framework = $clientOptions['framework'] ?? null;
         $client = $clientFactory !== null ? $clientFactory::createClient($clientOptions) : ClientFactory::createClient($clientOptions);
         $serializer = $serializerFactory !== null ? $serializerFactory::create() : SerializerFactory::create();
 
@@ -75,7 +75,7 @@ class Configuration implements ConfigurationInterface
         return $config;
     }
 
-    public function setFrameworkOptions($framework = null)
+    public function setFrameworkOptions($framework = null): void
     {
         if (\is_array($framework)) {
             $framework = \implode('/', $framework);
@@ -94,7 +94,7 @@ class Configuration implements ConfigurationInterface
      * @param ClientInterface     $client
      * @param SerializerInterface $serializer
      */
-    public function __construct($publicKey, SignatureInterface $secureSignature, ClientInterface $client, SerializerInterface $serializer)
+    public function __construct(string $publicKey, SignatureInterface $secureSignature, ClientInterface $client, SerializerInterface $serializer)
     {
         $this->publicKey = $publicKey;
         $this->secureSignature = $secureSignature;
@@ -107,7 +107,7 @@ class Configuration implements ConfigurationInterface
      *
      * @return $this
      */
-    public function setAuthUrlConfig(AuthUrlConfigInterface $config)
+    public function setAuthUrlConfig(AuthUrlConfigInterface $config): self
     {
         $this->authUrlConfig = $config;
 
@@ -117,7 +117,7 @@ class Configuration implements ConfigurationInterface
     /**
      * @return array
      */
-    public function getHeaders()
+    public function getHeaders(): array
     {
         $headers = $this->client->getConfig('headers');
         if (!\is_array($headers) || empty($headers)) {
@@ -128,7 +128,7 @@ class Configuration implements ConfigurationInterface
         return $headers;
     }
 
-    protected function setUserAgent(array &$headers)
+    protected function setUserAgent(array &$headers): void
     {
         $info = [
             '{lib-version}' => self::LIBRARY_VERSION,

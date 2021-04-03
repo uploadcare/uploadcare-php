@@ -17,7 +17,7 @@ class ConversionResult implements StatusResultInterface, SerializableInterface
      */
     private $thumbnailsGroupUuid;
 
-    public static function rules()
+    public static function rules(): array
     {
         return [
             'uuid' => 'string',

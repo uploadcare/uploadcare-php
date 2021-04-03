@@ -17,7 +17,7 @@ final class ResponseProblem implements ResponseProblemInterface, SerializableInt
      */
     private $reason;
 
-    public static function rules()
+    public static function rules(): array
     {
         return [
             'id' => 'string',

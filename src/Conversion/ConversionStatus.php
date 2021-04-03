@@ -23,7 +23,7 @@ class ConversionStatus implements ConversionStatusInterface, SerializableInterfa
      */
     private $result;
 
-    public static function rules()
+    public static function rules(): array
     {
         return [
             'status' => 'string',

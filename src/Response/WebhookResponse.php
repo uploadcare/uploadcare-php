@@ -42,7 +42,7 @@ class WebhookResponse implements WebhookInterface, SerializableInterface
      */
     private $isActive = true;
 
-    public static function rules()
+    public static function rules(): array
     {
         return [
             'id' => 'int',

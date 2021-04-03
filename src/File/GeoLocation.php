@@ -29,7 +29,7 @@ final class GeoLocation implements GeoLocationInterface, SerializableInterface
     /**
      * @inheritDoc
      */
-    public static function rules()
+    public static function rules(): array
     {
         return [
             'latitude' => 'float',

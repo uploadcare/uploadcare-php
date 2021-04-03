@@ -7,43 +7,38 @@ use Uploadcare\Interfaces\File\CollectionInterface;
 /**
  * Abstract Collection.
  * Contains common collection methods.
- *
- * @psalm-template T of object
+ * @psalm-template TKey of array-key
+ * @psalm-template T
  */
 abstract class AbstractCollection implements CollectionInterface
 {
     /**
-     * @var array
+     * @var array<TKey,T>
      */
-    protected $elements;
+    protected $elements = [];
 
     /**
-     * @inheritDoc
+     * @return \Traversable
      */
-    public function getIterator()
+    public function getIterator(): iterable
     {
+        if (\count($this->elements) === 0) {
+            return new \EmptyIterator();
+        }
+
         return new \ArrayIterator($this->elements);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         return isset($this->elements[$offset]) || \array_key_exists($offset, $this->elements);
     }
 
-    /**
-     * @inheritDoc
-     */
     public function offsetGet($offset)
     {
         return $this->get($offset);
     }
 
-    /**
-     * @inheritDoc
-     */
     public function get($key)
     {
         if (!isset($this->elements[$key]) && !\array_key_exists($key, $this->elements)) {
@@ -53,10 +48,7 @@ abstract class AbstractCollection implements CollectionInterface
         return $this->elements[$key];
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value): void
     {
         if (!isset($offset)) {
             $this->add($value);
@@ -68,9 +60,11 @@ abstract class AbstractCollection implements CollectionInterface
     }
 
     /**
-     * @inheritDoc
+     * @param mixed $element
+     * @psalm-suppress InvalidPropertyAssignmentValue
+     * @return true
      */
-    public function add($element)
+    public function add($element): bool
     {
         $this->elements[] = $element;
 
@@ -78,24 +72,20 @@ abstract class AbstractCollection implements CollectionInterface
     }
 
     /**
-     * @inheritDoc
+     * @param int|string $key
+     * @param mixed $value
+     * @psalm-suppress InvalidPropertyAssignmentValue
      */
-    public function set($key, $value)
+    public function set($key, $value): void
     {
         $this->elements[$key] = $value;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         $this->remove($offset);
     }
 
-    /**
-     * @inheritDoc
-     */
     public function remove($key)
     {
         if (!isset($this->elements[$key]) && !\array_key_exists($key, $this->elements)) {
@@ -108,42 +98,27 @@ abstract class AbstractCollection implements CollectionInterface
         return $removed;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function count()
+    public function count(): int
     {
         return \count($this->elements);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function clear()
+    public function clear(): void
     {
         $this->elements = [];
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function contains($element)
+    public function contains($element): bool
     {
         return \in_array($element, $this->elements, true);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function isEmpty()
+    public function isEmpty(): bool
     {
         return empty($this->elements);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function removeElement($element)
+    public function removeElement($element): bool
     {
         $key = \array_search($element, $this->elements, true);
         if ($key === false) {
@@ -154,101 +129,58 @@ abstract class AbstractCollection implements CollectionInterface
         return true;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getKeys()
+    public function getKeys(): array
     {
         return \array_keys($this->elements);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getValues()
+    public function getValues(): array
     {
         return \array_values($this->elements);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function toArray()
+    public function toArray(): array
     {
         return $this->elements;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function first()
     {
         return \reset($this->elements);
     }
 
-    /**
-     * @inheritDoc
-     */
     public function last()
     {
         return \end($this->elements);
     }
 
-    /**
-     * @inheritDoc
-     */
     public function key()
     {
         return \key($this->elements);
     }
 
-    /**
-     * @inheritDoc
-     */
     public function current()
     {
         return \current($this->elements);
     }
 
-    /**
-     * @inheritDoc
-     */
     public function next()
     {
         return \next($this->elements);
     }
 
-    /**
-     * @inheritDoc
-     *
-     * @return self
-     */
-    public function filter(\Closure $p)
+    public function filter(\Closure $p): CollectionInterface
     {
         return $this->createFrom(\array_filter($this->elements, $p, ARRAY_FILTER_USE_BOTH));
     }
 
-    /**
-     * @param array $elements
-     *
-     * @return self
-     * @psalm-param array<array-key,T> $elements
-     */
-    abstract protected function createFrom(array $elements);
+    abstract protected function createFrom(array $elements): CollectionInterface;
 
-    /**
-     * @inheritDoc
-     *
-     * @return self
-     */
-    public function map(\Closure $func)
+    public function map(\Closure $func): CollectionInterface
     {
         return $this->createFrom(\array_map($func, $this->elements));
     }
 
-    /**
-     * @inheritDoc
-     */
     public function indexOf($element)
     {
         return \array_search($element, $this->elements, true);
