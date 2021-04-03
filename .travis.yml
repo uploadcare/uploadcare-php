@@ -9,6 +9,7 @@ jobs:
 
     - php: 7.1
     - php: 7.4
+    - php: 8.0
 
   fast_finish: false
 
