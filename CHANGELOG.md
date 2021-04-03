@@ -6,15 +6,16 @@ Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to
 [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [3.0.4]
-- Drop support too old php versions: the library supports php from 7.1;
-- Add php 8 support;
-- Modify classes for strict types usage;
-- Update tests;
-- Modify terms for naming agreement;
+### PHP version update
+- Dropped support for old PHP versions: the library supports PHP starting from 7.1.
+- Added PHP 8 support.
+- Modified classes for strict types usage.
+- Modified terms for naming agreement.
+- Updated tests.
 
 ## [3.0.3]
 ### Fix
-- Fixed file copy methods between default Uploadcare storage and remote storage (Amazon s3)
+- Fixed file copy methods between default Uploadcare storage and remote storage (Amazon s3).
 
 ## [3.0.2]
 ### Fix
