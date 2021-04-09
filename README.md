@@ -30,7 +30,7 @@ Uploadcare PHP integration handles uploads and further operations with files by 
 
 ## Install
 
-Prior to installing `uploadcare-php` get the [Composer](getcomposer.org) dependency manager for PHP because it'll simplify installation.
+Prior to installing `uploadcare-php` get the [Composer](https://getcomposer.org) dependency manager for PHP because it'll simplify installation.
 
 **Step 1** — update your `composer.json`:
 
