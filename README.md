@@ -24,7 +24,7 @@ Uploadcare PHP integration handles uploads and further operations with files by 
 
 ## Requirements
 
-- `php5.6+`
+- `php7.1+`
 - `php-curl`
 - `php-json`
 
