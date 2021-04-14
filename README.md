@@ -48,6 +48,8 @@ php composer.phar update
 
 **Step 3** — define your Uploadcare public and secret API [keys](https://uploadcare.com/documentation/keys/) in a way you prefer (e.g., by using a `$_ENV` variable):
 
+Add API keys to your configuration object. For example:
+
 ```php
 # config.php
 $_ENV['UPLOADCARE_PUBLIC_KEY'] = '<your public key>';
