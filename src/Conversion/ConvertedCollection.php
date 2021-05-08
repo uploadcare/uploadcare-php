@@ -13,7 +13,7 @@ use Uploadcare\Interfaces\File\CollectionInterface;
 final class ConvertedCollection extends AbstractCollection
 {
     /**
-     * @var array<array-key,T>
+     * @var array<int, T>
      * @psalm-suppress NonInvariantDocblockPropertyType
      */
     protected $elements;
@@ -25,7 +25,7 @@ final class ConvertedCollection extends AbstractCollection
 
     protected function createFrom(array $elements): CollectionInterface
     {
-        return new static($elements);
+        return new self($elements);
     }
 
     public static function elementClass(): string

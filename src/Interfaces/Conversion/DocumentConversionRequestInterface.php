@@ -5,7 +5,7 @@ namespace Uploadcare\Interfaces\Conversion;
 /**
  * Request for document conversion.
  */
-interface DocumentConversionRequestInterface extends ConversionRequest
+interface DocumentConversionRequestInterface extends ConversionRequestInterface
 {
     /**
      * @return int|null

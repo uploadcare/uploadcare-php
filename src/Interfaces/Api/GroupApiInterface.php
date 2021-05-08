@@ -37,7 +37,7 @@ interface GroupApiInterface
      *
      * @return ListResponseInterface
      */
-    public function listGroups($limit, $asc = true);
+    public function listGroups(int $limit, bool $asc = true): ListResponseInterface;
 
     /**
      * Get a file group by UUID.
@@ -48,7 +48,7 @@ interface GroupApiInterface
      *
      * @throws HttpException
      */
-    public function groupInfo($id);
+    public function groupInfo(string $id): GroupInterface;
 
     /**
      * Mark all files in a group as stored.
@@ -59,5 +59,5 @@ interface GroupApiInterface
      *
      * @throws HttpException
      */
-    public function storeGroup($id);
+    public function storeGroup($id): GroupInterface;
 }

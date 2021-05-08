@@ -33,7 +33,7 @@ interface ConfigurationInterface
      *
      * @return array
      */
-    public function getAuthHeaders(string $method, string $uri, string $data, string $contentType = 'application/json', $date = null): array;
+    public function getAuthHeaders(string $method, string $uri, string $data, string $contentType = 'application/json', ?\DateTimeInterface $date = null): array;
 
     public function getAuthUrlConfig(): ?AuthUrlConfigInterface;
 

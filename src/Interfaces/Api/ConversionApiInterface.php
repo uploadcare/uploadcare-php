@@ -2,7 +2,7 @@
 
 namespace Uploadcare\Interfaces\Api;
 
-use Uploadcare\Interfaces\Conversion\ConversionRequest;
+use Uploadcare\Interfaces\Conversion\ConversionRequestInterface;
 use Uploadcare\Interfaces\Conversion\ConversionStatusInterface;
 use Uploadcare\Interfaces\Conversion\ConvertedItemInterface;
 use Uploadcare\Interfaces\Conversion\DocumentConversionRequestInterface;
@@ -18,22 +18,22 @@ interface ConversionApiInterface
     /**
      * Request a document conversion.
      *
-     * @param FileInfoInterface|string                             $file
-     * @param ConversionRequest|DocumentConversionRequestInterface $request
+     * @param FileInfoInterface|string                                      $file
+     * @param ConversionRequestInterface|DocumentConversionRequestInterface $request
      *
      * @return object
      *
      * @throws \RuntimeException
      */
-    public function convertDocument($file, ConversionRequest $request);
+    public function convertDocument($file, ConversionRequestInterface $request);
 
     /**
-     * @param CollectionInterface|array                            $collection
-     * @param ConversionRequest|DocumentConversionRequestInterface $request
+     * @param CollectionInterface|array                                     $collection
+     * @param ConversionRequestInterface|DocumentConversionRequestInterface $request
      *
      * @return BatchResponseInterface
      */
-    public function batchConvertDocuments($collection, ConversionRequest $request): BatchResponseInterface;
+    public function batchConvertDocuments($collection, ConversionRequestInterface $request): BatchResponseInterface;
 
     /**
      * @param ConvertedItemInterface|int $id
@@ -43,22 +43,22 @@ interface ConversionApiInterface
     public function documentJobStatus($id): ConversionStatusInterface;
 
     /**
-     * @param FileInfoInterface|string $file
-     * @param ConversionRequest        $request
+     * @param FileInfoInterface|string   $file
+     * @param ConversionRequestInterface $request
      *
      * @return object
      *
      * @throws \RuntimeException
      */
-    public function convertVideo($file, ConversionRequest $request);
+    public function convertVideo($file, ConversionRequestInterface $request);
 
     /**
-     * @param CollectionInterface|array $collection
-     * @param ConversionRequest         $request
+     * @param CollectionInterface|array  $collection
+     * @param ConversionRequestInterface $request
      *
      * @return BatchResponseInterface
      */
-    public function batchConvertVideo($collection, ConversionRequest $request): BatchResponseInterface;
+    public function batchConvertVideo($collection, ConversionRequestInterface $request): BatchResponseInterface;
 
     /**
      * @param int|ConvertedItemInterface $id

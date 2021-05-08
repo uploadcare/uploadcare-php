@@ -16,7 +16,7 @@ use Uploadcare\Serializer\SerializerFactory;
 /**
  * Uploadcare Api Configuration.
  */
-class Configuration implements ConfigurationInterface
+final class Configuration implements ConfigurationInterface
 {
     public const LIBRARY_VERSION = 'v3.1.0';
     public const API_VERSION = '0.6';
@@ -128,7 +128,7 @@ class Configuration implements ConfigurationInterface
         return $headers;
     }
 
-    protected function setUserAgent(array &$headers): void
+    private function setUserAgent(array &$headers): void
     {
         $info = [
             '{lib-version}' => self::LIBRARY_VERSION,
@@ -185,7 +185,7 @@ class Configuration implements ConfigurationInterface
      *
      * @return array
      */
-    public function getAuthHeaders(string $method, string $uri, string $data, string $contentType = 'application/json', $date = null): array
+    public function getAuthHeaders(string $method, string $uri, string $data, string $contentType = 'application/json', ?\DateTimeInterface $date = null): array
     {
         return [
             'Date' => $this->getSecureSignature()->getDateHeaderString($date),

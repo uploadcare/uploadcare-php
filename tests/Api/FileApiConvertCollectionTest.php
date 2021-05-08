@@ -7,6 +7,7 @@ use Uploadcare\Apis\FileApi;
 use Uploadcare\Exception\InvalidArgumentException;
 use Uploadcare\File\File;
 use Uploadcare\File\FileCollection;
+use Uploadcare\Interfaces\ConfigurationInterface;
 
 class FileApiConvertCollectionTest extends TestCase
 {
@@ -15,9 +16,7 @@ class FileApiConvertCollectionTest extends TestCase
      */
     protected function getFileApi()
     {
-        return $this->getMockBuilder(FileApi::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        return new FileApi($this->getMockBuilder(ConfigurationInterface::class)->getMock());
     }
 
     /**

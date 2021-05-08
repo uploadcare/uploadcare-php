@@ -6,7 +6,7 @@ use Uploadcare\Interfaces\Api\ProjectApiInterface;
 use Uploadcare\Interfaces\Response\ProjectInfoInterface;
 use Uploadcare\Response\ProjectInfoResponse;
 
-class ProjectApi extends AbstractApi implements ProjectApiInterface
+final class ProjectApi extends AbstractApi implements ProjectApiInterface
 {
     /**
      * @return ProjectInfoInterface

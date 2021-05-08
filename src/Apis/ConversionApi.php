@@ -7,7 +7,7 @@ use Uploadcare\Conversion\VideoUrlBuilder;
 use Uploadcare\Exception\ConversionException;
 use Uploadcare\Exception\InvalidArgumentException;
 use Uploadcare\Interfaces\Api\ConversionApiInterface;
-use Uploadcare\Interfaces\Conversion\ConversionRequest;
+use Uploadcare\Interfaces\Conversion\ConversionRequestInterface;
 use Uploadcare\Interfaces\Conversion\ConversionStatusInterface;
 use Uploadcare\Interfaces\Conversion\ConvertedItemInterface;
 use Uploadcare\Interfaces\Conversion\DocumentConversionRequestInterface;
@@ -22,7 +22,7 @@ use Uploadcare\Response\BatchConversionResponse;
  *
  * @see https://uploadcare.com/api-refs/rest-api/v0.6.0/#tag/Conversion
  */
-class ConversionApi extends AbstractApi implements ConversionApiInterface
+final class ConversionApi extends AbstractApi implements ConversionApiInterface
 {
     /**
      * @param int|ConvertedItemInterface $id
@@ -57,7 +57,7 @@ class ConversionApi extends AbstractApi implements ConversionApiInterface
      *
      * @see https://uploadcare.com/api-refs/rest-api/v0.6.0/#operation/documentConvert
      */
-    public function convertDocument($file, ConversionRequest $request)
+    public function convertDocument($file, ConversionRequestInterface $request)
     {
         if (!$request instanceof DocumentConversionRequestInterface) {
             throw new \RuntimeException(\sprintf('Request parameter must implements %s interface', DocumentConversionRequestInterface::class));
@@ -88,7 +88,7 @@ class ConversionApi extends AbstractApi implements ConversionApiInterface
     /**
      * {@inheritDoc}
      */
-    public function batchConvertDocuments($collection, ConversionRequest $request): BatchResponseInterface
+    public function batchConvertDocuments($collection, ConversionRequestInterface $request): BatchResponseInterface
     {
         if (!$request instanceof DocumentConversionRequestInterface) {
             throw new \RuntimeException(\sprintf('Request parameter must implements %s interface', DocumentConversionRequestInterface::class));
@@ -111,14 +111,14 @@ class ConversionApi extends AbstractApi implements ConversionApiInterface
     }
 
     /**
-     * @param FileInfoInterface|string                        $file
-     * @param ConversionRequest|VideoEncodingRequestInterface $request
+     * @param FileInfoInterface|string                                 $file
+     * @param ConversionRequestInterface|VideoEncodingRequestInterface $request
      *
      * @return ConvertedItemInterface|ResponseProblemInterface
      *
      * @see https://uploadcare.com/api-refs/rest-api/v0.6.0/#operation/videoConvert
      */
-    public function convertVideo($file, ConversionRequest $request)
+    public function convertVideo($file, ConversionRequestInterface $request)
     {
         if ($file instanceof FileInfoInterface) {
             $file = $file->getUuid();
@@ -165,7 +165,7 @@ class ConversionApi extends AbstractApi implements ConversionApiInterface
     /**
      * {@inheritDoc}
      */
-    public function batchConvertVideo($collection, ConversionRequest $request): BatchResponseInterface
+    public function batchConvertVideo($collection, ConversionRequestInterface $request): BatchResponseInterface
     {
         if (!$request instanceof VideoEncodingRequestInterface) {
             throw new InvalidArgumentException(\sprintf('Conversion request of %s must implements the %s interface', __METHOD__, VideoEncodingRequestInterface::class));

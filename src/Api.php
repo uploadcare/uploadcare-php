@@ -13,13 +13,14 @@ use Uploadcare\Interfaces\Api\GroupApiInterface;
 use Uploadcare\Interfaces\Api\ProjectApiInterface;
 use Uploadcare\Interfaces\Api\WebhookApiInterface;
 use Uploadcare\Interfaces\ConfigurationInterface;
+use Uploadcare\Interfaces\RestApiInterface;
 use Uploadcare\Interfaces\UploaderInterface;
 use Uploadcare\Uploader\Uploader;
 
 /**
  * Universal API for Uploadcare.
  */
-class Api
+final class Api implements RestApiInterface
 {
     private $fileApi;
     private $groupApi;

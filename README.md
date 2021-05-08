@@ -24,17 +24,17 @@ Uploadcare PHP integration handles uploads and further operations with files by 
 
 ## Requirements
 
-- `php5.6+`
+- `php7.1+` (`php 8.0` included)
 - `php-curl`
 - `php-json`
 
 ## Install
 
-Prior to installing `uploadcare-php` get the [Composer](getcomposer.org) dependency manager for PHP because it'll simplify installation.
+Prior to installing `uploadcare-php` get the [Composer](https://getcomposer.org) dependency manager for PHP because it'll simplify installation.
 
 **Step 1** — update your `composer.json`:
 
-```js
+```json
 "require": {
     "uploadcare/uploadcare-php": "^3.0"
 }
@@ -45,6 +45,8 @@ Prior to installing `uploadcare-php` get the [Composer](getcomposer.org) depende
 ```bash
 php composer.phar update
 ```
+
+Or, you can run the `composer.phar require uploadcare/uploadcare-php` instead of steps 1 and 2.
 
 **Step 3** — define your Uploadcare public and secret API [keys](https://uploadcare.com/documentation/keys/) in a way you prefer (e.g., by using a `$_ENV` variable):
 
@@ -408,7 +410,7 @@ $secureUrlFromApi = $api->file()->generateSecureUrl($file);
 
 ## Tests
 
-PHP 5.6+ tests can be found in the "tests" directory. All tests are based on PHPUnit, so you need to have it installed prior to running tests.
+PHP 7.1+ tests can be found in the "tests" directory. All tests are based on PHPUnit, so you need to have it installed prior to running tests.
 
 Run tests with this command:
 

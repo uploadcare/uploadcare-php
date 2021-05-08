@@ -92,7 +92,7 @@ class Serializer implements SerializerInterface
             throw new ClassNotFoundException(\sprintf('Class \'%s\' not found', $className));
         }
 
-        return $this->denormalize(($data === null ? [] : $data), $className, $context);
+        return $this->denormalize(($data ?? []), $className, $context);
     }
 
     /**
@@ -157,7 +157,7 @@ class Serializer implements SerializerInterface
         }
 
         $class = new $className;
-        $excluded = isset($context[self::EXCLUDE_PROPERTY_KEY]) ? $context[self::EXCLUDE_PROPERTY_KEY] : [];
+        $excluded = $context[self::EXCLUDE_PROPERTY_KEY] ?? [];
 
         $rules = $class::rules();
         $this->processData($class, $data, $rules, $excluded);

@@ -30,7 +30,7 @@ interface FileApiInterface
      *
      * @return ListResponseInterface
      */
-    public function listFiles($limit = 100, $orderBy = 'datetime_uploaded', $from = null, $addFields = [], $stored = null, $removed = false): ListResponseInterface;
+    public function listFiles(int $limit = 100, string $orderBy = 'datetime_uploaded', $from = null, array $addFields = [], ?bool $stored = null, bool $removed = false): ListResponseInterface;
 
     /**
      * Store a single file by UUID.

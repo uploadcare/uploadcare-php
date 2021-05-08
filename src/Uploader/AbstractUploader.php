@@ -324,7 +324,7 @@ abstract class AbstractUploader implements UploaderInterface
         return 0;
     }
 
-    protected function rewind($handle)
+    protected function rewind($handle): void
     {
         if (!\is_resource($handle)) {
             return;

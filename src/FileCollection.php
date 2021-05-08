@@ -8,7 +8,7 @@ use Uploadcare\Interfaces\File\CollectionInterface;
 use Uploadcare\Interfaces\File\FileInfoInterface;
 use Uploadcare\Interfaces\Response\BatchResponseInterface;
 
-class FileCollection extends AbstractCollection
+final class FileCollection extends AbstractCollection
 {
     /**
      * @var File\FileCollection|CollectionInterface
@@ -47,7 +47,7 @@ class FileCollection extends AbstractCollection
      */
     protected function createFrom(array $elements): CollectionInterface
     {
-        return new static(new File\FileCollection($elements), $this->api);
+        return new self(new File\FileCollection($elements), $this->api);
     }
 
     public static function elementClass(): string

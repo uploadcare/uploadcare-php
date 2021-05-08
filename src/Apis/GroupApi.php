@@ -16,7 +16,7 @@ use Uploadcare\Uploader\Uploader;
 /**
  * Group Api.
  */
-class GroupApi extends AbstractApi implements GroupApiInterface
+final class GroupApi extends AbstractApi implements GroupApiInterface
 {
     public function nextPage(ListResponseInterface $response): ?ListResponseInterface
     {
@@ -65,10 +65,10 @@ class GroupApi extends AbstractApi implements GroupApiInterface
     /**
      * {@inheritDoc}
      */
-    public function listGroups($limit = 100, $asc = true): GroupListResponse
+    public function listGroups(int $limit = 100, bool $asc = true): ListResponseInterface
     {
         $parameters = [
-            'limit' => (int) $limit,
+            'limit' => $limit,
             'ordering' => $asc ? 'datetime_created' : '-datetime_created',
         ];
         $response = $this->request('GET', '/groups/', ['query' => $parameters]);
@@ -88,7 +88,7 @@ class GroupApi extends AbstractApi implements GroupApiInterface
     /**
      * {@inheritDoc}
      */
-    public function groupInfo($id): GroupInterface
+    public function groupInfo(string $id): GroupInterface
     {
         $response = (new Uploader($this->configuration))->groupInfo($id);
         $result = $this->configuration->getSerializer()

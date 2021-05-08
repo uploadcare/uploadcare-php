@@ -12,7 +12,7 @@ interface ConversionStatusInterface
      *                - failed — we failed to convert the source, see error for details.
      *                - canceled — the conversion was canceled.
      */
-    public function getStatus();
+    public function getStatus(): string;
 
     /**
      * @return string|null holds a conversion error if we were unable to handle your file

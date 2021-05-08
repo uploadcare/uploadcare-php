@@ -13,7 +13,7 @@ use Uploadcare\Interfaces\Response\WebhookInterface;
 interface WebhookApiInterface
 {
     /**
-     * @return CollectionInterface<array-key, WebhookInterface>
+     * @return CollectionInterface<int, WebhookInterface>
      */
     public function listWebhooks(): CollectionInterface;
 
@@ -24,7 +24,7 @@ interface WebhookApiInterface
      *
      * @return WebhookInterface
      */
-    public function createWebhook($targetUrl, $isActive = true, $event = 'file.uploaded'): WebhookInterface;
+    public function createWebhook(string $targetUrl, bool $isActive = true, string $event = 'file.uploaded'): WebhookInterface;
 
     /**
      * @param int   $id
@@ -32,12 +32,12 @@ interface WebhookApiInterface
      *
      * @return WebhookInterface
      */
-    public function updateWebhook($id, array $parameters): WebhookInterface;
+    public function updateWebhook(int $id, array $parameters): WebhookInterface;
 
     /**
      * @param string $targetUrl
      *
      * @return bool
      */
-    public function deleteWebhook($targetUrl): bool;
+    public function deleteWebhook(string $targetUrl): bool;
 }

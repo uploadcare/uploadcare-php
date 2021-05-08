@@ -11,7 +11,7 @@ use Uploadcare\Interfaces\GroupInterface;
 /**
  * Decorated Group.
  */
-class Group implements GroupInterface
+final class Group implements GroupInterface
 {
     /**
      * @var GroupInterface

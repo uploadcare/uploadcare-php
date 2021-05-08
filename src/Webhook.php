@@ -6,7 +6,7 @@ use Uploadcare\Interfaces\Api\WebhookApiInterface;
 use Uploadcare\Interfaces\Response\WebhookInterface;
 use Uploadcare\Response\WebhookResponse;
 
-class Webhook implements WebhookInterface
+final class Webhook implements WebhookInterface
 {
     /**
      * @var WebhookResponse|WebhookInterface

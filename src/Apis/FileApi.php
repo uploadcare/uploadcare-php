@@ -21,7 +21,7 @@ use Uploadcare\Response\FileListResponse;
 /**
  * File Api.
  */
-class FileApi extends AbstractApi implements FileApiInterface
+final class FileApi extends AbstractApi implements FileApiInterface
 {
     /**
      * {@inheritDoc}
@@ -40,7 +40,7 @@ class FileApi extends AbstractApi implements FileApiInterface
             $parameters['from'] ?? null,
             isset($parameters['add_fields']) ? (array) $parameters['add_fields'] : [],
             isset($parameters['stored']) ? (bool) $parameters['stored'] : null,
-            isset($parameters['removed']) ? (bool) $parameters['removed'] : null,
+            isset($parameters['removed']) && (bool) $parameters['removed'],
         ]);
 
         return $result instanceof ListResponseInterface ? $result : null;
@@ -58,7 +58,7 @@ class FileApi extends AbstractApi implements FileApiInterface
      *
      * @return ListResponseInterface
      */
-    public function listFiles($limit = 100, $orderBy = 'datetime_uploaded', $from = null, $addFields = [], $stored = null, $removed = false): ListResponseInterface
+    public function listFiles(int $limit = 100, string $orderBy = 'datetime_uploaded', $from = null, array $addFields = [], ?bool $stored = null, bool $removed = false): ListResponseInterface
     {
         $parameters = [
             'limit' => $limit,
@@ -280,7 +280,7 @@ class FileApi extends AbstractApi implements FileApiInterface
      *
      * @return string|null
      */
-    public function generateSecureUrl($id, $window = 300): ?string
+    public function generateSecureUrl($id, int $window = 300): ?string
     {
         if (!($authConfig = $this->configuration->getAuthUrlConfig()) instanceof AuthUrlConfigInterface) {
             return null;
@@ -297,7 +297,7 @@ class FileApi extends AbstractApi implements FileApiInterface
         $generator = $authConfig->getTokenGenerator();
         if ($generator instanceof AkamaiToken) {
             $generator->setAcl($id);
-            $generator->setWindow((int) $window);
+            $generator->setWindow($window);
         }
 
         return \strtr($generator->getUrlTemplate(), [
@@ -314,7 +314,7 @@ class FileApi extends AbstractApi implements FileApiInterface
      *
      * @return FileInfoInterface
      */
-    private function deserializeFileInfo(ResponseInterface $response, $activeFile = true): FileInfoInterface
+    private function deserializeFileInfo(ResponseInterface $response, bool $activeFile = true): FileInfoInterface
     {
         $result = $this->configuration->getSerializer()
             ->deserialize($response->getBody()->getContents(), File::class);

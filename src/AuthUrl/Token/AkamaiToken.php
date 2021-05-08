@@ -66,7 +66,7 @@ class AkamaiToken implements TokenInterface
      *
      * @return AkamaiToken
      */
-    public function setKey($key): self
+    public function setKey(string $key): self
     {
         if (preg_match('/^[a-fA-F0-9]+$/', $key) && (\strlen($key) % 2) === 0) {
             $this->key = $key;

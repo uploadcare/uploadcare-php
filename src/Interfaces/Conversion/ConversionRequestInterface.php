@@ -5,7 +5,7 @@ namespace Uploadcare\Interfaces\Conversion;
 /**
  * Common conversion request.
  */
-interface ConversionRequest
+interface ConversionRequestInterface
 {
     /**
      * @return string

@@ -5,7 +5,7 @@ namespace Uploadcare\Interfaces\Conversion;
 /**
  * Request for video encoding.
  */
-interface VideoEncodingRequestInterface extends ConversionRequest
+interface VideoEncodingRequestInterface extends ConversionRequestInterface
 {
     /**
      * @return int|null

@@ -8,7 +8,7 @@ use Uploadcare\Interfaces\File\CollectionInterface;
  * Abstract Collection.
  * Contains common collection methods.
  *
- * @psalm-template TKey of array-key
+ * @psalm-template TKey of int
  * @psalm-template T
  */
 abstract class AbstractCollection implements CollectionInterface

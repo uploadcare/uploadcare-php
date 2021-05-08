@@ -10,7 +10,7 @@ use Uploadcare\Interfaces\File\VideoInfoInterface;
 /**
  * File decorator.
  */
-class File implements FileInfoInterface
+final class File implements FileInfoInterface
 {
     /**
      * @var File\File|FileInfoInterface
@@ -53,7 +53,7 @@ class File implements FileInfoInterface
      *
      * @return FileInfoInterface
      */
-    public function copyToLocalStorage($store = true): FileInfoInterface
+    public function copyToLocalStorage(bool $store = true): FileInfoInterface
     {
         return $this->api->copyToLocalStorage($this->inner->getUuid(), $store);
     }
@@ -65,7 +65,7 @@ class File implements FileInfoInterface
      *
      * @return string
      */
-    public function copyToRemoteStorage($target, $makePublic = true, $pattern = null): string
+    public function copyToRemoteStorage(string $target, bool $makePublic = true, ?string $pattern = null): string
     {
         return $this->api->copyToRemoteStorage($this->inner->getUuid(), $target, $makePublic, $pattern);
     }
