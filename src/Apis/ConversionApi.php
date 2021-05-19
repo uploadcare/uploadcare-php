@@ -278,7 +278,7 @@ final class ConversionApi extends AbstractApi implements ConversionApiInterface
             if (($page = $request->getPageNumber()) !== null && \array_key_exists($request->getTargetFormat(), \array_flip(['jpg', 'png']))) {
                 $patch[] = \sprintf('%s/-/page/%d/', $conversionString, $page);
             } else {
-                $patch[] = $conversionString;
+                $patch[] = \sprintf('%s/', \rtrim($conversionString, '/'));
             }
         }
 
