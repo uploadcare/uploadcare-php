@@ -270,7 +270,7 @@ final class ConversionApi extends AbstractApi implements ConversionApiInterface
      *
      * @return array
      */
-    private function makeDocumentConversionUrl($ids, DocumentConversionRequestInterface $request): array
+    private function makeDocumentConversionUrl(array $ids, DocumentConversionRequestInterface $request): array
     {
         $patch = [];
         foreach ($ids as $id) {

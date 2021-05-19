@@ -28,17 +28,17 @@ class DocumentConversionRequest implements DocumentConversionRequestInterface
     private $store;
 
     /**
-     * @var int
+     * @var int|null
      */
     private $pageNumber;
 
     /**
-     * @param string $targetFormat
-     * @param false  $throwError
-     * @param bool   $store
-     * @param int    $pageNumber
+     * @param string   $targetFormat
+     * @param false    $throwError
+     * @param bool     $store
+     * @param int|null $pageNumber
      */
-    public function __construct(string $targetFormat = 'pdf', bool $throwError = false, bool $store = true, int $pageNumber = 1)
+    public function __construct(string $targetFormat = 'pdf', bool $throwError = false, bool $store = true, ?int $pageNumber = null)
     {
         $this->setTargetFormat($targetFormat);
         $this->setThrowError($throwError);
@@ -111,19 +111,19 @@ class DocumentConversionRequest implements DocumentConversionRequestInterface
     }
 
     /**
-     * @return int
+     * @return int|null
      */
-    public function getPageNumber(): int
+    public function getPageNumber(): ?int
     {
         return $this->pageNumber;
     }
 
     /**
-     * @param int $pageNumber
+     * @param int|null $pageNumber
      *
      * @return DocumentConversionRequest
      */
-    public function setPageNumber(int $pageNumber): self
+    public function setPageNumber(?int $pageNumber): self
     {
         $this->pageNumber = $pageNumber;
 
