@@ -24,7 +24,7 @@ Uploadcare PHP integration handles uploads and further operations with files by 
 
 ## Requirements
 
-- `php7.1+` (`php 8.0` included)
+- `php7.1+`
 - `php-curl`
 - `php-json`
 
@@ -49,6 +49,8 @@ php composer.phar update
 Or, you can run the `composer.phar require uploadcare/uploadcare-php` instead of steps 1 and 2.
 
 **Step 3** — define your Uploadcare public and secret API [keys](https://uploadcare.com/documentation/keys/) in a way you prefer (e.g., by using a `$_ENV` variable):
+
+Add API keys to your configuration object. For example:
 
 ```php
 # config.php
