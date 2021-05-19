@@ -6,11 +6,12 @@ Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to
 [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [3.0.4]
-### PHP version update
+### PHP version update, conversion improvements
 - Dropped support for old PHP versions: the library supports PHP starting from 7.1.
 - Added PHP 8 support.
 - Modified classes for strict types usage.
 - Modified terms for naming agreement.
+- Added possibility to convert PDF files without page parameter — you will receive zip-archive as a result of conversion multi-page PDF to JPG/PNG.
 - Updated tests.
 
 ## [3.0.3]
