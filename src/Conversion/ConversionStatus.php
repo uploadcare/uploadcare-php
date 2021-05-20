@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Uploadcare\Conversion;
 
@@ -23,7 +23,7 @@ class ConversionStatus implements ConversionStatusInterface, SerializableInterfa
      */
     private $result;
 
-    public static function rules()
+    public static function rules(): array
     {
         return [
             'status' => 'string',
@@ -35,7 +35,7 @@ class ConversionStatus implements ConversionStatusInterface, SerializableInterfa
     /**
      * @return string
      */
-    public function getStatus()
+    public function getStatus(): string
     {
         return $this->status;
     }
@@ -45,7 +45,7 @@ class ConversionStatus implements ConversionStatusInterface, SerializableInterfa
      *
      * @return ConversionStatus
      */
-    public function setStatus($status)
+    public function setStatus(string $status): self
     {
         $this->status = $status;
 
@@ -55,7 +55,7 @@ class ConversionStatus implements ConversionStatusInterface, SerializableInterfa
     /**
      * @return string|null
      */
-    public function getError()
+    public function getError(): ?string
     {
         return $this->error;
     }
@@ -65,17 +65,14 @@ class ConversionStatus implements ConversionStatusInterface, SerializableInterfa
      *
      * @return ConversionStatus
      */
-    public function setError($error)
+    public function setError(?string $error): self
     {
         $this->error = $error;
 
         return $this;
     }
 
-    /**
-     * @return StatusResultInterface
-     */
-    public function getResult()
+    public function getResult(): StatusResultInterface
     {
         return $this->result;
     }
@@ -85,7 +82,7 @@ class ConversionStatus implements ConversionStatusInterface, SerializableInterfa
      *
      * @return ConversionStatus
      */
-    public function setResult($result)
+    public function setResult(StatusResultInterface $result): self
     {
         $this->result = $result;
 

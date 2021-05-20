@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Uploadcare\Interfaces;
 
@@ -7,16 +7,16 @@ namespace Uploadcare\Interfaces;
  */
 interface SignatureInterface extends UploadcareAuthInterface
 {
-    const SIGN_ALGORITHM = 'sha256';
-    const MAX_TTL = 3600;
+    public const SIGN_ALGORITHM = 'sha256';
+    public const MAX_TTL = 3600;
 
     /**
      * @return string
      */
-    public function getSignature();
+    public function getSignature(): string;
 
     /**
      * @return \DateTimeInterface
      */
-    public function getExpire();
+    public function getExpire(): \DateTimeInterface;
 }

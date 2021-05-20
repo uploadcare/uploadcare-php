@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Uploadcare\Interfaces\File;
 
@@ -17,7 +17,7 @@ interface CollectionInterface extends \Countable, \IteratorAggregate, \ArrayAcce
      *
      * @return string
      */
-    public static function elementClass();
+    public static function elementClass(): string;
 
     /**
      * @param mixed $element
@@ -25,12 +25,12 @@ interface CollectionInterface extends \Countable, \IteratorAggregate, \ArrayAcce
      * @return true
      * @psalm-param T $element
      */
-    public function add($element);
+    public function add($element): bool;
 
     /**
      * @return void
      */
-    public function clear();
+    public function clear(): void;
 
     /**
      * @param mixed $element
@@ -38,12 +38,12 @@ interface CollectionInterface extends \Countable, \IteratorAggregate, \ArrayAcce
      * @return bool
      * @psalm-param T $element
      */
-    public function contains($element);
+    public function contains($element): bool;
 
     /**
      * @return bool
      */
-    public function isEmpty();
+    public function isEmpty(): bool;
 
     /**
      * @param string|int $key
@@ -60,7 +60,7 @@ interface CollectionInterface extends \Countable, \IteratorAggregate, \ArrayAcce
      * @return bool
      * @psalm-param T $element
      */
-    public function removeElement($element);
+    public function removeElement($element): bool;
 
     /**
      * @param string|int $key
@@ -75,13 +75,13 @@ interface CollectionInterface extends \Countable, \IteratorAggregate, \ArrayAcce
      * @return int[]|string[]
      * @psalm-return TKey[]
      */
-    public function getKeys();
+    public function getKeys(): array;
 
     /**
      * @return array
      * @psalm-return T[]
      */
-    public function getValues();
+    public function getValues(): array;
 
     /**
      * @param string|int $key
@@ -91,13 +91,13 @@ interface CollectionInterface extends \Countable, \IteratorAggregate, \ArrayAcce
      * @psalm-param TKey $key
      * @psalm-param T $value
      */
-    public function set($key, $value);
+    public function set($key, $value): void;
 
     /**
      * @return array
      * @psalm-return array<TKey,T>
      */
-    public function toArray();
+    public function toArray(): array;
 
     /**
      * @return mixed
@@ -133,20 +133,15 @@ interface CollectionInterface extends \Countable, \IteratorAggregate, \ArrayAcce
      * @param \Closure $p
      *
      * @return CollectionInterface a collection with the results of the filter operation
-     * @psalm-param Closure(T=):bool $p
-     * @psalm-return CollectionInterface<TKey, T>
      */
-    public function filter(\Closure $p);
+    public function filter(\Closure $p): self;
 
     /**
      * @param \Closure $func
      *
      * @return CollectionInterface
-     * @psalm-template U of
-     * @psalm-param Closure(T=):U $func
-     * @psalm-return CollectionInterface<TKey, U>
      */
-    public function map(\Closure $func);
+    public function map(\Closure $func): self;
 
     /**
      * @param mixed $element

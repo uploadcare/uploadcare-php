@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Uploadcare\Response;
 
@@ -17,7 +17,7 @@ final class ResponseProblem implements ResponseProblemInterface, SerializableInt
      */
     private $reason;
 
-    public static function rules()
+    public static function rules(): array
     {
         return [
             'id' => 'string',
@@ -26,14 +26,14 @@ final class ResponseProblem implements ResponseProblemInterface, SerializableInt
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
-    public function getId()
+    public function getId(): string
     {
         return $this->id;
     }
 
-    public function setId($id)
+    public function setId(string $id)
     {
         $this->id = $id;
 
@@ -41,14 +41,14 @@ final class ResponseProblem implements ResponseProblemInterface, SerializableInt
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
-    public function getReason()
+    public function getReason(): string
     {
         return $this->reason;
     }
 
-    public function setReason($reason)
+    public function setReason(string $reason): self
     {
         $this->reason = $reason;
 

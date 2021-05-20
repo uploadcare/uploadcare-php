@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Uploadcare\AuthUrl;
 
@@ -26,40 +26,28 @@ class AuthUrlConfig implements AuthUrlConfigInterface
      * @param string         $cdnUrl
      * @param TokenInterface $token
      */
-    public function __construct($cdnUrl, TokenInterface $token)
+    public function __construct(string $cdnUrl, TokenInterface $token)
     {
         $this->cdnUrl = $cdnUrl;
         $this->token = $token;
     }
 
-    /**
-     * @return TokenInterface
-     */
-    public function getTokenGenerator()
+    public function getTokenGenerator(): TokenInterface
     {
         return $this->token;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getToken()
+    public function getToken(): string
     {
         return $this->token->getToken();
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getTimeStamp()
+    public function getTimeStamp(): int
     {
         return $this->token->getExpired();
     }
 
-    /**
-     * @return string
-     */
-    public function getCdnUrl()
+    public function getCdnUrl(): string
     {
         return $this->cdnUrl;
     }

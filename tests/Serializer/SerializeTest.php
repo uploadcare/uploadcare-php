@@ -23,7 +23,7 @@ class SerializeTest extends TestCase
 
     private $serializer;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->faker = Factory::create();
         $this->serializer = new Serializer(new SnackCaseConverter());
@@ -76,11 +76,11 @@ class SerializeTest extends TestCase
         $result = [];
         $normalize->invokeArgs($this->serializer, [$file, &$result]);
 
-        $this->assertArrayHasKey('datetime_removed', $result);
-        $this->assertNull($result['datetime_removed']);
-        $this->assertEquals($result['datetime_stored'], $file->getDatetimeStored()->format(Serializer::DATE_FORMAT));
-        $this->assertEquals($result['image_info']['color_mode'], $file->getImageInfo()->getColorMode());
-        $this->assertEquals($result['is_image'], $file->isImage());
+        self::assertArrayHasKey('datetime_removed', $result);
+        self::assertNull($result['datetime_removed']);
+        self::assertEquals($result['datetime_stored'], $file->getDatetimeStored()->format(Serializer::DATE_FORMAT));
+        self::assertEquals($result['image_info']['color_mode'], $file->getImageInfo()->getColorMode());
+        self::assertEquals($result['is_image'], $file->isImage());
     }
 
     public function testSerializeMethod()
@@ -88,9 +88,9 @@ class SerializeTest extends TestCase
         $file = $this->makeFile();
         $result = $this->serializer->serialize($file);
 
-        $this->assertContains('datetime_removed', $result);
-        $this->assertContains('image_info', $result);
-        $this->assertContains('color_mode', $result);
+        self::assertStringContainsString('datetime_removed', $result);
+        self::assertStringContainsString('image_info', $result);
+        self::assertStringContainsString('color_mode', $result);
     }
 
     public function testVariationsArray()
@@ -108,8 +108,8 @@ class SerializeTest extends TestCase
         $result = [];
         $normalize->invokeArgs($this->serializer, [$file, &$result]);
 
-        $this->assertArrayHasKey('variations', $result);
-        $this->assertSame($variations, $result['variations']);
+        self::assertArrayHasKey('variations', $result);
+        self::assertSame($variations, $result['variations']);
     }
 
     public function testVideoInfo()
@@ -143,11 +143,11 @@ class SerializeTest extends TestCase
         $result = [];
         $normalize->invokeArgs($this->serializer, [$file, &$result]);
 
-        $this->assertSame('avi', $result['video_info']['format']);
-        $this->assertSame('DivX', $result['video_info']['video']['codec']);
-        $this->assertSame(1024, $result['video_info']['video']['width']);
-        $this->assertSame('mp3', $result['video_info']['audio']['codec']);
-        $this->assertSame('5.1', $result['video_info']['audio']['channels']);
-        $this->assertSame(222, $result['video_info']['audio']['sample_rate']);
+        self::assertSame('avi', $result['video_info']['format']);
+        self::assertSame('DivX', $result['video_info']['video']['codec']);
+        self::assertSame(1024, $result['video_info']['video']['width']);
+        self::assertSame('mp3', $result['video_info']['audio']['codec']);
+        self::assertSame('5.1', $result['video_info']['audio']['channels']);
+        self::assertSame(222, $result['video_info']['audio']['sample_rate']);
     }
 }

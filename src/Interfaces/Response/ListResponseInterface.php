@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Uploadcare\Interfaces\Response;
 
@@ -18,28 +18,28 @@ interface ListResponseInterface
      *
      * @return string|null
      */
-    public function getNext();
+    public function getNext(): ?string;
 
     /**
      * Previous page URL.
      *
      * @return string|null
      */
-    public function getPrevious();
+    public function getPrevious(): ?string;
 
     /**
      * A total number of objects of the queried type. For files, the queried type depends on the stored and removed query parameters.
      *
      * @return int
      */
-    public function getTotal();
+    public function getTotal(): int;
 
     /**
      * Number of objects per page.
      *
      * @return int
      */
-    public function getPerPage();
+    public function getPerPage(): int;
 
     /**
      * Collection of FileInfoInterface.
@@ -49,5 +49,5 @@ interface ListResponseInterface
      * @return CollectionInterface|FileCollection|FileInfoInterface[]
      * @psalm-return CollectionInterface
      */
-    public function getResults();
+    public function getResults(): CollectionInterface;
 }

@@ -16,24 +16,24 @@ class Uploader extends AbstractUploader
      *
      * @see https://uploadcare.com/api-refs/upload-api/#operation/multipartFileUploadStart
      */
-    const MULTIPART_UPLOAD_SIZE = 1024 * 1024 * 100;
+    public const MULTIPART_UPLOAD_SIZE = 1024 * 1024 * 100;
 
     /**
      * Multipart upload chunk size (5 Mb).
      *
      * @see https://uploadcare.com/api-refs/upload-api/#tag/Upload/paths/%3Cpresigned-url-x%3E/put
      */
-    const PART_SIZE = 1024 * 1024 * 5;
+    protected const PART_SIZE = 1024 * 1024 * 5;
 
     /**
      * @param resource    $handle
      * @param string|null $mimeType
      * @param string|null $filename
-     * @param string|null $store
+     * @param string      $store
      *
      * @return FileInfoInterface
      */
-    public function fromResource($handle, $mimeType = null, $filename = null, $store = 'auto')
+    public function fromResource($handle, string $mimeType = null, string $filename = null, string $store = 'auto'): FileInfoInterface
     {
         try {
             $this->checkResource($handle);
@@ -60,11 +60,11 @@ class Uploader extends AbstractUploader
      * @param resource    $handle
      * @param string|null $mimeType
      * @param string|null $filename
-     * @param string|null $store
+     * @param string      $store
      *
      * @return ResponseInterface
      */
-    private function directUpload($handle, $mimeType = null, $filename = null, $store = 'auto')
+    private function directUpload($handle, ?string $mimeType = null, ?string $filename = null, string $store = 'auto'): ResponseInterface
     {
         $parameters = $this->makeMultipartParameters(\array_merge($this->getDefaultParameters(), [
             [
@@ -97,7 +97,7 @@ class Uploader extends AbstractUploader
      *
      * @return ResponseInterface
      */
-    private function uploadByParts($handle, $fileSize, $mimeType = null, $filename = null, $store = null)
+    private function uploadByParts($handle, int $fileSize, string $mimeType = null, string $filename = null, string $store = null): ResponseInterface
     {
         if ($filename === null) {
             $filename = \uuid_create();
@@ -123,7 +123,7 @@ class Uploader extends AbstractUploader
      *
      * @return MultipartStartResponse
      */
-    private function startUpload($fileSize, $mimeType, $filename, $store)
+    private function startUpload(int $fileSize, string $mimeType, string $filename, string $store): MultipartStartResponse
     {
         $parameters = $this->makeMultipartParameters(\array_merge($this->getDefaultParameters(), [
             'filename' => $filename,
@@ -152,7 +152,7 @@ class Uploader extends AbstractUploader
      *
      * @return void
      */
-    private function uploadParts(MultipartStartResponse $response, $handle)
+    private function uploadParts(MultipartStartResponse $response, $handle): void
     {
         \rewind($handle);
         foreach ($response->getParts() as $signedUrl) {
@@ -174,7 +174,7 @@ class Uploader extends AbstractUploader
      *
      * @return ResponseInterface
      */
-    private function finishUpload(MultipartStartResponse $response)
+    private function finishUpload(MultipartStartResponse $response): ResponseInterface
     {
         $data = [
             self::UPLOADCARE_PUB_KEY_KEY => $this->configuration->getPublicKey(),

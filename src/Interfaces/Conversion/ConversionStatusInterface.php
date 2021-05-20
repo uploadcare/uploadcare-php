@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Uploadcare\Interfaces\Conversion;
 
@@ -12,15 +12,15 @@ interface ConversionStatusInterface
      *                - failed — we failed to convert the source, see error for details.
      *                - canceled — the conversion was canceled.
      */
-    public function getStatus();
+    public function getStatus(): string;
 
     /**
      * @return string|null holds a conversion error if we were unable to handle your file
      */
-    public function getError();
+    public function getError(): ?string;
 
     /**
      * @return StatusResultInterface
      */
-    public function getResult();
+    public function getResult(): StatusResultInterface;
 }

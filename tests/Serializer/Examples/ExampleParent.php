@@ -16,7 +16,7 @@ class ExampleParent implements SerializableInterface
      */
     private $dates = [];
 
-    public static function rules()
+    public static function rules(): array
     {
         return [
             'name' => 'string',

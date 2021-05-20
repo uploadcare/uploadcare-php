@@ -17,16 +17,6 @@ class HttpExceptionTest extends TestCase
     {
         $request = new Request('GET', 'https://localhost');
 
-        if (PHP_MAJOR_VERSION < 7) {
-            return [
-                [new RequestException('Wrong Request', $request)],
-                [new TooManyRedirectsException('Too many redirects', $request)],
-                [new ConnectException('Cant connect', $request)],
-                [new ServerException('Server made a boo-boo', $request)],
-                [new \RuntimeException('Some fail', 400)],
-            ];
-        }
-
         return [
             [new RequestException('Wrong Request', $request, new Response(400))],
             [new TooManyRedirectsException('Too many redirects', $request, new Response(400))],
@@ -44,18 +34,14 @@ class HttpExceptionTest extends TestCase
     public function testExceptionMessages(\Exception $exception)
     {
         $httpException = new HttpException('', 0, $exception);
-        self::assertContains($exception->getMessage(), $httpException->getMessage());
+        self::assertStringContainsString($exception->getMessage(), $httpException->getMessage());
     }
 
     public function testEmptyMessageInException()
     {
-        if (PHP_MAJOR_VERSION < 7) {
-            $ex = new ServerException('', new Request('GET', 'https://localhost'));
-        } else {
-            $ex = new ServerException('', new Request('GET', 'https://localhost'), new Response(400));
-        }
+        $ex = new ServerException('', new Request('GET', 'https://localhost'), new Response(400));
         $httpException = new HttpException('', 503, $ex);
-        self::assertContains('Fail', $httpException->getMessage());
+        self::assertStringContainsString('Fail', $httpException->getMessage());
         self::assertEquals(503, $httpException->getCode());
     }
 }

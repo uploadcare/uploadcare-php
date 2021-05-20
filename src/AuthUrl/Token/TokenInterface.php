@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Uploadcare\AuthUrl\Token;
 
@@ -13,19 +13,19 @@ interface TokenInterface
      *
      * @return string
      */
-    public function getToken();
+    public function getToken(): string;
 
     /**
      * Token expiration timestamp.
      *
      * @return int
      */
-    public function getExpired();
+    public function getExpired(): int;
 
     /**
      * URL template for CDN.
      *
      * @return string
      */
-    public function getUrlTemplate();
+    public function getUrlTemplate(): string;
 }

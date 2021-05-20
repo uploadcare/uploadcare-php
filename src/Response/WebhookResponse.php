@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Uploadcare\Response;
 
@@ -42,7 +42,7 @@ class WebhookResponse implements WebhookInterface, SerializableInterface
      */
     private $isActive = true;
 
-    public static function rules()
+    public static function rules(): array
     {
         return [
             'id' => 'int',
@@ -54,10 +54,7 @@ class WebhookResponse implements WebhookInterface, SerializableInterface
         ];
     }
 
-    /**
-     * @return int
-     */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
@@ -67,17 +64,14 @@ class WebhookResponse implements WebhookInterface, SerializableInterface
      *
      * @return WebhookResponse
      */
-    public function setId($id)
+    public function setId(int $id): self
     {
         $this->id = $id;
 
         return $this;
     }
 
-    /**
-     * @return \DateTime
-     */
-    public function getCreated()
+    public function getCreated(): \DateTimeInterface
     {
         return $this->created;
     }
@@ -87,17 +81,14 @@ class WebhookResponse implements WebhookInterface, SerializableInterface
      *
      * @return WebhookResponse
      */
-    public function setCreated($created)
+    public function setCreated(\DateTime $created): self
     {
         $this->created = $created;
 
         return $this;
     }
 
-    /**
-     * @return \DateTime
-     */
-    public function getUpdated()
+    public function getUpdated(): \DateTimeInterface
     {
         return $this->updated;
     }
@@ -107,17 +98,14 @@ class WebhookResponse implements WebhookInterface, SerializableInterface
      *
      * @return WebhookResponse
      */
-    public function setUpdated($updated)
+    public function setUpdated(\DateTime $updated): self
     {
         $this->updated = $updated;
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getEvent()
+    public function getEvent(): string
     {
         return $this->event;
     }
@@ -127,7 +115,7 @@ class WebhookResponse implements WebhookInterface, SerializableInterface
      *
      * @return WebhookResponse
      */
-    public function setEvent($event)
+    public function setEvent(string $event): self
     {
         $this->event = $event;
 
@@ -137,7 +125,7 @@ class WebhookResponse implements WebhookInterface, SerializableInterface
     /**
      * @return string
      */
-    public function getTargetUrl()
+    public function getTargetUrl(): string
     {
         return $this->targetUrl;
     }
@@ -147,7 +135,7 @@ class WebhookResponse implements WebhookInterface, SerializableInterface
      *
      * @return WebhookResponse
      */
-    public function setTargetUrl($targetUrl)
+    public function setTargetUrl(string $targetUrl): self
     {
         $this->targetUrl = $targetUrl;
 
@@ -157,7 +145,7 @@ class WebhookResponse implements WebhookInterface, SerializableInterface
     /**
      * @return int
      */
-    public function getProject()
+    public function getProject(): int
     {
         return $this->project;
     }
@@ -167,7 +155,7 @@ class WebhookResponse implements WebhookInterface, SerializableInterface
      *
      * @return WebhookResponse
      */
-    public function setProject($project)
+    public function setProject(int $project): self
     {
         $this->project = $project;
 
@@ -177,7 +165,7 @@ class WebhookResponse implements WebhookInterface, SerializableInterface
     /**
      * @return bool
      */
-    public function isActive()
+    public function isActive(): bool
     {
         return $this->isActive;
     }
@@ -187,7 +175,7 @@ class WebhookResponse implements WebhookInterface, SerializableInterface
      *
      * @return WebhookResponse
      */
-    public function setIsActive($isActive)
+    public function setIsActive(bool $isActive): self
     {
         $this->isActive = $isActive;
 

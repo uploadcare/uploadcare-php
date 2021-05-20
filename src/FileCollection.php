@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Uploadcare;
 
@@ -6,8 +6,9 @@ use Uploadcare\Apis\FileApi;
 use Uploadcare\File\AbstractCollection;
 use Uploadcare\Interfaces\File\CollectionInterface;
 use Uploadcare\Interfaces\File\FileInfoInterface;
+use Uploadcare\Interfaces\Response\BatchResponseInterface;
 
-class FileCollection extends AbstractCollection
+final class FileCollection extends AbstractCollection
 {
     /**
      * @var File\FileCollection|CollectionInterface
@@ -30,7 +31,7 @@ class FileCollection extends AbstractCollection
     /**
      * Make this elements decorated.
      */
-    private function decorateElements()
+    private function decorateElements(): void
     {
         foreach ($this->inner->toArray() as $k => $element) {
             if ($element instanceof FileInfoInterface) {
@@ -40,35 +41,26 @@ class FileCollection extends AbstractCollection
     }
 
     /**
-     * @param array<array-key, object> $elements
+     * @param array<array-key, FileInfoInterface|mixed> $elements
      *
-     * @return AbstractCollection
+     * @return CollectionInterface<array-key, FileInfoInterface>
      */
-    protected function createFrom(array $elements)
+    protected function createFrom(array $elements): CollectionInterface
     {
-        return new static(new File\FileCollection($elements), $this->api);
+        return new self(new File\FileCollection($elements), $this->api);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public static function elementClass()
+    public static function elementClass(): string
     {
         return File::class;
     }
 
-    /**
-     * @return Interfaces\Response\BatchResponseInterface|Response\BatchFileResponse
-     */
-    public function store()
+    public function store(): BatchResponseInterface
     {
         return $this->api->batchStoreFile($this->inner);
     }
 
-    /**
-     * @return Interfaces\Response\BatchResponseInterface
-     */
-    public function delete()
+    public function delete(): BatchResponseInterface
     {
         return $this->api->batchDeleteFile($this->inner);
     }

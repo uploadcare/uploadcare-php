@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Uploadcare\Interfaces\Response;
 
@@ -16,17 +16,17 @@ interface BatchResponseInterface
      *
      * @return string
      */
-    public function getStatus();
+    public function getStatus(): string;
 
     /**
      * Dictionary of passed files UUIDs and problems associated with these UUIDs.
      *
      * @return ResponseProblemInterface[]
      */
-    public function getProblems();
+    public function getProblems(): array;
 
     /**
      * @return CollectionInterface
      */
-    public function getResult();
+    public function getResult(): CollectionInterface;
 }

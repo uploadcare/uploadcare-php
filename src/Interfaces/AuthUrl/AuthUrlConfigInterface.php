@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Uploadcare\Interfaces\AuthUrl;
 
@@ -9,20 +9,20 @@ interface AuthUrlConfigInterface
     /**
      * @return TokenInterface
      */
-    public function getTokenGenerator();
+    public function getTokenGenerator(): TokenInterface;
 
     /**
      * @return string
      */
-    public function getCdnUrl();
+    public function getCdnUrl(): string;
 
     /**
      * @return string|null
      */
-    public function getToken();
+    public function getToken(): ?string;
 
     /**
      * @return int|null
      */
-    public function getTimeStamp();
+    public function getTimeStamp(): ?int;
 }

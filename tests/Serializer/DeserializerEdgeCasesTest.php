@@ -28,14 +28,14 @@ class DeserializerEdgeCasesTest extends TestCase
      */
     private $tz = 'UTC';
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->tz = \ini_get('date.timezone');
         $this->startResponse = \dirname(__DIR__) . '/_data/startResponse.json';
         $this->example = \dirname(__DIR__) . '/_data/file-info.json';
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         \ini_set('date.timezone', $this->tz);
     }

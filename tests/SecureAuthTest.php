@@ -17,7 +17,7 @@ class SecureAuthTest extends TestCase
      */
     private $config;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         (new Dotenv())->load(__DIR__ . '/.env.local');
         $this->config = Configuration::create($_ENV['UPLOADCARE_PUBLIC_KEY'], $_ENV['UPLOADCARE_PRIVATE_KEY']);

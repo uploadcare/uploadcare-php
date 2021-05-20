@@ -18,7 +18,7 @@ class DeserializeArrayTest extends TestCase
      */
     protected $examplePath;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->examplePath = \dirname(__DIR__) . '/_data/startResponse.json';
     }

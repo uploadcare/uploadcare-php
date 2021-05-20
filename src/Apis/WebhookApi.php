@@ -1,20 +1,21 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Uploadcare\Apis;
 
 use Uploadcare\Interfaces\Api\WebhookApiInterface;
+use Uploadcare\Interfaces\File\CollectionInterface;
 use Uploadcare\Interfaces\Response\WebhookInterface;
 use Uploadcare\Response\WebhookCollection;
 use Uploadcare\Response\WebhookResponse as Webhook;
 use Uploadcare\Webhook as WebhookDecorator;
 use Uploadcare\WebhookCollection as WebhookCollectionDecorator;
 
-class WebhookApi extends AbstractApi implements WebhookApiInterface
+final class WebhookApi extends AbstractApi implements WebhookApiInterface
 {
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
-    public function listWebhooks()
+    public function listWebhooks(): CollectionInterface
     {
         $response = $this->request('GET', 'webhooks/');
         $webhooks = $this->configuration->getSerializer()
@@ -34,9 +35,9 @@ class WebhookApi extends AbstractApi implements WebhookApiInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
-    public function createWebhook($targetUrl, $isActive = true, $event = 'file.uploaded')
+    public function createWebhook(string $targetUrl, bool $isActive = true, string $event = 'file.uploaded'): WebhookInterface
     {
         $response = $this->request('POST', 'webhooks/', [
             'form_params' => [
@@ -58,9 +59,9 @@ class WebhookApi extends AbstractApi implements WebhookApiInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
-    public function updateWebhook($id, array $parameters)
+    public function updateWebhook(int $id, array $parameters): WebhookInterface
     {
         $uri = \sprintf('webhooks/%s/', $id);
         $formData = [];
@@ -90,9 +91,9 @@ class WebhookApi extends AbstractApi implements WebhookApiInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
-    public function deleteWebhook($targetUrl)
+    public function deleteWebhook(string $targetUrl): bool
     {
         $response = $this->request('DELETE', 'webhooks/unsubscribe/', [
             'form_params' => ['target_url' => $targetUrl],

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Uploadcare\File;
 
@@ -27,9 +27,9 @@ final class GeoLocation implements GeoLocationInterface, SerializableInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
-    public static function rules()
+    public static function rules(): array
     {
         return [
             'latitude' => 'float',
@@ -42,7 +42,7 @@ final class GeoLocation implements GeoLocationInterface, SerializableInterface
      *
      * @return GeoLocation
      */
-    public function setLatitude($latitude)
+    public function setLatitude(float $latitude): self
     {
         $this->latitude = $latitude;
 
@@ -54,7 +54,7 @@ final class GeoLocation implements GeoLocationInterface, SerializableInterface
      *
      * @return GeoLocation
      */
-    public function setLongitude($longitude)
+    public function setLongitude(float $longitude): self
     {
         $this->longitude = $longitude;
 
@@ -62,17 +62,17 @@ final class GeoLocation implements GeoLocationInterface, SerializableInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
-    public function getLatitude()
+    public function getLatitude(): float
     {
         return $this->latitude;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
-    public function getLongitude()
+    public function getLongitude(): float
     {
         return $this->longitude;
     }

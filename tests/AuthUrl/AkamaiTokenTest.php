@@ -10,7 +10,7 @@ class AkamaiTokenTest extends TestCase
 {
     private $key;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->key = \bin2hex(\random_bytes(32));
@@ -35,9 +35,8 @@ class AkamaiTokenTest extends TestCase
 
     public function testSetWrongWindow()
     {
-        $this->expectException(TokenException::class);
+        $this->expectException(\TypeError::class);
         new AkamaiToken($this->key, 'not-a-number');
-        $this->expectExceptionMessageRegExp('Window must me a number');
     }
 
     public function testSetInvalidAlgorithm()

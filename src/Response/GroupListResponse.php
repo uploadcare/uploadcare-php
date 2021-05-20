@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Uploadcare\Response;
 
@@ -37,7 +37,7 @@ final class GroupListResponse implements ListResponseInterface, SerializableInte
      */
     private $results;
 
-    public static function rules()
+    public static function rules(): array
     {
         return [
             'next' => 'string',
@@ -56,7 +56,7 @@ final class GroupListResponse implements ListResponseInterface, SerializableInte
     /**
      * @return string|null
      */
-    public function getNext()
+    public function getNext(): ?string
     {
         return $this->next;
     }
@@ -66,7 +66,7 @@ final class GroupListResponse implements ListResponseInterface, SerializableInte
      *
      * @return GroupListResponse
      */
-    public function setNext($next)
+    public function setNext(?string $next): self
     {
         $this->next = $next;
 
@@ -76,7 +76,7 @@ final class GroupListResponse implements ListResponseInterface, SerializableInte
     /**
      * @return string|null
      */
-    public function getPrevious()
+    public function getPrevious(): ?string
     {
         return $this->previous;
     }
@@ -86,7 +86,7 @@ final class GroupListResponse implements ListResponseInterface, SerializableInte
      *
      * @return GroupListResponse
      */
-    public function setPrevious($previous)
+    public function setPrevious(?string $previous): self
     {
         $this->previous = $previous;
 
@@ -96,7 +96,7 @@ final class GroupListResponse implements ListResponseInterface, SerializableInte
     /**
      * @return int
      */
-    public function getTotal()
+    public function getTotal(): int
     {
         return $this->total;
     }
@@ -106,7 +106,7 @@ final class GroupListResponse implements ListResponseInterface, SerializableInte
      *
      * @return GroupListResponse
      */
-    public function setTotal($total)
+    public function setTotal(int $total): self
     {
         $this->total = $total;
 
@@ -116,7 +116,7 @@ final class GroupListResponse implements ListResponseInterface, SerializableInte
     /**
      * @return int
      */
-    public function getPerPage()
+    public function getPerPage(): int
     {
         return $this->perPage;
     }
@@ -126,7 +126,7 @@ final class GroupListResponse implements ListResponseInterface, SerializableInte
      *
      * @return GroupListResponse
      */
-    public function setPerPage($perPage)
+    public function setPerPage(int $perPage): self
     {
         $this->perPage = $perPage;
 
@@ -136,15 +136,15 @@ final class GroupListResponse implements ListResponseInterface, SerializableInte
     /**
      * @return CollectionInterface
      */
-    public function getResults()
+    public function getResults(): CollectionInterface
     {
         return $this->results;
     }
 
-    public function addResult($result)
+    public function addResult($result): self
     {
-        if (!$this->results->contains($result)) {
-            $this->results[] = $result;
+        if ($result !== null && !$this->results->contains($result)) {
+            $this->results->add($result);
         }
 
         return $this;
@@ -155,7 +155,7 @@ final class GroupListResponse implements ListResponseInterface, SerializableInte
      *
      * @return GroupListResponse
      */
-    public function setResults($results)
+    public function setResults(CollectionInterface $results): self
     {
         $this->results = $results;
 

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Uploadcare\Conversion;
 
@@ -17,7 +17,7 @@ class ConversionResult implements StatusResultInterface, SerializableInterface
      */
     private $thumbnailsGroupUuid;
 
-    public static function rules()
+    public static function rules(): array
     {
         return [
             'uuid' => 'string',
@@ -28,7 +28,7 @@ class ConversionResult implements StatusResultInterface, SerializableInterface
     /**
      * @return string
      */
-    public function getUuid()
+    public function getUuid(): string
     {
         return $this->uuid;
     }
@@ -38,7 +38,7 @@ class ConversionResult implements StatusResultInterface, SerializableInterface
      *
      * @return ConversionResult
      */
-    public function setUuid($uuid)
+    public function setUuid(string $uuid): self
     {
         $this->uuid = $uuid;
 
@@ -48,7 +48,7 @@ class ConversionResult implements StatusResultInterface, SerializableInterface
     /**
      * @return string|null
      */
-    public function getThumbnailsGroupUuid()
+    public function getThumbnailsGroupUuid(): ?string
     {
         return $this->thumbnailsGroupUuid;
     }
@@ -58,7 +58,7 @@ class ConversionResult implements StatusResultInterface, SerializableInterface
      *
      * @return ConversionResult
      */
-    public function setThumbnailsGroupUuid($thumbnailsGroupUuid)
+    public function setThumbnailsGroupUuid(?string $thumbnailsGroupUuid): self
     {
         $this->thumbnailsGroupUuid = $thumbnailsGroupUuid;
 

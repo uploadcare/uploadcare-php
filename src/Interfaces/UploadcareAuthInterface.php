@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Uploadcare\Interfaces;
 
@@ -9,8 +9,8 @@ namespace Uploadcare\Interfaces;
  */
 interface UploadcareAuthInterface
 {
-    const AUTH_ALGORITHM = 'sha1';
-    const HEADER_DATE_FORMAT = 'D, d M Y H:i:s T';
+    public const AUTH_ALGORITHM = 'sha1';
+    public const HEADER_DATE_FORMAT = 'D, d M Y H:i:s T';
 
     /**
      * Formatted date for `Date` header.
@@ -19,7 +19,7 @@ interface UploadcareAuthInterface
      *
      * @return string
      */
-    public function getDateHeaderString($date = null);
+    public function getDateHeaderString(?\DateTimeInterface $date = null): string;
 
     /**
      * Auth header.
@@ -32,5 +32,5 @@ interface UploadcareAuthInterface
      *
      * @return string
      */
-    public function getAuthHeaderString($method, $uri, $data, $contentType = 'application/json', $date = null);
+    public function getAuthHeaderString(string $method, string $uri, string $data, string $contentType = 'application/json', ?\DateTimeInterface $date = null): string;
 }

@@ -5,12 +5,13 @@ namespace Uploadcare;
 use Uploadcare\Apis\FileApi;
 use Uploadcare\Apis\GroupApi;
 use Uploadcare\Interfaces\ConfigurationInterface;
+use Uploadcare\Interfaces\File\CollectionInterface;
 use Uploadcare\Interfaces\GroupInterface;
 
 /**
  * Decorated Group.
  */
-class Group implements GroupInterface
+final class Group implements GroupInterface
 {
     /**
      * @var GroupInterface
@@ -37,78 +38,49 @@ class Group implements GroupInterface
         $this->api = $api;
     }
 
-    /**
-     * @param ConfigurationInterface $configuration
-     *
-     * @return $this
-     */
-    public function setConfiguration(ConfigurationInterface $configuration)
+    public function setConfiguration(ConfigurationInterface $configuration): self
     {
         $this->configuration = $configuration;
 
         return $this;
     }
 
-    /**
-     * @return GroupInterface
-     */
-    public function store()
+    public function store(): GroupInterface
     {
         return $this->api->storeGroup($this->inner->getId());
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getId()
+    public function getId(): string
     {
         return $this->inner->getId();
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getDatetimeCreated()
+    public function getDatetimeCreated(): \DateTimeInterface
     {
         return $this->inner->getDatetimeCreated();
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getDatetimeStored()
+    public function getDatetimeStored(): ?\DateTimeInterface
     {
         return $this->inner->getDatetimeStored();
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getFilesCount()
+    public function getFilesCount(): int
     {
         return $this->inner->getFilesCount();
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getCdnUrl()
+    public function getCdnUrl(): string
     {
         return $this->inner->getCdnUrl();
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getUrl()
+    public function getUrl(): string
     {
         return $this->inner->getUrl();
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getFiles()
+    public function getFiles(): CollectionInterface
     {
         if ($this->configuration === null) {
             return $this->inner->getFiles();

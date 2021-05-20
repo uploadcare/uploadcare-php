@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Uploadcare\Interfaces\Response;
 
@@ -12,12 +12,12 @@ interface ResponseProblemInterface
      *
      * @return string
      */
-    public function getId();
+    public function getId(): string;
 
     /**
      * Problem reason.
      *
      * @return string
      */
-    public function getReason();
+    public function getReason(): string;
 }

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Uploadcare\Response;
 
@@ -27,7 +27,7 @@ final class ProjectInfoResponse implements ProjectInfoInterface, SerializableInt
      */
     private $autostoreEnabled = true;
 
-    public static function rules()
+    public static function rules(): array
     {
         return [
             'collaborators' => 'array',
@@ -40,7 +40,7 @@ final class ProjectInfoResponse implements ProjectInfoInterface, SerializableInt
     /**
      * @return array
      */
-    public function getCollaborators()
+    public function getCollaborators(): array
     {
         return $this->collaborators;
     }
@@ -50,7 +50,7 @@ final class ProjectInfoResponse implements ProjectInfoInterface, SerializableInt
      *
      * @return ProjectInfoResponse
      */
-    public function setCollaborators(array $collaborators)
+    public function setCollaborators(array $collaborators): self
     {
         $this->collaborators = $collaborators;
 
@@ -60,7 +60,7 @@ final class ProjectInfoResponse implements ProjectInfoInterface, SerializableInt
     /**
      * @return string
      */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
@@ -70,7 +70,7 @@ final class ProjectInfoResponse implements ProjectInfoInterface, SerializableInt
      *
      * @return ProjectInfoResponse
      */
-    public function setName($name)
+    public function setName($name): self
     {
         $this->name = $name;
 
@@ -80,7 +80,7 @@ final class ProjectInfoResponse implements ProjectInfoInterface, SerializableInt
     /**
      * @return string
      */
-    public function getPubKey()
+    public function getPubKey(): string
     {
         return $this->pubKey;
     }
@@ -90,7 +90,7 @@ final class ProjectInfoResponse implements ProjectInfoInterface, SerializableInt
      *
      * @return ProjectInfoResponse
      */
-    public function setPubKey($pubKey)
+    public function setPubKey(string $pubKey): self
     {
         $this->pubKey = $pubKey;
 
@@ -100,7 +100,7 @@ final class ProjectInfoResponse implements ProjectInfoInterface, SerializableInt
     /**
      * @return bool
      */
-    public function isAutostoreEnabled()
+    public function isAutostoreEnabled(): bool
     {
         return $this->autostoreEnabled;
     }
@@ -110,7 +110,7 @@ final class ProjectInfoResponse implements ProjectInfoInterface, SerializableInt
      *
      * @return ProjectInfoResponse
      */
-    public function setAutostoreEnabled($autostoreEnabled)
+    public function setAutostoreEnabled(bool $autostoreEnabled): self
     {
         $this->autostoreEnabled = $autostoreEnabled;
 

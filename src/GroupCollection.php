@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Uploadcare;
 
@@ -32,7 +32,7 @@ class GroupCollection extends File\AbstractCollection
     /**
      * Make this elements decorated.
      */
-    private function decorateElements()
+    private function decorateElements(): void
     {
         foreach ($this->inner->toArray() as $k => $el) {
             if ($el instanceof GroupInterface) {
@@ -41,18 +41,12 @@ class GroupCollection extends File\AbstractCollection
         }
     }
 
-    /**
-     * @inheritDoc
-     */
-    protected function createFrom(array $elements)
+    protected function createFrom(array $elements): CollectionInterface
     {
         return new static(new File\GroupCollection($elements), $this->api);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public static function elementClass()
+    public static function elementClass(): string
     {
         return Group::class;
     }
