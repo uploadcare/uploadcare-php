@@ -320,7 +320,7 @@ final class FileApi extends AbstractApi implements FileApiInterface
             return $url;
         }
 
-        $regex = \sprintf('/\/%s\/', self::UUID_REGEX);
+        $regex = \sprintf('/\/%s\//', self::UUID_REGEX);
         $result = \preg_match($regex, $url);
         if ($result === false || $result === 0) {
             throw new InvalidArgumentException('URL must contain the file UUID');
