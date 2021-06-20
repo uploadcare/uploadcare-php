@@ -23,6 +23,8 @@ use Uploadcare\Response\FileListResponse;
  */
 final class FileApi extends AbstractApi implements FileApiInterface
 {
+    public const UUID_REGEX = '[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89aAbB][a-f0-9]{3}-[a-f0-9]{12}';
+
     /**
      * {@inheritDoc}
      */
@@ -290,8 +292,12 @@ final class FileApi extends AbstractApi implements FileApiInterface
             $id = $id->getUuid();
         }
 
+        if (!\is_string($id)) {
+            throw new InvalidArgumentException(\sprintf('UUID must be an instance of %s or string, %s given', FileInfoInterface::class, \gettype($id)));
+        }
+
         if (!\uuid_is_valid($id)) {
-            throw new InvalidArgumentException(\sprintf('UUID %s is not valid', (\is_string($id) ? $id : \gettype($id))));
+            $id = $this->checkTransformationUrl($id);
         }
 
         $generator = $authConfig->getTokenGenerator();
@@ -306,6 +312,21 @@ final class FileApi extends AbstractApi implements FileApiInterface
             '{timestamp}' => $generator->getExpired(),
             '{token}' => $generator->getToken(),
         ]);
+    }
+
+    private function checkTransformationUrl(string $url): string
+    {
+        if ($url === '/*/') {
+            return $url;
+        }
+
+        $regex = \sprintf('/\/%s\/', self::UUID_REGEX);
+        $result = \preg_match($regex, $url);
+        if ($result === false || $result === 0) {
+            throw new InvalidArgumentException('URL must contain the file UUID');
+        }
+
+        return $url;
     }
 
     /**
