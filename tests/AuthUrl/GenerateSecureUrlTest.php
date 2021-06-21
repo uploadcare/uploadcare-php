@@ -17,7 +17,7 @@ class GenerateSecureUrlTest extends TestCase
      */
     private $fileApi;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $key = \bin2hex(\random_bytes(32));
