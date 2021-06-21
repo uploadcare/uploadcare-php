@@ -5,6 +5,10 @@ The format is based now on [Keep a
 Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to
 [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [3.1.1]
+### Secure URL generation update
+- Added possibility to generate Security CDN url for image with transformations.
+
 ## [3.1.0]
 ### PHP version update, PDF conversion improvement
 - Dropped support for old PHP versions. You **must** update PHP to 7.1 or a newer version to use this version.
