@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Uploadcare\Serializer;
 
@@ -29,7 +29,7 @@ class SnackCaseConverter implements NameConverterInterface
      *
      * @return string
      */
-    public function normalize($property)
+    public function normalize(string $property): string
     {
         if (empty($this->attributes) || \in_array($property, $this->attributes, false)) {
             return \strtolower(\preg_replace('/[A-Z]/', '_\\0', \lcfirst($property)));
@@ -45,7 +45,7 @@ class SnackCaseConverter implements NameConverterInterface
      *
      * @return string
      */
-    public function denormalize($property)
+    public function denormalize(string $property): string
     {
         $camelCasedName = \preg_replace_callback('/(^|_|\.)+(.)/', static function ($match) {
             return ($match[1] === '.' ? '_' : '') . \strtoupper($match[2]);

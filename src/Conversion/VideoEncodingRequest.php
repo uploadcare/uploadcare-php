@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Uploadcare\Conversion;
 
@@ -10,9 +10,9 @@ use Uploadcare\Interfaces\Conversion\VideoEncodingRequestInterface;
  */
 class VideoEncodingRequest implements VideoEncodingRequestInterface
 {
-    const MAX_THUMBS = 50;
-    const DEFAULT_RESIZE_MODE = 'preserve_ratio';
-    const DEFAULT_END_TIME = 'end';
+    public const MAX_THUMBS = 50;
+    public const DEFAULT_RESIZE_MODE = 'preserve_ratio';
+    public const DEFAULT_END_TIME = 'end';
 
     /**
      * @var string[] Possible resizes for video
@@ -87,7 +87,7 @@ class VideoEncodingRequest implements VideoEncodingRequestInterface
     /**
      * @return bool
      */
-    public function throwError()
+    public function throwError(): bool
     {
         return $this->throwError;
     }
@@ -97,9 +97,9 @@ class VideoEncodingRequest implements VideoEncodingRequestInterface
      *
      * @return $this
      */
-    public function setThrowError($throwError)
+    public function setThrowError(bool $throwError): self
     {
-        $this->throwError = (bool) $throwError;
+        $this->throwError = $throwError;
 
         return $this;
     }
@@ -107,7 +107,7 @@ class VideoEncodingRequest implements VideoEncodingRequestInterface
     /**
      * @return bool
      */
-    public function store()
+    public function store(): bool
     {
         return $this->store;
     }
@@ -117,9 +117,9 @@ class VideoEncodingRequest implements VideoEncodingRequestInterface
      *
      * @return $this
      */
-    public function setStore($store)
+    public function setStore(bool $store): self
     {
-        $this->store = (bool) $store;
+        $this->store = $store;
 
         return $this;
     }
@@ -127,7 +127,7 @@ class VideoEncodingRequest implements VideoEncodingRequestInterface
     /**
      * @return int|null
      */
-    public function getHorizontalSize()
+    public function getHorizontalSize(): ?int
     {
         return $this->horizontalSize;
     }
@@ -136,8 +136,10 @@ class VideoEncodingRequest implements VideoEncodingRequestInterface
      * @param int|null $horizontalSize
      *
      * @return VideoEncodingRequest
+     *
+     * @throws InvalidArgumentException
      */
-    public function setHorizontalSize($horizontalSize)
+    public function setHorizontalSize(?int $horizontalSize): self
     {
         if ($horizontalSize === null) {
             $this->horizontalSize = $horizontalSize;
@@ -145,7 +147,7 @@ class VideoEncodingRequest implements VideoEncodingRequestInterface
             return $this;
         }
 
-        if (!\is_numeric($horizontalSize) || (int) $horizontalSize === 0 || ((int) $horizontalSize % 4) !== 0) {
+        if ($horizontalSize === 0 || ($horizontalSize % 4) !== 0) {
             throw new InvalidArgumentException(\sprintf('Horizontal size must be an int divisible by 4, \'%s\' given', $horizontalSize));
         }
         $this->horizontalSize = $horizontalSize;
@@ -156,7 +158,7 @@ class VideoEncodingRequest implements VideoEncodingRequestInterface
     /**
      * @return int|null
      */
-    public function getVerticalSize()
+    public function getVerticalSize(): ?int
     {
         return $this->verticalSize;
     }
@@ -165,8 +167,10 @@ class VideoEncodingRequest implements VideoEncodingRequestInterface
      * @param int|null $verticalSize
      *
      * @return VideoEncodingRequest
+     *
+     * @throws InvalidArgumentException
      */
-    public function setVerticalSize($verticalSize)
+    public function setVerticalSize(?int $verticalSize): self
     {
         if ($verticalSize === null) {
             $this->verticalSize = $verticalSize;
@@ -174,7 +178,7 @@ class VideoEncodingRequest implements VideoEncodingRequestInterface
             return $this;
         }
 
-        if (!\is_numeric($verticalSize) || (int) $verticalSize === 0 || ((int) $verticalSize % 4) !== 0) {
+        if ($verticalSize === 0 || ($verticalSize % 4) !== 0) {
             throw new InvalidArgumentException(\sprintf('Vertical size must be an int divisible by 4, \'%s\' given', $verticalSize));
         }
         $this->verticalSize = $verticalSize;
@@ -185,7 +189,7 @@ class VideoEncodingRequest implements VideoEncodingRequestInterface
     /**
      * @return string|null
      */
-    public function getResizeMode()
+    public function getResizeMode(): ?string
     {
         return $this->resizeMode;
     }
@@ -194,8 +198,10 @@ class VideoEncodingRequest implements VideoEncodingRequestInterface
      * @param string|null $resizeMode
      *
      * @return VideoEncodingRequest
+     *
+     * @throws InvalidArgumentException
      */
-    public function setResizeMode($resizeMode)
+    public function setResizeMode(?string $resizeMode): self
     {
         if ($resizeMode !== null && !\array_key_exists($resizeMode, \array_flip(self::$resizes))) {
             throw new InvalidArgumentException(\sprintf('Resize mode \'%s\' is invalid. Use one of %s', $resizeMode, \implode(', ', self::$resizes)));
@@ -208,7 +214,7 @@ class VideoEncodingRequest implements VideoEncodingRequestInterface
     /**
      * @return string|null
      */
-    public function getQuality()
+    public function getQuality(): ?string
     {
         return $this->quality;
     }
@@ -217,8 +223,10 @@ class VideoEncodingRequest implements VideoEncodingRequestInterface
      * @param string|null $quality
      *
      * @return VideoEncodingRequest
+     *
+     * @throws InvalidArgumentException
      */
-    public function setQuality($quality)
+    public function setQuality(?string $quality): self
     {
         if ($quality !== null && !\array_key_exists($quality, \array_flip(self::$qualities))) {
             throw new InvalidArgumentException(\sprintf('Quality \'%s\' is invalid. Use one of %s', $quality, \implode(', ', self::$qualities)));
@@ -231,7 +239,7 @@ class VideoEncodingRequest implements VideoEncodingRequestInterface
     /**
      * @return string
      */
-    public function getTargetFormat()
+    public function getTargetFormat(): string
     {
         return $this->format;
     }
@@ -240,8 +248,10 @@ class VideoEncodingRequest implements VideoEncodingRequestInterface
      * @param string $format
      *
      * @return VideoEncodingRequest
+     *
+     * @throws InvalidArgumentException
      */
-    public function setTargetFormat($format)
+    public function setTargetFormat(string $format): self
     {
         if (!\array_key_exists($format, \array_flip(self::$formats))) {
             throw new InvalidArgumentException(\sprintf('Format \'%s\' is invalid. Use one of %s', $format, \implode(', ', self::$formats)));
@@ -254,7 +264,7 @@ class VideoEncodingRequest implements VideoEncodingRequestInterface
     /**
      * @return string|null
      */
-    public function getStartTime()
+    public function getStartTime(): ?string
     {
         return $this->startTime;
     }
@@ -264,7 +274,7 @@ class VideoEncodingRequest implements VideoEncodingRequestInterface
      *
      * @return VideoEncodingRequest
      */
-    public function setStartTime($startTime)
+    public function setStartTime(?string $startTime): self
     {
         if ($startTime !== null) {
             $this->checkTime($startTime);
@@ -277,7 +287,7 @@ class VideoEncodingRequest implements VideoEncodingRequestInterface
     /**
      * @return string|null
      */
-    public function getEndTime()
+    public function getEndTime(): ?string
     {
         return $this->endTime;
     }
@@ -287,7 +297,7 @@ class VideoEncodingRequest implements VideoEncodingRequestInterface
      *
      * @return VideoEncodingRequest
      */
-    public function setEndTime($endTime)
+    public function setEndTime(?string $endTime): self
     {
         if ($endTime !== null) {
             $this->checkTime($endTime);
@@ -300,7 +310,7 @@ class VideoEncodingRequest implements VideoEncodingRequestInterface
     /**
      * @return int
      */
-    public function getThumbs()
+    public function getThumbs(): int
     {
         return $this->thumbs;
     }
@@ -310,7 +320,7 @@ class VideoEncodingRequest implements VideoEncodingRequestInterface
      *
      * @return VideoEncodingRequest
      */
-    public function setThumbs($thumbs)
+    public function setThumbs(int $thumbs): self
     {
         if ($thumbs > self::MAX_THUMBS) {
             $thumbs = self::MAX_THUMBS;
@@ -323,8 +333,10 @@ class VideoEncodingRequest implements VideoEncodingRequestInterface
 
     /**
      * @param string $time
+     *
+     * @throws InvalidArgumentException
      */
-    private function checkTime($time)
+    private function checkTime(string $time): void
     {
         if (\preg_match(self::$timeRegex, $time) !== 1) {
             throw new InvalidArgumentException(\sprintf('Time string \'%s\' not valid', $time));

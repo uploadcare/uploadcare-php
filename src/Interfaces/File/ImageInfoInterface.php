@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Uploadcare\Interfaces\File;
 
@@ -10,61 +10,61 @@ interface ImageInfoInterface
      *
      * @return string|null
      */
-    public function getColorMode();
+    public function getColorMode(): ?string;
 
     /**
      * Image orientation from EXIF. \range(0, 8).
      *
      * @return int|null
      */
-    public function getOrientation();
+    public function getOrientation(): ?int;
 
     /**
      * Image format.
      *
      * @return string|null
      */
-    public function getFormat();
+    public function getFormat(): ?string;
 
     /**
      * Is image if sequence image.
      *
      * @return bool
      */
-    public function isSequence();
+    public function isSequence(): bool;
 
     /**
      * Image height in pixels.
      *
      * @return int|null
      */
-    public function getHeight();
+    public function getHeight(): ?int;
 
     /**
      * Image width in pixels.
      *
      * @return int|null
      */
-    public function getWidth();
+    public function getWidth(): ?int;
 
     /**
      * Geo-location of image from EXIF.
      *
      * @return GeoLocationInterface|null
      */
-    public function getGeoLocation();
+    public function getGeoLocation(): ?GeoLocationInterface;
 
     /**
      * Image date and time from EXIF.
      *
      * @return \DateTimeInterface|null
      */
-    public function getDatetimeOriginal();
+    public function getDatetimeOriginal(): ?\DateTimeInterface;
 
     /**
      * Image DPI for two dimensions.
      *
      * @return null|array<array-key, int>
      */
-    public function getDpi();
+    public function getDpi(): ?array;
 }

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Uploadcare\Interfaces\Serializer;
 
@@ -11,7 +11,7 @@ interface NameConverterInterface
      *
      * @return string
      */
-    public function normalize($property);
+    public function normalize(string $property): string;
 
     /**
      * Converts `attribute_name` to `attributeName`.
@@ -20,5 +20,5 @@ interface NameConverterInterface
      *
      * @return string
      */
-    public function denormalize($property);
+    public function denormalize(string $property): string;
 }

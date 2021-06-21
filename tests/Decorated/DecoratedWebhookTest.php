@@ -111,7 +111,7 @@ class DecoratedWebhookTest extends TestCase
             new Response(200, [], DataFile::contents('webhook-response.json')),
         ]);
         $wh = $this->createMock(WebhookInterface::class);
-        $wh->method('getId')->willReturn(\uuid_create());
+        $wh->method('getId')->willReturn(\random_int(0, 10000));
 
         $decorated = new Webhook($wh, $api);
         $result = $decorated->{$method}('https://new-url.com');

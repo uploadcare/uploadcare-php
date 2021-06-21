@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Uploadcare\Interfaces\Api;
 
@@ -11,5 +11,5 @@ interface ProjectApiInterface
      *
      * @return ProjectInfoInterface
      */
-    public function getProjectInfo();
+    public function getProjectInfo(): ProjectInfoInterface;
 }

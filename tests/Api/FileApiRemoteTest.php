@@ -13,7 +13,7 @@ use Uploadcare\Interfaces\Response\ListResponseInterface;
  */
 class FileApiRemoteTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         (new Dotenv())->load(\dirname(__DIR__) . '/.env.local');
     }

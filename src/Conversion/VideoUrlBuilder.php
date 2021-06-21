@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Uploadcare\Conversion;
 
@@ -27,7 +27,7 @@ final class VideoUrlBuilder
     /**
      * @return string
      */
-    public function __invoke()
+    public function __invoke(): string
     {
         return $this->result
             . \rtrim($this->resizePart(), '/')
@@ -41,7 +41,7 @@ final class VideoUrlBuilder
     /**
      * @return string
      */
-    protected function thumbsPart()
+    private function thumbsPart(): string
     {
         return \sprintf('/-/thumbs~%s', $this->request->getThumbs());
     }
@@ -49,7 +49,7 @@ final class VideoUrlBuilder
     /**
      * @return string
      */
-    protected function cutPart()
+    private function cutPart(): string
     {
         if (($start = $this->request->getStartTime()) === null) {
             return '';
@@ -66,7 +66,7 @@ final class VideoUrlBuilder
     /**
      * @return string
      */
-    protected function formatPart()
+    private function formatPart(): string
     {
         return \sprintf('/-/format/%s', $this->request->getTargetFormat());
     }
@@ -74,7 +74,7 @@ final class VideoUrlBuilder
     /**
      * @return string
      */
-    protected function qualityPart()
+    private function qualityPart(): string
     {
         if (($quality = $this->request->getQuality()) === null) {
             return '';
@@ -86,7 +86,7 @@ final class VideoUrlBuilder
     /**
      * @return string
      */
-    public function resizePart()
+    public function resizePart(): string
     {
         $hSize = $this->request->getHorizontalSize();
         $vSize = $this->request->getVerticalSize();

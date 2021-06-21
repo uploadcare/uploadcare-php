@@ -19,7 +19,7 @@ use Uploadcare\Exception\ConversionException;
 use Uploadcare\Exception\InvalidArgumentException;
 use Uploadcare\File\FileCollection;
 use Uploadcare\Interfaces\Api\ConversionApiInterface;
-use Uploadcare\Interfaces\Conversion\ConversionRequest;
+use Uploadcare\Interfaces\Conversion\ConversionRequestInterface;
 use Uploadcare\Interfaces\Conversion\ConversionStatusInterface;
 use Uploadcare\Interfaces\Conversion\ConvertedItemInterface;
 use Uploadcare\Interfaces\Conversion\DocumentConversionRequestInterface;
@@ -78,7 +78,7 @@ class ConversionApiMethodsTest extends TestCase
     {
         $this->expectException(\RuntimeException::class);
         $api = $this->fakeApi();
-        $request = $this->createMock(ConversionRequest::class);
+        $request = $this->createMock(ConversionRequestInterface::class);
         $api->convertDocument(\uuid_create(), $request);
     }
 
@@ -197,7 +197,7 @@ class ConversionApiMethodsTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $api = $this->fakeApi();
         $file = $this->createMock(FileInfoInterface::class);
-        $request = $this->createMock(ConversionRequest::class);
+        $request = $this->createMock(ConversionRequestInterface::class);
         $api->convertVideo($file, $request);
     }
 
@@ -205,7 +205,7 @@ class ConversionApiMethodsTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $api = $this->fakeApi();
-        $request = $this->createMock(ConversionRequest::class);
+        $request = $this->createMock(ConversionRequestInterface::class);
         $api->convertVideo('not-an-uuid', $request);
     }
 
@@ -230,7 +230,7 @@ class ConversionApiMethodsTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $api = $this->fakeApi();
-        $request = $this->createMock(ConversionRequest::class);
+        $request = $this->createMock(ConversionRequestInterface::class);
         $api->batchConvertVideo([\uuid_create()], $request);
     }
 

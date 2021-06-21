@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Uploadcare;
 
@@ -6,7 +6,7 @@ use Uploadcare\Interfaces\Api\WebhookApiInterface;
 use Uploadcare\Interfaces\Response\WebhookInterface;
 use Uploadcare\Response\WebhookResponse;
 
-class Webhook implements WebhookInterface
+final class Webhook implements WebhookInterface
 {
     /**
      * @var WebhookResponse|WebhookInterface
@@ -24,92 +24,57 @@ class Webhook implements WebhookInterface
         $this->api = $api;
     }
 
-    /**
-     * @return bool
-     */
-    public function delete()
+    public function delete(): bool
     {
         return $this->api->deleteWebhook($this->getTargetUrl());
     }
 
-    /**
-     * @param $url
-     *
-     * @return WebhookInterface
-     */
-    public function updateUrl($url)
+    public function updateUrl(string $url): WebhookInterface
     {
         return $this->api->updateWebhook($this->getId(), ['target_url' => $url]);
     }
 
-    /**
-     * @return WebhookInterface
-     */
-    public function activate()
+    public function activate(): WebhookInterface
     {
         return $this->api->updateWebhook($this->getId(), ['is_active' => true]);
     }
 
-    /**
-     * @return WebhookInterface
-     */
-    public function deactivate()
+    public function deactivate(): WebhookInterface
     {
         return $this->api->updateWebhook($this->getId(), ['is_active' => false]);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getId()
+    public function getId(): int
     {
         return $this->inner->getId();
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getCreated()
+    public function getCreated(): \DateTimeInterface
     {
         return $this->inner->getCreated();
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getUpdated()
+    public function getUpdated(): \DateTimeInterface
     {
         return $this->inner->getUpdated();
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getEvent()
+    public function getEvent(): string
     {
         return $this->inner->getEvent();
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getTargetUrl()
+    public function getTargetUrl(): string
     {
         return $this->inner->getTargetUrl();
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getProject()
+    public function getProject(): int
     {
         return $this->inner->getProject();
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function isActive()
+    public function isActive(): bool
     {
         return $this->inner->isActive();
     }

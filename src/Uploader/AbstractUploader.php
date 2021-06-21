@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Uploadcare\Uploader;
 
@@ -31,7 +31,7 @@ abstract class AbstractUploader implements UploaderInterface
      *
      * @return ResponseInterface
      */
-    public function groupFiles(array $files)
+    public function groupFiles(array $files): ResponseInterface
     {
         $parameters = [
             'files' => $files,
@@ -52,7 +52,7 @@ abstract class AbstractUploader implements UploaderInterface
      *
      * @return ResponseInterface
      */
-    public function groupInfo($id)
+    public function groupInfo($id): ResponseInterface
     {
         $parameters = [
             'pub_key' => $this->configuration->getPublicKey(),
@@ -74,9 +74,11 @@ abstract class AbstractUploader implements UploaderInterface
      * @param string|null $filename
      * @param string      $store
      *
+     * @throws InvalidArgumentException
+     *
      * @return FileInfoInterface
      */
-    abstract public function fromResource($handle, $mimeType = null, $filename = null, $store = 'auto');
+    abstract public function fromResource($handle, string $mimeType = null, string $filename = null, string $store = 'auto'): FileInfoInterface;
 
     /**
      * Upload file from local path.
@@ -86,9 +88,11 @@ abstract class AbstractUploader implements UploaderInterface
      * @param string|null $filename
      * @param string      $store
      *
+     * @throws InvalidArgumentException
+     *
      * @return FileInfoInterface
      */
-    public function fromPath($path, $mimeType = null, $filename = null, $store = 'auto')
+    public function fromPath(string $path, string $mimeType = null, string $filename = null, string $store = 'auto'): FileInfoInterface
     {
         if (!\file_exists($path) || !\is_readable($path)) {
             throw new InvalidArgumentException(\sprintf('Unable to read \'%s\': file not found or not readable', $path));
@@ -105,9 +109,11 @@ abstract class AbstractUploader implements UploaderInterface
      * @param string|null $filename
      * @param string      $store
      *
+     * @throws InvalidArgumentException
+     *
      * @return FileInfoInterface
      */
-    public function fromUrl($url, $mimeType = null, $filename = null, $store = 'auto')
+    public function fromUrl(string $url, string $mimeType = null, string $filename = null, string $store = 'auto'): FileInfoInterface
     {
         $resource = @\fopen($url, 'rb');
         if ($resource === false) {
@@ -125,9 +131,11 @@ abstract class AbstractUploader implements UploaderInterface
      * @param string|null $filename
      * @param string      $store
      *
+     * @throws InvalidArgumentException
+     *
      * @return FileInfoInterface
      */
-    public function fromContent($content, $mimeType = null, $filename = null, $store = 'auto')
+    public function fromContent(string $content, string $mimeType = null, string $filename = null, string $store = 'auto'): FileInfoInterface
     {
         $res = \fopen('php://temp', 'rb+');
         \fwrite($res, $content);
@@ -141,7 +149,7 @@ abstract class AbstractUploader implements UploaderInterface
      *
      * @throws \Exception
      */
-    protected function checkResource($handle)
+    protected function checkResource($handle): void
     {
         if (!\is_resource($handle)) {
             throw new InvalidArgumentException(\sprintf('Expected resource, %s given', (\is_object($handle) ? \get_class($handle) : \gettype($handle))));
@@ -155,7 +163,7 @@ abstract class AbstractUploader implements UploaderInterface
      *
      * @return string|null
      */
-    protected function getFileName($handle)
+    protected function getFileName($handle): ?string
     {
         $meta = \stream_get_meta_data($handle);
 
@@ -172,7 +180,7 @@ abstract class AbstractUploader implements UploaderInterface
      *
      * @throws \Exception
      */
-    protected function checkResourceMetadata(array $metadata)
+    protected function checkResourceMetadata(array $metadata): void
     {
         $parameters = [
             'wrapper_type' => ['tcp_socket/ssl', 'plainfile', 'PHP', 'http'],
@@ -217,7 +225,7 @@ abstract class AbstractUploader implements UploaderInterface
      *
      * @return array[] Multidimensional array for Guzzle multipart/form-data
      */
-    protected function makeMultipartParameters(array $parameters)
+    protected function makeMultipartParameters(array $parameters): array
     {
         $result = [];
         foreach ($parameters as $key => $value) {
@@ -239,7 +247,7 @@ abstract class AbstractUploader implements UploaderInterface
      *
      * @return array
      */
-    protected function getDefaultParameters()
+    protected function getDefaultParameters(): array
     {
         return [
             self::UPLOADCARE_STORE_KEY => self::UPLOADCARE_DEFAULT_STORE,
@@ -255,7 +263,7 @@ abstract class AbstractUploader implements UploaderInterface
      *
      * @return FileInfoInterface
      */
-    protected function serializeFileResponse(ResponseInterface $response, $arrayKey = 'file')
+    protected function serializeFileResponse(ResponseInterface $response, $arrayKey = 'file'): FileInfoInterface
     {
         $response->getBody()->rewind();
         $result = $this->configuration->getSerializer()->deserialize($response->getBody()->getContents());
@@ -271,7 +279,7 @@ abstract class AbstractUploader implements UploaderInterface
      *
      * @return FileInfoInterface
      */
-    protected function fileInfo($id)
+    protected function fileInfo($id): FileInfoInterface
     {
         return (new FileApi($this->configuration))
             ->fileInfo($id);
@@ -286,7 +294,7 @@ abstract class AbstractUploader implements UploaderInterface
      *
      * @throws GuzzleException
      */
-    protected function sendRequest($method, $uri, array $data)
+    protected function sendRequest(string $method, string $uri, array $data): ResponseInterface
     {
         if (\strpos($uri, 'https://') !== 0) {
             $uri = \sprintf('https://%s/%s', \rtrim(self::UPLOAD_BASE_URL, '/'), \ltrim($uri, '/'));
@@ -306,7 +314,7 @@ abstract class AbstractUploader implements UploaderInterface
      *
      * @return int
      */
-    protected function getSize($handle)
+    protected function getSize($handle): int
     {
         $stat = \fstat($handle);
         if (\is_array($stat) && \array_key_exists(7, $stat)) {
@@ -316,7 +324,7 @@ abstract class AbstractUploader implements UploaderInterface
         return 0;
     }
 
-    protected function rewind($handle)
+    protected function rewind($handle): void
     {
         if (!\is_resource($handle)) {
             return;

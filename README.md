@@ -4,8 +4,8 @@ Uploadcare PHP integration handles uploads and further operations with files by 
 
 [![Build Status][travis-img]][travis] [![Uploadcare stack on StackShare][stack-img]][stack]  
 
-[travis-img]: https://api.travis-ci.org/uploadcare/uploadcare-php.svg?branch=master
-[travis]: https://travis-ci.org/uploadcare/uploadcare-php
+[travis-img]: https://api.travis-ci.com/uploadcare/uploadcare-php.svg?branch=master
+[travis]: https://travis-ci.com/uploadcare/uploadcare-php
 [stack-img]: http://img.shields.io/badge/tech-stack-0690fa.svg?style=flat
 [stack]: https://stackshare.io/uploadcare/stacks/
 
@@ -24,17 +24,17 @@ Uploadcare PHP integration handles uploads and further operations with files by 
 
 ## Requirements
 
-- `php5.6+`
+- `php7.1+`
 - `php-curl`
 - `php-json`
 
 ## Install
 
-Prior to installing `uploadcare-php` get the [Composer](getcomposer.org) dependency manager for PHP because it'll simplify installation.
+Prior to installing `uploadcare-php` get the [Composer](https://getcomposer.org) dependency manager for PHP because it'll simplify installation.
 
 **Step 1** — update your `composer.json`:
 
-```js
+```json
 "require": {
     "uploadcare/uploadcare-php": "^3.0"
 }
@@ -46,12 +46,16 @@ Prior to installing `uploadcare-php` get the [Composer](getcomposer.org) depende
 php composer.phar update
 ```
 
+Or, you can run the `composer.phar require uploadcare/uploadcare-php` instead of steps 1 and 2.
+
 **Step 3** — define your Uploadcare public and secret API [keys](https://uploadcare.com/documentation/keys/) in a way you prefer (e.g., by using a `$_ENV` variable):
+
+Add API keys to your configuration object. For example:
 
 ```php
 # config.php
 $_ENV['UPLOADCARE_PUBLIC_KEY'] = '<your public key>';
-$_ENV['UPLOADCARE_PRIVATE_KEY'] = '<your private key>';
+$_ENV['UPLOADCARE_SECRET_KEY'] = '<your secret key>';
 ```
 
 **Step 4** — include a standard composer autoload file:
@@ -60,10 +64,10 @@ $_ENV['UPLOADCARE_PRIVATE_KEY'] = '<your private key>';
 require_once 'vendor/autoload.php';
 ```
 
-**Step 5** — create an object of the `Uploadcare\Configuratoin` class,
+**Step 5** — create an object of the `Uploadcare\Configuration` class,
 
 ```php
-$configuration = Uploadcare\Configuration::create($_ENV['UPLOADCARE_PUBLIC_KEY'], $_ENV['UPLOADCARE_PRIVATE_KEY']);
+$configuration = Uploadcare\Configuration::create($_ENV['UPLOADCARE_PUBLIC_KEY'], $_ENV['UPLOADCARE_SECRET_KEY']);
 ```
 
 All further operations will use this configuration object.
@@ -73,13 +77,13 @@ All further operations will use this configuration object.
 There are a few ways to make a valid configuration object. We recommend using the static method of the class:
 
 ```php
-$configuration = \Uploadcare\Configuration::create('<your public key>', '<your private key>');
+$configuration = \Uploadcare\Configuration::create('<your public key>', '<your secret key>');
 ```
 
 Alternatively, you can create a Security signature, HTTP client, and Serializer classes explicitly. Then create a configuration:
 
 ```php
-$sign = new \Uploadcare\Security\Signature('<your private key>', 3600); // Must be an instance of \Uploadcare\Interfaces\SignatureInterface
+$sign = new \Uploadcare\Security\Signature('<your secret key>', 3600); // Must be an instance of \Uploadcare\Interfaces\SignatureInterface
 $client = \Uploadcare\Client\ClientFactory::createClient(); // Must be an instance of \GuzzleHttp\ClientInterface
 $serializer = new \Uploadcare\Serializer\Serializer(new \Uploadcare\Serializer\SnackCaseConverter()); // Must be an instance of \Uploadcare\Interfaces\Serializer\SerializerInterface
 
@@ -95,7 +99,7 @@ You can find the full example in this [Uploadcare example project](https://githu
 First, create an API object:
 
 ```php
-$configuration = \Uploadcare\Configuration::create($_ENV['UPLOADCARE_PUBLIC_KEY'], $_ENV['UPLOADCARE_PRIVATE_KEY']);
+$configuration = \Uploadcare\Configuration::create($_ENV['UPLOADCARE_PUBLIC_KEY'], $_ENV['UPLOADCARE_SECRET_KEY']);
 $api = new \Uploadcare\Api($configuration);
 ```
 
@@ -106,7 +110,7 @@ This section describes multiple ways of uploading files to Uploadcare.
 You can use the core API object for any upload type:
 
 ```php
-$configuration = \Uploadcare\Configuration::create($_ENV['UPLOADCARE_PUBLIC_KEY'], $_ENV['UPLOADCARE_PRIVATE_KEY']);
+$configuration = \Uploadcare\Configuration::create($_ENV['UPLOADCARE_PUBLIC_KEY'], $_ENV['UPLOADCARE_SECRET_KEY']);
 $uploader = (new \Uploadcare\Api($configuration))->uploader();
 ```
 
@@ -161,7 +165,7 @@ All these operations are accessible via File API, and you can access them throug
 For any file operation type, you’ll need to create an `Uploadcare\Api`  instance with configuration object and call the `file()` method:
 
 ```php
-$config = \Uploadcare\Configuration::create($_ENV['UPLOADCARE_PUBLIC_KEY'], $_ENV['UPLOADCARE_PRIVATE_KEY']);
+$config = \Uploadcare\Configuration::create($_ENV['UPLOADCARE_PUBLIC_KEY'], $_ENV['UPLOADCARE_SECRET_KEY']);
 $fileApi = (new \Uploadcare\Api($config))->file();
 ```
 
@@ -176,7 +180,7 @@ After that, you can access to file operation methods:
     - bool            `$removed`   `true` to only include removed files in the response, `false` to include existing files. The default value is false.
 - `nextPage(FileListResponseInterface $response)` — next page from previous answer, if next pages exist. You can use it in a simple `while` loop, for example:     
     ```php
-    $config = \Uploadcare\Configuration::create($_ENV['UPLOADCARE_PUBLIC_KEY'], $_ENV['UPLOADCARE_PRIVATE_KEY']);
+    $config = \Uploadcare\Configuration::create($_ENV['UPLOADCARE_PUBLIC_KEY'], $_ENV['UPLOADCARE_SECRET_KEY']);
     $fileApi = new \Uploadcare\Apis\FileApi($config);
     $page = $fileApi->listFiles(5); // Here is a FileListResponseInterface
     while (($page = $fileApi->nextPage($page)) !== null) {
@@ -226,7 +230,7 @@ As you can see, additional methods help you to call API methods without direct A
 For any type of group operation you need to create an `Uploadcare\Api` instance with a configuration object and call the `group()` method:
 
 ```php
-$config = \Uploadcare\Configuration::create($_ENV['UPLOADCARE_PUBLIC_KEY'], $_ENV['UPLOADCARE_PRIVATE_KEY']);
+$config = \Uploadcare\Configuration::create($_ENV['UPLOADCARE_PUBLIC_KEY'], $_ENV['UPLOADCARE_SECRET_KEY']);
 $groupApi = (new \Uploadcare\Api($config))->group();
 ```
 
@@ -248,7 +252,7 @@ The `getFiles()` method of the `Uploadcare\Group` object returns [FileCollection
 As usual, Project API is accessible by the main API object:
 
 ```php
-$config = \Uploadcare\Configuration::create($_ENV['UPLOADCARE_PUBLIC_KEY'], $_ENV['UPLOADCARE_PRIVATE_KEY']);
+$config = \Uploadcare\Configuration::create($_ENV['UPLOADCARE_PUBLIC_KEY'], $_ENV['UPLOADCARE_SECRET_KEY']);
 $projectApi = (new \Uploadcare\Api($config))->project();
 ```
 
@@ -270,7 +274,7 @@ Now, the `$projectInfo` variable contains the `Uploadcare\Interfaces\Response\Pr
 Call the webhook API:
 
 ```php
-$config = \Uploadcare\Configuration::create($_ENV['UPLOADCARE_PUBLIC_KEY'], $_ENV['UPLOADCARE_PRIVATE_KEY']);
+$config = \Uploadcare\Configuration::create($_ENV['UPLOADCARE_PUBLIC_KEY'], $_ENV['UPLOADCARE_SECRET_KEY']);
 $webhookApi = (new \Uploadcare\Api($config))->webhook();
 ```
 
@@ -315,7 +319,7 @@ The default arguments and examples are:
 After that, you can covert your file:
 
 ```php
-$config = \Uploadcare\Configuration::create($_ENV['UPLOADCARE_PUBLIC_KEY'], $_ENV['UPLOADCARE_PRIVATE_KEY']);
+$config = \Uploadcare\Configuration::create($_ENV['UPLOADCARE_PUBLIC_KEY'], $_ENV['UPLOADCARE_SECRET_KEY']);
 $convertor = (new \Uploadcare\Api($config))->conversion();
 $result = $convertor->convertDocument($file, $request);
 ```
@@ -391,7 +395,7 @@ use Uploadcare\Api;
 use Uploadcare\AuthUrl\Token\AkamaiToken;
 
 $authUrlConfig = new AuthUrlConfig('mydomain.com', new AkamaiToken('secretKey', 300));
-$config = Configuration::create($_ENV['UPLOADCARE_PUBLIC_KEY'], $_ENV['UPLOADCARE_PRIVATE_KEY'])
+$config = Configuration::create($_ENV['UPLOADCARE_PUBLIC_KEY'], $_ENV['UPLOADCARE_SECRET_KEY'])
     ->setAuthUrlConfig($authUrlConfig);
 
 $api = new Api($config);
@@ -404,11 +408,23 @@ $secureUrl = $file->generateSecureUrl(); // you can use KeyCdnUrlGenerator or Ak
 $secureUrlFromApi = $api->file()->generateSecureUrl($file);
 ```
 
+### Secure delivery for transformed images
+
+You can set a custom ACL on a Secure URL with
+[Image Transformations](https://uploadcare.com/docs/transformations/image/)
+applied. Just add an Image UUID with transformations to the `generateSecureUrl`
+method:
+
+```php
+$api->file()->generateSecureUrl('/*/'); # Access to all files in project
+$api->file()->generateSecureUrl('/{uuid}/-/resize/640x/other/transformations/'); # Access to modified file version
+```
+
 --------------------------------------------------------------------
 
 ## Tests
 
-PHP 5.6+ tests can be found in the "tests" directory. All tests are based on PHPUnit, so you need to have it installed prior to running tests.
+PHP 7.1+ tests can be found in the "tests" directory. All tests are based on PHPUnit, so you need to have it installed prior to running tests.
 
 Run tests with this command:
 
@@ -416,12 +432,12 @@ Run tests with this command:
 `vendor/bin/phpunit --exclude-group local-only`
 ```
 
-`--exclude-group local-only` means that a test will not send real API-requests. If you want to run all tests, create the `.env.local` file in the `tests` directory and place the following variables with your real public and private API keys:
+`--exclude-group local-only` means that a test will not send real API-requests. If you want to run all tests, create the `.env.local` file in the `tests` directory and place the following variables with your real public and secret API keys:
 
 ```dotenv
 # tests/.env.local
 UPLOADCARE_PUBLIC_KEY=<your public key>
-UPLOADCARE_PRIVATE_KEY=<your private key>
+UPLOADCARE_secret_KEY=<your secret key>
 ```
 
 ## Useful links

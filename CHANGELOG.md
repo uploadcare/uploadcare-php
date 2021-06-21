@@ -5,9 +5,22 @@ The format is based now on [Keep a
 Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to
 [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [3.1.1]
+### Secure CDN URLs for transformed images
+- Now you can generate Secure CDN URLs for images with transformations.
+
+## [3.1.0]
+### PHP version update, PDF conversion improvement
+- Dropped support for old PHP versions. You **must** update PHP to 7.1 or a newer version to use this version.
+- Added PHP 8 support.
+- Modified classes for strict types usage.
+- Modified terms for naming agreement.
+- Updated tests.
+- Added option to convert PDF files without a page parameter.
+
 ## [3.0.3]
 ### Fix
-- Fixed file copy methods between default Uploadcare storage and remote storage (Amazon s3)
+- Fixed file copy methods between default Uploadcare storage and remote storage (Amazon s3).
 
 ## [3.0.2]
 ### Fix

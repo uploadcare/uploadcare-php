@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Uploadcare\File;
 
@@ -77,22 +77,22 @@ final class File implements FileInfoInterface, SerializableInterface
     /**
      * @var array|null
      */
-    private $variations;
+    private $variations = null;
 
     /**
      * @var VideoInfoInterface|null
      */
-    private $videoInfo;
+    private $videoInfo = null;
 
     /**
      * @var string
      */
-    private $source;
+    private $source = '';
 
     /**
      * @var array
      */
-    private $rekognitionInfo;
+    private $rekognitionInfo = [];
 
     public function __construct()
     {
@@ -106,7 +106,7 @@ final class File implements FileInfoInterface, SerializableInterface
         $this->uuid = '';
     }
 
-    public static function rules()
+    public static function rules(): array
     {
         return [
             'datetimeRemoved' => \DateTime::class,
@@ -129,9 +129,9 @@ final class File implements FileInfoInterface, SerializableInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
-    public function getDatetimeRemoved()
+    public function getDatetimeRemoved(): ?\DateTimeInterface
     {
         return $this->datetimeRemoved;
     }
@@ -141,7 +141,7 @@ final class File implements FileInfoInterface, SerializableInterface
      *
      * @return File
      */
-    public function setDatetimeRemoved(\DateTimeInterface $datetimeRemoved = null)
+    public function setDatetimeRemoved(?\DateTimeInterface $datetimeRemoved = null): self
     {
         $this->datetimeRemoved = $datetimeRemoved;
 
@@ -149,9 +149,9 @@ final class File implements FileInfoInterface, SerializableInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
-    public function getDatetimeStored()
+    public function getDatetimeStored(): ?\DateTimeInterface
     {
         return $this->datetimeStored;
     }
@@ -161,7 +161,7 @@ final class File implements FileInfoInterface, SerializableInterface
      *
      * @return File
      */
-    public function setDatetimeStored(\DateTimeInterface $datetimeStored = null)
+    public function setDatetimeStored(?\DateTimeInterface $datetimeStored = null): self
     {
         $this->datetimeStored = $datetimeStored;
 
@@ -169,9 +169,9 @@ final class File implements FileInfoInterface, SerializableInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
-    public function getDatetimeUploaded()
+    public function getDatetimeUploaded(): ?\DateTimeInterface
     {
         return $this->datetimeUploaded;
     }
@@ -181,7 +181,7 @@ final class File implements FileInfoInterface, SerializableInterface
      *
      * @return File
      */
-    public function setDatetimeUploaded(\DateTimeInterface $datetimeUploaded = null)
+    public function setDatetimeUploaded(?\DateTimeInterface $datetimeUploaded = null): self
     {
         $this->datetimeUploaded = $datetimeUploaded;
 
@@ -189,9 +189,9 @@ final class File implements FileInfoInterface, SerializableInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
-    public function getImageInfo()
+    public function getImageInfo(): ?ImageInfoInterface
     {
         return $this->imageInfo;
     }
@@ -201,7 +201,7 @@ final class File implements FileInfoInterface, SerializableInterface
      *
      * @return File
      */
-    public function setImageInfo(ImageInfoInterface $imageInfo)
+    public function setImageInfo(?ImageInfoInterface $imageInfo): self
     {
         $this->imageInfo = $imageInfo;
 
@@ -209,9 +209,9 @@ final class File implements FileInfoInterface, SerializableInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
-    public function isImage()
+    public function isImage(): bool
     {
         return $this->isImage;
     }
@@ -221,17 +221,17 @@ final class File implements FileInfoInterface, SerializableInterface
      *
      * @return File
      */
-    public function setIsImage($isImage)
+    public function setIsImage(bool $isImage): self
     {
-        $this->isImage = (bool) $isImage;
+        $this->isImage = $isImage;
 
         return $this;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
-    public function isReady()
+    public function isReady(): bool
     {
         return $this->isReady;
     }
@@ -241,17 +241,17 @@ final class File implements FileInfoInterface, SerializableInterface
      *
      * @return File
      */
-    public function setIsReady($isReady)
+    public function setIsReady(bool $isReady): self
     {
-        $this->isReady = (bool) $isReady;
+        $this->isReady = $isReady;
 
         return $this;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
-    public function getMimeType()
+    public function getMimeType(): string
     {
         return $this->mimeType;
     }
@@ -261,17 +261,17 @@ final class File implements FileInfoInterface, SerializableInterface
      *
      * @return File
      */
-    public function setMimeType($mimeType)
+    public function setMimeType(string $mimeType): self
     {
-        $this->mimeType = (string) $mimeType;
+        $this->mimeType = $mimeType;
 
         return $this;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
-    public function getOriginalFileUrl()
+    public function getOriginalFileUrl(): ?string
     {
         return $this->originalFileUrl;
     }
@@ -281,7 +281,7 @@ final class File implements FileInfoInterface, SerializableInterface
      *
      * @return File
      */
-    public function setOriginalFileUrl($originalFileUrl)
+    public function setOriginalFileUrl(?string $originalFileUrl): self
     {
         $this->originalFileUrl = $originalFileUrl;
 
@@ -289,9 +289,9 @@ final class File implements FileInfoInterface, SerializableInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
-    public function getOriginalFilename()
+    public function getOriginalFilename(): string
     {
         return $this->originalFilename;
     }
@@ -301,7 +301,7 @@ final class File implements FileInfoInterface, SerializableInterface
      *
      * @return File
      */
-    public function setOriginalFilename($originalFilename)
+    public function setOriginalFilename(string $originalFilename): self
     {
         $this->originalFilename = $originalFilename;
 
@@ -309,9 +309,9 @@ final class File implements FileInfoInterface, SerializableInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
-    public function getSize()
+    public function getSize(): int
     {
         return $this->size;
     }
@@ -321,7 +321,7 @@ final class File implements FileInfoInterface, SerializableInterface
      *
      * @return File
      */
-    public function setSize($size)
+    public function setSize(int $size): self
     {
         $this->size = $size;
 
@@ -329,9 +329,9 @@ final class File implements FileInfoInterface, SerializableInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
-    public function getUrl()
+    public function getUrl(): string
     {
         return $this->url;
     }
@@ -341,7 +341,7 @@ final class File implements FileInfoInterface, SerializableInterface
      *
      * @return File
      */
-    public function setUrl($url)
+    public function setUrl(string $url): self
     {
         $this->url = $url;
 
@@ -349,9 +349,9 @@ final class File implements FileInfoInterface, SerializableInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
-    public function getUuid()
+    public function getUuid(): string
     {
         return $this->uuid;
     }
@@ -361,7 +361,7 @@ final class File implements FileInfoInterface, SerializableInterface
      *
      * @return File
      */
-    public function setUuid($uuid)
+    public function setUuid(string $uuid): self
     {
         $this->uuid = $uuid;
 
@@ -369,9 +369,9 @@ final class File implements FileInfoInterface, SerializableInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
-    public function getVariations()
+    public function getVariations(): ?array
     {
         return $this->variations;
     }
@@ -381,7 +381,7 @@ final class File implements FileInfoInterface, SerializableInterface
      *
      * @return File
      */
-    public function setVariations(array $variations = null)
+    public function setVariations(array $variations = null): self
     {
         $this->variations = $variations;
 
@@ -389,9 +389,9 @@ final class File implements FileInfoInterface, SerializableInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
-    public function getVideoInfo()
+    public function getVideoInfo(): ?VideoInfoInterface
     {
         return $this->videoInfo;
     }
@@ -401,7 +401,7 @@ final class File implements FileInfoInterface, SerializableInterface
      *
      * @return File
      */
-    public function setVideoInfo(VideoInfoInterface $videoInfo = null)
+    public function setVideoInfo(VideoInfoInterface $videoInfo = null): self
     {
         $this->videoInfo = $videoInfo;
 
@@ -409,9 +409,9 @@ final class File implements FileInfoInterface, SerializableInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
-    public function getSource()
+    public function getSource(): string
     {
         return $this->source;
     }
@@ -421,7 +421,7 @@ final class File implements FileInfoInterface, SerializableInterface
      *
      * @return File
      */
-    public function setSource($source)
+    public function setSource(string $source): self
     {
         $this->source = $source;
 
@@ -429,9 +429,9 @@ final class File implements FileInfoInterface, SerializableInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
-    public function getRekognitionInfo()
+    public function getRekognitionInfo(): array
     {
         return $this->rekognitionInfo;
     }
@@ -441,7 +441,7 @@ final class File implements FileInfoInterface, SerializableInterface
      *
      * @return File
      */
-    public function setRekognitionInfo($rekognitionInfo)
+    public function setRekognitionInfo(array $rekognitionInfo): self
     {
         $this->rekognitionInfo = $rekognitionInfo;
 

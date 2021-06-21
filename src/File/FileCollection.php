@@ -1,6 +1,8 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Uploadcare\File;
+
+use Uploadcare\Interfaces\File\CollectionInterface;
 
 /**
  * File Collection.
@@ -10,7 +12,8 @@ namespace Uploadcare\File;
 final class FileCollection extends AbstractCollection
 {
     /**
-     * @var array<array-key, \Uploadcare\Interfaces\File\FileInfoInterface>
+     * @var array<array-key,T>
+     * @psalm-suppress NonInvariantDocblockPropertyType
      */
     protected $elements;
 
@@ -19,18 +22,13 @@ final class FileCollection extends AbstractCollection
         $this->elements = $elements;
     }
 
-    public static function elementClass()
+    public static function elementClass(): string
     {
         return File::class;
     }
 
-    /**
-     * @param array $elements
-     *
-     * @return $this
-     */
-    protected function createFrom(array $elements)
+    protected function createFrom(array $elements): CollectionInterface
     {
-        return new static($elements);
+        return new FileCollection($elements);
     }
 }

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Uploadcare;
 
@@ -16,12 +16,12 @@ use Uploadcare\Serializer\SerializerFactory;
 /**
  * Uploadcare Api Configuration.
  */
-class Configuration implements ConfigurationInterface
+final class Configuration implements ConfigurationInterface
 {
-    const LIBRARY_VERSION = 'v3.0.0';
-    const API_VERSION = '0.6';
-    const API_BASE_URL = 'api.uploadcare.com';
-    const USER_AGENT_TEMPLATE = 'PHPUploadcare/{lib-version}/{publicKey} (PHP/{lang-version})';
+    public const LIBRARY_VERSION = 'v3.1.0';
+    public const API_VERSION = '0.6';
+    public const API_BASE_URL = 'api.uploadcare.com';
+    public const USER_AGENT_TEMPLATE = 'PHPUploadcare/{lib-version}/{publicKey} (PHP/{lang-version})';
 
     /**
      * @var string
@@ -49,23 +49,23 @@ class Configuration implements ConfigurationInterface
     private $authUrlConfig;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $frameworkVersion = null;
 
     /**
      * @param string                          $publicKey         Uploadcare API public key
-     * @param string                          $privateKey        Uploadcare API private key
+     * @param string                          $secretKey         Uploadcare API private key
      * @param array                           $clientOptions     Parameters for Http client (proxy, special headers, etc.)
      * @param ClientFactoryInterface|null     $clientFactory
      * @param SerializerFactoryInterface|null $serializerFactory
      *
      * @return Configuration
      */
-    public static function create($publicKey, $privateKey, array $clientOptions = [], ClientFactoryInterface $clientFactory = null, SerializerFactoryInterface $serializerFactory = null)
+    public static function create(string $publicKey, string $secretKey, array $clientOptions = [], ClientFactoryInterface $clientFactory = null, SerializerFactoryInterface $serializerFactory = null): Configuration
     {
-        $signature = new Signature($privateKey);
-        $framework = isset($clientOptions['framework']) ? $clientOptions['framework'] : null;
+        $signature = new Signature($secretKey);
+        $framework = $clientOptions['framework'] ?? null;
         $client = $clientFactory !== null ? $clientFactory::createClient($clientOptions) : ClientFactory::createClient($clientOptions);
         $serializer = $serializerFactory !== null ? $serializerFactory::create() : SerializerFactory::create();
 
@@ -75,7 +75,7 @@ class Configuration implements ConfigurationInterface
         return $config;
     }
 
-    public function setFrameworkOptions($framework = null)
+    public function setFrameworkOptions($framework = null): void
     {
         if (\is_array($framework)) {
             $framework = \implode('/', $framework);
@@ -94,7 +94,7 @@ class Configuration implements ConfigurationInterface
      * @param ClientInterface     $client
      * @param SerializerInterface $serializer
      */
-    public function __construct($publicKey, SignatureInterface $secureSignature, ClientInterface $client, SerializerInterface $serializer)
+    public function __construct(string $publicKey, SignatureInterface $secureSignature, ClientInterface $client, SerializerInterface $serializer)
     {
         $this->publicKey = $publicKey;
         $this->secureSignature = $secureSignature;
@@ -107,7 +107,7 @@ class Configuration implements ConfigurationInterface
      *
      * @return $this
      */
-    public function setAuthUrlConfig(AuthUrlConfigInterface $config)
+    public function setAuthUrlConfig(AuthUrlConfigInterface $config): ConfigurationInterface
     {
         $this->authUrlConfig = $config;
 
@@ -117,7 +117,7 @@ class Configuration implements ConfigurationInterface
     /**
      * @return array
      */
-    public function getHeaders()
+    public function getHeaders(): array
     {
         $headers = $this->client->getConfig('headers');
         if (!\is_array($headers) || empty($headers)) {
@@ -128,7 +128,7 @@ class Configuration implements ConfigurationInterface
         return $headers;
     }
 
-    protected function setUserAgent(array &$headers)
+    private function setUserAgent(array &$headers): void
     {
         $info = [
             '{lib-version}' => self::LIBRARY_VERSION,
@@ -147,7 +147,7 @@ class Configuration implements ConfigurationInterface
     /**
      * @return string
      */
-    public function getPublicKey()
+    public function getPublicKey(): string
     {
         return $this->publicKey;
     }
@@ -155,7 +155,7 @@ class Configuration implements ConfigurationInterface
     /**
      * @return SignatureInterface
      */
-    public function getSecureSignature()
+    public function getSecureSignature(): SignatureInterface
     {
         return $this->secureSignature;
     }
@@ -163,7 +163,7 @@ class Configuration implements ConfigurationInterface
     /**
      * @return ClientInterface
      */
-    public function getClient()
+    public function getClient(): ClientInterface
     {
         return $this->client;
     }
@@ -171,7 +171,7 @@ class Configuration implements ConfigurationInterface
     /**
      * @return SerializerInterface
      */
-    public function getSerializer()
+    public function getSerializer(): SerializerInterface
     {
         return $this->serializer;
     }
@@ -185,7 +185,7 @@ class Configuration implements ConfigurationInterface
      *
      * @return array
      */
-    public function getAuthHeaders($method, $uri, $data, $contentType = 'application/json', $date = null)
+    public function getAuthHeaders(string $method, string $uri, string $data, string $contentType = 'application/json', ?\DateTimeInterface $date = null): array
     {
         return [
             'Date' => $this->getSecureSignature()->getDateHeaderString($date),
@@ -194,10 +194,7 @@ class Configuration implements ConfigurationInterface
         ];
     }
 
-    /**
-     * @return AuthUrlConfigInterface|null
-     */
-    public function getAuthUrlConfig()
+    public function getAuthUrlConfig(): ?AuthUrlConfigInterface
     {
         return $this->authUrlConfig;
     }

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Uploadcare\Interfaces;
 
@@ -12,5 +12,5 @@ interface SerializableInterface
      *
      * @return array|string[]
      */
-    public static function rules();
+    public static function rules(): array;
 }

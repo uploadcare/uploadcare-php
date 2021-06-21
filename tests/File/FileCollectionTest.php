@@ -47,26 +47,26 @@ class FileCollectionTest extends TestCase
     {
         $files = $this->filesArray();
         $collection = new FileCollection($files);
-        $this->assertFalse($collection->isEmpty());
+        self::assertFalse($collection->isEmpty());
     }
 
     public function testGetIterator()
     {
         $c = new FileCollection();
-        $this->assertInstanceOf(\ArrayIterator::class, $c->getIterator());
+        self::assertIsIterable($c->getIterator());
     }
 
     public function testOffsetExists()
     {
         $collection = new FileCollection($this->filesArray(10));
-        $this->assertTrue($collection->offsetExists(0));
-        $this->assertFalse($collection->offsetExists(10));
+        self::assertTrue($collection->offsetExists(0));
+        self::assertFalse($collection->offsetExists(10));
     }
 
     public function testOffsetGet()
     {
         $collection = new FileCollection($this->filesArray(10));
-        $this->assertInstanceOf(FileInfoInterface::class, $collection->offsetGet(0));
+        self::assertInstanceOf(FileInfoInterface::class, $collection->offsetGet(0));
     }
 
     public function testOffsetSet()
@@ -75,62 +75,62 @@ class FileCollectionTest extends TestCase
         $collection = new FileCollection($this->filesArray(10));
         $oldFile = $collection->offsetGet(0);
         $collection->offsetSet(0, $newFile);
-        $this->assertNotEquals($oldFile, $collection->offsetGet(0));
+        self::assertNotEquals($oldFile, $collection->offsetGet(0));
     }
 
     public function testOffsetUnset()
     {
         $collection = new FileCollection($this->filesArray(1));
         $collection->offsetUnset(0);
-        $this->assertTrue($collection->isEmpty());
+        self::assertTrue($collection->isEmpty());
     }
 
     public function testCount()
     {
         $collection = new FileCollection($this->filesArray(1));
-        $this->assertEquals(1, $collection->count());
-        $this->assertCount(1, $collection);
+        self::assertEquals(1, $collection->count());
+        self::assertCount(1, $collection);
     }
 
     public function testAdd()
     {
         $collection = new FileCollection($this->filesArray(2));
-        $this->assertCount(2, $collection);
+        self::assertCount(2, $collection);
         $newFile = $this->generateFile(['uuid' => \uuid_create()]);
-        $this->assertTrue($collection->add($newFile));
-        $this->assertCount(3, $collection);
+        self::assertTrue($collection->add($newFile));
+        self::assertCount(3, $collection);
     }
 
     public function testClear()
     {
         $collection = new FileCollection($this->filesArray(10));
-        $this->assertCount(10, $collection);
+        self::assertCount(10, $collection);
         $collection->clear();
-        $this->assertCount(0, $collection);
-        $this->assertEmpty($collection);
+        self::assertCount(0, $collection);
+        self::assertEmpty($collection);
     }
 
     public function testContains()
     {
         $file = $this->generateFile(['uuid' => \uuid_create()]);
         $collection = new FileCollection($this->filesArray(1));
-        $this->assertFalse($collection->contains($file));
+        self::assertFalse($collection->contains($file));
     }
 
     public function testIsEmpty()
     {
         $collection = new FileCollection($this->filesArray(1));
-        $this->assertFalse($collection->isEmpty());
-        $this->assertTrue((new FileCollection())->isEmpty());
+        self::assertFalse($collection->isEmpty());
+        self::assertTrue((new FileCollection())->isEmpty());
     }
 
     public function testRemove()
     {
         $file = $this->generateFile(['uuid' => \uuid_create()]);
         $collection = new FileCollection($this->filesArray(1));
-        $this->assertNull($collection->remove(100));
+        self::assertNull($collection->remove(100));
         $collection->add($file);
-        $this->assertEquals($file, $collection->remove(1));
+        self::assertEquals($file, $collection->remove(1));
     }
 
     public function testRemoveElement()
@@ -138,42 +138,42 @@ class FileCollectionTest extends TestCase
         $file = $this->generateFile(['uuid' => \uuid_create()]);
         $collection = new FileCollection($this->filesArray(1));
         $collection->add($file);
-        $this->assertCount(2, $collection);
-        $this->assertTrue($collection->removeElement($file));
-        $this->assertFalse($collection->contains($file));
+        self::assertCount(2, $collection);
+        self::assertTrue($collection->removeElement($file));
+        self::assertFalse($collection->contains($file));
     }
 
     public function testGet()
     {
         $collection = new FileCollection($this->filesArray(1));
-        $this->assertNull($collection->get(100));
-        $this->assertInstanceOf(FileInfoInterface::class, $collection->get(0));
+        self::assertNull($collection->get(100));
+        self::assertInstanceOf(FileInfoInterface::class, $collection->get(0));
     }
 
     public function testGetKeys()
     {
         $collection = new FileCollection($this->filesArray(10));
         $keys = $collection->getKeys();
-        $this->assertCount(10, $keys);
+        self::assertCount(10, $keys);
     }
 
     public function testGetValues()
     {
         $files = $this->filesArray(10);
         $collection = new FileCollection($files);
-        $this->assertEquals($files, $collection->toArray());
-        $this->assertEquals($files, $collection->getValues());
+        self::assertEquals($files, $collection->toArray());
+        self::assertEquals($files, $collection->getValues());
     }
 
     public function testAccess()
     {
         $files = $this->filesArray(5);
         $collection = new FileCollection($files);
-        $this->assertEquals($collection->last(), $files[4]);
-        $this->assertEquals($collection->first(), $files[0]);
-        $this->assertInstanceOf(FileInfoInterface::class, $collection->next());
-        $this->assertNotEquals($collection->current(), $files[0]);
-        $this->assertNotEquals(0, $collection->key());
+        self::assertEquals($collection->last(), $files[4]);
+        self::assertEquals($collection->first(), $files[0]);
+        self::assertInstanceOf(FileInfoInterface::class, $collection->next());
+        self::assertNotEquals($collection->current(), $files[0]);
+        self::assertNotEquals(0, $collection->key());
     }
 
     public function testFilter()
@@ -184,8 +184,8 @@ class FileCollectionTest extends TestCase
         $filtered = $collection->filter(static function (FileInfoInterface $fileInfo) use ($file) {
             return $fileInfo->getUuid() === $file->getUuid();
         });
-        $this->assertNotEmpty($filtered);
-        $this->assertEquals($file, $filtered->first());
+        self::assertNotEmpty($filtered);
+        self::assertEquals($file, $filtered->first());
     }
 
     public function testMap()
@@ -195,9 +195,9 @@ class FileCollectionTest extends TestCase
             return $file->setMimeType('application/pdf');
         });
 
-        $this->assertEquals('application/pdf', $mapped->current()->getMimeType());
-        $this->assertEquals('application/pdf', $mapped->first()->getMimeType());
-        $this->assertEquals('application/pdf', $mapped->last()->getMimeType());
+        self::assertEquals('application/pdf', $mapped->current()->getMimeType());
+        self::assertEquals('application/pdf', $mapped->first()->getMimeType());
+        self::assertEquals('application/pdf', $mapped->last()->getMimeType());
     }
 
     public function testIndexOf()
@@ -205,6 +205,6 @@ class FileCollectionTest extends TestCase
         $collection = new FileCollection($this->filesArray(2));
         $file = $this->generateFile(['uuid' => \uuid_create()]);
         $collection->add($file);
-        $this->assertEquals(2, $collection->indexOf($file));
+        self::assertEquals(2, $collection->indexOf($file));
     }
 }

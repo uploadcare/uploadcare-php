@@ -6,7 +6,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
-use function GuzzleHttp\Psr7\stream_for;
+use GuzzleHttp\Psr7\Utils;
 use PHPUnit\Framework\TestCase;
 use Tests\DataFile;
 use Uploadcare\Apis\FileApi;
@@ -24,7 +24,7 @@ class DecoratedFileTest extends TestCase
      */
     private $serializer;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->serializer = SerializerFactory::create();
@@ -34,7 +34,7 @@ class DecoratedFileTest extends TestCase
     {
         if (empty($responses)) {
             $responses = [
-                new Response(200, [], stream_for(DataFile::fopen('file-info.json', 'rb'))),
+                new Response(200, [], Utils::streamFor(DataFile::fopen('file-info.json', 'rb'))),
             ];
         }
 
@@ -99,8 +99,8 @@ class DecoratedFileTest extends TestCase
     public function testStoreActiveFile()
     {
         $responses = [
-            new Response(200, [], stream_for(DataFile::fopen('file-info.json', 'rb'))),
-            new Response(200, [], stream_for(DataFile::fopen('file-info.json', 'rb'))),
+            new Response(200, [], Utils::streamFor(DataFile::fopen('file-info.json', 'rb'))),
+            new Response(200, [], Utils::streamFor(DataFile::fopen('file-info.json', 'rb'))),
         ];
         $api = $this->fakeApi($responses);
         $result = $api->fileInfo(\uuid_create());
@@ -111,8 +111,8 @@ class DecoratedFileTest extends TestCase
     public function testDeleteActiveFile()
     {
         $responses = [
-            new Response(200, [], stream_for(DataFile::fopen('file-info.json', 'rb'))),
-            new Response(200, [], stream_for(DataFile::fopen('file-info.json', 'rb'))),
+            new Response(200, [], Utils::streamFor(DataFile::fopen('file-info.json', 'rb'))),
+            new Response(200, [], Utils::streamFor(DataFile::fopen('file-info.json', 'rb'))),
         ];
         $api = $this->fakeApi($responses);
         $result = $api->fileInfo(\uuid_create());
@@ -123,8 +123,8 @@ class DecoratedFileTest extends TestCase
     public function testActiveFileCopyToLocalStorage()
     {
         $responses = [
-            new Response(200, [], stream_for(DataFile::fopen('file-info.json', 'rb'))),
-            new Response(200, [], stream_for(DataFile::fopen('copy-to-local-storage-api-response.json', 'rb'))),
+            new Response(200, [], Utils::streamFor(DataFile::fopen('file-info.json', 'rb'))),
+            new Response(200, [], Utils::streamFor(DataFile::fopen('copy-to-local-storage-api-response.json', 'rb'))),
         ];
         $api = $this->fakeApi($responses);
         $result = $api->fileInfo(\uuid_create());
@@ -134,11 +134,11 @@ class DecoratedFileTest extends TestCase
     public function testActiveFileCopyToRemoteStorage()
     {
         $responses = [
-            new Response(200, [], stream_for(DataFile::fopen('file-info.json', 'rb'))),
-            new Response(200, [], stream_for(DataFile::fopen('copy-to-remote-storage-api-response.json', 'rb'))),
+            new Response(200, [], Utils::streamFor(DataFile::fopen('file-info.json', 'rb'))),
+            new Response(200, [], Utils::streamFor(DataFile::fopen('copy-to-remote-storage-api-response.json', 'rb'))),
         ];
         $api = $this->fakeApi($responses);
         $result = $api->fileInfo(\uuid_create());
-        self::assertContains('//', $result->copyToRemoteStorage('some target'));
+        self::assertStringContainsString('//', $result->copyToRemoteStorage('some target'));
     }
 }

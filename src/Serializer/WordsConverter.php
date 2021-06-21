@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Uploadcare\Serializer;
 
@@ -7,7 +7,7 @@ namespace Uploadcare\Serializer;
  */
 class WordsConverter
 {
-    public static function conversions()
+    public static function conversions(): array
     {
         return [
             'dates' => 'date',

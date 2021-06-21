@@ -24,7 +24,7 @@ class DecoratedGroupTest extends TestCase
      */
     private $serializer;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->serializer = SerializerFactory::create();

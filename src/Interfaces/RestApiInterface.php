@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Uploadcare\Interfaces;
 
@@ -13,7 +13,7 @@ use Uploadcare\Interfaces\Api\WebhookApiInterface;
  */
 interface RestApiInterface
 {
-    const BASE_URL = 'api.uploadcare.com';
+    public const BASE_URL = 'api.uploadcare.com';
 
     /**
      * File operations:
@@ -28,7 +28,7 @@ interface RestApiInterface
      *
      * @return FileApiInterface
      */
-    public function getFileApi();
+    public function file(): FileApiInterface;
 
     /**
      * Group operations:
@@ -38,7 +38,7 @@ interface RestApiInterface
      *
      * @return GroupApiInterface
      */
-    public function getGroupApi();
+    public function group(): GroupApiInterface;
 
     /**
      * Project operations:
@@ -46,7 +46,7 @@ interface RestApiInterface
      *
      * @return ProjectApiInterface
      */
-    public function getProjectApi();
+    public function project(): ProjectApiInterface;
 
     /**
      * Webhook operations:
@@ -57,7 +57,7 @@ interface RestApiInterface
      *
      * @return WebhookApiInterface
      */
-    public function getWebhookApi();
+    public function webhook(): WebhookApiInterface;
 
     /**
      * Conversion operations:
@@ -68,5 +68,5 @@ interface RestApiInterface
      *
      * @return ConversionApiInterface
      */
-    public function getConversionApi();
+    public function conversion(): ConversionApiInterface;
 }

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Uploadcare\Response;
 
@@ -12,7 +12,7 @@ use Uploadcare\Interfaces\SerializableInterface;
 /**
  * Response for conversion request.
  */
-class BatchConversionResponse implements BatchResponseInterface, SerializableInterface
+final class BatchConversionResponse implements BatchResponseInterface, SerializableInterface
 {
     /**
      * @var ResponseProblemInterface[]
@@ -30,7 +30,7 @@ class BatchConversionResponse implements BatchResponseInterface, SerializableInt
         $this->result = new ConvertedCollection();
     }
 
-    public static function rules()
+    public static function rules(): array
     {
         return [
             'problems' => 'array',
@@ -38,22 +38,22 @@ class BatchConversionResponse implements BatchResponseInterface, SerializableInt
         ];
     }
 
-    public function getStatus()
+    public function getStatus(): string
     {
         return 'ok';
     }
 
-    public function getProblems()
+    public function getProblems(): array
     {
         return $this->problems;
     }
 
-    public function getResult()
+    public function getResult(): CollectionInterface
     {
         return $this->result;
     }
 
-    public function setProblems(array $problems)
+    public function setProblems(array $problems): self
     {
         foreach ($problems as $k => $problem) {
             $item = null;
@@ -74,9 +74,11 @@ class BatchConversionResponse implements BatchResponseInterface, SerializableInt
                 $this->addProblem($item);
             }
         }
+
+        return $this;
     }
 
-    public function addProblem(ResponseProblemInterface $problem)
+    public function addProblem(ResponseProblemInterface $problem): self
     {
         if (!\in_array($problem, $this->problems, true)) {
             $this->problems[] = $problem;
@@ -85,7 +87,7 @@ class BatchConversionResponse implements BatchResponseInterface, SerializableInt
         return $this;
     }
 
-    public function addResult(ConvertedItem $item)
+    public function addResult(ConvertedItem $item): self
     {
         if (!$this->result->contains($item)) {
             $this->result->add($item);

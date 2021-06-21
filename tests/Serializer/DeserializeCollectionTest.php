@@ -16,7 +16,7 @@ class DeserializeCollectionTest extends TestCase
      */
     private $path;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->path = \dirname(__DIR__) . '/_data/file-list-api-response.json';
     }

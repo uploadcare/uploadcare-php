@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Uploadcare\Exception;
 
@@ -21,7 +21,7 @@ class HttpException extends \RuntimeException
      *
      * @return string
      */
-    protected function makeMessage(\Exception $exception, $message = '')
+    protected function makeMessage(\Exception $exception, $message = ''): string
     {
         $messages = [];
         if (!empty($message)) {
@@ -30,13 +30,13 @@ class HttpException extends \RuntimeException
         $messages[] = $exception->getMessage();
 
         if (\method_exists($exception, 'getRequest') && $exception->getRequest() instanceof RequestInterface) {
-            $messages[] = $this->messageString($exception->getRequest(), $exception->getMessage());
+            return $this->messageString($exception->getRequest(), $exception->getMessage());
         }
 
         return \implode("\n", $messages);
     }
 
-    private function messageString(RequestInterface $request, $message = '')
+    private function messageString(RequestInterface $request, $message = ''): string
     {
         if (empty($message)) {
             $message = 'Fail';

@@ -20,7 +20,7 @@ class DeserializerTest extends TestCase
      */
     private $faker;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->faker = Factory::create();
     }

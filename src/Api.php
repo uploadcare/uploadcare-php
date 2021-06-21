@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Uploadcare;
 
@@ -13,53 +13,31 @@ use Uploadcare\Interfaces\Api\GroupApiInterface;
 use Uploadcare\Interfaces\Api\ProjectApiInterface;
 use Uploadcare\Interfaces\Api\WebhookApiInterface;
 use Uploadcare\Interfaces\ConfigurationInterface;
+use Uploadcare\Interfaces\RestApiInterface;
 use Uploadcare\Interfaces\UploaderInterface;
 use Uploadcare\Uploader\Uploader;
 
 /**
  * Universal API for Uploadcare.
  */
-class Api
+final class Api implements RestApiInterface
 {
-    /**
-     * @var FileApiInterface
-     */
     private $fileApi;
-
-    /**
-     * @var GroupApiInterface
-     */
     private $groupApi;
-
-    /**
-     * @var UploaderInterface
-     */
     private $uploader;
-
-    /**
-     * @var ProjectApiInterface
-     */
     private $projectApi;
-
-    /**
-     * @var WebhookApiInterface
-     */
     private $webhookApi;
-
-    /**
-     * @var ConversionApiInterface
-     */
     private $conversionApi;
 
     /**
      * @param string $publicKey
-     * @param string $privateKey
+     * @param string $secretKey
      *
      * @return Api
      */
-    public static function create($publicKey, $privateKey)
+    public static function create(string $publicKey, string $secretKey): self
     {
-        $configuration = Configuration::create($publicKey, $privateKey);
+        $configuration = Configuration::create($publicKey, $secretKey);
 
         return new static($configuration);
     }
@@ -79,50 +57,32 @@ class Api
         $this->conversionApi = new ConversionApi($configuration);
     }
 
-    /**
-     * @return FileApiInterface
-     */
-    public function file()
+    public function file(): FileApiInterface
     {
         return $this->fileApi;
     }
 
-    /**
-     * @return GroupApiInterface
-     */
-    public function group()
+    public function group(): GroupApiInterface
     {
         return $this->groupApi;
     }
 
-    /**
-     * @return ProjectApiInterface
-     */
-    public function project()
+    public function project(): ProjectApiInterface
     {
         return $this->projectApi;
     }
 
-    /**
-     * @return UploaderInterface
-     */
-    public function uploader()
+    public function uploader(): UploaderInterface
     {
         return $this->uploader;
     }
 
-    /**
-     * @return WebhookApiInterface
-     */
-    public function webhook()
+    public function webhook(): WebhookApiInterface
     {
         return $this->webhookApi;
     }
 
-    /**
-     * @return ConversionApiInterface
-     */
-    public function conversion()
+    public function conversion(): ConversionApiInterface
     {
         return $this->conversionApi;
     }

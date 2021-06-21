@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Uploadcare\Security;
 
@@ -10,7 +10,7 @@ class Signature implements SignatureInterface
     /**
      * @var string
      */
-    private $privateKey;
+    private $secretKey;
 
     /**
      * @var \DateTimeInterface
@@ -18,12 +18,12 @@ class Signature implements SignatureInterface
     private $expired;
 
     /**
-     * @param string   $privateKey Uploadcare private key
-     * @param int|null $ttl        Signature time-to-life
+     * @param string   $secretKey Uploadcare private key
+     * @param int|null $ttl       Signature time-to-life
      */
-    public function __construct($privateKey, $ttl = null)
+    public function __construct(string $secretKey, int $ttl = null)
     {
-        $this->privateKey = $privateKey;
+        $this->secretKey = $secretKey;
         if ($ttl === null || $ttl > self::MAX_TTL) {
             $ttl = self::MAX_TTL;
         }
@@ -33,27 +33,27 @@ class Signature implements SignatureInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
-    public function getSignature()
+    public function getSignature(): string
     {
         $signString = $this->getExpire()->getTimestamp();
 
-        return \hash_hmac(SignatureInterface::SIGN_ALGORITHM, (string) $signString, $this->privateKey);
+        return \hash_hmac(SignatureInterface::SIGN_ALGORITHM, (string) $signString, $this->secretKey);
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
-    public function getExpire()
+    public function getExpire(): \DateTimeInterface
     {
         return $this->expired;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
-    public function getDateHeaderString($date = null)
+    public function getDateHeaderString(?\DateTimeInterface $date = null): string
     {
         $now = new \DateTime();
         if ($date instanceof \DateTimeInterface) {
@@ -65,9 +65,9 @@ class Signature implements SignatureInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
-    public function getAuthHeaderString($method, $uri, $data, $contentType = 'application/json', $date = null)
+    public function getAuthHeaderString(string $method, string $uri, string $data, string $contentType = 'application/json', \DateTimeInterface $date = null): string
     {
         $uri = \sprintf('/%s', \ltrim($uri, '/'));
         $data = \md5($data);
@@ -81,6 +81,6 @@ class Signature implements SignatureInterface
             $uri,
         ]);
 
-        return \hash_hmac(UploadcareAuthInterface::AUTH_ALGORITHM, $signString, $this->privateKey);
+        return \hash_hmac(UploadcareAuthInterface::AUTH_ALGORITHM, $signString, $this->secretKey);
     }
 }

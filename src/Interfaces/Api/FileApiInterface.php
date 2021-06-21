@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Uploadcare\Interfaces\Api;
 
@@ -30,7 +30,7 @@ interface FileApiInterface
      *
      * @return ListResponseInterface
      */
-    public function listFiles($limit = 100, $orderBy = 'datetime_uploaded', $from = null, $addFields = [], $stored = null, $removed = false);
+    public function listFiles(int $limit = 100, string $orderBy = 'datetime_uploaded', $from = null, array $addFields = [], ?bool $stored = null, bool $removed = false): ListResponseInterface;
 
     /**
      * Store a single file by UUID.
@@ -39,7 +39,7 @@ interface FileApiInterface
      *
      * @return FileInfoInterface
      */
-    public function storeFile($id);
+    public function storeFile($id): FileInfoInterface;
 
     /**
      * Remove individual files. Returns file info.
@@ -48,7 +48,7 @@ interface FileApiInterface
      *
      * @return FileInfoInterface
      */
-    public function deleteFile($id);
+    public function deleteFile($id): FileInfoInterface;
 
     /**
      * Specific file info.
@@ -57,7 +57,7 @@ interface FileApiInterface
      *
      * @return FileInfoInterface
      */
-    public function fileInfo($id);
+    public function fileInfo($id): FileInfoInterface;
 
     /**
      * Store multiple files in one step.
@@ -67,14 +67,14 @@ interface FileApiInterface
      *
      * @return BatchResponseInterface
      */
-    public function batchStoreFile($ids);
+    public function batchStoreFile($ids): BatchResponseInterface;
 
     /**
      * @param array|CollectionInterface $ids array of files UUIDs to store
      *
      * @return BatchResponseInterface
      */
-    public function batchDeleteFile($ids);
+    public function batchDeleteFile($ids): BatchResponseInterface;
 
     /**
      * Copy original files or their modified versions to default storage. Source files MAY either be stored or just uploaded and MUST NOT be deleted.
@@ -84,7 +84,7 @@ interface FileApiInterface
      *
      * @return mixed
      */
-    public function copyToLocalStorage($source, $store);
+    public function copyToLocalStorage($source, bool $store);
 
     /**
      * @param string|FileInfoInterface $source     a CDN URL or just UUID of a file subjected to copy
@@ -94,7 +94,7 @@ interface FileApiInterface
      *
      * @return mixed
      */
-    public function copyToRemoteStorage($source, $target, $makePublic, $pattern);
+    public function copyToRemoteStorage($source, string $target, bool $makePublic, string $pattern);
 
     /**
      * Generate secure URL for CDN custom domain.
@@ -103,5 +103,5 @@ interface FileApiInterface
      *
      * @return string|null
      */
-    public function generateSecureUrl($id);
+    public function generateSecureUrl($id): ?string;
 }
