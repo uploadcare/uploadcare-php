@@ -7,7 +7,7 @@ Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to
 
 ## [3.1.1]
 ### Secure URL generation update
-- Added possibility to generate Security CDN url for image with transformations.
+- Now you can generate Secure CDN URLs for images with transformations.
 
 ## [3.1.0]
 ### PHP version update, PDF conversion improvement
