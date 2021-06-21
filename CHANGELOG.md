@@ -6,7 +6,7 @@ Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to
 [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [3.1.1]
-### Secure URL generation update
+### Secure CDN URLs for transformed images
 - Now you can generate Secure CDN URLs for images with transformations.
 
 ## [3.1.0]
