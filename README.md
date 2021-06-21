@@ -410,8 +410,10 @@ $secureUrlFromApi = $api->file()->generateSecureUrl($file);
 
 ### Secure delivery for transformed images
 
-You can set a custom ACL on a Secure URL with [Image Transformations](https://uploadcare.com/docs/transformations/image/)
-applied. Just add an Image UUID with transformations to the `generateSecureUrl` method:
+You can set a custom ACL on a Secure URL with
+[Image Transformations](https://uploadcare.com/docs/transformations/image/)
+applied. Just add an Image UUID with transformations to the `generateSecureUrl`
+method:
 
 ```php
 $api->file()->generateSecureUrl('/*/'); # Access to all files in project
