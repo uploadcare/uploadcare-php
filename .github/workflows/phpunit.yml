@@ -1,0 +1,21 @@
+name: CI-coverage
+
+on: [ push ]
+
+jobs:
+  test-php-7_1:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - uses: php-actions/composer@v5
+      - name: PHPUnit Tests
+        uses: php-actions/phpunit@v2
+        with:
+          version: 7
+          php_version: 7.1
+          php_extensions: xdebug
+          bootstrap: vendor/autoload.php
+          configuration: phpunit.xml
+          args: --coverage-text
+        env:
+          XDEBUG_MODE: coverage
