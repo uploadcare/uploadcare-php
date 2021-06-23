@@ -12,11 +12,31 @@ jobs:
           php_version: 7.1
           dev: yes
           interaction: no
-      - name: PHPUnit Tests
+      - name: PHPUnit Tests php 7.1
         uses: php-actions/phpunit@v2
         with:
           version: 7
           php_version: 7.1
+          php_extensions: xdebug
+          bootstrap: vendor/autoload.php
+          configuration: phpunit.xml
+          args: --coverage-text --exclude-group local-only
+        env:
+          XDEBUG_MODE: coverage
+  test-php-7_4:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - uses: php-actions/composer@v6
+        with:
+          php_version: 7.4
+          dev: yes
+          interaction: no
+      - name: PHPUnit Tests php 7.4
+        uses: php-actions/phpunit@v2
+        with:
+          version: 9
+          php_version: 7.4
           php_extensions: xdebug
           bootstrap: vendor/autoload.php
           configuration: phpunit.xml
