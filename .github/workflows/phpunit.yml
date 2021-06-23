@@ -20,6 +20,6 @@ jobs:
           php_extensions: xdebug
           bootstrap: vendor/autoload.php
           configuration: phpunit.xml
-          args: --coverage-text
+          args: --coverage-text --exclude-group local-only
         env:
           XDEBUG_MODE: coverage
