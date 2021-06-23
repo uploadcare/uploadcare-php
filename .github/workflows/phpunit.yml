@@ -5,38 +5,23 @@ on: [ push ]
 jobs:
   test-php-7_1:
     runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: true
+      matrix:
+        php-versions: [ "7.1", "7.4", "8.0" ]
+        phpunit-versions: [ "7", "9" ]
     steps:
       - uses: actions/checkout@v2
       - uses: php-actions/composer@v6
         with:
-          php_version: 7.1
+          php_version: "${{ matrix.php-versions }}"
           dev: yes
           interaction: no
-      - name: PHPUnit Tests php 7.1
+      - name: PHPUnit Tests php
         uses: php-actions/phpunit@v2
         with:
-          version: 7
-          php_version: 7.1
-          php_extensions: xdebug
-          bootstrap: vendor/autoload.php
-          configuration: phpunit.xml
-          args: --coverage-text --exclude-group local-only
-        env:
-          XDEBUG_MODE: coverage
-  test-php-7_4:
-    runs-on: ubuntu-20.04
-    steps:
-      - uses: actions/checkout@v2
-      - uses: php-actions/composer@v6
-        with:
-          php_version: 7.4
-          dev: yes
-          interaction: no
-      - name: PHPUnit Tests php 7.4
-        uses: php-actions/phpunit@v2
-        with:
-          version: 9
-          php_version: 7.4
+          version: "${{ matrix.phpunit-versions }}"
+          php_version: "${{ matrix.php-versions }}"
           php_extensions: xdebug
           bootstrap: vendor/autoload.php
           configuration: phpunit.xml
