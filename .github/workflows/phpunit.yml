@@ -1,0 +1,42 @@
+name: CI-coverage
+
+on: [ push ]
+
+jobs:
+  test-php:
+    runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: true
+      matrix:
+        php-versions: [ "7.1", "7.4", "8.0" ]
+        phpunit-versions: [ "7", "9" ]
+        exclude:
+          - php-versions: "7.1"
+            phpunit-versions: "9"
+          - php-versions: "7.4"
+            phpunit-versions: "7"
+          - php-versions: "8.0"
+            phpunit-versions: "7"
+    steps:
+      - uses: actions/checkout@v2
+      - uses: php-actions/composer@v6
+        with:
+          php_version: "${{ matrix.php-versions }}"
+          dev: yes
+          interaction: no
+      - name: PHPUnit Tests php
+        uses: php-actions/phpunit@v2
+        with:
+          version: "${{ matrix.phpunit-versions }}"
+          php_version: "${{ matrix.php-versions }}"
+          php_extensions: xdebug
+          bootstrap: vendor/autoload.php
+          configuration: phpunit.xml
+          args: --coverage-clover=coverage.xml --exclude-group local-only
+        env:
+          XDEBUG_MODE: coverage
+      - name: Upload to Codecov
+        uses: codecov/codecov-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          file: ./coverage.xml

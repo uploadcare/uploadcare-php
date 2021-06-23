@@ -2,12 +2,12 @@
 
 Uploadcare PHP integration handles uploads and further operations with files by wrapping Upload and REST APIs.
 
-[![Build Status][travis-img]][travis] [![Uploadcare stack on StackShare][stack-img]][stack]  
+[![Uploadcare stack on StackShare][stack-img]][stack] ![Test workflow][action-img] ![Code coverage][codecov-img]  
 
-[travis-img]: https://api.travis-ci.com/uploadcare/uploadcare-php.svg?branch=master
-[travis]: https://travis-ci.com/uploadcare/uploadcare-php
+[action-img]: https://github.com/uploadcare/uploadcare-php/actions/workflows/phpunit.yml/badge.svg
 [stack-img]: http://img.shields.io/badge/tech-stack-0690fa.svg?style=flat
 [stack]: https://stackshare.io/uploadcare/stacks/
+[codecov-img]: https://codecov.io/gh/uploadcare/uploadcare-php/branch/master/graph/badge.svg
 
 * [Requirements](#requirements)
 * [Install](#install)
