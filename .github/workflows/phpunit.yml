@@ -3,7 +3,7 @@ name: CI-coverage
 on: [ push ]
 
 jobs:
-  test-php-7_1:
+  test-php:
     runs-on: ubuntu-20.04
     strategy:
       fail-fast: true
@@ -32,6 +32,10 @@ jobs:
           php_extensions: xdebug
           bootstrap: vendor/autoload.php
           configuration: phpunit.xml
-          args: --coverage-text --exclude-group local-only
+          args: --coverage-clover=coverage.xml --exclude-group local-only
         env:
           XDEBUG_MODE: coverage
+      - name: Upload to Codecov
+        uses: codecov/codecov-action@v1
+        with:
+          file: ./coverage.xml
