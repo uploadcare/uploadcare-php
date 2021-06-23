@@ -10,6 +10,13 @@ jobs:
       matrix:
         php-versions: [ "7.1", "7.4", "8.0" ]
         phpunit-versions: [ "7", "9" ]
+        exclude:
+          - php-versions: "7.1"
+            phpunit-versions: "9"
+          - php-versions: "7.4"
+            phpunit-versions: "7"
+          - php-versions: "8.0"
+            phpunit-versions: "7"
     steps:
       - uses: actions/checkout@v2
       - uses: php-actions/composer@v6
