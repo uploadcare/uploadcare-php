@@ -3,7 +3,6 @@
 namespace Tests\AuthUrl;
 
 use PHPUnit\Framework\TestCase;
-use Uploadcare\Api;
 use Uploadcare\Apis\FileApi;
 use Uploadcare\AuthUrl\AuthUrlConfig;
 use Uploadcare\AuthUrl\Token\AkamaiToken;
@@ -44,7 +43,7 @@ class GenerateSecureUrlTest extends TestCase
     {
         return [
             ['/1a86c6b8-4e77-44c2-9da7-4228ad9a2dd8/-/format/auto/-/quality/smart/-/resize/950x/result.jpg'],
-            ['/*/']
+            ['/*/'],
         ];
     }
 

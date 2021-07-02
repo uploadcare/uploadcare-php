@@ -6,17 +6,18 @@ use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\TooManyRedirectsException;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
-use function GuzzleHttp\Psr7\stream_for;
+use GuzzleHttp\Psr7\Utils;
 use PHPUnit\Framework\TestCase;
 use Tests\DataFile;
 use Uploadcare\Configuration;
 use Uploadcare\Exception\HttpException;
+use Uploadcare\Exception\Upload\RequestParametersException;
 use Uploadcare\MultipartResponse\MultipartStartResponse;
 use Uploadcare\Uploader\Uploader;
 
 class MultipartUploadTest extends TestCase
 {
-    protected function getConfiguration()
+    protected function getConfiguration(): Configuration
     {
         return Configuration::create('public-key', 'private-key');
     }
@@ -26,7 +27,7 @@ class MultipartUploadTest extends TestCase
      *
      * @return \PHPUnit_Framework_MockObject_MockObject|Uploader
      */
-    protected function getMockUploader($methods = [])
+    protected function getMockUploader(array $methods = [])
     {
         return $this->getMockBuilder(Uploader::class)
             ->setConstructorArgs([$this->getConfiguration()])
@@ -34,9 +35,9 @@ class MultipartUploadTest extends TestCase
             ->getMock();
     }
 
-    public function testStartUploadMethod()
+    public function testStartUploadMethod(): void
     {
-        $response = new Response(200, [], stream_for(DataFile::contents('startResponse.json')));
+        $response = new Response(200, [], Utils::streamFor(DataFile::contents('startResponse.json')));
         $uploader = $this->getMockUploader(['sendRequest']);
         $uploader
             ->expects(self::once())
@@ -50,13 +51,9 @@ class MultipartUploadTest extends TestCase
         self::assertInstanceOf(MultipartStartResponse::class, $result);
     }
 
-    public function testResponseExceptionInStartUpload()
+    public function testResponseExceptionInStartUpload(): void
     {
-        if (PHP_MAJOR_VERSION >= 7) {
-            $exception = new ClientException('Wrong request', new Request('POST', 'uri'), new Response(400));
-        } else {
-            $exception = new ClientException('Wrong request', new Request('POST', 'uri'));
-        }
+        $exception = new ClientException('Wrong request', new Request('POST', 'uri'), new Response(400, [], 'Wrong request'));
 
         $uploader = $this->getMockUploader(['sendRequest']);
         $uploader
@@ -67,18 +64,14 @@ class MultipartUploadTest extends TestCase
         $startUpload = (new \ReflectionObject($uploader))->getMethod('startUpload');
         $startUpload->setAccessible(true);
 
-        $this->expectException(HttpException::class);
+        $this->expectException(RequestParametersException::class);
         $startUpload->invokeArgs($uploader, [100, 'text/html', 'no-name', 'auto']);
         $this->expectExceptionMessageRegExp('Wrong request');
     }
 
-    public function testExceptionInUploadPartsMethod()
+    public function testExceptionInUploadPartsMethod(): void
     {
-        if (PHP_MAJOR_VERSION >= 7) {
-            $exception = new ClientException('Wrong request', new Request('POST', 'https://some-middleware-endpoint'), new Response(400));
-        } else {
-            $exception = new ClientException('Wrong request', new Request('POST', 'https://some-middleware-endpoint'));
-        }
+        $exception = new ClientException('Wrong request', new Request('POST', 'https://some-middleware-endpoint'), new Response(400));
 
         $uploader = $this->getMockUploader(['sendRequest']);
         $uploader
@@ -92,18 +85,14 @@ class MultipartUploadTest extends TestCase
         $uploadParts = (new \ReflectionObject($uploader))->getMethod('uploadParts');
         $uploadParts->setAccessible(true);
 
-        $this->expectException(HttpException::class);
+        $this->expectException(RequestParametersException::class);
         $uploadParts->invokeArgs($uploader, [$mr, $handle]);
-        $this->expectExceptionMessageRegExp('some-middleware-endpoint');
+        $this->expectExceptionMessageRegExp('Bad request');
     }
 
-    public function testExceptionInFinishUpload()
+    public function testExceptionInFinishUpload(): void
     {
-        if (PHP_MAJOR_VERSION >= 7) {
-            $exception = new TooManyRedirectsException('Too many redirects', new Request('POST', 'https://final-endpoint'), new Response(400));
-        } else {
-            $exception = new TooManyRedirectsException('Too many redirects', new Request('POST', 'https://final-endpoint'));
-        }
+        $exception = new TooManyRedirectsException('Too many redirects', new Request('POST', 'https://final-endpoint'), new Response(400));
 
         $uploader = $this->getMockUploader(['sendRequest']);
         $uploader

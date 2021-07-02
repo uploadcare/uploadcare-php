@@ -13,7 +13,7 @@ use Uploadcare\Exception\HttpException;
 
 class HttpExceptionTest extends TestCase
 {
-    public function provideHttpExceptions()
+    public function provideHttpExceptions(): array
     {
         $request = new Request('GET', 'https://localhost');
 
@@ -31,7 +31,7 @@ class HttpExceptionTest extends TestCase
      *
      * @param \Exception $exception
      */
-    public function testExceptionMessages(\Exception $exception)
+    public function testExceptionMessages(\Exception $exception): void
     {
         $httpException = new HttpException('', 0, $exception);
         self::assertStringContainsString($exception->getMessage(), $httpException->getMessage());
@@ -39,7 +39,7 @@ class HttpExceptionTest extends TestCase
 
     public function testEmptyMessageInException()
     {
-        $ex = new ServerException('', new Request('GET', 'https://localhost'), new Response(400));
+        $ex = new ServerException('', new Request('GET', 'https://localhost'), new Response(503));
         $httpException = new HttpException('', 503, $ex);
         self::assertStringContainsString('Fail', $httpException->getMessage());
         self::assertEquals(503, $httpException->getCode());
