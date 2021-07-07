@@ -347,7 +347,7 @@ $result = $convertor->batchConvertDocuments($files, $request);
 
 `$files` can be an array / collection of file IDs or FileInfo objects and the result will be the implementation of `BatchResponseInterface`.
 
-### Video encoding
+### Video processing
 
 Get the conversion API as in the previous step and perform `VideoEncodingRequest`
 
