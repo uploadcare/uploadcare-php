@@ -11,13 +11,13 @@ use Uploadcare\Interfaces\Conversion\VideoEncodingRequestInterface;
 class VideoEncodingRequest implements VideoEncodingRequestInterface
 {
     public const MAX_THUMBS = 50;
-    public const DEFAULT_RESIZE_MODE = 'preserve_ratio';
+    public const DEFAULT_RESIZE_MODE = '';
     public const DEFAULT_END_TIME = 'end';
 
     /**
      * @var string[] Possible resizes for video
      */
-    protected static $resizes = ['preserve_ratio', 'change_ratio', 'scale_crop', 'add_padding'];
+    protected static $resizes = ['', 'preserve_ratio', 'change_ratio', 'scale_crop', 'add_padding'];
 
     /**
      * @var string[] Possible qualities for video
@@ -206,6 +206,13 @@ class VideoEncodingRequest implements VideoEncodingRequestInterface
         if ($resizeMode !== null && !\array_key_exists($resizeMode, \array_flip(self::$resizes))) {
             throw new InvalidArgumentException(\sprintf('Resize mode \'%s\' is invalid. Use one of %s', $resizeMode, \implode(', ', self::$resizes)));
         }
+
+        // API does not currently support 'preserve_ratio' explicitly
+        // This is default behaviour, so use an empty string instead
+        if($resizeMode === 'preserve_ratio') {
+            $resizeMode = '';
+        }
+
         $this->resizeMode = $resizeMode;
 
         return $this;
