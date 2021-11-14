@@ -64,7 +64,7 @@ interface ImageInfoInterface
     /**
      * Image DPI for two dimensions.
      *
-     * @return null|array<array-key, int>
+     * @return array<array-key, int>|null
      */
     public function getDpi(): ?array;
 }

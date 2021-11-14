@@ -37,15 +37,19 @@ final class WebhookApi extends AbstractApi implements WebhookApiInterface
     /**
      * {@inheritDoc}
      */
-    public function createWebhook(string $targetUrl, bool $isActive = true, string $event = 'file.uploaded'): WebhookInterface
+    public function createWebhook(string $targetUrl, bool $isActive = true, string $signingSecret = null, string $event = 'file.uploaded'): WebhookInterface
     {
+        if ($signingSecret !== null) {
+            $signingSecret = \substr($signingSecret, 0, 32);
+        }
+
         $response = $this->request('POST', 'webhooks/', [
-            'form_params' => [
+            'body' => \json_encode([
                 'target_url' => $targetUrl,
                 'event' => $event,
                 'is_active' => $isActive,
-            ],
-            'Content-Type' => 'application/x-www-form-urlencoded',
+                'signing_secret' => $signingSecret,
+            ]),
         ]);
 
         $webhook = $this->configuration->getSerializer()
@@ -64,20 +68,22 @@ final class WebhookApi extends AbstractApi implements WebhookApiInterface
     public function updateWebhook(int $id, array $parameters): WebhookInterface
     {
         $uri = \sprintf('webhooks/%s/', $id);
-        $formData = [];
+        $data = [];
         if (isset($parameters['target_url'])) {
-            $formData['target_url'] = (string) $parameters['target_url'];
+            $data['target_url'] = (string) $parameters['target_url'];
         }
         if (isset($parameters['event'])) {
-            $formData['event'] = (string) $parameters['event'];
+            $data['event'] = (string) $parameters['event'];
         }
         if (isset($parameters['is_active'])) {
-            $formData['is_active'] = (bool) $parameters['is_active'];
+            $data['is_active'] = (bool) $parameters['is_active'];
+        }
+        if (\array_key_exists('signing_secret', $parameters)) {
+            $data['signing_secret'] = $parameters['signing_secret'];
         }
 
         $response = $this->request('PUT', $uri, [
-            'form_params' => $formData,
-            'Content-Type' => 'application/x-www-form-urlencoded',
+            'body' => \json_encode($data),
         ]);
 
         $result = $this->configuration->getSerializer()
@@ -96,7 +102,7 @@ final class WebhookApi extends AbstractApi implements WebhookApiInterface
     public function deleteWebhook(string $targetUrl): bool
     {
         $response = $this->request('DELETE', 'webhooks/unsubscribe/', [
-            'form_params' => ['target_url' => $targetUrl],
+            'body' => \json_encode(['target_url' => $targetUrl]),
         ]);
 
         return $response->getStatusCode() === 204;

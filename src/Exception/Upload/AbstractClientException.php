@@ -11,7 +11,7 @@ abstract class AbstractClientException extends \RuntimeException
     {
         if ($previous instanceof ClientException) {
             $code = $previous->getCode();
-            $message = ($response = $previous->getResponse()) !== null ? Message::toString($response) : 'Bad request';
+            $message = Message::toString($previous->getResponse());
         }
 
         parent::__construct($message, $code, $previous);
