@@ -51,6 +51,7 @@ class WebhookResponse implements WebhookInterface, SerializableInterface
             'event' => 'string',
             'targetUrl' => 'string',
             'project' => 'int',
+            'isActive' => 'bool',
         ];
     }
 
