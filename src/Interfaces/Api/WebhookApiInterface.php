@@ -24,7 +24,7 @@ interface WebhookApiInterface
      *
      * @return WebhookInterface
      */
-    public function createWebhook(string $targetUrl, bool $isActive = true, string $event = 'file.uploaded'): WebhookInterface;
+    public function createWebhook(string $targetUrl, bool $isActive = true, string $signingSecret = null, string $event = 'file.uploaded'): WebhookInterface;
 
     /**
      * @param int   $id

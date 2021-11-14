@@ -78,4 +78,9 @@ final class Webhook implements WebhookInterface
     {
         return $this->inner->isActive();
     }
+
+    public function getSigningSecret(): ?string
+    {
+        return $this->inner->getSigningSecret();
+    }
 }

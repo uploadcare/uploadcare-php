@@ -37,13 +37,18 @@ final class WebhookApi extends AbstractApi implements WebhookApiInterface
     /**
      * {@inheritDoc}
      */
-    public function createWebhook(string $targetUrl, bool $isActive = true, string $event = 'file.uploaded'): WebhookInterface
+    public function createWebhook(string $targetUrl, bool $isActive = true, string $signingSecret = null, string $event = 'file.uploaded'): WebhookInterface
     {
+        if ($signingSecret !== null) {
+            $signingSecret = \substr($signingSecret, 0, 32);
+        }
+
         $response = $this->request('POST', 'webhooks/', [
             'body' => \json_encode([
                 'target_url' => $targetUrl,
                 'event' => $event,
                 'is_active' => $isActive,
+                'signing_secret' => $signingSecret,
             ]),
         ]);
 
@@ -72,6 +77,9 @@ final class WebhookApi extends AbstractApi implements WebhookApiInterface
         }
         if (isset($parameters['is_active'])) {
             $data['is_active'] = (bool) $parameters['is_active'];
+        }
+        if (\array_key_exists('signing_secret', $parameters)) {
+            $data['signing_secret'] = $parameters['signing_secret'];
         }
 
         $response = $this->request('PUT', $uri, [

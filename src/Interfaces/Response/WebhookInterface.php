@@ -38,4 +38,9 @@ interface WebhookInterface
      * @return bool
      */
     public function isActive(): bool;
+
+    /**
+     * @return string|null
+     */
+    public function getSigningSecret(): ?string;
 }

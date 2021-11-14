@@ -42,6 +42,11 @@ class WebhookResponse implements WebhookInterface, SerializableInterface
      */
     private $isActive = true;
 
+    /**
+     * @var string|null
+     */
+    private $signingSecret;
+
     public static function rules(): array
     {
         return [
@@ -52,6 +57,7 @@ class WebhookResponse implements WebhookInterface, SerializableInterface
             'targetUrl' => 'string',
             'project' => 'int',
             'isActive' => 'bool',
+            'signingSecret' => 'string',
         ];
     }
 
@@ -181,5 +187,17 @@ class WebhookResponse implements WebhookInterface, SerializableInterface
         $this->isActive = $isActive;
 
         return $this;
+    }
+
+    public function setSigningSecret(?string $signingSecret): self
+    {
+        $this->signingSecret = $signingSecret;
+
+        return $this;
+    }
+
+    public function getSigningSecret(): ?string
+    {
+        return $this->signingSecret;
     }
 }
