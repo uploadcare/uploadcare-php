@@ -3,7 +3,6 @@
 namespace Uploadcare\Exception\Upload;
 
 use GuzzleHttp\Exception\ClientException;
-use Psr\Http\Message\ResponseInterface;
 
 class ThrottledException extends AbstractClientException
 {
@@ -15,11 +14,8 @@ class ThrottledException extends AbstractClientException
 
         if ($previous instanceof ClientException) {
             $response = $previous->getResponse();
-            if ($response instanceof ResponseInterface) {
-                $retryHeader = $response->getHeader('Retry-After');
-
-                $this->retryAfter = $retryHeader[0] ?? 10;
-            }
+            $retryHeader = $response->getHeader('Retry-After');
+            $this->retryAfter = $retryHeader[0] ?? 10;
         }
     }
 

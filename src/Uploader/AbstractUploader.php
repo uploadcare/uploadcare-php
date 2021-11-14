@@ -350,9 +350,6 @@ abstract class AbstractUploader implements UploaderInterface
     {
         if ($e instanceof ClientException) {
             $response = $e->getResponse();
-            if ($response === null) {
-                return new HttpException('', 0, $e);
-            }
             switch ($response->getStatusCode()) {
                 case 400:
                     $throw = new RequestParametersException('', 0, $e);
