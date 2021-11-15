@@ -1,10 +1,8 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Uploadcare\Uploader;
 
-use GuzzleHttp\Exception\GuzzleException;
 use Psr\Http\Message\ResponseInterface;
-use Uploadcare\Exception\HttpException;
 use Uploadcare\Exception\InvalidArgumentException;
 use Uploadcare\Interfaces\File\FileInfoInterface;
 use Uploadcare\MultipartResponse\MultipartStartResponse;
@@ -78,8 +76,8 @@ class Uploader extends AbstractUploader
 
         try {
             $response = $this->sendRequest('POST', 'base/', $parameters);
-        } catch (GuzzleException $e) {
-            throw new HttpException('', 0, ($e instanceof \Exception ? $e : null));
+        } catch (\Throwable $e) {
+            throw $this->handleException($e);
         }
         if (\is_resource($handle)) {
             \fclose($handle);
@@ -136,8 +134,8 @@ class Uploader extends AbstractUploader
             $response = $this->sendRequest('POST', 'multipart/start/', $parameters);
             $startData = $this->configuration->getSerializer()
                 ->deserialize($response->getBody()->getContents(), MultipartStartResponse::class);
-        } catch (GuzzleException $e) {
-            throw new HttpException('', 0, ($e instanceof \Exception ? $e : null));
+        } catch (\Throwable $e) {
+            throw $this->handleException($e);
         }
         if (!$startData instanceof MultipartStartResponse) {
             throw new \RuntimeException(\sprintf('Unable to get %s class from response. Call to support', MultipartStartResponse::class));
@@ -163,8 +161,8 @@ class Uploader extends AbstractUploader
 
             try {
                 $this->sendRequest('PUT', $signedUrl->getUrl(), ['body' => $part]);
-            } catch (GuzzleException $e) {
-                throw new HttpException(\sprintf('Upload to %s failed', $signedUrl->getUrl()), 0, ($e instanceof \Exception ? $e : null));
+            } catch (\Throwable $e) {
+                throw $this->handleException($e);
             }
         }
     }
@@ -183,8 +181,8 @@ class Uploader extends AbstractUploader
 
         try {
             return $this->sendRequest('POST', 'multipart/complete/', $this->makeMultipartParameters($data));
-        } catch (GuzzleException $e) {
-            throw new HttpException('Unable to finish multipart-upload request', 0, ($e instanceof \Exception ? $e : null));
+        } catch (\Throwable $e) {
+            throw $this->handleException($e);
         }
     }
 }

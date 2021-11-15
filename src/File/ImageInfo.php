@@ -52,7 +52,7 @@ final class ImageInfo implements ImageInfoInterface, SerializableInterface
     private $datetimeOriginal;
 
     /**
-     * @var null|array<array-key, int>
+     * @var array<array-key, int>|null
      */
     private $dpi;
 
@@ -232,7 +232,7 @@ final class ImageInfo implements ImageInfoInterface, SerializableInterface
     }
 
     /**
-     * @return null|array<array-key, int>
+     * @return array<array-key, int>|null
      */
     public function getDpi(): ?array
     {

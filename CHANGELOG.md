@@ -5,6 +5,11 @@ The format is based now on [Keep a
 Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to
 [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [3.1.2]
+### Secure Webhooks
+- Each webhook payload now can be [signed with a secret](https://uploadcare.com/docs/security/secure-webhooks/) to ensure that the request comes from the expected sender.
+- Fix some minor issues.
+
 ## [3.1.1]
 ### Secure CDN URLs for transformed images
 - Now you can generate Secure CDN URLs for images with transformations.

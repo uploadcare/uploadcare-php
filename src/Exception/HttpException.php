@@ -10,6 +10,7 @@ class HttpException extends \RuntimeException
     {
         if ($previous !== null) {
             $message = $this->makeMessage($previous, $message);
+            $code = (int) $previous->getCode();
         }
 
         parent::__construct($message, $code, $previous);
@@ -21,7 +22,7 @@ class HttpException extends \RuntimeException
      *
      * @return string
      */
-    protected function makeMessage(\Exception $exception, $message = ''): string
+    protected function makeMessage(\Exception $exception, string $message = ''): string
     {
         $messages = [];
         if (!empty($message)) {

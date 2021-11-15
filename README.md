@@ -2,7 +2,7 @@
 
 Uploadcare PHP integration handles uploads and further operations with files by wrapping Upload and REST APIs.
 
-[![Uploadcare stack on StackShare][stack-img]][stack] ![Test workflow][action-img] ![Code coverage][codecov-img]  
+![Test workflow][action-img] ![Code coverage][codecov-img] [![Uploadcare stack on StackShare][stack-img]][stack]
 
 [action-img]: https://github.com/uploadcare/uploadcare-php/actions/workflows/phpunit.yml/badge.svg
 [stack-img]: http://img.shields.io/badge/tech-stack-0690fa.svg?style=flat
@@ -281,11 +281,12 @@ $webhookApi = (new \Uploadcare\Api($config))->webhook();
 The methods are:
 
 - `listWebhooks()` — Returns a list of project webhooks as an instance of an `Uploadcare\WebhookCollection` class. Each element of this collection is an instance of a `Uploadcare\Webhook` class (see below);
-- `createWebhook($targetUrl, $isActive = true, $event = 'file.uploaded')` — Creates a new webhook for the event. Returns the `Uploadcare\Webhook` class.
+- `createWebhook(string $targetUrl, bool $isActive = true, string $signingSecret = null, string $event = 'file.uploaded')` — Creates a new webhook for the event. Returns the `Uploadcare\Webhook` class.
 - `updateWebhook($id, array $parameters)` — Updates an existing webhook with these parameters. Parameters can be:
     - `target_url` — A target callback URL;
     - `event` — The only `file.uploaded` event is supported at the moment.
     - `is_active` — Returns the webhook activity status.
+    - `signing_secret` — Webhook signing secret. See [Secure Webhooks](https://uploadcare.com/docs/security/secure-webhooks/)
 - `deleteWebhook` — Deletes a webhook by URL.
 
 #### `Uploadcare\Webhook` class

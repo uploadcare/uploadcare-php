@@ -2,11 +2,16 @@
 
 namespace Uploadcare\Uploader;
 
+use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\GuzzleException;
 use Psr\Http\Message\ResponseInterface;
 use Uploadcare\Apis\FileApi;
 use Uploadcare\Exception\HttpException;
 use Uploadcare\Exception\InvalidArgumentException;
+use Uploadcare\Exception\Upload\AccountException;
+use Uploadcare\Exception\Upload\FileTooLargeException;
+use Uploadcare\Exception\Upload\RequestParametersException;
+use Uploadcare\Exception\Upload\ThrottledException;
 use Uploadcare\Interfaces\ConfigurationInterface;
 use Uploadcare\Interfaces\File\FileInfoInterface;
 use Uploadcare\Interfaces\UploaderInterface;
@@ -334,5 +339,38 @@ abstract class AbstractUploader implements UploaderInterface
         if (isset($meta['seekable']) && $meta['seekable'] === true) {
             \rewind($handle);
         }
+    }
+
+    /**
+     * @param \Throwable $e
+     *
+     * @return \RuntimeException
+     */
+    protected function handleException(\Throwable $e): \RuntimeException
+    {
+        if ($e instanceof ClientException) {
+            $response = $e->getResponse();
+            switch ($response->getStatusCode()) {
+                case 400:
+                    $throw = new RequestParametersException('', 0, $e);
+                    break;
+                case 403:
+                    $throw = new AccountException('', 0, $e);
+                    break;
+                case 413:
+                    $throw = new FileTooLargeException('', 0, $e);
+                    break;
+                case 429:
+                    $throw = new ThrottledException('', 0, $e);
+                    break;
+                default:
+                    $throw = new HttpException('', 0, $e);
+                    break;
+            }
+
+            return $throw;
+        }
+
+        return new HttpException('', 0, ($e instanceof \Exception ? $e : null));
     }
 }
