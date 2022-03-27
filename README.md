@@ -2,7 +2,7 @@
 
 Uploadcare PHP integration handles uploads and further operations with files by wrapping Upload and REST APIs.
 
-[![Uploadcare stack on StackShare][stack-img]][stack] ![Test workflow][action-img] ![Code coverage][codecov-img]  
+![Test workflow][action-img] ![Code coverage][codecov-img] [![Uploadcare stack on StackShare][stack-img]][stack]
 
 [action-img]: https://github.com/uploadcare/uploadcare-php/actions/workflows/phpunit.yml/badge.svg
 [stack-img]: http://img.shields.io/badge/tech-stack-0690fa.svg?style=flat
@@ -348,7 +348,7 @@ $result = $convertor->batchConvertDocuments($files, $request);
 
 `$files` can be an array / collection of file IDs or FileInfo objects and the result will be the implementation of `BatchResponseInterface`.
 
-### Video encoding
+### Video processing
 
 Get the conversion API as in the previous step and perform `VideoEncodingRequest`
 

@@ -343,7 +343,9 @@ final class FileApi extends AbstractApi implements FileApiInterface
             throw new InvalidArgumentException('URL must contain the file UUID');
         }
 
-        return $url;
+        // Remove starting and end slash from the uuid with transformation string. The generator url template will
+        // already append these.
+        return trim(rtrim($url, '/'), '/');
     }
 
     /**
