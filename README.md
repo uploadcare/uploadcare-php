@@ -187,6 +187,7 @@ After that, you can access to file operation methods:
       $files = $page->getResults(); 
     }
     ```
+- `getPageRequestParameters(string | null $url)` — get array with next page request parameters. Use it for create links to previous/next page of list.
 - `storeFile(string $id)` — Stores a single file by UUID. Returns the `Uploadcare\File` (`FileInfoInterface`).
     Takes file UUID as an argument.
 - `deleteFile(string $id)` — Removes individual files. Returns file info.
