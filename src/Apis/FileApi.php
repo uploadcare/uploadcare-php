@@ -25,6 +25,22 @@ final class FileApi extends AbstractApi implements FileApiInterface
 {
     public const UUID_REGEX = '[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89aAbB][a-f0-9]{3}-[a-f0-9]{12}';
 
+    public function getPageRequestParameters(?string $url): ?array
+    {
+        if ($url === null) {
+            return null;
+        }
+
+        $query = \parse_url($url, PHP_URL_QUERY);
+        if (!\is_string($query) || empty($query)) {
+            return null;
+        }
+        $parameters = null;
+        \parse_str($query, $parameters);
+
+        return $parameters;
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -67,6 +83,7 @@ final class FileApi extends AbstractApi implements FileApiInterface
             'ordering' => $orderBy,
             'removed' => $removed,
             'add_fields' => $addFields,
+            'from' => $from,
         ];
         if (\is_bool($stored)) {
             $parameters['stored'] = $stored;

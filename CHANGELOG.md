@@ -5,6 +5,11 @@ The format is based now on [Keep a
 Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to
 [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [3.2.2]
+### Fix for an issue with the file list pagination
+- Added `getPageRequestParameters` method: use it to load the next page parameters from `$fileListResponse->getNext()`/`$fileListResponse->getPrevious()`.
+- **Attention**: if you've implemented your own class for `FileApiInterface`, add `public getPageRequestParameters(?string $url): array` method to the implementation.
+
 ## [3.2.1]
 ### Secure delivery image processing fix
 - Resolved issue with invalid signed urls being generated for image transformations.

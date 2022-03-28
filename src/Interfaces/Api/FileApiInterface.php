@@ -10,6 +10,15 @@ use Uploadcare\Interfaces\Response\ListResponseInterface;
 interface FileApiInterface
 {
     /**
+     * Makes an array from next/previous url got from API. Use this method to generate links to next or previous pages.
+     *
+     * @param string|null $url
+     *
+     * @return array|null
+     */
+    public function getPageRequestParameters(?string $url): ?array;
+
+    /**
      * Get the next page from previous answer (if next page exists).
      *
      * @param ListResponseInterface $response
