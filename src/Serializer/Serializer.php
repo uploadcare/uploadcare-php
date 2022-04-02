@@ -16,6 +16,7 @@ class Serializer implements SerializerInterface
     public const JSON_OPTIONS_KEY = 'json_options';
     public const EXCLUDE_PROPERTY_KEY = 'exclude_property';
     public const DATE_FORMAT = 'Y-m-d\TH:i:s.u\Z';
+    public const DATE_FORMAT_SHORT = 'Y-m-d\TH:i:s\Z';
     public const ORIGINAL_DATE_FORMAT = 'Y-m-d\TH:i:s';
 
     protected static $coreTypes = [
@@ -287,6 +288,9 @@ class Serializer implements SerializerInterface
             @\trigger_error('You should set your date.timezone in php.ini', E_USER_WARNING);
         }
         $date = \date_create_from_format(self::DATE_FORMAT, $dateTime);
+        if ($date === false) {
+            $date = \date_create_from_format(self::DATE_FORMAT_SHORT, $dateTime);
+        }
         if ($date === false) {
             $date = \date_create_from_format(self::ORIGINAL_DATE_FORMAT, $dateTime);
         }
