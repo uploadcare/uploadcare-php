@@ -21,6 +21,7 @@ abstract class AbstractCollection implements CollectionInterface
     /**
      * @return \Traversable
      */
+    #[\ReturnTypeWillChange]
     public function getIterator(): iterable
     {
         if (\count($this->elements) === 0) {
@@ -35,6 +36,7 @@ abstract class AbstractCollection implements CollectionInterface
         return isset($this->elements[$offset]) || \array_key_exists($offset, $this->elements);
     }
 
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return $this->get($offset);
