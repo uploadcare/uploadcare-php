@@ -38,7 +38,7 @@ class DeserializerTest extends TestCase
      *
      * @return string JSON with image_info data
      */
-    protected function getImageInfoJson(array $additionalData = [])
+    protected function getImageInfoJson(array $additionalData = []): string
     {
         $data = \json_decode(\file_get_contents(\dirname(__DIR__) . '/_data/file-info.json'), true);
         $imageInfo = $data['image_info'];
@@ -49,7 +49,7 @@ class DeserializerTest extends TestCase
         return \json_encode($imageInfo);
     }
 
-    public function testDenormalizeImageInfo()
+    public function testDenormalizeImageInfo(): void
     {
         $serializer = $this->getSerializer();
 
@@ -83,20 +83,44 @@ class DeserializerTest extends TestCase
         self::assertEquals([144, 144], $object->getDpi());
     }
 
-    public function testNotSerializableClass()
+    public function testNotSerializableClass(): void
     {
         $this->expectException(SerializerException::class);
-
-        $message = \sprintf('Class \'%s\' must implements the \'%s\' interface', \DateTimeInterface::class, SerializableInterface::class);
         $this->getSerializer()->deserialize(\json_encode(\date_create()), \DateTime::class);
-        $this->expectExceptionMessageRegExp($message);
     }
 
-    public function testUnableToDecode()
+    public function testUnableToDecode(): void
     {
         $this->expectException(ConversionException::class);
-
         $this->getSerializer()->deserialize(\date_create()->format(DATE_ATOM));
-        $this->expectExceptionMessageRegExp('Unable to decode given value. Error');
+    }
+
+    public function provideDateInDifferentFormats(): array
+    {
+        return [
+            'Y-m-d\TH:i:s.u\Z' => ['2018-11-26T12:49:09.945335Z', null],
+            'Y-m-d\TH:i:s\Z' => ['2018-11-26T12:49:09Z', null],
+            'Y-m-d\TH:i:s' => ['2018-11-26T12:49:09', null],
+            'Invalid' => ['26.11.2021', ConversionException::class],
+        ];
+    }
+
+    /**
+     * @dataProvider provideDateInDifferentFormats
+     */
+    public function testVariousDateFormats(string $date, string $exception = null): void
+    {
+        $serializer = $this->getSerializer();
+        $denormalizeDate = (new \ReflectionObject($serializer))->getMethod('denormalizeDate');
+        $denormalizeDate->setAccessible(true);
+
+        if ($exception !== null) {
+            $this->expectException($exception);
+        }
+
+        $result = $denormalizeDate->invokeArgs($serializer, [$date]);
+        if ($exception === null) {
+            self::assertInstanceOf(\DateTimeInterface::class, $result);
+        }
     }
 }
