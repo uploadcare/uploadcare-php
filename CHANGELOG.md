@@ -5,6 +5,10 @@ The format is based now on [Keep a
 Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to
 [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [3.2.3]
+### Added another input date format
+- Added a `Y-m-d\TH:i:s\Z` input date format additionally to the `Y-m-d\TH:i:s.u\Z`.
+
 ## [3.2.2]
 ### Fixed issue with file list pagination
 - Fixed for File list.
