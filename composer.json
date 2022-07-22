@@ -28,7 +28,7 @@
     "ext-curl": "*",
     "ext-json": "*",
     "guzzlehttp/guzzle": "^6.5||^7",
-    "guzzlehttp/psr7": "^1.6",
+    "guzzlehttp/psr7": "^1.6||^2",
     "symfony/polyfill-uuid": "^1.17"
   },
   "require-dev": {
