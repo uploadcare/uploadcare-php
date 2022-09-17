@@ -122,4 +122,21 @@ final class GroupApi extends AbstractApi implements GroupApiInterface
 
         throw new HttpException('Wrong response from API', $response->getStatusCode());
     }
+
+    public function removeGroup($id): void
+    {
+        if ($id instanceof GroupInterface) {
+            $strId = $id->getId();
+            if ($strId === null) {
+                throw new HttpException();
+            }
+            $id = $strId;
+        }
+
+        $uri = \sprintf('/groups/%s/', $id);
+        $response = $this->request('DELETE', $uri);
+        if ($response->getStatusCode() !== 204) {
+            throw new HttpException('Wrong response from API', $response->getStatusCode());
+        }
+    }
 }

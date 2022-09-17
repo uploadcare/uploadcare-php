@@ -42,4 +42,14 @@ interface GroupApiInterface
      * @throws HttpException
      */
     public function storeGroup($id): GroupInterface;
+
+    /**
+     * Delete a file group.
+     * The operation only removes the group object itself. All the files that were part of the group are left as is.
+     *
+     * @param string|GroupInterface $id
+     *
+     * @throws HttpException
+     */
+    public function removeGroup($id): void;
 }
