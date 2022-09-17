@@ -10,17 +10,10 @@ use Uploadcare\Interfaces\SerializableInterface;
  */
 final class GeoLocation implements GeoLocationInterface, SerializableInterface
 {
-    /**
-     * @var float
-     */
-    private $latitude;
+    private float $latitude;
+    private float $longitude;
 
-    /**
-     * @var float
-     */
-    private $longitude;
-
-    public function __construct($latitude = null, $longitude = null)
+    public function __construct(?float $latitude = null, ?float $longitude = null)
     {
         $this->latitude = $latitude ?: .0;
         $this->longitude = $longitude ?: .0;
@@ -37,11 +30,6 @@ final class GeoLocation implements GeoLocationInterface, SerializableInterface
         ];
     }
 
-    /**
-     * @param float $latitude
-     *
-     * @return GeoLocation
-     */
     public function setLatitude(float $latitude): self
     {
         $this->latitude = $latitude;
@@ -49,11 +37,6 @@ final class GeoLocation implements GeoLocationInterface, SerializableInterface
         return $this;
     }
 
-    /**
-     * @param float $longitude
-     *
-     * @return GeoLocation
-     */
     public function setLongitude(float $longitude): self
     {
         $this->longitude = $longitude;

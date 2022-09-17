@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Tests\Serializer\Examples;
 
@@ -6,10 +6,7 @@ use Uploadcare\Interfaces\SerializableInterface;
 
 class ExampleIncluded implements SerializableInterface
 {
-    /**
-     * @var \DateTimeInterface|null
-     */
-    private $dateTime;
+    private ?\DateTimeInterface $dateTime;
 
     public static function rules(): array
     {
@@ -18,14 +15,14 @@ class ExampleIncluded implements SerializableInterface
         ];
     }
 
-    public function setDateTime(\DateTimeInterface $dateTime)
+    public function setDateTime(\DateTimeInterface $dateTime): self
     {
         $this->dateTime = $dateTime;
 
         return $this;
     }
 
-    public function getDateTime()
+    public function getDateTime(): ?\DateTimeInterface
     {
         return $this->dateTime;
     }

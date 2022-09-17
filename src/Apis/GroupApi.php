@@ -25,11 +25,11 @@ final class GroupApi extends AbstractApi implements GroupApiInterface
             return null;
         }
 
+        $limit = $parameters['limit'] ?? 100;
+        $asc = $parameters['asc'] ?? true;
+
         /** @noinspection VariableFunctionsUsageInspection */
-        $result = \call_user_func_array([$this, 'listGroups'], [
-            isset($parameters['limit']) ? (int) $parameters['limit'] : 100,
-            !isset($parameters['asc']) || (bool) $parameters['asc'],
-        ]);
+        $result = \call_user_func_array([$this, 'listGroups'], [(int) $limit, (bool) $asc]);
 
         return $result instanceof ListResponseInterface ? $result : null;
     }
@@ -107,7 +107,11 @@ final class GroupApi extends AbstractApi implements GroupApiInterface
     public function storeGroup($id): GroupInterface
     {
         if ($id instanceof GroupInterface) {
-            $id = $id->getId();
+            $strId = $id->getId();
+            if ($strId === null) {
+                throw new HttpException();
+            }
+            $id = $strId;
         }
 
         $uri = \sprintf('/groups/%s/storage/', $id);

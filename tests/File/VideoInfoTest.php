@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Tests\File;
 
@@ -10,14 +10,14 @@ use Uploadcare\Interfaces\File\VideoInterface;
 
 class VideoInfoTest extends TestCase
 {
-    public function testOnlyCreatedClass()
+    public function testOnlyCreatedClass(): void
     {
         $item = new VideoInfo();
         $this->assertInstanceOf(VideoInterface::class, $item->getVideo());
         $this->assertInstanceOf(AudioInterface::class, $item->getAudio());
     }
 
-    public function provideMethods()
+    public function provideMethods(): array
     {
         return [
             ['setDuration', 'getDuration', 1024],
@@ -30,12 +30,8 @@ class VideoInfoTest extends TestCase
 
     /**
      * @dataProvider provideMethods
-     *
-     * @param string $setter
-     * @param string $getter
-     * @param mixed  $value
      */
-    public function testMethods($setter, $getter, $value)
+    public function testMethods(string $setter, string $getter, $value): void
     {
         $item = new VideoInfo();
         $this->assertInstanceOf(VideoInfoInterface::class, $item->{$setter}($value));

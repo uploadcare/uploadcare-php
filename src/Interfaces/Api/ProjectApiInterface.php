@@ -8,8 +8,6 @@ interface ProjectApiInterface
 {
     /**
      * Getting info about account project.
-     *
-     * @return ProjectInfoInterface
      */
     public function getProjectInfo(): ProjectInfoInterface;
 }

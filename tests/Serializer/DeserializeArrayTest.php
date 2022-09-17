@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Tests\Serializer;
 
@@ -13,25 +13,19 @@ use Uploadcare\Serializer\SnackCaseConverter;
 
 class DeserializeArrayTest extends TestCase
 {
-    /**
-     * @var string
-     */
-    protected $examplePath;
+    protected string $examplePath;
 
     protected function setUp(): void
     {
         $this->examplePath = \dirname(__DIR__) . '/_data/startResponse.json';
     }
 
-    /**
-     * @return SerializerInterface
-     */
-    protected function getSerializer()
+    protected function getSerializer(): SerializerInterface
     {
         return new Serializer(new SnackCaseConverter());
     }
 
-    public function testSerializeArrayInClass()
+    public function testSerializeArrayInClass(): void
     {
         $content = \file_get_contents($this->examplePath);
         $result = $this->getSerializer()
@@ -42,7 +36,7 @@ class DeserializeArrayTest extends TestCase
         self::assertInstanceOf(MultipartPreSignedUrl::class, $result->getParts()[0]);
     }
 
-    public function testDenormalizeClassesArray()
+    public function testDenormalizeClassesArray(): void
     {
         $dates = [
             ['date_time' => \date_create('now')->format(Serializer::DATE_FORMAT)],

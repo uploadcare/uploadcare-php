@@ -2,29 +2,19 @@
 
 namespace Uploadcare\Uploader;
 
-use GuzzleHttp\Exception\ClientException;
-use GuzzleHttp\Exception\GuzzleException;
+use GuzzleHttp\Exception\{ClientException, GuzzleException};
 use Psr\Http\Message\ResponseInterface;
 use Uploadcare\Apis\FileApi;
-use Uploadcare\Exception\HttpException;
-use Uploadcare\Exception\InvalidArgumentException;
-use Uploadcare\Exception\Upload\AccountException;
-use Uploadcare\Exception\Upload\FileTooLargeException;
-use Uploadcare\Exception\Upload\RequestParametersException;
-use Uploadcare\Exception\Upload\ThrottledException;
-use Uploadcare\Interfaces\ConfigurationInterface;
-use Uploadcare\Interfaces\File\FileInfoInterface;
-use Uploadcare\Interfaces\UploaderInterface;
+use Uploadcare\Exception\Upload\{AccountException, FileTooLargeException, RequestParametersException, ThrottledException};
+use Uploadcare\Exception\{HttpException, InvalidArgumentException};
+use Uploadcare\Interfaces\{ConfigurationInterface, File\FileInfoInterface, UploaderInterface};
 
 /**
  * Main Uploader.
  */
 abstract class AbstractUploader implements UploaderInterface
 {
-    /**
-     * @var ConfigurationInterface
-     */
-    protected $configuration;
+    protected ConfigurationInterface $configuration;
 
     public function __construct(ConfigurationInterface $configuration)
     {
@@ -33,8 +23,6 @@ abstract class AbstractUploader implements UploaderInterface
 
     /**
      * @param array<array-key, string> $files List of file ID's
-     *
-     * @return ResponseInterface
      */
     public function groupFiles(array $files): ResponseInterface
     {
@@ -48,16 +36,11 @@ abstract class AbstractUploader implements UploaderInterface
         try {
             return $this->sendRequest('POST', 'group/', ['form_params' => $parameters]);
         } catch (GuzzleException $e) {
-            throw new HttpException('', 0, ($e instanceof \Exception ? $e : null));
+            throw new HttpException('', 0, $e instanceof \Exception ? $e : null);
         }
     }
 
-    /**
-     * @param $id
-     *
-     * @return ResponseInterface
-     */
-    public function groupInfo($id): ResponseInterface
+    public function groupInfo(string $id): ResponseInterface
     {
         $parameters = [
             'pub_key' => $this->configuration->getPublicKey(),
@@ -67,35 +50,23 @@ abstract class AbstractUploader implements UploaderInterface
         try {
             return $this->sendRequest('GET', 'group/info/', ['query' => $parameters]);
         } catch (GuzzleException $e) {
-            throw new HttpException('', 0, ($e instanceof \Exception ? $e : null));
+            throw new HttpException('', 0, $e instanceof \Exception ? $e : null);
         }
     }
 
     /**
      * Upload file from resource opened by `\fopen()`.
      *
-     * @param resource    $handle
-     * @param string|null $mimeType
-     * @param string|null $filename
-     * @param string      $store
+     * @param resource $handle
      *
      * @throws InvalidArgumentException
-     *
-     * @return FileInfoInterface
      */
     abstract public function fromResource($handle, string $mimeType = null, string $filename = null, string $store = 'auto'): FileInfoInterface;
 
     /**
      * Upload file from local path.
      *
-     * @param string      $path
-     * @param string|null $mimeType
-     * @param string|null $filename
-     * @param string      $store
-     *
      * @throws InvalidArgumentException
-     *
-     * @return FileInfoInterface
      */
     public function fromPath(string $path, string $mimeType = null, string $filename = null, string $store = 'auto'): FileInfoInterface
     {
@@ -109,14 +80,7 @@ abstract class AbstractUploader implements UploaderInterface
     /**
      * Upload file from remote URL.
      *
-     * @param string      $url
-     * @param string|null $mimeType
-     * @param string|null $filename
-     * @param string      $store
-     *
      * @throws InvalidArgumentException
-     *
-     * @return FileInfoInterface
      */
     public function fromUrl(string $url, string $mimeType = null, string $filename = null, string $store = 'auto'): FileInfoInterface
     {
@@ -131,14 +95,7 @@ abstract class AbstractUploader implements UploaderInterface
     /**
      * Upload file from content string.
      *
-     * @param string      $content
-     * @param string|null $mimeType
-     * @param string|null $filename
-     * @param string      $store
-     *
      * @throws InvalidArgumentException
-     *
-     * @return FileInfoInterface
      */
     public function fromContent(string $content, string $mimeType = null, string $filename = null, string $store = 'auto'): FileInfoInterface
     {
@@ -157,7 +114,7 @@ abstract class AbstractUploader implements UploaderInterface
     protected function checkResource($handle): void
     {
         if (!\is_resource($handle)) {
-            throw new InvalidArgumentException(\sprintf('Expected resource, %s given', (\is_object($handle) ? \get_class($handle) : \gettype($handle))));
+            throw new InvalidArgumentException(\sprintf('Expected resource, %s given', \is_object($handle) ? \get_class($handle) : \gettype($handle)));
         }
 
         $this->checkResourceMetadata(\stream_get_meta_data($handle));
@@ -165,8 +122,6 @@ abstract class AbstractUploader implements UploaderInterface
 
     /**
      * @param resource $handle
-     *
-     * @return string|null
      */
     protected function getFileName($handle): ?string
     {
@@ -181,8 +136,6 @@ abstract class AbstractUploader implements UploaderInterface
     }
 
     /**
-     * @param array $metadata
-     *
      * @throws \Exception
      */
     protected function checkResourceMetadata(array $metadata): void
@@ -249,8 +202,6 @@ abstract class AbstractUploader implements UploaderInterface
 
     /**
      * Default parameters for request.
-     *
-     * @return array
      */
     protected function getDefaultParameters(): array
     {
@@ -262,13 +213,7 @@ abstract class AbstractUploader implements UploaderInterface
         ];
     }
 
-    /**
-     * @param ResponseInterface $response
-     * @param string            $arrayKey
-     *
-     * @return FileInfoInterface
-     */
-    protected function serializeFileResponse(ResponseInterface $response, $arrayKey = 'file'): FileInfoInterface
+    protected function serializeFileResponse(ResponseInterface $response, string $arrayKey = 'file'): FileInfoInterface
     {
         $response->getBody()->rewind();
         $result = $this->configuration->getSerializer()->deserialize($response->getBody()->getContents());
@@ -279,24 +224,13 @@ abstract class AbstractUploader implements UploaderInterface
         return $this->fileInfo((string) $result[$arrayKey]);
     }
 
-    /**
-     * @param $id
-     *
-     * @return FileInfoInterface
-     */
-    protected function fileInfo($id): FileInfoInterface
+    protected function fileInfo(string $id): FileInfoInterface
     {
         return (new FileApi($this->configuration))
             ->fileInfo($id);
     }
 
     /**
-     * @param string $method
-     * @param string $uri
-     * @param array  $data
-     *
-     * @return ResponseInterface
-     *
      * @throws GuzzleException
      */
     protected function sendRequest(string $method, string $uri, array $data): ResponseInterface
@@ -316,8 +250,6 @@ abstract class AbstractUploader implements UploaderInterface
      * @see https://www.php.net/manual/en/function.stat.php
      *
      * @param resource $handle
-     *
-     * @return int
      */
     protected function getSize($handle): int
     {
@@ -329,6 +261,9 @@ abstract class AbstractUploader implements UploaderInterface
         return 0;
     }
 
+    /**
+     * @param false|resource $handle
+     */
     protected function rewind($handle): void
     {
         if (!\is_resource($handle)) {
@@ -341,11 +276,6 @@ abstract class AbstractUploader implements UploaderInterface
         }
     }
 
-    /**
-     * @param \Throwable $e
-     *
-     * @return \RuntimeException
-     */
     protected function handleException(\Throwable $e): \RuntimeException
     {
         if ($e instanceof ClientException) {
@@ -371,6 +301,6 @@ abstract class AbstractUploader implements UploaderInterface
             return $throw;
         }
 
-        return new HttpException('', 0, ($e instanceof \Exception ? $e : null));
+        return new HttpException('', 0, $e instanceof \Exception ? $e : null);
     }
 }

@@ -2,8 +2,7 @@
 
 namespace Uploadcare\File;
 
-use Uploadcare\Interfaces\File\CollectionInterface;
-use Uploadcare\Interfaces\File\FileInfoInterface;
+use Uploadcare\Interfaces\File\{CollectionInterface, FileInfoInterface};
 use Uploadcare\Interfaces\GroupInterface;
 use Uploadcare\Interfaces\SerializableInterface;
 
@@ -12,40 +11,17 @@ use Uploadcare\Interfaces\SerializableInterface;
  */
 final class Group implements GroupInterface, SerializableInterface
 {
-    /**
-     * @var string
-     */
-    private $id;
-
-    /**
-     * @var \DateTime
-     */
-    private $datetimeCreated;
-
-    /**
-     * @var \DateTime|null
-     */
-    private $datetimeStored;
-
-    /**
-     * @var int
-     */
-    private $filesCount;
-
-    /**
-     * @var string
-     */
-    private $cdnUrl;
-
-    /**
-     * @var string
-     */
-    private $url;
+    private ?string $id = null;
+    private ?\DateTimeInterface $datetimeCreated = null;
+    private ?\DateTimeInterface $datetimeStored = null;
+    private int $filesCount = 0;
+    private ?string $cdnUrl = null;
+    private ?string $url = null;
 
     /**
      * @var FileCollection|CollectionInterface
      */
-    private $files;
+    private CollectionInterface $files;
 
     /**
      * @return array|string[]
@@ -68,19 +44,11 @@ final class Group implements GroupInterface, SerializableInterface
         $this->files = new FileCollection();
     }
 
-    /**
-     * @return string
-     */
-    public function getId(): string
+    public function getId(): ?string
     {
         return $this->id;
     }
 
-    /**
-     * @param string $id
-     *
-     * @return Group
-     */
     public function setId(string $id): self
     {
         $this->id = $id;
@@ -88,19 +56,11 @@ final class Group implements GroupInterface, SerializableInterface
         return $this;
     }
 
-    /**
-     * @return \DateTime
-     */
-    public function getDatetimeCreated(): \DateTimeInterface
+    public function getDatetimeCreated(): ?\DateTimeInterface
     {
         return $this->datetimeCreated;
     }
 
-    /**
-     * @param \DateTime $datetimeCreated
-     *
-     * @return Group
-     */
     public function setDatetimeCreated(\DateTimeInterface $datetimeCreated): self
     {
         $this->datetimeCreated = $datetimeCreated;
@@ -108,19 +68,11 @@ final class Group implements GroupInterface, SerializableInterface
         return $this;
     }
 
-    /**
-     * @return \DateTime|null
-     */
     public function getDatetimeStored(): ?\DateTimeInterface
     {
         return $this->datetimeStored;
     }
 
-    /**
-     * @param \DateTime|null $datetimeStored
-     *
-     * @return Group
-     */
     public function setDatetimeStored(?\DateTime $datetimeStored): self
     {
         $this->datetimeStored = $datetimeStored;
@@ -128,19 +80,11 @@ final class Group implements GroupInterface, SerializableInterface
         return $this;
     }
 
-    /**
-     * @return int
-     */
     public function getFilesCount(): int
     {
         return $this->filesCount;
     }
 
-    /**
-     * @param int $filesCount
-     *
-     * @return Group
-     */
     public function setFilesCount(int $filesCount): self
     {
         $this->filesCount = $filesCount;
@@ -148,19 +92,11 @@ final class Group implements GroupInterface, SerializableInterface
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getCdnUrl(): string
     {
-        return $this->cdnUrl;
+        return $this->cdnUrl ?? '';
     }
 
-    /**
-     * @param string $cdnUrl
-     *
-     * @return Group
-     */
     public function setCdnUrl(string $cdnUrl): self
     {
         $this->cdnUrl = $cdnUrl;
@@ -168,19 +104,11 @@ final class Group implements GroupInterface, SerializableInterface
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getUrl(): string
     {
-        return $this->url;
+        return $this->url ?? '';
     }
 
-    /**
-     * @param string $url
-     *
-     * @return Group
-     */
     public function setUrl(string $url): self
     {
         $this->url = $url;

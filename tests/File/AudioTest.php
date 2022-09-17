@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Tests\File;
 
@@ -8,7 +8,7 @@ use Uploadcare\Interfaces\File\AudioInterface;
 
 class AudioTest extends TestCase
 {
-    public function provideMethods()
+    public function provideMethods(): array
     {
         return [
             ['setBitrate', 'getBitrate', \random_int(14500, 578888)],
@@ -23,9 +23,8 @@ class AudioTest extends TestCase
      *
      * @param string $setter
      * @param string $getter
-     * @param mixed  $value
      */
-    public function testMethods($setter, $getter, $value)
+    public function testMethods($setter, $getter, $value): void
     {
         $item = new Audio();
         $this->assertInstanceOf(AudioInterface::class, $item->{$setter}($value));

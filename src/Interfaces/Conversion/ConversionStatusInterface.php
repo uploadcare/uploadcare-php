@@ -19,8 +19,5 @@ interface ConversionStatusInterface
      */
     public function getError(): ?string;
 
-    /**
-     * @return StatusResultInterface
-     */
-    public function getResult(): StatusResultInterface;
+    public function getResult(): ?StatusResultInterface;
 }

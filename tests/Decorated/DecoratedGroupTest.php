@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Tests\Decorated;
 
@@ -13,16 +13,14 @@ use Uploadcare\Configuration;
 use Uploadcare\File\File;
 use Uploadcare\Group;
 use Uploadcare\GroupCollection;
+use Uploadcare\Interfaces\Api\GroupApiInterface;
 use Uploadcare\Interfaces\Serializer\SerializerInterface;
 use Uploadcare\Security\Signature;
 use Uploadcare\Serializer\SerializerFactory;
 
 class DecoratedGroupTest extends TestCase
 {
-    /**
-     * @var SerializerInterface
-     */
-    private $serializer;
+    private SerializerInterface $serializer;
 
     protected function setUp(): void
     {
@@ -30,7 +28,7 @@ class DecoratedGroupTest extends TestCase
         $this->serializer = SerializerFactory::create();
     }
 
-    protected function fakeApi($responses = [])
+    protected function fakeApi(array $responses = []): GroupApiInterface
     {
         $handler = new MockHandler($responses);
         $client = new Client(['handler' => HandlerStack::create($handler)]);
@@ -39,7 +37,7 @@ class DecoratedGroupTest extends TestCase
         return new GroupApi($config);
     }
 
-    public function testGroupInfo()
+    public function testGroupInfo(): void
     {
         $api = $this->fakeApi([
             new Response(200, [], DataFile::contents('group/group-info-response.json')),
@@ -47,7 +45,7 @@ class DecoratedGroupTest extends TestCase
         self::assertInstanceOf(Group::class, $api->groupInfo(\uuid_create()));
     }
 
-    public function testStoreGroup()
+    public function testStoreGroup(): void
     {
         $api = $this->fakeApi([
             new Response(200),
@@ -60,7 +58,7 @@ class DecoratedGroupTest extends TestCase
         self::assertInstanceOf(Group::class, $decorated->store());
     }
 
-    public function provideMethods()
+    public function provideMethods(): array
     {
         return [
             ['getId'],
@@ -75,11 +73,9 @@ class DecoratedGroupTest extends TestCase
     /**
      * @dataProvider provideMethods
      *
-     * @param string $method
-     *
      * @throws \ReflectionException
      */
-    public function testGroupMethods($method)
+    public function testGroupMethods(string $method): void
     {
         $api = $this->fakeApi([
             new Response(200, [], DataFile::contents('group/group-info-response.json')),
@@ -92,7 +88,7 @@ class DecoratedGroupTest extends TestCase
         self::assertSame($inner->{$method}(), $group->{$method}());
     }
 
-    public function testCreateFromElements()
+    public function testCreateFromElements(): void
     {
         $serializer = SerializerFactory::create();
         $file = $serializer->deserialize(DataFile::contents('file-info.json'), File::class);
@@ -108,7 +104,7 @@ class DecoratedGroupTest extends TestCase
         self::assertInstanceOf(Group::class, $result->first());
     }
 
-    public function testElementClass()
+    public function testElementClass(): void
     {
         self::assertEquals(Group::class, GroupCollection::elementClass());
     }

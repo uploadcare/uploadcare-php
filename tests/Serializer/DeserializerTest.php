@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Tests\Serializer;
 
@@ -6,7 +6,6 @@ use Faker\Factory;
 use Faker\Generator;
 use PHPUnit\Framework\TestCase;
 use Uploadcare\File\ImageInfo;
-use Uploadcare\Interfaces\SerializableInterface;
 use Uploadcare\Interfaces\Serializer\SerializerInterface;
 use Uploadcare\Serializer\Exceptions\ConversionException;
 use Uploadcare\Serializer\Exceptions\SerializerException;
@@ -15,27 +14,19 @@ use Uploadcare\Serializer\SnackCaseConverter;
 
 class DeserializerTest extends TestCase
 {
-    /**
-     * @var Generator
-     */
-    private $faker;
+    private Generator $faker;
 
     protected function setUp(): void
     {
         $this->faker = Factory::create();
     }
 
-    /**
-     * @return SerializerInterface
-     */
-    protected function getSerializer()
+    protected function getSerializer(): SerializerInterface
     {
         return new Serializer(new SnackCaseConverter());
     }
 
     /**
-     * @param array $additionalData
-     *
      * @return string JSON with image_info data
      */
     protected function getImageInfoJson(array $additionalData = []): string

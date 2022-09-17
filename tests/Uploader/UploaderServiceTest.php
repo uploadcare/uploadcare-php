@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Tests\Uploader;
 
@@ -10,7 +10,10 @@ use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\TestCase;
 use Uploadcare\Configuration;
 use Uploadcare\Exception\InvalidArgumentException;
+use Uploadcare\Interfaces\ConfigurationInterface;
 use Uploadcare\Interfaces\File\FileInfoInterface;
+use Uploadcare\Interfaces\Serializer\SerializerInterface;
+use Uploadcare\Interfaces\UploaderInterface;
 use Uploadcare\Security\Signature;
 use Uploadcare\Serializer\SerializerFactory;
 use Uploadcare\Uploader\Uploader;
@@ -20,10 +23,7 @@ use Uploadcare\Uploader\Uploader;
  */
 class UploaderServiceTest extends TestCase
 {
-    /**
-     * @param Configuration|null $configuration
-     */
-    private function getMockUploader(Configuration $configuration = null)
+    private function getMockUploader(Configuration $configuration = null): UploaderInterface
     {
         $uploader = $this->getMockBuilder(Uploader::class)
             ->setConstructorArgs([$configuration ?: $this->getConf()])
@@ -36,19 +36,16 @@ class UploaderServiceTest extends TestCase
         return $uploader;
     }
 
-    private function getConf(ClientInterface $client = null)
+    private function getConf(ClientInterface $client = null): ConfigurationInterface
     {
         return new Configuration('demo-public-key', new Signature('demo-private-key'), $client ?: $this->mockClient(), $this->getSerializer());
     }
 
     /**
-     * @param int   $status
-     * @param array $headers
-     * @param null  $body
-     *
-     * @return ClientInterface
+     * @param int  $status
+     * @param null $body
      */
-    private function mockClient($status = 200, array $headers = [], $body = null)
+    private function mockClient($status = 200, array $headers = [], $body = null): ClientInterface
     {
         $mock = new MockHandler([
             new Response($status, $headers, $body),
@@ -57,12 +54,12 @@ class UploaderServiceTest extends TestCase
         return new Client(['handler' => HandlerStack::create($mock)]);
     }
 
-    private function getSerializer()
+    private function getSerializer(): SerializerInterface
     {
         return SerializerFactory::create();
     }
 
-    public function testCheckResourceException()
+    public function testCheckResourceException(): void
     {
         $this->expectException(InvalidArgumentException::class);
 
@@ -71,10 +68,10 @@ class UploaderServiceTest extends TestCase
         $checkResource->setAccessible(true);
         $checkResource->invokeArgs($uploader, ['string']);
 
-        $this->expectExceptionMessageRegExp('Expected resource');
+        $this->expectExceptionMessageMatches('/Expected resource/');
     }
 
-    public function testCheckExistsButNotValidResource()
+    public function testCheckExistsButNotValidResource(): void
     {
         $this->expectException(\UnexpectedValueException::class);
         $uploader = new Uploader($this->getConf());
@@ -82,10 +79,10 @@ class UploaderServiceTest extends TestCase
         $checkResource->setAccessible(true);
         $checkResource->invokeArgs($uploader, [\fopen(\dirname(__DIR__) . '/_data/empty.file.txt', 'wb')]);
 
-        $this->expectExceptionMessageRegExp('metadata parameter can be');
+        $this->expectExceptionMessageMatches('/metadata parameter can be/');
     }
 
-    public function testCheckResourceMetadataNotSet()
+    public function testCheckResourceMetadataNotSet(): void
     {
         $this->expectException(\UnexpectedValueException::class);
         $uploader = new Uploader($this->getConf());
@@ -97,10 +94,10 @@ class UploaderServiceTest extends TestCase
         ];
         $checkResourceMetadata->invokeArgs($uploader, [$metadata]);
 
-        $this->expectExceptionMessageRegExp('not exists in metadata');
+        $this->expectExceptionMessageMatches('/not exists in metadata/');
     }
 
-    public function testCheckInvalidMetadataSet()
+    public function testCheckInvalidMetadataSet(): void
     {
         $this->expectException(\UnexpectedValueException::class);
         $uploader = new Uploader($this->getConf());
@@ -114,10 +111,10 @@ class UploaderServiceTest extends TestCase
         ];
         $checkResourceMetadata->invokeArgs($uploader, [$meta]);
 
-        $this->expectExceptionMessageRegExp('metadata parameter can be');
+        $this->expectExceptionMessageMatches('/metadata parameter can be/');
     }
 
-    public function testMakeMultipartParameters()
+    public function testMakeMultipartParameters(): void
     {
         $uploader = new Uploader($this->getConf());
         $reflection = new \ReflectionObject($uploader);
@@ -140,20 +137,20 @@ class UploaderServiceTest extends TestCase
         }
     }
 
-    public function testUploadFromFileIfFileNotExists()
+    public function testUploadFromFileIfFileNotExists(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $uploader = new Uploader($this->getConf());
         $uploader->fromPath('/file/does/not/exists');
-        $this->expectExceptionMessageRegExp('Unable to read');
+        $this->expectExceptionMessageMatches('/Unable to read/');
     }
 
-    public function testUploadFromNotExistsUrl()
+    public function testUploadFromNotExistsUrl(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $url = 'http://host.does.hot.exists';
         (new Uploader($this->getConf()))->fromUrl($url);
-        $this->expectExceptionMessageRegExp('Unable to open');
+        $this->expectExceptionMessageMatches('/Unable to open/');
     }
 
     /**
@@ -161,7 +158,7 @@ class UploaderServiceTest extends TestCase
      *
      * @throws \ReflectionException
      */
-    public function testGetSizeMethod()
+    public function testGetSizeMethod(): void
     {
         $path = \dirname(__DIR__) . '/_data/file-info.json';
         $size = \filesize($path);

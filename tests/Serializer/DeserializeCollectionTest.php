@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Tests\Serializer;
 
@@ -22,7 +22,7 @@ class DeserializeCollectionTest extends TestCase
         $this->path = \dirname(__DIR__) . '/_data/file-list-api-response.json';
     }
 
-    public function testDeserializeCollection()
+    public function testDeserializeCollection(): void
     {
         $content = \file_get_contents($this->path);
         $serializer = new Serializer(new SnackCaseConverter());

@@ -9,14 +9,8 @@ use Uploadcare\Interfaces\Serializer\NameConverterInterface;
  */
 class SnackCaseConverter implements NameConverterInterface
 {
-    /**
-     * @var array
-     */
-    private $attributes;
+    private array $attributes;
 
-    /**
-     * @param array $attributes
-     */
     public function __construct(array $attributes = [])
     {
         $this->attributes = $attributes;
@@ -24,10 +18,6 @@ class SnackCaseConverter implements NameConverterInterface
 
     /**
      * Converts `attributeName` to `attribute_name`.
-     *
-     * @param string $property
-     *
-     * @return string
      */
     public function normalize(string $property): string
     {
@@ -40,10 +30,6 @@ class SnackCaseConverter implements NameConverterInterface
 
     /**
      * Converts `attribute_name` to `attributeName`.
-     *
-     * @param string $property
-     *
-     * @return string
      */
     public function denormalize(string $property): string
     {

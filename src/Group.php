@@ -1,37 +1,23 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Uploadcare;
 
-use Uploadcare\Apis\FileApi;
-use Uploadcare\Apis\GroupApi;
-use Uploadcare\Interfaces\ConfigurationInterface;
+use Uploadcare\Apis\{FileApi, GroupApi};
+use Uploadcare\Exception\HttpException;
 use Uploadcare\Interfaces\File\CollectionInterface;
-use Uploadcare\Interfaces\GroupInterface;
+use Uploadcare\Interfaces\{ConfigurationInterface, GroupInterface};
 
 /**
  * Decorated Group.
  */
 final class Group implements GroupInterface
 {
-    /**
-     * @var GroupInterface
-     */
-    private $inner;
+    private GroupInterface $inner;
 
-    /**
-     * @var GroupApi
-     */
-    private $api;
+    private GroupApi $api;
 
-    /**
-     * @var ConfigurationInterface|null
-     */
-    private $configuration;
+    private ?ConfigurationInterface $configuration = null;
 
-    /**
-     * @param GroupInterface $inner
-     * @param GroupApi       $api
-     */
     public function __construct(GroupInterface $inner, GroupApi $api)
     {
         $this->inner = $inner;
@@ -47,15 +33,19 @@ final class Group implements GroupInterface
 
     public function store(): GroupInterface
     {
-        return $this->api->storeGroup($this->inner->getId());
+        if (($id = $this->inner->getId()) === null) {
+            throw new HttpException();
+        }
+
+        return $this->api->storeGroup($id);
     }
 
-    public function getId(): string
+    public function getId(): ?string
     {
         return $this->inner->getId();
     }
 
-    public function getDatetimeCreated(): \DateTimeInterface
+    public function getDatetimeCreated(): ?\DateTimeInterface
     {
         return $this->inner->getDatetimeCreated();
     }

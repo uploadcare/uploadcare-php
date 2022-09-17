@@ -14,12 +14,9 @@ class MultipartStartResponse implements SerializableInterface
     /**
      * @var array|MultipartPreSignedUrl[]
      */
-    private $parts = [];
+    private array $parts = [];
 
-    /**
-     * @var string
-     */
-    private $uuid;
+    private ?string $uuid = null;
 
     /**
      * @return array|string[]
@@ -32,17 +29,12 @@ class MultipartStartResponse implements SerializableInterface
         ];
     }
 
-    /**
-     * @return string
-     */
-    public function getUuid(): string
+    public function getUuid(): ?string
     {
         return $this->uuid;
     }
 
     /**
-     * @param string $uuid
-     *
      * @return $this
      */
     public function setUuid(string $uuid): self
@@ -74,11 +66,6 @@ class MultipartStartResponse implements SerializableInterface
         return $this;
     }
 
-    /**
-     * @param string $part
-     *
-     * @return MultipartStartResponse
-     */
     public function addPart(string $part): self
     {
         if (empty($part)) {

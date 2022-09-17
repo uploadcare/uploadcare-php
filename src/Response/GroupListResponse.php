@@ -4,6 +4,7 @@ namespace Uploadcare\Response;
 
 use Uploadcare\File\GroupCollection;
 use Uploadcare\Interfaces\File\CollectionInterface;
+use Uploadcare\Interfaces\GroupInterface;
 use Uploadcare\Interfaces\Response\ListResponseInterface;
 use Uploadcare\Interfaces\SerializableInterface;
 
@@ -12,30 +13,18 @@ use Uploadcare\Interfaces\SerializableInterface;
  */
 final class GroupListResponse implements ListResponseInterface, SerializableInterface
 {
-    /**
-     * @var string|null
-     */
-    private $next;
+    private ?string $next = null;
 
-    /**
-     * @var string|null
-     */
-    private $previous;
+    private ?string $previous = null;
 
-    /**
-     * @var int
-     */
-    private $total;
+    private int $total = 0;
 
-    /**
-     * @var int
-     */
-    private $perPage;
+    private int $perPage = 10;
 
     /**
      * @var CollectionInterface|GroupCollection
      */
-    private $results;
+    private CollectionInterface $results;
 
     public static function rules(): array
     {
@@ -53,19 +42,11 @@ final class GroupListResponse implements ListResponseInterface, SerializableInte
         $this->results = new GroupCollection();
     }
 
-    /**
-     * @return string|null
-     */
     public function getNext(): ?string
     {
         return $this->next;
     }
 
-    /**
-     * @param string|null $next
-     *
-     * @return GroupListResponse
-     */
     public function setNext(?string $next): self
     {
         $this->next = $next;
@@ -73,19 +54,11 @@ final class GroupListResponse implements ListResponseInterface, SerializableInte
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getPrevious(): ?string
     {
         return $this->previous;
     }
 
-    /**
-     * @param string|null $previous
-     *
-     * @return GroupListResponse
-     */
     public function setPrevious(?string $previous): self
     {
         $this->previous = $previous;
@@ -93,19 +66,11 @@ final class GroupListResponse implements ListResponseInterface, SerializableInte
         return $this;
     }
 
-    /**
-     * @return int
-     */
     public function getTotal(): int
     {
         return $this->total;
     }
 
-    /**
-     * @param int $total
-     *
-     * @return GroupListResponse
-     */
     public function setTotal(int $total): self
     {
         $this->total = $total;
@@ -113,19 +78,11 @@ final class GroupListResponse implements ListResponseInterface, SerializableInte
         return $this;
     }
 
-    /**
-     * @return int
-     */
     public function getPerPage(): int
     {
         return $this->perPage;
     }
 
-    /**
-     * @param int $perPage
-     *
-     * @return GroupListResponse
-     */
     public function setPerPage(int $perPage): self
     {
         $this->perPage = $perPage;
@@ -133,15 +90,12 @@ final class GroupListResponse implements ListResponseInterface, SerializableInte
         return $this;
     }
 
-    /**
-     * @return CollectionInterface
-     */
     public function getResults(): CollectionInterface
     {
         return $this->results;
     }
 
-    public function addResult($result): self
+    public function addResult(GroupInterface $result = null): self
     {
         if ($result !== null && !$this->results->contains($result)) {
             $this->results->add($result);
@@ -150,11 +104,6 @@ final class GroupListResponse implements ListResponseInterface, SerializableInte
         return $this;
     }
 
-    /**
-     * @param CollectionInterface $results
-     *
-     * @return GroupListResponse
-     */
     public function setResults(CollectionInterface $results): self
     {
         $this->results = $results;

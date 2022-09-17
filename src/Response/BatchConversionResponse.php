@@ -5,8 +5,7 @@ namespace Uploadcare\Response;
 use Uploadcare\Conversion\ConvertedCollection;
 use Uploadcare\Conversion\ConvertedItem;
 use Uploadcare\Interfaces\File\CollectionInterface;
-use Uploadcare\Interfaces\Response\BatchResponseInterface;
-use Uploadcare\Interfaces\Response\ResponseProblemInterface;
+use Uploadcare\Interfaces\Response\{BatchResponseInterface, ResponseProblemInterface};
 use Uploadcare\Interfaces\SerializableInterface;
 
 /**
@@ -17,7 +16,7 @@ final class BatchConversionResponse implements BatchResponseInterface, Serializa
     /**
      * @var ResponseProblemInterface[]
      */
-    private $problems;
+    private array $problems = [];
 
     /**
      * @var CollectionInterface
@@ -26,7 +25,6 @@ final class BatchConversionResponse implements BatchResponseInterface, Serializa
 
     public function __construct()
     {
-        $this->problems = [];
         $this->result = new ConvertedCollection();
     }
 

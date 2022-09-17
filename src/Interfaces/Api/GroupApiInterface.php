@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Uploadcare\Interfaces\Api;
 
@@ -11,19 +11,10 @@ use Uploadcare\Interfaces\Response\ListResponseInterface;
  */
 interface GroupApiInterface
 {
-    /**
-     * @param ListResponseInterface $response
-     *
-     * @return ListResponseInterface|null
-     */
-    public function nextPage(ListResponseInterface $response);
+    public function nextPage(ListResponseInterface $response): ?ListResponseInterface;
 
     /**
      * Create file group.
-     *
-     * @param iterable $files
-     *
-     * @return GroupInterface
      *
      * @throws HttpException
      */
@@ -31,11 +22,6 @@ interface GroupApiInterface
 
     /**
      * Get a paginated list of groups.
-     *
-     * @param int  $limit
-     * @param bool $asc
-     *
-     * @return ListResponseInterface
      */
     public function listGroups(int $limit, bool $asc = true): ListResponseInterface;
 
@@ -43,8 +29,6 @@ interface GroupApiInterface
      * Get a file group by UUID.
      *
      * @param string $id Group UUID
-     *
-     * @return GroupInterface
      *
      * @throws HttpException
      */
@@ -54,8 +38,6 @@ interface GroupApiInterface
      * Mark all files in a group as stored.
      *
      * @param string|GroupInterface $id Group UUID
-     *
-     * @return GroupInterface
      *
      * @throws HttpException
      */

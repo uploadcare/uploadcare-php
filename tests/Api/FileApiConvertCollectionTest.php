@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Tests\Api;
 
@@ -11,19 +11,12 @@ use Uploadcare\Interfaces\ConfigurationInterface;
 
 class FileApiConvertCollectionTest extends TestCase
 {
-    /**
-     * @return \PHPUnit_Framework_MockObject_MockObject|FileApi
-     */
-    protected function getFileApi()
+    protected function getFileApi(): FileApi
     {
         return new FileApi($this->getMockBuilder(ConfigurationInterface::class)->getMock());
     }
 
     /**
-     * @param FileApi $api
-     *
-     * @return \ReflectionMethod
-     *
      * @throws \ReflectionException
      */
     protected function getConvertCollection(FileApi $api): \ReflectionMethod
@@ -83,6 +76,6 @@ class FileApiConvertCollectionTest extends TestCase
         $convertCollection = $this->getConvertCollection($api);
 
         $convertCollection->invokeArgs($api, [$item]);
-        $this->expectExceptionMessageRegExp('must be an instance of');
+        $this->expectExceptionMessageMatches('/must be an instance of/');
     }
 }

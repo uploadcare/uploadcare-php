@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Tests\File;
 
@@ -9,7 +9,7 @@ use Uploadcare\Interfaces\File\ImageInfoInterface;
 
 class ImageInfoTest extends TestCase
 {
-    public function provideMethods()
+    public function provideMethods(): array
     {
         return [
             ['setColorMode', 'getColorMode', 'RGBA'],
@@ -26,12 +26,8 @@ class ImageInfoTest extends TestCase
 
     /**
      * @dataProvider provideMethods
-     *
-     * @param string $setter
-     * @param string $getter
-     * @param mixed  $value
      */
-    public function testMethods($setter, $getter, $value)
+    public function testMethods(string $setter, string $getter, $value): void
     {
         $item = new ImageInfo();
         $this->assertInstanceOf(ImageInfoInterface::class, $item->{$setter}($value));

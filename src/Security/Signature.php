@@ -2,20 +2,13 @@
 
 namespace Uploadcare\Security;
 
-use Uploadcare\Interfaces\SignatureInterface;
-use Uploadcare\Interfaces\UploadcareAuthInterface;
+use Uploadcare\Interfaces\{SignatureInterface, UploadcareAuthInterface};
 
 class Signature implements SignatureInterface
 {
-    /**
-     * @var string
-     */
-    private $secretKey;
+    private string $secretKey;
 
-    /**
-     * @var \DateTimeInterface
-     */
-    private $expired;
+    private \DateTimeInterface $expired;
 
     /**
      * @param string   $secretKey Uploadcare private key
@@ -32,9 +25,6 @@ class Signature implements SignatureInterface
         $this->expired = \date_create()->setTimestamp($ts);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getSignature(): string
     {
         $signString = $this->getExpire()->getTimestamp();
@@ -42,9 +32,6 @@ class Signature implements SignatureInterface
         return \hash_hmac(SignatureInterface::SIGN_ALGORITHM, (string) $signString, $this->secretKey);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getExpire(): \DateTimeInterface
     {
         return $this->expired;

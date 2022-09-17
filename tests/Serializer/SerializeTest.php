@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Tests\Serializer;
 
@@ -11,17 +11,15 @@ use Uploadcare\File\GeoLocation;
 use Uploadcare\File\ImageInfo;
 use Uploadcare\File\Video;
 use Uploadcare\File\VideoInfo;
+use Uploadcare\Interfaces\Serializer\SerializerInterface;
 use Uploadcare\Serializer\Serializer;
 use Uploadcare\Serializer\SnackCaseConverter;
 
 class SerializeTest extends TestCase
 {
-    /**
-     * @var Generator
-     */
-    private $faker;
+    private Generator $faker;
 
-    private $serializer;
+    private SerializerInterface $serializer;
 
     protected function setUp(): void
     {
@@ -29,10 +27,7 @@ class SerializeTest extends TestCase
         $this->serializer = new Serializer(new SnackCaseConverter());
     }
 
-    /**
-     * @return File
-     */
-    protected function makeFile()
+    protected function makeFile(): File
     {
         $geo = (new GeoLocation())
             ->setLatitude($this->faker->latitude)
@@ -66,7 +61,7 @@ class SerializeTest extends TestCase
         ;
     }
 
-    public function testNormalize()
+    public function testNormalize(): void
     {
         $file = $this->makeFile();
 
@@ -83,7 +78,7 @@ class SerializeTest extends TestCase
         self::assertEquals($result['is_image'], $file->isImage());
     }
 
-    public function testSerializeMethod()
+    public function testSerializeMethod(): void
     {
         $file = $this->makeFile();
         $result = $this->serializer->serialize($file);
@@ -93,7 +88,7 @@ class SerializeTest extends TestCase
         self::assertStringContainsString('color_mode', $result);
     }
 
-    public function testVariationsArray()
+    public function testVariationsArray(): void
     {
         $file = $this->makeFile();
         $variations = [
@@ -112,7 +107,7 @@ class SerializeTest extends TestCase
         self::assertSame($variations, $result['variations']);
     }
 
-    public function testVideoInfo()
+    public function testVideoInfo(): void
     {
         $file = $this->makeFile();
         $video = (new Video())

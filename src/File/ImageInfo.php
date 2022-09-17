@@ -2,8 +2,7 @@
 
 namespace Uploadcare\File;
 
-use Uploadcare\Interfaces\File\GeoLocationInterface;
-use Uploadcare\Interfaces\File\ImageInfoInterface;
+use Uploadcare\Interfaces\File\{GeoLocationInterface, ImageInfoInterface};
 use Uploadcare\Interfaces\SerializableInterface;
 
 /**
@@ -11,50 +10,19 @@ use Uploadcare\Interfaces\SerializableInterface;
  */
 final class ImageInfo implements ImageInfoInterface, SerializableInterface
 {
-    /**
-     * @var string|null
-     */
-    private $colorMode;
-
-    /**
-     * @var int|null
-     */
-    private $orientation;
-
-    /**
-     * @var string|null
-     */
-    private $format;
-
-    /**
-     * @var bool
-     */
-    private $isSequence;
-
-    /**
-     * @var int|null
-     */
-    private $height;
-
-    /**
-     * @var int|null
-     */
-    private $width;
-
-    /**
-     * @var GeoLocationInterface|null
-     */
-    private $geoLocation;
-
-    /**
-     * @var \DateTimeInterface|null
-     */
-    private $datetimeOriginal;
+    private ?string $colorMode = null;
+    private ?int $orientation = null;
+    private ?string $format = null;
+    private bool $isSequence = false;
+    private ?int $height = null;
+    private ?int $width = null;
+    private ?GeoLocationInterface $geoLocation = null;
+    private ?\DateTimeInterface $datetimeOriginal = null;
 
     /**
      * @var array<array-key, int>|null
      */
-    private $dpi;
+    private ?array $dpi = null;
 
     public static function rules(): array
     {
@@ -71,19 +39,11 @@ final class ImageInfo implements ImageInfoInterface, SerializableInterface
         ];
     }
 
-    /**
-     * @return string|null
-     */
     public function getColorMode(): ?string
     {
         return $this->colorMode;
     }
 
-    /**
-     * @param string|null $colorMode
-     *
-     * @return ImageInfo
-     */
     public function setColorMode(?string $colorMode): self
     {
         $this->colorMode = $colorMode;
@@ -91,19 +51,11 @@ final class ImageInfo implements ImageInfoInterface, SerializableInterface
         return $this;
     }
 
-    /**
-     * @return int|null
-     */
     public function getOrientation(): ?int
     {
         return $this->orientation;
     }
 
-    /**
-     * @param int|null $orientation
-     *
-     * @return ImageInfo
-     */
     public function setOrientation(?int $orientation): self
     {
         $this->orientation = $orientation;
@@ -111,19 +63,11 @@ final class ImageInfo implements ImageInfoInterface, SerializableInterface
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getFormat(): ?string
     {
         return $this->format;
     }
 
-    /**
-     * @param string|null $format
-     *
-     * @return ImageInfo
-     */
     public function setFormat(?string $format): self
     {
         $this->format = $format;
@@ -131,19 +75,11 @@ final class ImageInfo implements ImageInfoInterface, SerializableInterface
         return $this;
     }
 
-    /**
-     * @return bool
-     */
     public function isSequence(): bool
     {
         return $this->isSequence;
     }
 
-    /**
-     * @param bool $isSequence
-     *
-     * @return ImageInfo
-     */
     public function setIsSequence(bool $isSequence): self
     {
         $this->isSequence = $isSequence;
@@ -151,19 +87,11 @@ final class ImageInfo implements ImageInfoInterface, SerializableInterface
         return $this;
     }
 
-    /**
-     * @return int|null
-     */
     public function getHeight(): ?int
     {
         return $this->height;
     }
 
-    /**
-     * @param int|null $height
-     *
-     * @return ImageInfo
-     */
     public function setHeight(?int $height): self
     {
         $this->height = $height;
@@ -171,19 +99,11 @@ final class ImageInfo implements ImageInfoInterface, SerializableInterface
         return $this;
     }
 
-    /**
-     * @return int|null
-     */
     public function getWidth(): ?int
     {
         return $this->width;
     }
 
-    /**
-     * @param int|null $width
-     *
-     * @return ImageInfo
-     */
     public function setWidth(?int $width): self
     {
         $this->width = $width;
@@ -191,19 +111,11 @@ final class ImageInfo implements ImageInfoInterface, SerializableInterface
         return $this;
     }
 
-    /**
-     * @return GeoLocationInterface|null
-     */
     public function getGeoLocation(): ?GeoLocationInterface
     {
         return $this->geoLocation;
     }
 
-    /**
-     * @param GeoLocationInterface|null $geoLocation
-     *
-     * @return ImageInfo
-     */
     public function setGeoLocation(?GeoLocationInterface $geoLocation): self
     {
         $this->geoLocation = $geoLocation;
@@ -211,19 +123,11 @@ final class ImageInfo implements ImageInfoInterface, SerializableInterface
         return $this;
     }
 
-    /**
-     * @return \DateTimeInterface|null
-     */
     public function getDatetimeOriginal(): ?\DateTimeInterface
     {
         return $this->datetimeOriginal;
     }
 
-    /**
-     * @param \DateTimeInterface|null $datetimeOriginal
-     *
-     * @return ImageInfo
-     */
     public function setDatetimeOriginal(?\DateTimeInterface $datetimeOriginal): self
     {
         $this->datetimeOriginal = $datetimeOriginal;
@@ -239,11 +143,6 @@ final class ImageInfo implements ImageInfoInterface, SerializableInterface
         return $this->dpi;
     }
 
-    /**
-     * @param array|null $dpi
-     *
-     * @return ImageInfo
-     */
     public function setDpi(?array $dpi): self
     {
         $this->dpi = $dpi;

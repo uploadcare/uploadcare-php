@@ -2,25 +2,17 @@
 
 namespace Uploadcare;
 
-use Uploadcare\Apis\FileApi;
 use Uploadcare\File\AbstractCollection;
-use Uploadcare\Interfaces\File\CollectionInterface;
-use Uploadcare\Interfaces\File\FileInfoInterface;
+use Uploadcare\Interfaces\Api\FileApiInterface;
+use Uploadcare\Interfaces\File\{CollectionInterface, FileInfoInterface};
 use Uploadcare\Interfaces\Response\BatchResponseInterface;
 
 final class FileCollection extends AbstractCollection
 {
-    /**
-     * @var File\FileCollection|CollectionInterface
-     */
-    private $inner;
+    private CollectionInterface $inner;
+    private FileApiInterface $api;
 
-    /**
-     * @var FileApi
-     */
-    private $api;
-
-    public function __construct(CollectionInterface $inner, FileApi $api)
+    public function __construct(CollectionInterface $inner, FileApiInterface $api)
     {
         $this->elements = [];
         $this->inner = $inner;

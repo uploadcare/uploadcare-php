@@ -24,8 +24,6 @@ class MultipartPreSignedUrl implements SerializableInterface
     }
 
     /**
-     * @param string $url
-     *
      * @return $this
      */
     public function setUrl(string $url): self
@@ -35,9 +33,6 @@ class MultipartPreSignedUrl implements SerializableInterface
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getUrl(): string
     {
         return $this->url;

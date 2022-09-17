@@ -24,15 +24,6 @@ interface ConfigurationInterface
 
     public function getSerializer(): SerializerInterface;
 
-    /**
-     * @param string                  $method
-     * @param string                  $uri
-     * @param string                  $data
-     * @param string                  $contentType
-     * @param \DateTimeInterface|null $date
-     *
-     * @return array
-     */
     public function getAuthHeaders(string $method, string $uri, string $data, string $contentType = 'application/json', ?\DateTimeInterface $date = null): array;
 
     public function getAuthUrlConfig(): ?AuthUrlConfigInterface;

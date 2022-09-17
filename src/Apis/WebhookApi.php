@@ -5,10 +5,8 @@ namespace Uploadcare\Apis;
 use Uploadcare\Interfaces\Api\WebhookApiInterface;
 use Uploadcare\Interfaces\File\CollectionInterface;
 use Uploadcare\Interfaces\Response\WebhookInterface;
-use Uploadcare\Response\WebhookCollection;
-use Uploadcare\Response\WebhookResponse as Webhook;
-use Uploadcare\Webhook as WebhookDecorator;
-use Uploadcare\WebhookCollection as WebhookCollectionDecorator;
+use Uploadcare\Response\{WebhookCollection, WebhookResponse as Webhook};
+use Uploadcare\{Webhook as WebhookDecorator, WebhookCollection as WebhookCollectionDecorator};
 
 final class WebhookApi extends AbstractApi implements WebhookApiInterface
 {
@@ -23,8 +21,14 @@ final class WebhookApi extends AbstractApi implements WebhookApiInterface
 
         $result = new WebhookCollection();
         foreach ($webhooks as $webhook) {
+            try {
+                $webhookString = \json_encode($webhook, JSON_THROW_ON_ERROR);
+            } catch (\Throwable $e) {
+                continue;
+            }
+
             $obj = $this->configuration->getSerializer()
-                ->deserialize(\json_encode($webhook), Webhook::class);
+                ->deserialize($webhookString, Webhook::class);
 
             if ($obj instanceof Webhook) {
                 $result->add($obj);
@@ -42,14 +46,19 @@ final class WebhookApi extends AbstractApi implements WebhookApiInterface
         if ($signingSecret !== null) {
             $signingSecret = \substr($signingSecret, 0, 32);
         }
-
-        $response = $this->request('POST', 'webhooks/', [
-            'body' => \json_encode([
+        try {
+            $requestBody = \json_encode([
                 'target_url' => $targetUrl,
                 'event' => $event,
                 'is_active' => $isActive,
                 'signing_secret' => $signingSecret,
-            ]),
+            ], JSON_THROW_ON_ERROR);
+        } catch (\Throwable $e) {
+            throw new \RuntimeException($e->getMessage());
+        }
+
+        $response = $this->request('POST', 'webhooks/', [
+            'body' => $requestBody,
         ]);
 
         $webhook = $this->configuration->getSerializer()
@@ -82,8 +91,14 @@ final class WebhookApi extends AbstractApi implements WebhookApiInterface
             $data['signing_secret'] = $parameters['signing_secret'];
         }
 
+        try {
+            $requestBody = \json_encode($data, JSON_THROW_ON_ERROR);
+        } catch (\Throwable $e) {
+            throw new \RuntimeException($e->getMessage());
+        }
+
         $response = $this->request('PUT', $uri, [
-            'body' => \json_encode($data),
+            'body' => $requestBody,
         ]);
 
         $result = $this->configuration->getSerializer()
@@ -101,8 +116,14 @@ final class WebhookApi extends AbstractApi implements WebhookApiInterface
      */
     public function deleteWebhook(string $targetUrl): bool
     {
+        try {
+            $requestBody = \json_encode(['target_url' => $targetUrl], JSON_THROW_ON_ERROR);
+        } catch (\Throwable $e) {
+            return false;
+        }
+
         $response = $this->request('DELETE', 'webhooks/unsubscribe/', [
-            'body' => \json_encode(['target_url' => $targetUrl]),
+            'body' => $requestBody,
         ]);
 
         return $response->getStatusCode() === 204;

@@ -16,7 +16,7 @@ abstract class AbstractCollection implements CollectionInterface
     /**
      * @var array<TKey,T>
      */
-    protected $elements = [];
+    protected array $elements = [];
 
     /**
      * @return \Traversable
@@ -63,7 +63,6 @@ abstract class AbstractCollection implements CollectionInterface
     }
 
     /**
-     * @param mixed $element
      * @psalm-suppress InvalidPropertyAssignmentValue
      *
      * @return true
@@ -77,7 +76,7 @@ abstract class AbstractCollection implements CollectionInterface
 
     /**
      * @param int|string $key
-     * @param mixed      $value
+     *
      * @psalm-suppress InvalidPropertyAssignmentValue
      */
     public function set($key, $value): void

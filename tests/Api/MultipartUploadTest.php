@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Tests\Api;
 
@@ -7,6 +7,7 @@ use GuzzleHttp\Exception\TooManyRedirectsException;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Psr7\Utils;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Tests\DataFile;
 use Uploadcare\Configuration;
@@ -22,12 +23,7 @@ class MultipartUploadTest extends TestCase
         return Configuration::create('public-key', 'private-key');
     }
 
-    /**
-     * @param array $methods
-     *
-     * @return \PHPUnit_Framework_MockObject_MockObject|Uploader
-     */
-    protected function getMockUploader(array $methods = [])
+    protected function getMockUploader(array $methods = []): MockObject
     {
         return $this->getMockBuilder(Uploader::class)
             ->setConstructorArgs([$this->getConfiguration()])
@@ -66,7 +62,7 @@ class MultipartUploadTest extends TestCase
 
         $this->expectException(RequestParametersException::class);
         $startUpload->invokeArgs($uploader, [100, 'text/html', 'no-name', 'auto']);
-        $this->expectExceptionMessageRegExp('Wrong request');
+        $this->expectExceptionMessageMatches('/Wrong request/');
     }
 
     public function testExceptionInUploadPartsMethod(): void
@@ -87,7 +83,7 @@ class MultipartUploadTest extends TestCase
 
         $this->expectException(RequestParametersException::class);
         $uploadParts->invokeArgs($uploader, [$mr, $handle]);
-        $this->expectExceptionMessageRegExp('Bad request');
+        $this->expectExceptionMessageMatches('/Bad request/');
     }
 
     public function testExceptionInFinishUpload(): void
@@ -107,6 +103,6 @@ class MultipartUploadTest extends TestCase
 
         $this->expectException(HttpException::class);
         $finishUpload->invokeArgs($uploader, [$mr]);
-        $this->expectExceptionMessageRegExp('Unable to finish multipart-upload request');
+        $this->expectExceptionMessageMatches('/Unable to finish multipart-upload request/');
     }
 }

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Tests;
 
@@ -12,10 +12,7 @@ use Uploadcare\Interfaces\SignatureInterface;
  */
 class SecureAuthTest extends TestCase
 {
-    /**
-     * @var Configuration
-     */
-    private $config;
+    private Configuration $config;
 
     protected function setUp(): void
     {
@@ -23,7 +20,7 @@ class SecureAuthTest extends TestCase
         $this->config = Configuration::create($_ENV['UPLOADCARE_PUBLIC_KEY'], $_ENV['UPLOADCARE_PRIVATE_KEY']);
     }
 
-    public function testListFilesRequest()
+    public function testListFilesRequest(): void
     {
         self::assertInstanceOf(SignatureInterface::class, $this->config->getSecureSignature());
 

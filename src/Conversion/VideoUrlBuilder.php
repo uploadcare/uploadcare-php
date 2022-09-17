@@ -6,27 +6,18 @@ use Uploadcare\Interfaces\Conversion\VideoEncodingRequestInterface;
 
 final class VideoUrlBuilder
 {
-    /**
-     * @var VideoEncodingRequestInterface
-     */
-    private $request;
-
-    private $result = '/video';
+    private VideoEncodingRequestInterface $request;
+    private string $result = '/video';
 
     /**
      * Video Url Builder.
      * One rule: no slashes after method result.
-     *
-     * @param VideoEncodingRequestInterface $request
      */
     public function __construct(VideoEncodingRequestInterface $request)
     {
         $this->request = $request;
     }
 
-    /**
-     * @return string
-     */
     public function __invoke(): string
     {
         return $this->result
@@ -38,17 +29,11 @@ final class VideoUrlBuilder
             . '/';
     }
 
-    /**
-     * @return string
-     */
     private function thumbsPart(): string
     {
         return \sprintf('/-/thumbs~%s', $this->request->getThumbs());
     }
 
-    /**
-     * @return string
-     */
     private function cutPart(): string
     {
         if (($start = $this->request->getStartTime()) === null) {
@@ -63,17 +48,11 @@ final class VideoUrlBuilder
         return \sprintf('/-/cut/%s/%s', $start, $end);
     }
 
-    /**
-     * @return string
-     */
     private function formatPart(): string
     {
         return \sprintf('/-/format/%s', $this->request->getTargetFormat());
     }
 
-    /**
-     * @return string
-     */
     private function qualityPart(): string
     {
         if (($quality = $this->request->getQuality()) === null) {
@@ -83,9 +62,6 @@ final class VideoUrlBuilder
         return \sprintf('/-/quality/%s', $quality);
     }
 
-    /**
-     * @return string
-     */
     public function resizePart(): string
     {
         $hSize = $this->request->getHorizontalSize();

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Tests\Serializer;
 
@@ -14,19 +14,11 @@ use Uploadcare\Serializer\SnackCaseConverter;
 
 class DeserializerEdgeCasesTest extends TestCase
 {
-    /**
-     * @var string
-     */
-    private $startResponse;
+    private string $startResponse;
 
-    /**
-     * @var string
-     */
-    private $example;
-    /**
-     * @var string
-     */
-    private $tz = 'UTC';
+    private string $example;
+
+    private string $tz = 'UTC';
 
     protected function setUp(): void
     {
@@ -40,15 +32,12 @@ class DeserializerEdgeCasesTest extends TestCase
         \ini_set('date.timezone', $this->tz);
     }
 
-    /**
-     * @return SerializerInterface
-     */
-    protected function getSerializer()
+    protected function getSerializer(): SerializerInterface
     {
         return new Serializer(new SnackCaseConverter());
     }
 
-    protected function getImageInfoString()
+    protected function getImageInfoString(): string
     {
         $data = \file_get_contents($this->example);
         $imageInfo = \json_decode($data, true)['image_info'];
@@ -56,7 +45,7 @@ class DeserializerEdgeCasesTest extends TestCase
         return \json_encode($imageInfo);
     }
 
-    public function testNoClassGiven()
+    public function testNoClassGiven(): void
     {
         $data = \file_get_contents($this->startResponse);
         $result = $this->getSerializer()->deserialize($data);
@@ -64,23 +53,23 @@ class DeserializerEdgeCasesTest extends TestCase
         self::assertArrayHasKey('parts', $result);
     }
 
-    public function testInvalidClassGiven()
+    public function testInvalidClassGiven(): void
     {
         $this->expectException(ClassNotFoundException::class);
         $data = \file_get_contents($this->example);
         $this->getSerializer()->deserialize($data, 'Class\\Does\\Not\\Exists');
-        $this->expectExceptionMessageRegExp('not found');
+        $this->expectExceptionMessageMatches('/not found/');
     }
 
-    public function testInvalidDataGiven()
+    public function testInvalidDataGiven(): void
     {
         $this->expectException(ConversionException::class);
         $data = \substr(\file_get_contents($this->example), 2, 155);
         $this->getSerializer()->deserialize($data, File::class);
-        $this->expectExceptionMessageRegExp('Unable to decode given value');
+        $this->expectExceptionMessageMatches('/Unable to decode given value/');
     }
 
-    public function testExcludeProperty()
+    public function testExcludeProperty(): void
     {
         /** @var ImageInfo $result */
         $result = $this->getSerializer()->deserialize($this->getImageInfoString(), ImageInfo::class, [
@@ -90,33 +79,7 @@ class DeserializerEdgeCasesTest extends TestCase
         self::assertEmpty($result->getColorMode());
     }
 
-    /**
-     * @requires PHP 5.6
-     *
-     * @throws \ReflectionException
-     */
-    public function testDenormalizeDateWithoutTimezone()
-    {
-        $throws = 'PHPUnit_Framework_Error_Warning';
-        if (\class_exists('PHPUnit\\Framework\\Error\\Warning')) {
-            $throws = 'PHPUnit\\Framework\\Error\\Warning';
-        }
-        if (PHP_MAJOR_VERSION <= 5) {
-            $this->expectException($throws);
-        }
-
-        $serializer = $this->getSerializer();
-        $denormalizeDate = (new \ReflectionObject($serializer))->getMethod('denormalizeDate');
-        $denormalizeDate->setAccessible(true);
-        \ini_set('date.timezone', null);
-        $result = $denormalizeDate->invokeArgs($serializer, [\date_create()->format('Y-m-d\TH:i:s.u\Z')]);
-        if (PHP_MAJOR_VERSION <= 5) {
-            $this->expectOutputString('You should set your date.timezone in php.ini');
-        }
-        self::assertInstanceOf(\DateTime::class, $result);
-    }
-
-    public function testDenormalizeWrongDate()
+    public function testDenormalizeWrongDate(): void
     {
         $this->expectException(ConversionException::class);
 
@@ -127,7 +90,7 @@ class DeserializerEdgeCasesTest extends TestCase
         $denormalizeDate->invokeArgs($serializer, ['not-a-valid-date']);
     }
 
-    public function testValidateNotValidClass()
+    public function testValidateNotValidClass(): void
     {
         $this->expectException(SerializerException::class);
         $serializer = $this->getSerializer();

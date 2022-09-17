@@ -10,30 +10,11 @@ use Uploadcare\Interfaces\SerializableInterface;
  */
 final class Video implements VideoInterface, SerializableInterface
 {
-    /**
-     * @var int
-     */
-    private $height;
-
-    /**
-     * @var int
-     */
-    private $width;
-
-    /**
-     * @var float
-     */
-    private $frameRate;
-
-    /**
-     * @var int
-     */
-    private $bitrate;
-
-    /**
-     * @var string
-     */
-    private $codec;
+    private int $height = 0;
+    private int $width = 0;
+    private float $frameRate = .0;
+    private int $bitrate = 0;
+    private ?string $codec = null;
 
     /**
      * {@inheritDoc}
@@ -49,19 +30,11 @@ final class Video implements VideoInterface, SerializableInterface
         ];
     }
 
-    /**
-     * @return int
-     */
     public function getHeight(): int
     {
         return $this->height;
     }
 
-    /**
-     * @param int $height
-     *
-     * @return Video
-     */
     public function setHeight(int $height): self
     {
         $this->height = $height;
@@ -69,19 +42,11 @@ final class Video implements VideoInterface, SerializableInterface
         return $this;
     }
 
-    /**
-     * @return int
-     */
     public function getWidth(): int
     {
         return $this->width;
     }
 
-    /**
-     * @param int $width
-     *
-     * @return Video
-     */
     public function setWidth(int $width): self
     {
         $this->width = $width;
@@ -89,19 +54,11 @@ final class Video implements VideoInterface, SerializableInterface
         return $this;
     }
 
-    /**
-     * @return float
-     */
     public function getFrameRate(): float
     {
         return $this->frameRate;
     }
 
-    /**
-     * @param float $frameRate
-     *
-     * @return Video
-     */
     public function setFrameRate(float $frameRate): self
     {
         $this->frameRate = $frameRate;
@@ -109,19 +66,11 @@ final class Video implements VideoInterface, SerializableInterface
         return $this;
     }
 
-    /**
-     * @return int
-     */
     public function getBitrate(): int
     {
         return $this->bitrate;
     }
 
-    /**
-     * @param int $bitrate
-     *
-     * @return Video
-     */
     public function setBitrate(int $bitrate): self
     {
         $this->bitrate = $bitrate;
@@ -132,16 +81,11 @@ final class Video implements VideoInterface, SerializableInterface
     /**
      * @return string
      */
-    public function getCodec(): string
+    public function getCodec(): ?string
     {
         return $this->codec;
     }
 
-    /**
-     * @param string $codec
-     *
-     * @return Video
-     */
     public function setCodec(string $codec): self
     {
         $this->codec = $codec;

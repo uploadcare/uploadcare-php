@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Tests\Api;
 
@@ -13,7 +13,7 @@ use Uploadcare\Configuration;
 use Uploadcare\File\File;
 use Uploadcare\File\FileCollection;
 use Uploadcare\File\Group;
-use Uploadcare\Interfaces\File\CollectionInterface;
+use Uploadcare\Interfaces\ConfigurationInterface;
 use Uploadcare\Interfaces\GroupInterface;
 use Uploadcare\Response\GroupListResponse;
 use Uploadcare\Security\Signature;
@@ -22,7 +22,7 @@ use Uploadcare\Serializer\SnackCaseConverter;
 
 class GroupApiAnswersTest extends TestCase
 {
-    protected function getConfig(array $responses)
+    protected function getConfig(array $responses): ConfigurationInterface
     {
         $handler = new MockHandler($responses);
         $stack = HandlerStack::create($handler);
@@ -36,41 +36,37 @@ class GroupApiAnswersTest extends TestCase
         );
     }
 
-    public function testCreateGroupWithArray()
+    public function testCreateGroupWithArray(): void
     {
         $conf = $this->getConfig([new Response(200, [], DataFile::contents('group/create-group-response.json'))]);
         $api = new GroupApi($conf);
         $result = $api->createGroup([\uuid_create()]);
 
-        self::assertInstanceOf(GroupInterface::class, $result);
         self::assertEquals(1, $result->getFilesCount());
     }
 
-    public function testCreateGroupWithCollection()
+    public function testCreateGroupWithCollection(): void
     {
         $conf = $this->getConfig([new Response(200, [], DataFile::contents('group/create-group-response.json'))]);
         $api = new GroupApi($conf);
         $collection = new FileCollection([(new File())->setUuid(\uuid_create())]);
         $result = $api->createGroup($collection);
 
-        self::assertInstanceOf(GroupInterface::class, $result);
         self::assertEquals(1, $result->getFilesCount());
     }
 
-    public function testGroupInfoResponse()
+    public function testGroupInfoResponse(): void
     {
         $conf = $this->getConfig([new Response(200, [], DataFile::contents('group/group-info-response.json'))]);
         $api = new GroupApi($conf);
         $result = $api->groupInfo(\uuid_create());
 
-        self::assertInstanceOf(GroupInterface::class, $result);
         self::assertNotEmpty($result->getId());
         self::assertNotEmpty($result->getFilesCount());
-        self::assertInstanceOf(CollectionInterface::class, $result->getFiles());
         self::assertInstanceOf(\Uploadcare\File::class, $result->getFiles()->first());
     }
 
-    public function provideGroupsForStore()
+    public function provideGroupsForStore(): array
     {
         return [
             [\uuid_create()],
@@ -83,7 +79,7 @@ class GroupApiAnswersTest extends TestCase
      *
      * @param string|GroupInterface $group
      */
-    public function testStoreGroup($group)
+    public function testStoreGroup($group): void
     {
         $answers = [
             new Response(200, []),
@@ -95,7 +91,7 @@ class GroupApiAnswersTest extends TestCase
         self::assertInstanceOf(GroupInterface::class, $api->storeGroup($group));
     }
 
-    public function testListGroups()
+    public function testListGroups(): void
     {
         $data = DataFile::contents('group/list-groups-response.json');
         $answers = [
@@ -112,7 +108,7 @@ class GroupApiAnswersTest extends TestCase
         self::assertInstanceOf(GroupListResponse::class, $next);
     }
 
-    public function testNextPageWithNull()
+    public function testNextPageWithNull(): void
     {
         $data = (new GroupListResponse())->setNext(null);
         $conf = $this->getConfig([]);

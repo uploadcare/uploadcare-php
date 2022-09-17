@@ -25,8 +25,6 @@ interface RestApiInterface
      *      - Batch file delete
      *      - Copy file to local storage
      *      - Copy file to remote storage.
-     *
-     * @return FileApiInterface
      */
     public function file(): FileApiInterface;
 
@@ -35,16 +33,12 @@ interface RestApiInterface
      *      - List of groups
      *      - Group info
      *      - Store group.
-     *
-     * @return GroupApiInterface
      */
     public function group(): GroupApiInterface;
 
     /**
      * Project operations:
      *      - Project info.
-     *
-     * @return ProjectApiInterface
      */
     public function project(): ProjectApiInterface;
 
@@ -54,8 +48,6 @@ interface RestApiInterface
      *      - Create webhook
      *      - Update webhook
      *      - Delete webhook.
-     *
-     * @return WebhookApiInterface
      */
     public function webhook(): WebhookApiInterface;
 
@@ -65,8 +57,6 @@ interface RestApiInterface
      *      - Document conversion job status
      *      - Convert video
      *      - Video conversion job status.
-     *
-     * @return ConversionApiInterface
      */
     public function conversion(): ConversionApiInterface;
 }

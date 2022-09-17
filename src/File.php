@@ -2,7 +2,7 @@
 
 namespace Uploadcare;
 
-use Uploadcare\Apis\FileApi;
+use Uploadcare\Interfaces\Api\FileApiInterface;
 use Uploadcare\Interfaces\File\FileInfoInterface;
 use Uploadcare\Interfaces\File\ImageInfoInterface;
 use Uploadcare\Interfaces\File\VideoInfoInterface;
@@ -15,59 +15,38 @@ final class File implements FileInfoInterface
     /**
      * @var File\File|FileInfoInterface
      */
-    private $inner;
+    private FileInfoInterface $inner;
+    private FileApiInterface $api;
 
-    /**
-     * @var FileApi
-     */
-    private $api;
-
-    /**
-     * @param FileInfoInterface $inner
-     * @param FileApi           $api
-     */
-    public function __construct(FileInfoInterface $inner, FileApi $api)
+    public function __construct(FileInfoInterface $inner, FileApiInterface $api)
     {
         $this->inner = $inner;
         $this->api = $api;
     }
 
-    /**
-     * @return FileInfoInterface
-     */
+    public function __toString(): string
+    {
+        return (string) $this->inner;
+    }
+
     public function store(): FileInfoInterface
     {
         return $this->api->storeFile($this->inner->getUuid());
     }
 
-    /**
-     * @return FileInfoInterface
-     */
     public function delete(): FileInfoInterface
     {
         return $this->api->deleteFile($this->inner->getUuid());
     }
 
-    /**
-     * @param bool $store
-     *
-     * @return FileInfoInterface
-     */
     public function copyToLocalStorage(bool $store = true): FileInfoInterface
     {
         return $this->api->copyToLocalStorage($this->inner->getUuid(), $store);
     }
 
-    /**
-     * @param string      $target
-     * @param bool        $makePublic
-     * @param string|null $pattern
-     *
-     * @return string
-     */
     public function copyToRemoteStorage(string $target, bool $makePublic = true, ?string $pattern = null): string
     {
-        return $this->api->copyToRemoteStorage($this->inner->getUuid(), $target, $makePublic, $pattern);
+        return $this->api->copyToRemoteStorage($this->inner->getUuid(), $target, $makePublic, $pattern ?? '');
     }
 
     public function generateSecureUrl(): ?string

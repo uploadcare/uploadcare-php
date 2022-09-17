@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Tests;
 
@@ -13,10 +13,10 @@ use Uploadcare\Interfaces\UploaderInterface;
  */
 class GuzzleRequestTest extends TestCase
 {
-    public function testIsUserAgentSet()
+    public function testIsUserAgentSet(): void
     {
         $conf = Configuration::create('demo-public-key', 'demo-private-key');
-        $file = fopen('php://memory', 'rb+');
+        $file = \fopen('php://memory', 'rb+');
         \fwrite($file, Factory::create()->sentence);
         \rewind($file);
 

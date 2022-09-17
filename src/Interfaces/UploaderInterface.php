@@ -17,56 +17,30 @@ interface UploaderInterface
     /**
      * Upload file from local path.
      *
-     * @param string      $path
-     * @param string|null $mimeType
-     * @param string|null $filename
-     * @param string      $store
-     *
      * @throws InvalidArgumentException
-     *
-     * @return FileInfoInterface
      */
     public function fromPath(string $path, string $mimeType = null, string $filename = null, string $store = 'auto'): FileInfoInterface;
 
     /**
      * Upload file from remote URL.
      *
-     * @param string      $url
-     * @param string|null $mimeType
-     * @param string|null $filename
-     * @param string      $store
-     *
      * @throws InvalidArgumentException
-     *
-     * @return FileInfoInterface
      */
     public function fromUrl(string $url, string $mimeType = null, string $filename = null, string $store = 'auto'): FileInfoInterface;
 
     /**
      * Upload file from resource opened by `\fopen()`.
      *
-     * @param resource    $handle
-     * @param string|null $mimeType
-     * @param string|null $filename
-     * @param string      $store
+     * @param resource $handle
      *
      * @throws InvalidArgumentException
-     *
-     * @return FileInfoInterface
      */
     public function fromResource($handle, string $mimeType = null, string $filename = null, string $store = 'auto'): FileInfoInterface;
 
     /**
      * Upload file from content string.
      *
-     * @param string      $content
-     * @param string|null $mimeType
-     * @param string|null $filename
-     * @param string      $store
-     *
      * @throws InvalidArgumentException
-     *
-     * @return FileInfoInterface
      */
     public function fromContent(string $content, string $mimeType = null, string $filename = null, string $store = 'auto'): FileInfoInterface;
 }

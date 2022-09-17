@@ -13,9 +13,10 @@ final class GroupCollection extends AbstractCollection
 {
     /**
      * @var array<array-key,T>
+     *
      * @psalm-suppress NonInvariantDocblockPropertyType
      */
-    protected $elements;
+    protected array $elements;
 
     public function __construct(array $elements = [])
     {
@@ -24,7 +25,7 @@ final class GroupCollection extends AbstractCollection
 
     protected function createFrom(array $elements): CollectionInterface
     {
-        return new static($elements);
+        return new self($elements);
     }
 
     public static function elementClass(): string

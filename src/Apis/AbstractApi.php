@@ -10,25 +10,17 @@ use Uploadcare\Interfaces\ConfigurationInterface;
 use Uploadcare\Interfaces\Response\ListResponseInterface;
 
 /**
- * Common methods for API's.
+ * Common methods for APIs.
  */
 abstract class AbstractApi
 {
-    /**
-     * @var ConfigurationInterface
-     */
-    protected $configuration;
+    protected ConfigurationInterface $configuration;
 
     public function __construct(ConfigurationInterface $configuration)
     {
         $this->configuration = $configuration;
     }
 
-    /**
-     * @param ListResponseInterface $response
-     *
-     * @return array|null
-     */
     protected function nextParameters(ListResponseInterface $response): ?array
     {
         if (($next = $response->getNext()) === null) {
@@ -36,10 +28,10 @@ abstract class AbstractApi
         }
 
         $query = \parse_url($next);
-        if (!isset($query['query']) || empty($query['query'])) {
+        if (empty($query['query'] ?? null)) {
             return null;
         }
-        $query = $query['query'];
+        $query = $query['query'] ?? '';
         $parameters = [];
         \parse_str($query, $parameters);
 
@@ -47,12 +39,6 @@ abstract class AbstractApi
     }
 
     /**
-     * @param string $method
-     * @param string $uri
-     * @param array  $data
-     *
-     * @return ResponseInterface
-     *
      * @throws HttpException
      */
     protected function request(string $method, string $uri, array $data = []): ResponseInterface

@@ -24,12 +24,7 @@ class Uploader extends AbstractUploader
     protected const PART_SIZE = 1024 * 1024 * 5;
 
     /**
-     * @param resource    $handle
-     * @param string|null $mimeType
-     * @param string|null $filename
-     * @param string      $store
-     *
-     * @return FileInfoInterface
+     * @param resource $handle
      */
     public function fromResource($handle, string $mimeType = null, string $filename = null, string $store = 'auto'): FileInfoInterface
     {
@@ -55,12 +50,7 @@ class Uploader extends AbstractUploader
     }
 
     /**
-     * @param resource    $handle
-     * @param string|null $mimeType
-     * @param string|null $filename
-     * @param string      $store
-     *
-     * @return ResponseInterface
+     * @param resource $handle
      */
     private function directUpload($handle, ?string $mimeType = null, ?string $filename = null, string $store = 'auto'): ResponseInterface
     {
@@ -87,13 +77,7 @@ class Uploader extends AbstractUploader
     }
 
     /**
-     * @param resource    $handle
-     * @param int         $fileSize
-     * @param string|null $mimeType
-     * @param string|null $filename
-     * @param string|null $store
-     *
-     * @return ResponseInterface
+     * @param resource $handle
      */
     private function uploadByParts($handle, int $fileSize, string $mimeType = null, string $filename = null, string $store = null): ResponseInterface
     {
@@ -113,14 +97,6 @@ class Uploader extends AbstractUploader
         return $this->finishUpload($startData);
     }
 
-    /**
-     * @param int    $fileSize
-     * @param string $mimeType
-     * @param string $filename
-     * @param string $store
-     *
-     * @return MultipartStartResponse
-     */
     private function startUpload(int $fileSize, string $mimeType, string $filename, string $store): MultipartStartResponse
     {
         $parameters = $this->makeMultipartParameters(\array_merge($this->getDefaultParameters(), [
@@ -145,10 +121,7 @@ class Uploader extends AbstractUploader
     }
 
     /**
-     * @param MultipartStartResponse $response
-     * @param resource               $handle
-     *
-     * @return void
+     * @param resource $handle
      */
     private function uploadParts(MultipartStartResponse $response, $handle): void
     {
@@ -167,11 +140,6 @@ class Uploader extends AbstractUploader
         }
     }
 
-    /**
-     * @param MultipartStartResponse $response
-     *
-     * @return ResponseInterface
-     */
     private function finishUpload(MultipartStartResponse $response): ResponseInterface
     {
         $data = [

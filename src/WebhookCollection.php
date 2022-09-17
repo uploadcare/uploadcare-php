@@ -10,17 +10,10 @@ use Uploadcare\Interfaces\Response\WebhookInterface;
 /**
  * Collection of webhooks.
  */
-class WebhookCollection extends AbstractCollection
+final class WebhookCollection extends AbstractCollection
 {
-    /**
-     * @var Response\WebhookCollection|CollectionInterface
-     */
-    private $inner;
-
-    /**
-     * @var WebhookApiInterface
-     */
-    private $api;
+    private CollectionInterface $inner;
+    private WebhookApiInterface $api;
 
     public function __construct(CollectionInterface $inner, WebhookApiInterface $api)
     {
@@ -40,13 +33,11 @@ class WebhookCollection extends AbstractCollection
     }
 
     /**
-     * @param array $elements
-     *
      * @return $this|AbstractCollection
      */
     protected function createFrom(array $elements): CollectionInterface
     {
-        return new static(new Response\WebhookCollection($elements), $this->api);
+        return new self(new Response\WebhookCollection($elements), $this->api);
     }
 
     public static function elementClass(): string

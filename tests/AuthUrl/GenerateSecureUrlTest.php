@@ -8,13 +8,11 @@ use Uploadcare\AuthUrl\AuthUrlConfig;
 use Uploadcare\AuthUrl\Token\AkamaiToken;
 use Uploadcare\Configuration;
 use Uploadcare\Exception\InvalidArgumentException;
+use Uploadcare\Interfaces\Api\FileApiInterface;
 
 class GenerateSecureUrlTest extends TestCase
 {
-    /**
-     * @var \Uploadcare\Interfaces\Api\FileApiInterface
-     */
-    private $fileApi;
+    private FileApiInterface $fileApi;
 
     protected function setUp(): void
     {

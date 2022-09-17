@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Tests\File;
 
@@ -8,7 +8,7 @@ use Uploadcare\Interfaces\File\VideoInterface;
 
 class VideoTest extends TestCase
 {
-    public function provideMethods()
+    public function provideMethods(): array
     {
         return [
             ['setHeight', 'getHeight', 1024],
@@ -21,12 +21,8 @@ class VideoTest extends TestCase
 
     /**
      * @dataProvider provideMethods
-     *
-     * @param string $setter
-     * @param string $getter
-     * @param mixed  $value
      */
-    public function testMethods($setter, $getter, $value)
+    public function testMethods(string $setter, string $getter, $value): void
     {
         $item = new Video();
         $this->assertInstanceOf(VideoInterface::class, $item->{$setter}($value));
