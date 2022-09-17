@@ -17,7 +17,7 @@ class AddonsApi extends AbstractApi implements AddonsApiInterface
 
     public function checkAwsRecognition(string $id): string
     {
-        $uri = \sprintf('/addons/aws_rekognition_detect_labels/execute/status/%s', $id);
+        $uri = \sprintf('/addons/aws_rekognition_detect_labels/execute/status/?request_id=%s', $id);
         $response = $this->request('GET', $uri)->getBody()->getContents();
 
         return $this->getResponseParameter($response, 'status');
@@ -39,7 +39,7 @@ class AddonsApi extends AbstractApi implements AddonsApiInterface
 
     public function checkAntivirusScan(string $id): string
     {
-        $uri = \sprintf('/addons/uc_clamav_virus_scan/execute/status/%s', $id);
+        $uri = \sprintf('/addons/uc_clamav_virus_scan/execute/status/?request_id=%s', $id);
         $response = $this->request('GET', $uri)->getBody()->getContents();
 
         return $this->getResponseParameter($response, 'status');
