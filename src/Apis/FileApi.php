@@ -130,7 +130,7 @@ final class FileApi extends AbstractApi implements FileApiInterface
      *
      * @param string $id file UUID
      */
-    public function fileInfo($id): FileInfoInterface
+    public function fileInfo(string $id): FileInfoInterface
     {
         $response = $this->request('GET', \sprintf('/files/%s/', $id));
 

@@ -48,7 +48,7 @@ interface FileApiInterface
      *
      * @param string $id file UUID
      */
-    public function fileInfo($id): FileInfoInterface;
+    public function fileInfo(string $id): FileInfoInterface;
 
     /**
      * Store multiple files in one step.

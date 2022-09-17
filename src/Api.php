@@ -2,8 +2,9 @@
 
 namespace Uploadcare;
 
-use Uploadcare\Apis\{ConversionApi, FileApi, GroupApi, ProjectApi, WebhookApi};
-use Uploadcare\Interfaces\Api\{ConversionApiInterface, FileApiInterface, GroupApiInterface, ProjectApiInterface, WebhookApiInterface};
+use Uploadcare\Apis\{AddonsApi, ConversionApi, FileApi, GroupApi, ProjectApi, WebhookApi};
+use Uploadcare\Interfaces\Api\{AddonsApiInterface, ConversionApiInterface, FileApiInterface,
+    GroupApiInterface, ProjectApiInterface, WebhookApiInterface};
 use Uploadcare\Interfaces\{ConfigurationInterface, RestApiInterface, UploaderInterface};
 use Uploadcare\Uploader\Uploader;
 
@@ -18,6 +19,7 @@ final class Api implements RestApiInterface
     private ProjectApiInterface $projectApi;
     private WebhookApiInterface $webhookApi;
     private ConversionApiInterface $conversionApi;
+    private AddonsApiInterface $addonsApi;
 
     public static function create(string $publicKey, string $secretKey): self
     {
@@ -37,6 +39,7 @@ final class Api implements RestApiInterface
         $this->projectApi = new ProjectApi($configuration);
         $this->webhookApi = new WebhookApi($configuration);
         $this->conversionApi = new ConversionApi($configuration);
+        $this->addonsApi = new AddonsApi($configuration);
     }
 
     public function file(): FileApiInterface
@@ -67,5 +70,10 @@ final class Api implements RestApiInterface
     public function conversion(): ConversionApiInterface
     {
         return $this->conversionApi;
+    }
+
+    public function addons(): AddonsApiInterface
+    {
+        return $this->addonsApi;
     }
 }
