@@ -3,6 +3,7 @@
 namespace Uploadcare\Apis;
 
 use Uploadcare\Interfaces\Api\AddonsApiInterface;
+use Uploadcare\Interfaces\Conversion\RemoveBackgroundRequestInterface;
 
 class AddonsApi extends AbstractApi implements AddonsApiInterface
 {
@@ -40,6 +41,28 @@ class AddonsApi extends AbstractApi implements AddonsApiInterface
     public function checkAntivirusScan(string $id): string
     {
         $uri = \sprintf('/addons/uc_clamav_virus_scan/execute/status/?request_id=%s', $id);
+        $response = $this->request('GET', $uri)->getBody()->getContents();
+
+        return $this->getResponseParameter($response, 'status');
+    }
+
+    public function requestRemoveBackground($id, ?RemoveBackgroundRequestInterface $backgroundRequest = null): string
+    {
+        $parameters = ['target' => (string) $id];
+        if ($backgroundRequest !== null) {
+            $parameters['params'] = $this->configuration->getSerializer()->serialize($backgroundRequest);
+        }
+
+        $response = $this->request('POST', '/addons/remove_bg/execute/', [
+            'body' => $parameters,
+        ])->getBody()->getContents();
+
+        return $this->getResponseParameter($response, 'request_id');
+    }
+
+    public function checkRemoveBackground(string $id): string
+    {
+        $uri = \sprintf('/addons/remove_bg/execute/status/?request_id=%s', $id);
         $response = $this->request('GET', $uri)->getBody()->getContents();
 
         return $this->getResponseParameter($response, 'status');
