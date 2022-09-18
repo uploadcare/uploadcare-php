@@ -73,7 +73,7 @@ class ConversionApiMethodsTest extends TestCase
         $api->convertDocument('not-valid-uuid', $request);
     }
 
-    public function testConvertWithNotValidInterface()
+    public function testConvertWithNotValidInterface(): void
     {
         $this->expectException(\RuntimeException::class);
         $api = $this->fakeApi();

@@ -9,7 +9,7 @@ interface RemoveBackgroundRequestInterface extends SerializableInterface
     /**
      * Whether to crop off all empty regions.
      */
-    public function isCrop(): bool;
+    public function getCrop(): bool;
 
     /**
      * Adds a margin around the cropped subject, e.g. 30px or 30%.
@@ -26,7 +26,7 @@ interface RemoveBackgroundRequestInterface extends SerializableInterface
      * Whether to add an artificial shadow to the result.
      * Default: `false`.
      */
-    public function isAddShadow(): bool;
+    public function getAddShadow(): bool;
 
     /**
      * Enum: "none" "1" "2" "latest".
@@ -48,7 +48,7 @@ interface RemoveBackgroundRequestInterface extends SerializableInterface
      * Whether to have semi-transparent regions in the result.
      * Default: `true`.
      */
-    public function isSemitransparency(): bool;
+    public function getSemitransparency(): bool;
 
     /**
      * Request either the finalized image ('rgba', default) or an alpha mask ('alpha').

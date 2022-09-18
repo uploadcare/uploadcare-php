@@ -24,6 +24,7 @@ class RemoveBackgroundRequest implements RemoveBackgroundRequestInterface
             'cropMargin' => 'string',
             'scale' => 'string',
             'addShadow' => 'bool',
+            'typeLevel' => 'string',
             'type' => 'string',
             'semitransparency' => 'bool',
             'channels' => 'string',
@@ -32,7 +33,7 @@ class RemoveBackgroundRequest implements RemoveBackgroundRequestInterface
         ];
     }
 
-    public function isCrop(): bool
+    public function getCrop(): bool
     {
         return $this->crop;
     }
@@ -68,7 +69,7 @@ class RemoveBackgroundRequest implements RemoveBackgroundRequestInterface
         return $this;
     }
 
-    public function isAddShadow(): bool
+    public function getAddShadow(): bool
     {
         return $this->addShadow;
     }
@@ -104,7 +105,7 @@ class RemoveBackgroundRequest implements RemoveBackgroundRequestInterface
         return $this;
     }
 
-    public function isSemitransparency(): bool
+    public function getSemitransparency(): bool
     {
         return $this->semitransparency;
     }
