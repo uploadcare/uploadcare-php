@@ -27,6 +27,7 @@ final class File implements FileInfoInterface, SerializableInterface
     private ?array $variations = null;
     private string $source = '';
     private ?ContentInfoInterface $contentInfo = null;
+    private array $metadata = [];
 
     public static function rules(): array
     {
@@ -45,6 +46,7 @@ final class File implements FileInfoInterface, SerializableInterface
             'variations' => 'array',
             'source' => 'string',
             'contentInfo' => ContentInfo::class,
+            'metadata' => 'array',
         ];
     }
 
@@ -209,9 +211,16 @@ final class File implements FileInfoInterface, SerializableInterface
         return $this;
     }
 
+    public function setMetadata(array $metadata): self
+    {
+        $this->metadata = $metadata;
+
+        return $this;
+    }
+
     public function getMetadata(): Metadata
     {
-        throw new \BadMethodCallException(\sprintf('Call this method from \'%s\' object', \Uploadcare\File::class));
+        return new Metadata($this->metadata);
     }
 
     public function getContentInfo(): ?ContentInfoInterface
