@@ -2,7 +2,8 @@
 
 namespace Uploadcare\File;
 
-use Uploadcare\Interfaces\File\{FileInfoInterface, ImageInfoInterface, VideoInfoInterface};
+use Uploadcare\File\ContentInfo\ContentInfo;
+use Uploadcare\Interfaces\File\{ContentInfoInterface, FileInfoInterface};
 use Uploadcare\Interfaces\SerializableInterface;
 
 /**
@@ -15,40 +16,17 @@ final class File implements FileInfoInterface, SerializableInterface
     private ?\DateTimeInterface $datetimeRemoved = null;
     private ?\DateTimeInterface $datetimeStored = null;
     private ?\DateTimeInterface $datetimeUploaded = null;
-    private ?ImageInfoInterface $imageInfo = null;
-    private bool $isImage;
-    private bool $isReady;
-    private string $mimeType;
-    private ?string $originalFileUrl;
-    private string $originalFilename;
-    private int $size;
-    private string $url;
-    private string $uuid;
+    private bool $isImage = false;
+    private bool $isReady = false;
+    private string $mimeType = '';
+    private ?string $originalFileUrl = null;
+    private string $originalFilename = '';
+    private int $size = 0;
+    private string $url = '';
+    private string $uuid = '';
     private ?array $variations = null;
-    private ?VideoInfoInterface $videoInfo = null;
     private string $source = '';
-
-    /**
-     * @var array
-     */
-    private $rekognitionInfo = [];
-
-    public function __construct()
-    {
-        $this->isImage = false;
-        $this->isReady = false;
-        $this->mimeType = '';
-        $this->originalFilename = '';
-        $this->originalFileUrl = '';
-        $this->size = 0;
-        $this->url = '';
-        $this->uuid = '';
-    }
-
-    public function __toString(): string
-    {
-        return $this->uuid;
-    }
+    private ?ContentInfoInterface $contentInfo = null;
 
     public static function rules(): array
     {
@@ -56,7 +34,6 @@ final class File implements FileInfoInterface, SerializableInterface
             'datetimeRemoved' => \DateTime::class,
             'datetimeStored' => \DateTime::class,
             'datetimeUploaded' => \DateTime::class,
-            'imageInfo' => ImageInfo::class,
             'isImage' => 'bool',
             'isReady' => 'bool',
             'mimeType' => 'string',
@@ -66,15 +43,16 @@ final class File implements FileInfoInterface, SerializableInterface
             'url' => 'string',
             'uuid' => 'string',
             'variations' => 'array',
-            'videoInfo' => VideoInfo::class,
             'source' => 'string',
-            'rekognitionInfo' => 'array',
+            'contentInfo' => ContentInfo::class,
         ];
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    public function __toString(): string
+    {
+        return $this->uuid;
+    }
+
     public function getDatetimeRemoved(): ?\DateTimeInterface
     {
         return $this->datetimeRemoved;
@@ -87,9 +65,6 @@ final class File implements FileInfoInterface, SerializableInterface
         return $this;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getDatetimeStored(): ?\DateTimeInterface
     {
         return $this->datetimeStored;
@@ -102,9 +77,6 @@ final class File implements FileInfoInterface, SerializableInterface
         return $this;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getDatetimeUploaded(): ?\DateTimeInterface
     {
         return $this->datetimeUploaded;
@@ -117,24 +89,6 @@ final class File implements FileInfoInterface, SerializableInterface
         return $this;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function getImageInfo(): ?ImageInfoInterface
-    {
-        return $this->imageInfo;
-    }
-
-    public function setImageInfo(?ImageInfoInterface $imageInfo): self
-    {
-        $this->imageInfo = $imageInfo;
-
-        return $this;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public function isImage(): bool
     {
         return $this->isImage;
@@ -147,9 +101,6 @@ final class File implements FileInfoInterface, SerializableInterface
         return $this;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function isReady(): bool
     {
         return $this->isReady;
@@ -162,9 +113,6 @@ final class File implements FileInfoInterface, SerializableInterface
         return $this;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getMimeType(): string
     {
         return $this->mimeType;
@@ -177,9 +125,6 @@ final class File implements FileInfoInterface, SerializableInterface
         return $this;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getOriginalFileUrl(): ?string
     {
         return $this->originalFileUrl;
@@ -192,9 +137,6 @@ final class File implements FileInfoInterface, SerializableInterface
         return $this;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getOriginalFilename(): string
     {
         return $this->originalFilename;
@@ -207,9 +149,6 @@ final class File implements FileInfoInterface, SerializableInterface
         return $this;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getSize(): int
     {
         return $this->size;
@@ -222,9 +161,6 @@ final class File implements FileInfoInterface, SerializableInterface
         return $this;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getUrl(): string
     {
         return $this->url;
@@ -237,9 +173,6 @@ final class File implements FileInfoInterface, SerializableInterface
         return $this;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getUuid(): string
     {
         return $this->uuid;
@@ -252,9 +185,6 @@ final class File implements FileInfoInterface, SerializableInterface
         return $this;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getVariations(): ?array
     {
         return $this->variations;
@@ -267,24 +197,6 @@ final class File implements FileInfoInterface, SerializableInterface
         return $this;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function getVideoInfo(): ?VideoInfoInterface
-    {
-        return $this->videoInfo;
-    }
-
-    public function setVideoInfo(VideoInfoInterface $videoInfo = null): self
-    {
-        $this->videoInfo = $videoInfo;
-
-        return $this;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public function getSource(): string
     {
         return $this->source;
@@ -297,23 +209,20 @@ final class File implements FileInfoInterface, SerializableInterface
         return $this;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function getRekognitionInfo(): array
-    {
-        return $this->rekognitionInfo;
-    }
-
-    public function setRekognitionInfo(array $rekognitionInfo): self
-    {
-        $this->rekognitionInfo = $rekognitionInfo;
-
-        return $this;
-    }
-
     public function getMetadata(): Metadata
     {
         throw new \BadMethodCallException(\sprintf('Call this method from \'%s\' object', \Uploadcare\File::class));
+    }
+
+    public function getContentInfo(): ?ContentInfoInterface
+    {
+        return $this->contentInfo;
+    }
+
+    public function setContentInfo(?ContentInfoInterface $contentInfo): File
+    {
+        $this->contentInfo = $contentInfo;
+
+        return $this;
     }
 }

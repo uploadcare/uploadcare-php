@@ -5,7 +5,7 @@ namespace Tests\Serializer;
 use Faker\Factory;
 use Faker\Generator;
 use PHPUnit\Framework\TestCase;
-use Uploadcare\File\ImageInfo;
+use Uploadcare\File\ContentInfo\ImageInfo;
 use Uploadcare\Interfaces\Serializer\SerializerInterface;
 use Uploadcare\Serializer\Exceptions\ConversionException;
 use Uploadcare\Serializer\Exceptions\SerializerException;
@@ -32,7 +32,7 @@ class DeserializerTest extends TestCase
     protected function getImageInfoJson(array $additionalData = []): string
     {
         $data = \json_decode(\file_get_contents(\dirname(__DIR__) . '/_data/file-info.json'), true);
-        $imageInfo = $data['image_info'];
+        $imageInfo = $data['content_info']['image'];
         foreach ($additionalData as $key => $value) {
             $imageInfo[$key] = $value;
         }
@@ -63,15 +63,15 @@ class DeserializerTest extends TestCase
         self::assertInstanceOf(ImageInfo::class, $object);
 
         self::assertEquals('RGB', $object->getColorMode());
-        self::assertNull($object->getOrientation());
-        self::assertEquals('JPEG', $object->getFormat());
+        self::assertEquals(6, $object->getOrientation());
+        self::assertEquals('HEIF', $object->getFormat());
         self::assertTrue($object->isSequence());
-        self::assertEquals(500, $object->getHeight());
-        self::assertEquals(800, $object->getWidth());
+        self::assertEquals(4032, $object->getHeight());
+        self::assertEquals(3024, $object->getWidth());
         self::assertEquals($lat, $object->getGeoLocation()->getLatitude());
         self::assertEquals($lon, $object->getGeoLocation()->getLongitude());
         self::assertInstanceOf(\DateTimeInterface::class, $object->getDatetimeOriginal());
-        self::assertEquals([144, 144], $object->getDpi());
+        self::assertEquals([72, 72], $object->getDpi());
     }
 
     public function testNotSerializableClass(): void

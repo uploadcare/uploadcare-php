@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Uploadcare\Interfaces\File;
+namespace Uploadcare\Interfaces\File\ContentInfo;
 
 /**
  * Video metadata.

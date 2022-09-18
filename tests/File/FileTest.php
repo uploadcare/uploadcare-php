@@ -4,9 +4,8 @@ namespace Tests\File;
 
 use PHPUnit\Framework\TestCase;
 use Uploadcare\File\File;
+use Uploadcare\Interfaces\File\ContentInfoInterface;
 use Uploadcare\Interfaces\File\FileInfoInterface;
-use Uploadcare\Interfaces\File\ImageInfoInterface;
-use Uploadcare\Interfaces\File\VideoInfoInterface;
 
 class FileTest extends TestCase
 {
@@ -50,7 +49,6 @@ class FileTest extends TestCase
             ['setDateTimeRemoved', 'getDateTimeRemoved', \date_create()],
             ['setDateTimeStored', 'getDateTimeStored', \date_create()],
             ['setDateTimeUploaded', 'getDateTimeUploaded', \date_create()],
-            ['setImageInfo', 'getImageInfo', $this->createMock(ImageInfoInterface::class)],
             ['setIsImage', 'isImage', true],
             ['setIsReady', 'isReady', true],
             ['setMimeType', 'getMimeType', 'image/heic-sequence'],
@@ -60,9 +58,8 @@ class FileTest extends TestCase
             ['setUrl', 'getUrl', 'https://example.com/'],
             ['setUuid', 'getUuid', \uuid_create()],
             ['setVariations', 'getVariations', null],
-            ['setVideoInfo', 'getVideoInfo', $this->createMock(VideoInfoInterface::class)],
+            ['setContentInfo', 'getContentInfo', $this->createMock(ContentInfoInterface::class)],
             ['setSource', 'getSource', 'some-source'],
-            ['setRekognitionInfo', 'getRekognitionInfo', ['foo' => 'bar']],
         ];
     }
 

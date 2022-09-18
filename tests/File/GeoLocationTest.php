@@ -4,8 +4,8 @@ namespace Tests\File;
 
 use Faker\Factory;
 use PHPUnit\Framework\TestCase;
-use Uploadcare\File\GeoLocation;
-use Uploadcare\Interfaces\File\GeoLocationInterface;
+use Uploadcare\File\ContentInfo\GeoLocation;
+use Uploadcare\Interfaces\File\ContentInfo\GeoLocationInterface;
 
 class GeoLocationTest extends TestCase
 {

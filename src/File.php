@@ -4,9 +4,7 @@ namespace Uploadcare;
 
 use Uploadcare\File\Metadata;
 use Uploadcare\Interfaces\Api\FileApiInterface;
-use Uploadcare\Interfaces\File\FileInfoInterface;
-use Uploadcare\Interfaces\File\ImageInfoInterface;
-use Uploadcare\Interfaces\File\VideoInfoInterface;
+use Uploadcare\Interfaces\File\{ContentInfoInterface, FileInfoInterface};
 
 /**
  * File decorator.
@@ -70,11 +68,6 @@ final class File implements FileInfoInterface
         return $this->inner->getDatetimeUploaded();
     }
 
-    public function getImageInfo(): ?ImageInfoInterface
-    {
-        return $this->inner->getImageInfo();
-    }
-
     public function isImage(): bool
     {
         return $this->inner->isImage();
@@ -120,23 +113,18 @@ final class File implements FileInfoInterface
         return $this->inner->getVariations();
     }
 
-    public function getVideoInfo(): ?VideoInfoInterface
-    {
-        return $this->inner->getVideoInfo();
-    }
-
     public function getSource(): string
     {
         return $this->inner->getSource();
     }
 
-    public function getRekognitionInfo(): array
-    {
-        return $this->inner->getRekognitionInfo();
-    }
-
     public function getMetadata(): Metadata
     {
         return $this->api->getMetadata($this->inner);
+    }
+
+    public function getContentInfo(): ?ContentInfoInterface
+    {
+        return $this->inner->getContentInfo();
     }
 }

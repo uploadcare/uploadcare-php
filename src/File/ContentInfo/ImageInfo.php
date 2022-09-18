@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace Uploadcare\File;
+namespace Uploadcare\File\ContentInfo;
 
-use Uploadcare\Interfaces\File\{GeoLocationInterface, ImageInfoInterface};
+use Uploadcare\Interfaces\File\ContentInfo\{GeoLocationInterface, ImageInfoInterface};
 use Uploadcare\Interfaces\SerializableInterface;
 
 /**

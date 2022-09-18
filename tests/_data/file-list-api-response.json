@@ -1,91 +1,183 @@
 {
-  "next": "https://api.uploadcare.com/files/?limit=3&from=2018-11-27T01%3A00%3A43.001705%2B00%3A00&offset=0",
-  "previous": "https://api.uploadcare.com/files/?limit=3&to=2018-11-27T01%3A00%3A36.436838%2B00%3A00&offset=0",
-  "total": 2484,
-  "per_page": 2,
+  "next": null,
+  "previous": null,
+  "total": 5,
+  "totals": {
+    "removed": 0,
+    "stored": 5,
+    "unstored": 0
+  },
+  "per_page": 100,
   "results": [
     {
       "datetime_removed": null,
-      "datetime_stored": "2018-11-26T12:49:10.477888Z",
-      "datetime_uploaded": "2018-11-26T12:49:09.945335Z",
-      "image_info": {
-        "color_mode": "RGB",
-        "orientation": null,
-        "format": "JPEG",
-        "sequence": false,
-        "height": 500,
-        "width": 500,
-        "geo_location": null,
-        "datetime_original": null,
-        "dpi": [
-          144,
-          144
-        ]
-      },
+      "datetime_stored": "2021-07-14T03:28:06.175429Z",
+      "datetime_uploaded": "2021-07-14T03:28:06.043475Z",
       "is_image": true,
       "is_ready": true,
-      "mime_type": "application/octet-stream",
-      "original_file_url": "https://ucarecdn.com/3c269810-c17b-4e2c-92b6-25622464d866/papaya.jpg",
-      "original_filename": "papaya.jpg",
-      "size": 642,
-      "url": "https://api.uploadcare.com/files/3c269810-c17b-4e2c-92b6-25622464d866/",
-      "uuid": "3c269810-c17b-4e2c-92b6-25622464d866",
+      "mime_type": "image/jpeg",
+      "original_file_url": "https://ucarecdn.com/a1cfbdb0-8293-4f72-b5ec-4f93c40303dc/5A5F696079954B6FB891B8657402CD6A.jpeg",
+      "original_filename": "5A5F6960-7995-4B6F-B891-B8657402CD6A.jpeg",
+      "size": 84491,
+      "url": "https://api.uploadcare.com/files/a1cfbdb0-8293-4f72-b5ec-4f93c40303dc/",
+      "uuid": "a1cfbdb0-8293-4f72-b5ec-4f93c40303dc",
       "variations": null,
-      "video_info": null,
-      "source": null,
-      "rekognition_info": {
-        "Art": 0.60401,
-        "Home Decor": 0.719,
-        "Ornament": 0.60401,
-        "Shutter": 0.719,
-        "Arabesque Pattern": 0.60401,
-        "Window": 0.719,
-        "Curtain": 0.719,
-        "Brick": 0.75331,
-        "Window Shade": 0.719,
-        "Balcony": 0.70572
+      "content_info": {
+        "image": {
+          "dpi": [
+            72,
+            72
+          ],
+          "width": 540,
+          "format": "JPEG",
+          "height": 532,
+          "sequence": false,
+          "color_mode": "RGB",
+          "orientation": 1,
+          "geo_location": null,
+          "datetime_original": null
+        }
+      },
+      "metadata": {
+        "foo": "2022-09-18T08:13:31+00:00",
+        "current_timestamp": "2022-09-18T08:40:57+00:00"
       }
     },
     {
       "datetime_removed": null,
-      "datetime_stored": "2018-11-26T12:49:10.477888Z",
-      "datetime_uploaded": "2018-11-26T12:49:09.945335Z",
-      "image_info": {
-        "color_mode": "RGB",
-        "orientation": null,
-        "format": "JPEG",
-        "sequence": false,
-        "height": 500,
-        "width": 500,
-        "geo_location": null,
-        "datetime_original": null,
-        "dpi": [
-          144,
-          144
-        ]
-      },
+      "datetime_stored": "2021-07-22T02:36:23.652147Z",
+      "datetime_uploaded": "2021-07-22T02:36:23.471140Z",
       "is_image": true,
       "is_ready": true,
-      "mime_type": "application/octet-stream",
-      "original_file_url": "https://ucarecdn.com/3c269810-c17b-4e2c-92b6-25622464d866/papaya.jpg",
-      "original_filename": "papaya.jpg",
-      "size": 642,
-      "url": "https://api.uploadcare.com/files/3c269810-c17b-4e2c-92b6-25622464d866/",
-      "uuid": "3c269810-c17b-4e2c-92b6-25622464d866",
+      "mime_type": "image/jpeg",
+      "original_file_url": "https://ucarecdn.com/63dc9667-0311-4a27-9ad7-84317971ec26/IMG_0144.jpg",
+      "original_filename": "IMG_0144.jpg",
+      "size": 2576378,
+      "url": "https://api.uploadcare.com/files/63dc9667-0311-4a27-9ad7-84317971ec26/",
+      "uuid": "63dc9667-0311-4a27-9ad7-84317971ec26",
       "variations": null,
-      "video_info": null,
-      "source": null,
-      "rekognition_info": {
-        "Art": 0.60401,
-        "Home Decor": 0.719,
-        "Ornament": 0.60401,
-        "Shutter": 0.719,
-        "Arabesque Pattern": 0.60401,
-        "Window": 0.719,
-        "Curtain": 0.719,
-        "Brick": 0.75331,
-        "Window Shade": 0.719,
-        "Balcony": 0.70572
+      "content_info": {
+        "image": {
+          "dpi": [
+            72,
+            72
+          ],
+          "width": 4032,
+          "format": "JPEG",
+          "height": 3024,
+          "sequence": false,
+          "color_mode": "RGB",
+          "orientation": 1,
+          "geo_location": {
+            "latitude": 57.135975,
+            "longitude": 65.56742777777778
+          },
+          "datetime_original": "2017-12-11T23:12:46"
+        }
+      },
+      "metadata": {}
+    },
+    {
+      "datetime_removed": null,
+      "datetime_stored": "2021-08-01T02:36:12.100380Z",
+      "datetime_uploaded": "2021-08-01T02:36:11.926317Z",
+      "is_image": true,
+      "is_ready": true,
+      "mime_type": "image/png",
+      "original_file_url": "https://ucarecdn.com/840a9a74-207a-4261-86c9-0ada49b85b34/videoblocksfireworkofpaintexplosionofcolorfulpowderisolatedonblackbackground3danimationasacolorfulabstractbackgroundrainbowcolors24_smjnj_lyz_thumbnailfull05.png",
+      "original_filename": "videoblocks-firework-of-paint-explosion-of-colorful-powder-isolated-on-black-background-3d-animation-as-a-colorful-abstract-background-rainbow-colors-24_smjnj_lyz_thumbnail-full05.png",
+      "size": 3178972,
+      "url": "https://api.uploadcare.com/files/840a9a74-207a-4261-86c9-0ada49b85b34/",
+      "uuid": "840a9a74-207a-4261-86c9-0ada49b85b34",
+      "variations": null,
+      "content_info": {
+        "image": {
+          "dpi": null,
+          "width": 1920,
+          "format": "PNG",
+          "height": 1080,
+          "sequence": false,
+          "color_mode": "RGB",
+          "orientation": null,
+          "geo_location": null,
+          "datetime_original": null
+        }
+      },
+      "metadata": {}
+    },
+    {
+      "datetime_removed": null,
+      "datetime_stored": "2021-08-18T02:39:53.599517Z",
+      "datetime_uploaded": "2021-08-18T02:39:53.435137Z",
+      "is_image": true,
+      "is_ready": true,
+      "mime_type": "image/jpeg",
+      "original_file_url": "https://ucarecdn.com/43af6cec-f52c-467a-9d9d-e062ba71061b/IMG_0144.jpg",
+      "original_filename": "IMG_0144.jpg",
+      "size": 2576378,
+      "url": "https://api.uploadcare.com/files/43af6cec-f52c-467a-9d9d-e062ba71061b/",
+      "uuid": "43af6cec-f52c-467a-9d9d-e062ba71061b",
+      "variations": null,
+      "content_info": {
+        "image": {
+          "dpi": [
+            72,
+            72
+          ],
+          "width": 4032,
+          "format": "JPEG",
+          "height": 3024,
+          "sequence": false,
+          "color_mode": "RGB",
+          "orientation": 1,
+          "geo_location": {
+            "latitude": 57.135975,
+            "longitude": 65.56742777777778
+          },
+          "datetime_original": "2017-12-11T23:12:46"
+        }
+      },
+      "metadata": {}
+    },
+    {
+      "datetime_removed": null,
+      "datetime_stored": "2022-09-18T08:56:33.439558Z",
+      "datetime_uploaded": "2022-09-18T08:56:33.348711Z",
+      "is_image": true,
+      "is_ready": true,
+      "mime_type": "image/heic",
+      "original_file_url": "https://ucarecdn.com/2cbc65a3-89d0-4757-a8ca-543df258dad4/6A17E17C180A462AA5EB4B8596BB51FD.heic",
+      "original_filename": "6A17E17C-180A-462A-A5EB-4B8596BB51FD.heic",
+      "size": 2570483,
+      "url": "https://api.uploadcare.com/files/2cbc65a3-89d0-4757-a8ca-543df258dad4/",
+      "uuid": "2cbc65a3-89d0-4757-a8ca-543df258dad4",
+      "variations": null,
+      "content_info": {
+        "mime": {
+          "mime": "image/heic",
+          "type": "image",
+          "subtype": "heic"
+        },
+        "image": {
+          "dpi": [
+            72.0,
+            72.0
+          ],
+          "width": 3024,
+          "format": "HEIF",
+          "height": 4032,
+          "sequence": false,
+          "color_mode": "RGB",
+          "orientation": 6,
+          "geo_location": {
+            "latitude": 50.087386111111115,
+            "longitude": 14.406325
+          },
+          "datetime_original": "2022-08-23T15:21:18"
+        }
+      },
+      "metadata": {
+        "foo": "2022-09-18T08:13:31+00:00"
       }
     }
   ]

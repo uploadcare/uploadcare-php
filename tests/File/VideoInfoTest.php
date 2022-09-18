@@ -3,10 +3,10 @@
 namespace Tests\File;
 
 use PHPUnit\Framework\TestCase;
-use Uploadcare\File\VideoInfo;
-use Uploadcare\Interfaces\File\AudioInterface;
-use Uploadcare\Interfaces\File\VideoInfoInterface;
-use Uploadcare\Interfaces\File\VideoInterface;
+use Uploadcare\File\ContentInfo\VideoInfo;
+use Uploadcare\Interfaces\File\ContentInfo\AudioInterface;
+use Uploadcare\Interfaces\File\ContentInfo\VideoInfoInterface;
+use Uploadcare\Interfaces\File\ContentInfo\VideoInterface;
 
 class VideoInfoTest extends TestCase
 {

@@ -3,8 +3,8 @@
 namespace Tests\Serializer;
 
 use PHPUnit\Framework\TestCase;
+use Uploadcare\Interfaces\File\ContentInfoInterface;
 use Uploadcare\Interfaces\File\FileInfoInterface;
-use Uploadcare\Interfaces\File\ImageInfoInterface;
 use Uploadcare\Interfaces\Response\ListResponseInterface;
 use Uploadcare\Response\FileListResponse;
 use Uploadcare\Serializer\Serializer;
@@ -38,7 +38,7 @@ class DeserializeCollectionTest extends TestCase
         self::assertNull($file->getDatetimeRemoved());
         self::assertInstanceOf(\DateTimeInterface::class, $file->getDatetimeStored());
         self::assertInstanceOf(\DateTimeInterface::class, $file->getDatetimeUploaded());
-        self::assertInstanceOf(ImageInfoInterface::class, $file->getImageInfo());
+        self::assertInstanceOf(ContentInfoInterface::class, $file->getContentInfo());
         self::assertTrue($file->isImage());
         self::assertTrue($file->isReady());
         self::assertIsString($file->getMimeType());

@@ -3,8 +3,8 @@
 namespace Tests\File;
 
 use PHPUnit\Framework\TestCase;
-use Uploadcare\File\Audio;
-use Uploadcare\Interfaces\File\AudioInterface;
+use Uploadcare\File\ContentInfo\Audio;
+use Uploadcare\Interfaces\File\ContentInfo\AudioInterface;
 
 class AudioTest extends TestCase
 {

@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Uploadcare\Interfaces\File;
+namespace Uploadcare\Interfaces\File\ContentInfo;
 
 interface ImageInfoInterface
 {
@@ -36,7 +36,7 @@ interface ImageInfoInterface
     public function getWidth(): ?int;
 
     /**
-     * Geo-location of image from EXIF.
+     * Geolocation of image from EXIF.
      */
     public function getGeoLocation(): ?GeoLocationInterface;
 

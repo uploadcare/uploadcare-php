@@ -1,10 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace Uploadcare\File;
+namespace Uploadcare\File\ContentInfo;
 
-use Uploadcare\Interfaces\File\AudioInterface;
-use Uploadcare\Interfaces\File\VideoInfoInterface;
-use Uploadcare\Interfaces\File\VideoInterface;
+use Uploadcare\Interfaces\File\ContentInfo\{AudioInterface, VideoInfoInterface, VideoInterface};
 use Uploadcare\Interfaces\SerializableInterface;
 
 /**

@@ -3,8 +3,8 @@
 namespace Tests\File;
 
 use PHPUnit\Framework\TestCase;
-use Uploadcare\File\Video;
-use Uploadcare\Interfaces\File\VideoInterface;
+use Uploadcare\File\ContentInfo\Video;
+use Uploadcare\Interfaces\File\ContentInfo\VideoInterface;
 
 class VideoTest extends TestCase
 {

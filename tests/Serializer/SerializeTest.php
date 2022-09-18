@@ -5,12 +5,13 @@ namespace Tests\Serializer;
 use Faker\Factory;
 use Faker\Generator;
 use PHPUnit\Framework\TestCase;
-use Uploadcare\File\Audio;
+use Uploadcare\File\ContentInfo\Audio;
+use Uploadcare\File\ContentInfo\ContentInfo;
+use Uploadcare\File\ContentInfo\GeoLocation;
+use Uploadcare\File\ContentInfo\ImageInfo;
+use Uploadcare\File\ContentInfo\Video;
+use Uploadcare\File\ContentInfo\VideoInfo;
 use Uploadcare\File\File;
-use Uploadcare\File\GeoLocation;
-use Uploadcare\File\ImageInfo;
-use Uploadcare\File\Video;
-use Uploadcare\File\VideoInfo;
 use Uploadcare\Interfaces\Serializer\SerializerInterface;
 use Uploadcare\Serializer\Serializer;
 use Uploadcare\Serializer\SnackCaseConverter;
@@ -49,8 +50,8 @@ class SerializeTest extends TestCase
         return (new File())
             ->setDatetimeStored(\date_create())
             ->setDatetimeUploaded(\date_create())
-            ->setImageInfo($imageInfo)
             ->setIsImage(true)
+            ->setContentInfo((new ContentInfo())->setImage($imageInfo))
             ->setIsReady(true)
             ->setMimeType('image/tiff')
             ->setOriginalFileUrl('https://example.com/file.tiff')
@@ -74,7 +75,7 @@ class SerializeTest extends TestCase
         self::assertArrayHasKey('datetime_removed', $result);
         self::assertNull($result['datetime_removed']);
         self::assertEquals($result['datetime_stored'], $file->getDatetimeStored()->format(Serializer::DATE_FORMAT));
-        self::assertEquals($result['image_info']['color_mode'], $file->getImageInfo()->getColorMode());
+        self::assertEquals($result['content_info']['image']['color_mode'], $file->getContentInfo()->getImage()->getColorMode());
         self::assertEquals($result['is_image'], $file->isImage());
     }
 
@@ -84,7 +85,7 @@ class SerializeTest extends TestCase
         $result = $this->serializer->serialize($file);
 
         self::assertStringContainsString('datetime_removed', $result);
-        self::assertStringContainsString('image_info', $result);
+        self::assertStringContainsString('content_info', $result);
         self::assertStringContainsString('color_mode', $result);
     }
 
@@ -130,7 +131,7 @@ class SerializeTest extends TestCase
             ->setVideo($video)
             ->setAudio($audio)
         ;
-        $file->setVideoInfo($videoInfo);
+        $file->setContentInfo((new ContentInfo())->setVideo($videoInfo));
 
         $normalize = (new \ReflectionObject($this->serializer))->getMethod('normalize');
         $normalize->setAccessible(true);
@@ -138,11 +139,11 @@ class SerializeTest extends TestCase
         $result = [];
         $normalize->invokeArgs($this->serializer, [$file, &$result]);
 
-        self::assertSame('avi', $result['video_info']['format']);
-        self::assertSame('DivX', $result['video_info']['video']['codec']);
-        self::assertSame(1024, $result['video_info']['video']['width']);
-        self::assertSame('mp3', $result['video_info']['audio']['codec']);
-        self::assertSame('5.1', $result['video_info']['audio']['channels']);
-        self::assertSame(222, $result['video_info']['audio']['sample_rate']);
+        self::assertSame('avi', $result['content_info']['video']['format']);
+        self::assertSame('DivX', $result['content_info']['video']['video']['codec']);
+        self::assertSame(1024, $result['content_info']['video']['video']['width']);
+        self::assertSame('mp3', $result['content_info']['video']['audio']['codec']);
+        self::assertSame('5.1', $result['content_info']['video']['audio']['channels']);
+        self::assertSame(222, $result['content_info']['video']['audio']['sample_rate']);
     }
 }

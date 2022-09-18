@@ -27,11 +27,6 @@ interface FileInfoInterface extends \Stringable
     public function getDatetimeUploaded(): ?\DateTimeInterface;
 
     /**
-     * Image metadata.
-     */
-    public function getImageInfo(): ?ImageInfoInterface;
-
-    /**
      * Is file is image.
      */
     public function isImage(): bool;
@@ -79,19 +74,14 @@ interface FileInfoInterface extends \Stringable
     public function getVariations(): ?array;
 
     /**
-     * Video metadata.
-     */
-    public function getVideoInfo(): ?VideoInfoInterface;
-
-    /**
      * File upload source. This field contains information about from where file was uploaded, for example: facebook, gdrive, gphotos, etc.
      */
     public function getSource(): string;
 
     /**
-     * @return array<string, string>
+     * Information about file content.
      */
-    public function getRekognitionInfo(): array;
+    public function getContentInfo(): ?ContentInfoInterface;
 
     public function getMetadata(): Metadata;
 }

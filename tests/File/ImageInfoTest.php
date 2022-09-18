@@ -3,9 +3,9 @@
 namespace Tests\File;
 
 use PHPUnit\Framework\TestCase;
-use Uploadcare\File\ImageInfo;
-use Uploadcare\Interfaces\File\GeoLocationInterface;
-use Uploadcare\Interfaces\File\ImageInfoInterface;
+use Uploadcare\File\ContentInfo\ImageInfo;
+use Uploadcare\Interfaces\File\ContentInfo\GeoLocationInterface;
+use Uploadcare\Interfaces\File\ContentInfo\ImageInfoInterface;
 
 class ImageInfoTest extends TestCase
 {

@@ -64,7 +64,7 @@ class DecoratedFileTest extends TestCase
             ['getDatetimeRemoved'],
             ['getDatetimeStored'],
             ['getDatetimeUploaded'],
-            ['getImageInfo'],
+            ['getContentInfo'],
             ['isImage'],
             ['isReady'],
             ['getMimeType'],
@@ -74,9 +74,7 @@ class DecoratedFileTest extends TestCase
             ['getUrl'],
             ['getUuid'],
             ['getVariations'],
-            ['getVideoInfo'],
             ['getSource'],
-            ['getRekognitionInfo'],
         ];
     }
 

@@ -71,8 +71,7 @@ class FileApiAnswersTest extends TestCase
         $result = (new FileApi($this->getConfig($client)))->listFiles();
 
         self::assertInstanceOf(ListResponseInterface::class, $result);
-        self::assertNotEmpty($result->getNext());
-        self::assertNotEmpty($result->getPrevious());
+        self::assertEmpty($result->getNext());
         self::assertCount(\count($data['results']), $result->getResults());
         self::assertInstanceOf(FileInfoInterface::class, $result->getResults()->first());
     }
@@ -166,9 +165,7 @@ class FileApiAnswersTest extends TestCase
         $api = new FileApi($config);
         $firstPage = $api->listFiles();
         self::assertInstanceOf(FileListResponse::class, $firstPage);
-        self::assertNotEmpty($firstPage->getNext());
-        $nextPage = $api->nextPage($firstPage);
-        self::assertInstanceOf(FileListResponse::class, $nextPage);
+        self::assertEmpty($firstPage->getNext());
     }
 
     public function testApiNextPageIsNull(): void

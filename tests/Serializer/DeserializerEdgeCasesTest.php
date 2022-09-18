@@ -3,8 +3,8 @@
 namespace Tests\Serializer;
 
 use PHPUnit\Framework\TestCase;
+use Uploadcare\File\ContentInfo\ImageInfo;
 use Uploadcare\File\File;
-use Uploadcare\File\ImageInfo;
 use Uploadcare\Interfaces\Serializer\SerializerInterface;
 use Uploadcare\Serializer\Exceptions\ClassNotFoundException;
 use Uploadcare\Serializer\Exceptions\ConversionException;
@@ -40,7 +40,7 @@ class DeserializerEdgeCasesTest extends TestCase
     protected function getImageInfoString(): string
     {
         $data = \file_get_contents($this->example);
-        $imageInfo = \json_decode($data, true)['image_info'];
+        $imageInfo = \json_decode($data, true)['content_info']['image'];
 
         return \json_encode($imageInfo);
     }
