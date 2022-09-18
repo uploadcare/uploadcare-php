@@ -2,6 +2,8 @@
 
 namespace Uploadcare\Interfaces\File;
 
+use Uploadcare\File\Metadata;
+
 /**
  * Uploadcare API file representation.
  *
@@ -90,4 +92,6 @@ interface FileInfoInterface extends \Stringable
      * @return array<string, string>
      */
     public function getRekognitionInfo(): array;
+
+    public function getMetadata(): Metadata;
 }

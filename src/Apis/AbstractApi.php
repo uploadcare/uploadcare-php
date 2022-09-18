@@ -57,7 +57,14 @@ abstract class AbstractApi
         }
         if (isset($data['body'])) {
             $stringData = $data['body'];
-            $parameters['body'] = $data['body'];
+            if (!\is_string($stringData)) {
+                try {
+                    $stringData = \json_encode($stringData, JSON_THROW_ON_ERROR);
+                } catch (\Throwable $e) {
+                    throw new HttpException(\sprintf('Wrong body format: %s', $e->getMessage()));
+                }
+            }
+            $parameters['body'] = $stringData;
             unset($data['body']);
         }
 

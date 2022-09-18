@@ -311,4 +311,9 @@ final class File implements FileInfoInterface, SerializableInterface
 
         return $this;
     }
+
+    public function getMetadata(): Metadata
+    {
+        throw new \BadMethodCallException(\sprintf('Call this method from \'%s\' object', \Uploadcare\File::class));
+    }
 }

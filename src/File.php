@@ -2,6 +2,7 @@
 
 namespace Uploadcare;
 
+use Uploadcare\File\Metadata;
 use Uploadcare\Interfaces\Api\FileApiInterface;
 use Uploadcare\Interfaces\File\FileInfoInterface;
 use Uploadcare\Interfaces\File\ImageInfoInterface;
@@ -132,5 +133,10 @@ final class File implements FileInfoInterface
     public function getRekognitionInfo(): array
     {
         return $this->inner->getRekognitionInfo();
+    }
+
+    public function getMetadata(): Metadata
+    {
+        return $this->api->getMetadata($this->inner);
     }
 }

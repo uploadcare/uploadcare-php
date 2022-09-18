@@ -2,6 +2,7 @@
 
 namespace Uploadcare\Interfaces\Api;
 
+use Uploadcare\File\Metadata;
 use Uploadcare\Interfaces\File\{CollectionInterface, FileInfoInterface};
 use Uploadcare\Interfaces\Response\{BatchResponseInterface, ListResponseInterface};
 
@@ -85,4 +86,11 @@ interface FileApiInterface
      * @param FileInfoInterface|string $id
      */
     public function generateSecureUrl($id): ?string;
+
+    /**
+     * Load file metadata.
+     *
+     * @param FileInfoInterface|string $id
+     */
+    public function getMetadata($id): Metadata;
 }

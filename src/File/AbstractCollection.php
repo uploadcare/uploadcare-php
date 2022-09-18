@@ -19,10 +19,9 @@ abstract class AbstractCollection implements CollectionInterface
     protected array $elements = [];
 
     /**
-     * @return \Traversable
+     * @psalm-return \Traversable
      */
-    #[\ReturnTypeWillChange]
-    public function getIterator(): iterable
+    public function getIterator(): \Traversable
     {
         if (\count($this->elements) === 0) {
             return new \EmptyIterator();

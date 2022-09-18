@@ -11,7 +11,7 @@ use Uploadcare\Interfaces\AuthUrl\AuthUrlConfigInterface;
 use Uploadcare\Interfaces\File\{CollectionInterface, FileInfoInterface};
 use Uploadcare\Interfaces\Response\{BatchResponseInterface, ListResponseInterface};
 use Uploadcare\Response\{BatchFileResponse, FileListResponse};
-use Uploadcare\{File as FileDecorator, File\File, File\FileCollection};
+use Uploadcare\{File as FileDecorator, File\File, File\FileCollection, File\Metadata};
 
 /**
  * File Api.
@@ -327,6 +327,11 @@ final class FileApi extends AbstractApi implements FileApiInterface
             '{timestamp}' => $generator->getExpired(),
             '{token}' => $generator->getToken(),
         ]);
+    }
+
+    public function getMetadata($id): Metadata
+    {
+        return (new MetadataApi($this->configuration))->getMetadata($id);
     }
 
     private function checkTransformationUrl(string $url): string
