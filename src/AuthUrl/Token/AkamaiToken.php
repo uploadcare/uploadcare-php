@@ -5,6 +5,8 @@ namespace Uploadcare\AuthUrl\Token;
 /**
  * Akamai Token Generator.
  *
+ * @psalm-suppress PropertyNotSetInConstructor
+ *
  * @see https://uploadcare.com/docs/security/secure_delivery/
  */
 class AkamaiToken implements TokenInterface

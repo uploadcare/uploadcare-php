@@ -9,7 +9,7 @@ class WebhookResponse implements WebhookInterface, SerializableInterface
 {
     private int $id = 0;
     private ?\DateTimeInterface $created = null;
-    private ?\DateTimeInterface $updated;
+    private ?\DateTimeInterface $updated = null;
     private ?string $event = null;
     private ?string $targetUrl = null;
     private int $project = 0;

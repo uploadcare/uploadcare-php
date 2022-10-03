@@ -51,6 +51,8 @@ class Uploader extends AbstractUploader
 
     /**
      * @param resource $handle
+     *
+     * @psalm-suppress RedundantConditionGivenDocblockType
      */
     private function directUpload($handle, ?string $mimeType = null, ?string $filename = null, string $store = 'auto'): ResponseInterface
     {

@@ -5,7 +5,7 @@ namespace Uploadcare\Interfaces\File;
 /**
  * Uploadcare File Collection interface.
  *
- * @psalm-template TKey of array-key
+ * @psalm-template TKey of mixed
  * @psalm-template T
  *
  * @template-extends \IteratorAggregate<TKey, T>

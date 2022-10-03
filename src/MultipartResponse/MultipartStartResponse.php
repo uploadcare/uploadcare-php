@@ -72,7 +72,7 @@ class MultipartStartResponse implements SerializableInterface
             return $this;
         }
 
-        $partUrl = (new MultipartPreSignedUrl())->setUrl($part);
+        $partUrl = new MultipartPreSignedUrl($part);
         if (!\in_array($partUrl, $this->parts, true)) {
             $this->parts[] = $partUrl;
         }

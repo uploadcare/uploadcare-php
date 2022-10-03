@@ -14,7 +14,12 @@ class MultipartPreSignedUrl implements SerializableInterface
     /**
      * @var string pre-signed and ready to upload file-part url
      */
-    private $url;
+    private string $url;
+
+    public function __construct(string $url = '')
+    {
+        $this->url = $url;
+    }
 
     public static function rules(): array
     {
