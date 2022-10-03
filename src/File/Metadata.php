@@ -18,6 +18,9 @@ final class Metadata implements \ArrayAccess, \Countable, \IteratorAggregate
         $this->elements = $elements;
     }
 
+    /**
+     * @psalm-param mixed $key
+     */
     public static function validateKey($key): bool
     {
         if (!\is_string($key) || \strlen($key) > 64) {
