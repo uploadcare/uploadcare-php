@@ -4,7 +4,7 @@ namespace Uploadcare;
 
 use Uploadcare\File\Metadata;
 use Uploadcare\Interfaces\Api\FileApiInterface;
-use Uploadcare\Interfaces\File\{ContentInfoInterface, FileInfoInterface};
+use Uploadcare\Interfaces\File\{AppDataInterface, ContentInfoInterface, FileInfoInterface};
 
 /**
  * File decorator.
@@ -126,5 +126,10 @@ final class File implements FileInfoInterface
     public function getContentInfo(): ?ContentInfoInterface
     {
         return $this->inner->getContentInfo();
+    }
+
+    public function getAppdata(): ?AppDataInterface
+    {
+        return $this->inner->getAppdata();
     }
 }

@@ -84,4 +84,6 @@ interface FileInfoInterface extends \Stringable
     public function getContentInfo(): ?ContentInfoInterface;
 
     public function getMetadata(): Metadata;
+
+    public function getAppdata(): ?AppDataInterface;
 }
