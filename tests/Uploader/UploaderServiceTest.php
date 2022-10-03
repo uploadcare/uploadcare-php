@@ -145,14 +145,6 @@ class UploaderServiceTest extends TestCase
         $this->expectExceptionMessageMatches('/Unable to read/');
     }
 
-    public function testUploadFromNotExistsUrl(): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $url = 'http://host.does.hot.exists';
-        (new Uploader($this->getConf()))->fromUrl($url);
-        $this->expectExceptionMessageMatches('/Unable to open/');
-    }
-
     /**
      * @group local-only
      *

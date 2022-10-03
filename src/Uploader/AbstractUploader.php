@@ -8,6 +8,7 @@ use Uploadcare\Apis\FileApi;
 use Uploadcare\Exception\Upload\{AccountException, FileTooLargeException, RequestParametersException, ThrottledException};
 use Uploadcare\Exception\{HttpException, InvalidArgumentException};
 use Uploadcare\Interfaces\{ConfigurationInterface, File\FileInfoInterface, UploaderInterface};
+use Uploadcare\File\Metadata;
 
 /**
  * Main Uploader.
@@ -61,20 +62,20 @@ abstract class AbstractUploader implements UploaderInterface
      *
      * @throws InvalidArgumentException
      */
-    abstract public function fromResource($handle, string $mimeType = null, string $filename = null, string $store = 'auto'): FileInfoInterface;
+    abstract public function fromResource($handle, string $mimeType = null, string $filename = null, string $store = 'auto', array $metadata = []): FileInfoInterface;
 
     /**
      * Upload file from local path.
      *
      * @throws InvalidArgumentException
      */
-    public function fromPath(string $path, string $mimeType = null, string $filename = null, string $store = 'auto'): FileInfoInterface
+    public function fromPath(string $path, string $mimeType = null, string $filename = null, string $store = 'auto', array $metadata = []): FileInfoInterface
     {
         if (!\file_exists($path) || !\is_readable($path)) {
             throw new InvalidArgumentException(\sprintf('Unable to read \'%s\': file not found or not readable', $path));
         }
 
-        return $this->fromResource(\fopen($path, 'rb'), $mimeType, $filename, $store);
+        return $this->fromResource(\fopen($path, 'rb'), $mimeType, $filename, $store, $metadata);
     }
 
     /**
@@ -82,14 +83,32 @@ abstract class AbstractUploader implements UploaderInterface
      *
      * @throws InvalidArgumentException
      */
-    public function fromUrl(string $url, string $mimeType = null, string $filename = null, string $store = 'auto'): FileInfoInterface
+    public function fromUrl(string $url, string $mimeType = null, string $filename = null, string $store = 'auto', array $metadata = []): FileInfoInterface
     {
-        $resource = @\fopen($url, 'rb');
-        if ($resource === false) {
-            throw new InvalidArgumentException(\sprintf('Unable to open \'%s\' url', $url));
+        $checkDuplicates = false;
+        $storeDuplicates = false;
+        if (\array_key_exists('checkDuplicates', $metadata)) {
+            $checkDuplicates = true;
+            unset($metadata['checkDuplicates']);
+        }
+        if (\array_key_exists('storeDuplicates', $metadata)) {
+            $storeDuplicates = true;
+            unset($metadata['storeDuplicates']);
         }
 
-        return $this->fromResource($resource, $mimeType, $filename, $store);
+        $parameters = $this->makeMultipartParameters(\array_merge($this->getDefaultParameters(), [
+            'source_url' => $url,
+            'check_URL_duplicates' => $checkDuplicates ? '1' : '0',
+            'save_URL_duplicates' => $storeDuplicates ? '1' : '0',
+        ], $this->makeMetadataParameters($metadata)));
+
+        try {
+            $response = $this->sendRequest('POST', 'from_url/', $parameters);
+        } catch (\Throwable $e) {
+            throw $this->handleException($e);
+        }
+
+        return $this->serializeFileResponse($response);
     }
 
     /**
@@ -97,13 +116,28 @@ abstract class AbstractUploader implements UploaderInterface
      *
      * @throws InvalidArgumentException
      */
-    public function fromContent(string $content, string $mimeType = null, string $filename = null, string $store = 'auto'): FileInfoInterface
+    public function fromContent(string $content, string $mimeType = null, string $filename = null, string $store = 'auto', array $metadata = []): FileInfoInterface
     {
         $res = \fopen('php://temp', 'rb+');
         \fwrite($res, $content);
         $this->rewind($res);
 
-        return $this->fromResource($res, $mimeType, $filename, $store);
+        return $this->fromResource($res, $mimeType, $filename, $store, $metadata);
+    }
+
+    protected function makeMetadataParameters(array $metadata): array
+    {
+        $result = [];
+        foreach ($metadata as $key => $value) {
+            if (Metadata::validateKey($key) === false) {
+                continue;
+            }
+
+            $resultKey = \sprintf('metadata[%s]', $key);
+            $result[$resultKey] = $value;
+        }
+
+        return $result;
     }
 
     /**

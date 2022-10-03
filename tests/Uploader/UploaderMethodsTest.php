@@ -63,7 +63,8 @@ class UploaderMethodsTest extends TestCase
         $body = ['file' => \uuid_create()];
 
         $uploader = $this->makeUploaderWithResponse($body);
-        self::assertInstanceOf(FileInfoInterface::class, $uploader->fromPath($path));
+        $response = $uploader->fromPath($path, null, null, 'auto', ['foo' => 'bar']);
+        self::assertInstanceOf(FileInfoInterface::class, $response);
     }
 
     /**
