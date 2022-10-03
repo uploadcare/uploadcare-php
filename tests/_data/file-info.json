@@ -340,6 +340,14 @@
       "datetime_created": "2022-09-18T08:56:33.474483Z",
       "datetime_updated": "2022-09-18T08:56:33.474502Z",
       "version": "0.105.1"
+    },
+    "remove_bg": {
+      "data": {
+        "foreground_type": "product"
+      },
+      "datetime_created": "2022-10-03T13:09:27.061147Z",
+      "datetime_updated": "2022-10-03T13:09:27.061165Z",
+      "version": "1.0"
     }
   }
 }

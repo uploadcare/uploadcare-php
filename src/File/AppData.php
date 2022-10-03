@@ -4,6 +4,7 @@ namespace Uploadcare\File;
 
 use Uploadcare\File\AppData\AwsRecognitionLabels;
 use Uploadcare\File\AppData\ClamAvVirusScan;
+use Uploadcare\File\AppData\RemoveBg;
 use Uploadcare\Interfaces\File\AppDataInterface;
 use Uploadcare\Interfaces\SerializableInterface;
 
@@ -11,12 +12,14 @@ class AppData implements AppDataInterface, SerializableInterface
 {
     private ?AwsRecognitionLabels $awsRecognitionLabels = null;
     private ?ClamAvVirusScan $clamAvVirusScan = null;
+    private ?RemoveBg $removeBg = null;
 
     public static function rules(): array
     {
         return [
             'awsRecognitionLabels' => AwsRecognitionLabels::class,
             'clamAvVirusScan' => ClamAvVirusScan::class,
+            'removeBg' => RemoveBg::class,
         ];
     }
 
@@ -40,6 +43,18 @@ class AppData implements AppDataInterface, SerializableInterface
     public function setClamAvVirusScan(?ClamAvVirusScan $clamAvVirusScan): self
     {
         $this->clamAvVirusScan = $clamAvVirusScan;
+
+        return $this;
+    }
+
+    public function getRemoveBg(): ?RemoveBg
+    {
+        return $this->removeBg;
+    }
+
+    public function setRemoveBg(?RemoveBg $removeBg): self
+    {
+        $this->removeBg = $removeBg;
 
         return $this;
     }
