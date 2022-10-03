@@ -142,7 +142,7 @@ class Serializer implements SerializerInterface
     private function processData(SerializableInterface $class, array $data, array $rules, array $excluded): void
     {
         foreach ($data as $propertyName => $value) {
-            $convertedName = $this->nameConverter->denormalize($propertyName);
+            $convertedName = $this->nameConverter->denormalize((string) $propertyName);
             if (!isset($rules[$convertedName])) {
                 // Property can be named as `isSomething`
                 $convertedName = \sprintf('is%s', \ucfirst($convertedName));
