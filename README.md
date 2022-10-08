@@ -14,6 +14,7 @@ Uploadcare PHP integration handles uploads and further operations with files by 
 * [Usage](#usage)
   * [Uploading files](#uploading-files)
   * [File operations](#file-operations)
+  * [Addons operations](#addons-operations)
   * [Group operations](#group-operations)
   * [Project operations](#project-operations)
   * [Webhooks](#webhooks)
@@ -24,7 +25,7 @@ Uploadcare PHP integration handles uploads and further operations with files by 
 
 ## Requirements
 
-- `php7.1+`
+- `php7.4+` or `php8.0+`
 - `php-curl`
 - `php-json`
 
@@ -36,7 +37,7 @@ Prior to installing `uploadcare-php` get the [Composer](https://getcomposer.org)
 
 ```json
 "require": {
-    "uploadcare/uploadcare-php": "^3.0"
+    "uploadcare/uploadcare-php": "^4.0"
 }
 ```
 
@@ -114,21 +115,18 @@ $configuration = \Uploadcare\Configuration::create($_ENV['UPLOADCARE_PUBLIC_KEY'
 $uploader = (new \Uploadcare\Api($configuration))->uploader();
 ```
 
-First of all, files can be uploaded **from URL**. The following code returns an instance of `Uploadcare\File`,
+First of all, files can be uploaded **from URL**. The following code returns a token to check file upload status,
 
 ```php
 $url = 'https://httpbin.org/image/jpeg';
-$result = $uploader->fromUrl($url, 'image/jpeg'); // If success, $result will contain instance of Uploadcare\File class (see below)
-
-echo \sprintf("File from URL %s uploaded successfully \n", $url);
-echo \sprintf("Uploaded file ID: %s\n", $result);
+$result = $uploader->fromUrl($url, 'image/jpeg'); // If success, $result will be string to check upload status (see below)
 ```
 
 Another way of uploading files is by using **a path**,
 
 ```php
 $path = __DIR__ . '/squirrel.jpg';
-$result = $uploader->fromPath($path, 'image/jpeg');  // In success $result will contains uploaded Uploadcare\File class
+$result = $uploader->fromPath($path, 'image/jpeg');  // In success $result will contain uploaded Uploadcare\File class
 ```
 
 It’s also relevant when using file pointers,
@@ -144,6 +142,25 @@ There's an option of uploading a file **from its contents**. You’ll need to sp
 $path = __DIR__ . '/squirrel.jpg';
 $result = $uploader->fromContent(\file_get_contents($path), 'image/jpeg');
 ```
+
+Check upload file status
+
+```php
+$url = 'https://httpbin.org/image/jpeg';
+$result = $uploader->fromUrl($url, 'image/jpeg'); 
+$status = $uploader->checkStatus($result); // Will be 'waiting', 'progress', 'success', 'error' or 'unknown'
+```
+
+#### File metadata
+
+Every upload method can set a [file metadata](https://uploadcare.com/api-refs/rest-api/v0.7.0/#tag/File-metadata). For example:
+
+```php
+$path = __DIR__ . '/squirrel.jpg';
+$result = $uploader->fromPath($path, 'image/jpeg', null, '1', ['type' => 'animal', 'kind' => 'squirrel']);
+```
+
+You will see this values in a `metadata` object of `Uploadcare\File` response.
 
 ### Multipart upload
 
@@ -205,7 +222,7 @@ After that, you can access to file operation methods:
     - `$makePublic` — `true` to make copied files available via public links, `false` to reverse the behavior.
     - `$pattern` — The parameter is used to specify file names Uploadcare passes to a custom storage. In case when the parameter is omitted, we use a pattern of your custom storage. Use any combination of allowed values.
     
-See the [API documentation](https://uploadcare.com/api-refs/rest-api/v0.6.0/#tag/File) for more details.
+See the [API documentation](https://uploadcare.com/api-refs/rest-api/v0.7.0/#tag/File) for more details.
 
 ### `Uploadcare\FileCollection` class
 
@@ -225,6 +242,56 @@ This class implements `FileInfoInterface` and has additional methods for file op
 - `copyToRemoteStorage($target, $makePublic = true, $pattern = null)` — Copies the current file to a custom storage;
 
 As you can see, additional methods help you to call API methods without direct API calls.
+
+## Addons operations
+
+Uploadcare provide a few additional operations with images.
+
+### [Object Recognition](https://uploadcare.com/docs/intelligence/object-recognition/)
+
+To call object recognition from library:
+
+```php
+$configuration = \Uploadcare\Configuration::create($_ENV['UPLOADCARE_PUBLIC_KEY'], $_ENV['UPLOADCARE_SECRET_KEY']);
+
+$api = new \Uploadcare\Api($configuration);
+/** @var \Uploadcare\Interfaces\File\FileInfoInterface $file */
+$file = $api->file()->listFiles()->getResults()->first();
+
+# Request recognition, get token to check status
+$token = $api->addons()->requestAwsRecognition($file);
+while (($status = $api->addons()->checkAwsRecognition($token)) !== 'done') {
+    \usleep(1000);
+    if ($status === 'error') {
+        throw new \Exception('Error in process');
+    }
+}
+
+$recognitionData = $api->file()->fileInfo($file->getUuid())->getAppdata()->getAwsRekognitionDetectLabels(); // Instance of \Uploadcare\Interfaces\File\AppData\AwsRecognitionLabelsInterface
+```
+
+### [Remove background](https://uploadcare.com/docs/remove-bg/)
+
+Remove background from image:
+
+```php
+$configuration = \Uploadcare\Configuration::create($_ENV['UPLOADCARE_PUBLIC_KEY'], $_ENV['UPLOADCARE_SECRET_KEY']);
+
+$api = new \Uploadcare\Api($configuration);
+/** @var \Uploadcare\Interfaces\File\FileInfoInterface $file */
+$file = $api->file()->listFiles()->getResults()->first();
+
+# Request recognition, get token to check status
+$token = $api->addons()->requestRemoveBackground($file);
+while (($status = $api->addons()->checkRemoveBackground($token)) !== 'done') {
+    \usleep(1000);
+    if ($status === 'error') {
+        throw new \Exception('Error in process');
+    }
+}
+
+$removeBackgroundData = $api->file()->fileInfo($file->getUuid())->getAppdata()->getRemoveBg(); // Instance of \Uploadcare\Interfaces\File\AppData\RemoveBgInterface
+```
 
 ## Group operations
 
@@ -318,7 +385,7 @@ The default arguments and examples are:
 - `$store = true` —  The conversion results will go to your default storage.
 - `$pageNumber = 1` — Specifies pages to convert in multi-page documents.
 
-After that, you can covert your file:
+After that, you can convert your file:
 
 ```php
 $config = \Uploadcare\Configuration::create($_ENV['UPLOADCARE_PUBLIC_KEY'], $_ENV['UPLOADCARE_SECRET_KEY']);
