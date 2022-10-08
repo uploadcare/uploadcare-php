@@ -81,6 +81,7 @@ final class FileApi extends AbstractApi implements FileApiInterface
         if (\is_bool($stored)) {
             $parameters['stored'] = $stored;
         }
+        $parameters['include'] = 'appdata';
 
         $response = $this->request('GET', '/files/', ['query' => $parameters]);
 
@@ -132,7 +133,9 @@ final class FileApi extends AbstractApi implements FileApiInterface
      */
     public function fileInfo(string $id): FileInfoInterface
     {
-        $response = $this->request('GET', \sprintf('/files/%s/', $id));
+        $response = $this->request('GET', \sprintf('/files/%s/', $id), [
+            'query' => ['include' => 'appdata'],
+        ]);
 
         return $this->deserializeFileInfo($response);
     }
