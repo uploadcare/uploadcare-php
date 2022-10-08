@@ -7,8 +7,8 @@ use Psr\Http\Message\ResponseInterface;
 use Uploadcare\Apis\FileApi;
 use Uploadcare\Exception\Upload\{AccountException, FileTooLargeException, RequestParametersException, ThrottledException};
 use Uploadcare\Exception\{HttpException, InvalidArgumentException};
-use Uploadcare\Interfaces\{ConfigurationInterface, File\FileInfoInterface, UploaderInterface};
 use Uploadcare\File\Metadata;
+use Uploadcare\Interfaces\{ConfigurationInterface, File\FileInfoInterface, UploaderInterface};
 
 /**
  * Main Uploader.
@@ -83,7 +83,7 @@ abstract class AbstractUploader implements UploaderInterface
      *
      * @throws InvalidArgumentException
      */
-    public function fromUrl(string $url, string $mimeType = null, string $filename = null, string $store = 'auto', array $metadata = []): FileInfoInterface
+    public function fromUrl(string $url, string $mimeType = null, string $filename = null, string $store = 'auto', array $metadata = []): string
     {
         $checkDuplicates = false;
         $storeDuplicates = false;
@@ -100,15 +100,44 @@ abstract class AbstractUploader implements UploaderInterface
             'source_url' => $url,
             'check_URL_duplicates' => $checkDuplicates ? '1' : '0',
             'save_URL_duplicates' => $storeDuplicates ? '1' : '0',
+            'pub_key' => $this->configuration->getPublicKey(),
         ], $this->makeMetadataParameters($metadata)));
 
         try {
-            $response = $this->sendRequest('POST', 'from_url/', $parameters);
+            $response = $this->sendRequest('POST', 'from_url/', $parameters)->getBody()->getContents();
         } catch (\Throwable $e) {
             throw $this->handleException($e);
         }
 
-        return $this->serializeFileResponse($response);
+        try {
+            $responseArray = \json_decode($response, true, 512, JSON_THROW_ON_ERROR);
+        } catch (\Throwable $e) {
+            throw new HttpException('Wrong response', 0, $e);
+        }
+
+        if (!\array_key_exists('token', $responseArray)) {
+            throw new HttpException('Unable to get \'token\' key from response');
+        }
+
+        return (string) $responseArray['token'];
+    }
+
+    public function checkStatus(string $token): string
+    {
+        try {
+            $request = $this->sendRequest('GET', '/from_url/status/', [
+                'query' => ['token' => $token],
+            ])->getBody()->getContents();
+            $response = \json_decode($request, true, 215, JSON_THROW_ON_ERROR);
+        } catch (\Throwable $e) {
+            throw $this->handleException($e);
+        }
+
+        if (!\array_key_exists('status', $response)) {
+            throw new HttpException('Unable to get \'status\' key from response');
+        }
+
+        return (string) $response['status'];
     }
 
     /**
