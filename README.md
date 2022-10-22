@@ -293,6 +293,24 @@ while (($status = $api->addons()->checkRemoveBackground($token)) !== 'done') {
 $removeBackgroundData = $api->file()->fileInfo($file->getUuid())->getAppdata()->getRemoveBg(); // Instance of \Uploadcare\Interfaces\File\AppData\RemoveBgInterface
 ```
 
+### [Antivirus scan](https://www.clamav.net/)
+
+```php
+$configuration = \Uploadcare\Configuration::create($_ENV['UPLOADCARE_PUBLIC_KEY'], $_ENV['UPLOADCARE_SECRET_KEY']);
+$api = new \Uploadcare\Api($configuration);
+/** @var \Uploadcare\Interfaces\File\FileInfoInterface $file */
+$file = $api->file()->listFiles()->getResults()->first();
+
+# Request antivirus scan and get token:
+$token = $api->addons()->requestAntivirusScan($file);
+while (($status = $api->addons()->checkAntivirusScan($token)) !== 'done') {
+    \usleep(1000);
+    if ($status === 'error') {
+        throw new \Exception('Error in process');
+    }
+}
+```
+
 ## Group operations
 
 For any type of group operation you need to create an `Uploadcare\Api` instance with a configuration object and call the `group()` method:
