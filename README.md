@@ -143,7 +143,7 @@ $path = __DIR__ . '/squirrel.jpg';
 $result = $uploader->fromContent(\file_get_contents($path), 'image/jpeg');
 ```
 
-Check upload file status
+Check upload file status:
 
 ```php
 $url = 'https://httpbin.org/image/jpeg';
