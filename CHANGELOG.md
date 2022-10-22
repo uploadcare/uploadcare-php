@@ -5,6 +5,26 @@ The format is based now on [Keep a
 Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to
 [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [4.0.0]
+### Removed
+- php 7.1 support (minimal version is 7.4, php 8.0 also supported)
+- `FileInfoInterface::getImageInfo()`, `FileInfoInterface::getVideoInfo()`, `FileInfoInterface::getRekognitionInfo()` — see `FileInfoInterface::getContentInfo()`
+### Added 
+- support for [REST API Reference 0.7](https://uploadcare.com/api-refs/rest-api/v0.7.0/)
+- `FileInfoInterface::getContentInfo()`: returns `ContentInfoInterface` with `getMime()` (information about MimeType), `getImage` (`ImageInfoInterface` in case of image) and `getVideo` (`VideoInfoInterface` in case of video) methods;
+- `FileInfoInterface::getMetadata()` method returns file associated metadata array-accessible object;
+- Addons (`AddonsApiInterface`): execute and check status of add-on application:
+  - `requestAwsRecognition($id)`: Execute AWS Rekognition Add-On for a given target to detect labels in an image.
+  - `checkAwsRecognition(string $id)`: Check the status of an Add-On execution request that had been started using the Execute Add-On operation.
+  - `requestAntivirusScan($id, bool $purge = false)`: Execute ClamAV virus checking Add-On for a given target.
+  - `checkAntivirusScan(string $id)`: Check the status of an Add-On execution request that had been started using the Execute Add-On operation.
+  - `requestRemoveBackground($id, ?RemoveBackgroundRequestInterface $backgroundRequest = null)`: Execute remove.bg background image removal Add-On for a given target.
+  - `checkRemoveBackground(string $id)`: Check the status of an Add-On execution request that had been started using the Execute Add-On operation.
+- Application data `FileInfoInterface::getAppdata()`: method returns `AppDataInterface` with information about addon-applications and associated data:
+  - `AwsRecognitionLabelsInterface`: information by previously executed `requestAwsRecognition` of image;
+  - `ClamAvVirusScanInterface`: information by [ClamAV](https://www.clamav.net/) antivirus scan
+  - `RemoveBgInterface`: data by previously executed `requestRemoveBackground` [remove.bg](https://remove.bg/) addon
+
 ## [3.2.4]
 ### Added
 - Allow to use guzzlehttp/psr7:^2.
