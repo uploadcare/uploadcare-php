@@ -7,7 +7,7 @@ use GuzzleHttp\Psr7\Message;
 
 abstract class AbstractClientException extends \RuntimeException
 {
-    public function __construct($message = '', $code = 0, \Exception $previous = null)
+    public function __construct(string $message = '', int $code = 0, \Exception $previous = null)
     {
         if ($previous instanceof ClientException) {
             $code = $previous->getCode();

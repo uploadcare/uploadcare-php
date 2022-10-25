@@ -1,7 +1,8 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Tests\AuthUrl;
 
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Uploadcare\AuthUrl\AuthUrlConfig;
 use Uploadcare\AuthUrl\Token\TokenInterface;
@@ -9,10 +10,7 @@ use Uploadcare\Configuration;
 
 class UrlGeneratorConfigTest extends TestCase
 {
-    /**
-     * @var Configuration
-     */
-    private $config;
+    private Configuration $config;
 
     protected function setUp(): void
     {
@@ -20,7 +18,7 @@ class UrlGeneratorConfigTest extends TestCase
         $this->config = Configuration::create('public-key', 'private-key');
     }
 
-    public function testAuthConfigIsNull()
+    public function testAuthConfigIsNull(): void
     {
         self::assertNull($this->config->getAuthUrlConfig());
     }
@@ -36,7 +34,7 @@ class UrlGeneratorConfigTest extends TestCase
     public function testStringAuthConfigCreation()
     {
         $ts = \date_create()->getTimestamp();
-        /** @var \PHPUnit_Framework_MockObject_MockObject|TokenInterface $token */
+        /** @var MockObject|TokenInterface $token */
         $token = $this->getMockBuilder(TokenInterface::class)
             ->setMethods(['getToken', 'getExpired', 'getUrlTemplate'])
             ->getMock()

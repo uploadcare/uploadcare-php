@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Tests\Api;
 
@@ -18,7 +18,7 @@ class FileApiRemoteTest extends TestCase
         (new Dotenv())->load(\dirname(__DIR__) . '/.env.local');
     }
 
-    public function testFileList()
+    public function testFileList(): void
     {
         $config = Configuration::create($_ENV['UPLOADCARE_PUBLIC_KEY'], $_ENV['UPLOADCARE_PRIVATE_KEY']);
         $api = new FileApi($config);
@@ -27,7 +27,7 @@ class FileApiRemoteTest extends TestCase
         self::assertInstanceOf(ListResponseInterface::class, $list);
     }
 
-    public function testNextPage()
+    public function testNextPage(): void
     {
         $config = Configuration::create($_ENV['UPLOADCARE_PUBLIC_KEY'], $_ENV['UPLOADCARE_PRIVATE_KEY']);
         $api = new FileApi($config);

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Tests;
 
@@ -28,8 +28,6 @@ class HttpExceptionTest extends TestCase
 
     /**
      * @dataProvider provideHttpExceptions
-     *
-     * @param \Exception $exception
      */
     public function testExceptionMessages(\Exception $exception): void
     {
@@ -37,7 +35,7 @@ class HttpExceptionTest extends TestCase
         self::assertStringContainsString($exception->getMessage(), $httpException->getMessage());
     }
 
-    public function testEmptyMessageInException()
+    public function testEmptyMessageInException(): void
     {
         $ex = new ServerException('', new Request('GET', 'https://localhost'), new Response(503));
         $httpException = new HttpException('', 503, $ex);

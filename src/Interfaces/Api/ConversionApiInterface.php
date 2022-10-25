@@ -21,49 +21,35 @@ interface ConversionApiInterface
      * @param FileInfoInterface|string                                      $file
      * @param ConversionRequestInterface|DocumentConversionRequestInterface $request
      *
-     * @return object
-     *
      * @throws \RuntimeException
      */
-    public function convertDocument($file, ConversionRequestInterface $request);
+    public function convertDocument($file, ConversionRequestInterface $request): object;
 
     /**
      * @param CollectionInterface|array                                     $collection
      * @param ConversionRequestInterface|DocumentConversionRequestInterface $request
-     *
-     * @return BatchResponseInterface
      */
     public function batchConvertDocuments($collection, ConversionRequestInterface $request): BatchResponseInterface;
 
     /**
      * @param ConvertedItemInterface|int $id
-     *
-     * @return ConversionStatusInterface
      */
     public function documentJobStatus($id): ConversionStatusInterface;
 
     /**
-     * @param FileInfoInterface|string   $file
-     * @param ConversionRequestInterface $request
-     *
-     * @return object
+     * @param FileInfoInterface|string $file
      *
      * @throws \RuntimeException
      */
-    public function convertVideo($file, ConversionRequestInterface $request);
+    public function convertVideo($file, ConversionRequestInterface $request): object;
 
     /**
-     * @param CollectionInterface|array  $collection
-     * @param ConversionRequestInterface $request
-     *
-     * @return BatchResponseInterface
+     * @param CollectionInterface|array $collection
      */
     public function batchConvertVideo($collection, ConversionRequestInterface $request): BatchResponseInterface;
 
     /**
      * @param int|ConvertedItemInterface $id
-     *
-     * @return mixed
      */
-    public function videoJobStatus($id);
+    public function videoJobStatus($id): ConversionStatusInterface;
 }

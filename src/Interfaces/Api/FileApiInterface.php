@@ -2,30 +2,21 @@
 
 namespace Uploadcare\Interfaces\Api;
 
-use Uploadcare\Interfaces\File\CollectionInterface;
-use Uploadcare\Interfaces\File\FileInfoInterface;
-use Uploadcare\Interfaces\Response\BatchResponseInterface;
-use Uploadcare\Interfaces\Response\ListResponseInterface;
+use Uploadcare\File\Metadata;
+use Uploadcare\Interfaces\File\{CollectionInterface, FileInfoInterface};
+use Uploadcare\Interfaces\Response\{BatchResponseInterface, ListResponseInterface};
 
 interface FileApiInterface
 {
     /**
      * Makes an array from next/previous url got from API. Use this method to generate links to next or previous pages.
-     *
-     * @param string|null $url
-     *
-     * @return array|null
      */
     public function getPageRequestParameters(?string $url): ?array;
 
     /**
      * Get the next page from previous answer (if next page exists).
-     *
-     * @param ListResponseInterface $response
-     *
-     * @return ListResponseInterface|null
      */
-    public function nextPage(ListResponseInterface $response);
+    public function nextPage(ListResponseInterface $response): ?ListResponseInterface;
 
     /**
      * Getting a paginated list of files.
@@ -36,8 +27,6 @@ interface FileApiInterface
      * @param array           $addFields Add special fields to the file object
      * @param bool|null       $stored    `true` to only include files that were stored, `false` to include temporary ones. The default is unset: both stored and not stored files are returned.
      * @param bool            $removed   `true` to only include removed files in the response, `false` to include existing files. Defaults to false.
-     *
-     * @return ListResponseInterface
      */
     public function listFiles(int $limit = 100, string $orderBy = 'datetime_uploaded', $from = null, array $addFields = [], ?bool $stored = null, bool $removed = false): ListResponseInterface;
 
@@ -45,8 +34,6 @@ interface FileApiInterface
      * Store a single file by UUID.
      *
      * @param string|FileInfoInterface $id file UUID
-     *
-     * @return FileInfoInterface
      */
     public function storeFile($id): FileInfoInterface;
 
@@ -54,8 +41,6 @@ interface FileApiInterface
      * Remove individual files. Returns file info.
      *
      * @param string|FileInfoInterface $id file UUID
-     *
-     * @return FileInfoInterface
      */
     public function deleteFile($id): FileInfoInterface;
 
@@ -63,25 +48,19 @@ interface FileApiInterface
      * Specific file info.
      *
      * @param string $id file UUID
-     *
-     * @return FileInfoInterface
      */
-    public function fileInfo($id): FileInfoInterface;
+    public function fileInfo(string $id): FileInfoInterface;
 
     /**
      * Store multiple files in one step.
      * Up to 100 files are supported per request.
      *
      * @param array|CollectionInterface $ids array of files UUIDs or FileCollection to store
-     *
-     * @return BatchResponseInterface
      */
     public function batchStoreFile($ids): BatchResponseInterface;
 
     /**
      * @param array|CollectionInterface $ids array of files UUIDs to store
-     *
-     * @return BatchResponseInterface
      */
     public function batchDeleteFile($ids): BatchResponseInterface;
 
@@ -90,27 +69,28 @@ interface FileApiInterface
      *
      * @param string|FileInfoInterface $source a CDN URL or just UUID of a file subjected to copy
      * @param bool                     $store  the parameter only applies to the Uploadcare storage and MUST be boolean
-     *
-     * @return mixed
      */
-    public function copyToLocalStorage($source, bool $store);
+    public function copyToLocalStorage($source, bool $store): FileInfoInterface;
 
     /**
      * @param string|FileInfoInterface $source     a CDN URL or just UUID of a file subjected to copy
      * @param string                   $target     Identifies a custom storage name related to your project. Implies you are copying a file to a specified custom storage. Keep in mind you can have multiple storage's associated with a single S3 bucket.
      * @param bool                     $makePublic true to make copied files available via public links, false to reverse the behavior
      * @param string                   $pattern    Enum: "${default}" "${auto_filename}" "${effects}" "${filename}" "${uuid}" "${ext}" The parameter is used to specify file names Uploadcare passes to a custom storage. In case the parameter is omitted, we use pattern of your custom storage. Use any combination of allowed values.
-     *
-     * @return mixed
      */
-    public function copyToRemoteStorage($source, string $target, bool $makePublic, string $pattern);
+    public function copyToRemoteStorage($source, string $target, bool $makePublic, string $pattern): string;
 
     /**
      * Generate secure URL for CDN custom domain.
      *
      * @param FileInfoInterface|string $id
-     *
-     * @return string|null
      */
     public function generateSecureUrl($id): ?string;
+
+    /**
+     * Load file metadata.
+     *
+     * @param FileInfoInterface|string $id
+     */
+    public function getMetadata($id): Metadata;
 }

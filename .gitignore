@@ -5,3 +5,4 @@
 /tests/.env.local
 /psalm.phar
 .phpunit.result.cache
+.php-cs-fixer.cache

@@ -24,14 +24,9 @@ class Uploader extends AbstractUploader
     protected const PART_SIZE = 1024 * 1024 * 5;
 
     /**
-     * @param resource    $handle
-     * @param string|null $mimeType
-     * @param string|null $filename
-     * @param string      $store
-     *
-     * @return FileInfoInterface
+     * @param resource $handle
      */
-    public function fromResource($handle, string $mimeType = null, string $filename = null, string $store = 'auto'): FileInfoInterface
+    public function fromResource($handle, string $mimeType = null, string $filename = null, string $store = 'auto', array $metadata = []): FileInfoInterface
     {
         try {
             $this->checkResource($handle);
@@ -45,24 +40,21 @@ class Uploader extends AbstractUploader
         $this->rewind($handle);
         $arrayKey = 'file';
         if (($fileSize = $this->getSize($handle)) >= self::MULTIPART_UPLOAD_SIZE) {
-            $response = $this->uploadByParts($handle, $fileSize, $mimeType, $filename, $store === 'auto' ? null : $store);
+            $response = $this->uploadByParts($handle, $fileSize, $mimeType, $filename, $store === 'auto' ? null : $store, $metadata);
             $arrayKey = 'uuid';
         } else {
-            $response = $this->directUpload($handle, $mimeType, $filename, $store);
+            $response = $this->directUpload($handle, $mimeType, $filename, $store, $metadata);
         }
 
         return $this->serializeFileResponse($response, $arrayKey);
     }
 
     /**
-     * @param resource    $handle
-     * @param string|null $mimeType
-     * @param string|null $filename
-     * @param string      $store
+     * @param resource $handle
      *
-     * @return ResponseInterface
+     * @psalm-suppress RedundantConditionGivenDocblockType
      */
-    private function directUpload($handle, ?string $mimeType = null, ?string $filename = null, string $store = 'auto'): ResponseInterface
+    private function directUpload($handle, ?string $mimeType = null, ?string $filename = null, string $store = 'auto', array $metadata = []): ResponseInterface
     {
         $parameters = $this->makeMultipartParameters(\array_merge($this->getDefaultParameters(), [
             [
@@ -72,7 +64,7 @@ class Uploader extends AbstractUploader
                 'headers' => ['Content-Type' => $mimeType],
             ],
             self::UPLOADCARE_STORE_KEY => $store,
-        ]));
+        ], $this->makeMetadataParameters($metadata)));
 
         try {
             $response = $this->sendRequest('POST', 'base/', $parameters);
@@ -87,15 +79,9 @@ class Uploader extends AbstractUploader
     }
 
     /**
-     * @param resource    $handle
-     * @param int         $fileSize
-     * @param string|null $mimeType
-     * @param string|null $filename
-     * @param string|null $store
-     *
-     * @return ResponseInterface
+     * @param resource $handle
      */
-    private function uploadByParts($handle, int $fileSize, string $mimeType = null, string $filename = null, string $store = null): ResponseInterface
+    private function uploadByParts($handle, int $fileSize, string $mimeType = null, string $filename = null, string $store = null, array $metadata = []): ResponseInterface
     {
         if ($filename === null) {
             $filename = \uuid_create();
@@ -107,28 +93,20 @@ class Uploader extends AbstractUploader
             $store = self::UPLOADCARE_DEFAULT_STORE;
         }
 
-        $startData = $this->startUpload($fileSize, $mimeType, $filename, $store);
+        $startData = $this->startUpload($fileSize, $mimeType, $filename, $store, $metadata);
         $this->uploadParts($startData, $handle);
 
         return $this->finishUpload($startData);
     }
 
-    /**
-     * @param int    $fileSize
-     * @param string $mimeType
-     * @param string $filename
-     * @param string $store
-     *
-     * @return MultipartStartResponse
-     */
-    private function startUpload(int $fileSize, string $mimeType, string $filename, string $store): MultipartStartResponse
+    private function startUpload(int $fileSize, string $mimeType, string $filename, string $store, array $metadata = []): MultipartStartResponse
     {
         $parameters = $this->makeMultipartParameters(\array_merge($this->getDefaultParameters(), [
             'filename' => $filename,
             'size' => $fileSize,
             'content_type' => $mimeType,
             self::UPLOADCARE_STORE_KEY => $store,
-        ]));
+        ], $this->makeMetadataParameters($metadata)));
 
         try {
             $response = $this->sendRequest('POST', 'multipart/start/', $parameters);
@@ -145,10 +123,7 @@ class Uploader extends AbstractUploader
     }
 
     /**
-     * @param MultipartStartResponse $response
-     * @param resource               $handle
-     *
-     * @return void
+     * @param resource $handle
      */
     private function uploadParts(MultipartStartResponse $response, $handle): void
     {
@@ -167,11 +142,6 @@ class Uploader extends AbstractUploader
         }
     }
 
-    /**
-     * @param MultipartStartResponse $response
-     *
-     * @return ResponseInterface
-     */
     private function finishUpload(MultipartStartResponse $response): ResponseInterface
     {
         $data = [

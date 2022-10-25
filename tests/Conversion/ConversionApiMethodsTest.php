@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Tests\Conversion;
 
@@ -8,7 +8,6 @@ use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\TestCase;
 use Tests\DataFile;
-use Uploadcare\Api;
 use Uploadcare\Apis\ConversionApi;
 use Uploadcare\Configuration;
 use Uploadcare\Conversion\ConvertedCollection;
@@ -33,7 +32,7 @@ use Uploadcare\Serializer\SerializerFactory;
 
 class ConversionApiMethodsTest extends TestCase
 {
-    protected function fakeApi($responses = [])
+    protected function fakeApi(array $responses = []): ConversionApiInterface
     {
         $handler = new MockHandler($responses);
         $client = new Client(['handler' => HandlerStack::create($handler)]);
@@ -42,7 +41,7 @@ class ConversionApiMethodsTest extends TestCase
         return new ConversionApi($config);
     }
 
-    public function testFileConversion()
+    public function testFileConversion(): void
     {
         $api = $this->fakeApi([
             new Response(200, [], DataFile::contents('conversion/one-document-conversion-no-problem-response.json')),
@@ -66,7 +65,7 @@ class ConversionApiMethodsTest extends TestCase
         self::assertNull($result->getThumbnailsGroupUuid());
     }
 
-    public function testConvertNotValidUuid()
+    public function testConvertNotValidUuid(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $api = $this->fakeApi();
@@ -74,7 +73,7 @@ class ConversionApiMethodsTest extends TestCase
         $api->convertDocument('not-valid-uuid', $request);
     }
 
-    public function testConvertWithNotValidInterface()
+    public function testConvertWithNotValidInterface(): void
     {
         $this->expectException(\RuntimeException::class);
         $api = $this->fakeApi();
@@ -82,19 +81,19 @@ class ConversionApiMethodsTest extends TestCase
         $api->convertDocument(\uuid_create(), $request);
     }
 
-    public function testWrongFormatInConversionRequestConstructor()
+    public function testWrongFormatInConversionRequestConstructor(): void
     {
         $this->expectException(InvalidArgumentException::class);
         new DocumentConversionRequest('jpeg');
     }
 
-    public function testWrongFormatInConversionRequestSetter()
+    public function testWrongFormatInConversionRequestSetter(): void
     {
         $this->expectException(InvalidArgumentException::class);
         (new DocumentConversionRequest())->setTargetFormat('some crap');
     }
 
-    public function testConvertDocumentsCollection()
+    public function testConvertDocumentsCollection(): void
     {
         $api = $this->fakeApi([
             new Response(200, [], DataFile::contents('conversion/document-conversion-response.json')),
@@ -114,7 +113,7 @@ class ConversionApiMethodsTest extends TestCase
         self::assertInstanceOf(ResponseProblemInterface::class, $result->getProblems()[0]);
     }
 
-    public function testConversionStatusResult()
+    public function testConversionStatusResult(): void
     {
         $api = $this->fakeApi([
             new Response(200, [], DataFile::contents('conversion/conversion-status.json')),
@@ -131,7 +130,7 @@ class ConversionApiMethodsTest extends TestCase
         self::assertEmpty($result->getResult()->getThumbnailsGroupUuid());
     }
 
-    public function testVideoConversionStatusResult()
+    public function testVideoConversionStatusResult(): void
     {
         $api = $this->fakeApi([
             new Response(200, [], DataFile::contents('conversion/video-conversion-status.json')),
@@ -146,18 +145,7 @@ class ConversionApiMethodsTest extends TestCase
         self::assertNotEmpty($result->getResult()->getThumbnailsGroupUuid());
     }
 
-    public function testVideoConversionStatusError()
-    {
-        $this->expectException(InvalidArgumentException::class);
-
-        $api = $this->fakeApi();
-        $item = 'not-an-int';
-        $api->videoJobStatus($item);
-
-        $this->expectExceptionMessageRegExp('Conversion result ID must be a number');
-    }
-
-    public function testConvertVideo()
+    public function testConvertVideo(): void
     {
         $api = $this->fakeApi([
             new Response(200, [], DataFile::contents('conversion/one-video-no-error-result.json')),
@@ -170,7 +158,7 @@ class ConversionApiMethodsTest extends TestCase
         self::assertNotEmpty($result->getThumbnailsGroupUuid());
     }
 
-    public function testErrorDuringVideoConversion()
+    public function testErrorDuringVideoConversion(): void
     {
         $api = $this->fakeApi([
             new Response(200, [], DataFile::contents('conversion/one-video-with-error-result.json')),
@@ -182,7 +170,7 @@ class ConversionApiMethodsTest extends TestCase
         self::assertNotEmpty($result->getReason());
     }
 
-    public function testErrorAndThrowExceptionInVideoConvert()
+    public function testErrorAndThrowExceptionInVideoConvert(): void
     {
         $this->expectException(ConversionException::class);
         $api = $this->fakeApi([
@@ -192,7 +180,7 @@ class ConversionApiMethodsTest extends TestCase
         $api->convertVideo(\uuid_create(), $request);
     }
 
-    public function testWrongTypeInVideoEncodingRequest()
+    public function testWrongTypeInVideoEncodingRequest(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $api = $this->fakeApi();
@@ -201,7 +189,7 @@ class ConversionApiMethodsTest extends TestCase
         $api->convertVideo($file, $request);
     }
 
-    public function testWrongFileInVideoConversionRequest()
+    public function testWrongFileInVideoConversionRequest(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $api = $this->fakeApi();
@@ -209,7 +197,7 @@ class ConversionApiMethodsTest extends TestCase
         $api->convertVideo('not-an-uuid', $request);
     }
 
-    public function testBatchConvertVideo()
+    public function testBatchConvertVideo(): void
     {
         $api = $this->fakeApi([
             new Response(200, [], DataFile::contents('conversion/batch-video-conversion-result.json')),
@@ -226,7 +214,7 @@ class ConversionApiMethodsTest extends TestCase
         self::assertNotEmpty($result->getResult());
     }
 
-    public function testWrongRequestInBatchVideoConversionResponse()
+    public function testWrongRequestInBatchVideoConversionResponse(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $api = $this->fakeApi();
@@ -240,12 +228,6 @@ class ConversionApiMethodsTest extends TestCase
         $api = $this->fakeApi();
         $request = new VideoEncodingRequest();
         $api->batchConvertVideo(['not-valid-uuid'], $request);
-        $this->expectExceptionMessageRegExp('Collection has no valid files or uuid\'s');
-    }
-
-    public function testMainApiMethod()
-    {
-        $api = new Api(Configuration::create('public', 'private'));
-        self::assertInstanceOf(ConversionApiInterface::class, $api->conversion());
+        $this->expectExceptionMessageMatches('/Collection has no valid files or/');
     }
 }

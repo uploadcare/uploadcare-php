@@ -4,19 +4,12 @@ namespace Uploadcare;
 
 use Uploadcare\Interfaces\Api\WebhookApiInterface;
 use Uploadcare\Interfaces\Response\WebhookInterface;
-use Uploadcare\Response\WebhookResponse;
 
 final class Webhook implements WebhookInterface
 {
-    /**
-     * @var WebhookResponse|WebhookInterface
-     */
-    private $inner;
+    private WebhookInterface $inner;
 
-    /**
-     * @var WebhookApiInterface
-     */
-    private $api;
+    private WebhookApiInterface $api;
 
     public function __construct(WebhookInterface $inner, WebhookApiInterface $api)
     {
@@ -26,7 +19,9 @@ final class Webhook implements WebhookInterface
 
     public function delete(): bool
     {
-        return $this->api->deleteWebhook($this->getTargetUrl());
+        $targetUrl = $this->getTargetUrl();
+
+        return !($targetUrl === null) && $this->api->deleteWebhook($targetUrl);
     }
 
     public function updateUrl(string $url): WebhookInterface
@@ -49,22 +44,22 @@ final class Webhook implements WebhookInterface
         return $this->inner->getId();
     }
 
-    public function getCreated(): \DateTimeInterface
+    public function getCreated(): ?\DateTimeInterface
     {
         return $this->inner->getCreated();
     }
 
-    public function getUpdated(): \DateTimeInterface
+    public function getUpdated(): ?\DateTimeInterface
     {
         return $this->inner->getUpdated();
     }
 
-    public function getEvent(): string
+    public function getEvent(): ?string
     {
         return $this->inner->getEvent();
     }
 
-    public function getTargetUrl(): string
+    public function getTargetUrl(): ?string
     {
         return $this->inner->getTargetUrl();
     }

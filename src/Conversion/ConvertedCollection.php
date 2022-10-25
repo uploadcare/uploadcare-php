@@ -14,9 +14,11 @@ final class ConvertedCollection extends AbstractCollection
 {
     /**
      * @var array<int, T>
+     *
      * @psalm-suppress NonInvariantDocblockPropertyType
+     * @psalm-suppress NonInvariantPropertyType
      */
-    protected $elements;
+    protected array $elements;
 
     public function __construct(array $elements = [])
     {

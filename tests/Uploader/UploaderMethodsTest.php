@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Tests\Uploader;
 
@@ -11,7 +11,9 @@ use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Uploadcare\Configuration;
+use Uploadcare\Interfaces\ConfigurationInterface;
 use Uploadcare\Interfaces\File\FileInfoInterface;
+use Uploadcare\Interfaces\UploaderInterface;
 use Uploadcare\Security\Signature;
 use Uploadcare\Serializer\Serializer;
 use Uploadcare\Serializer\SnackCaseConverter;
@@ -20,11 +22,9 @@ use Uploadcare\Uploader\Uploader;
 class UploaderMethodsTest extends TestCase
 {
     /**
-     * @param ClientInterface $client
-     *
      * @return Configuration
      */
-    protected function makeConfiguration(ClientInterface $client)
+    protected function makeConfiguration(ClientInterface $client): ConfigurationInterface
     {
         $sign = new Signature('demo-private-key');
         $serializer = new Serializer(new SnackCaseConverter());
@@ -37,7 +37,7 @@ class UploaderMethodsTest extends TestCase
      *
      * @return Client
      */
-    protected function makeClient($response)
+    protected function makeClient($response): ClientInterface
     {
         $fileResponse = new Response(200, ['Content-Type' => 'application/json'], \file_get_contents(\dirname(__DIR__) . '/_data/file-info.json'));
         $handler = new MockHandler([$response, $fileResponse]);
@@ -46,11 +46,9 @@ class UploaderMethodsTest extends TestCase
     }
 
     /**
-     * @param array $responseBody
-     *
      * @return Uploader
      */
-    protected function makeUploaderWithResponse(array $responseBody)
+    protected function makeUploaderWithResponse(array $responseBody): UploaderInterface
     {
         $response = new Response(200, ['Content-Type' => 'application/json'], \json_encode($responseBody));
         $client = $this->makeClient($response);
@@ -59,19 +57,20 @@ class UploaderMethodsTest extends TestCase
         return new Uploader($config);
     }
 
-    public function testFromPathMethod()
+    public function testFromPathMethod(): void
     {
         $path = \dirname(__DIR__) . '/_data/test.jpg';
         $body = ['file' => \uuid_create()];
 
         $uploader = $this->makeUploaderWithResponse($body);
-        self::assertInstanceOf(FileInfoInterface::class, $uploader->fromPath($path));
+        $response = $uploader->fromPath($path, null, null, 'auto', ['foo' => 'bar']);
+        self::assertInstanceOf(FileInfoInterface::class, $response);
     }
 
     /**
      * @group local-only
      */
-    public function testFromUrlMethod()
+    public function testFromUrlMethod(): void
     {
         $body = ['file' => \uuid_create()];
         $uploader = $this->makeUploaderWithResponse($body);
@@ -79,7 +78,7 @@ class UploaderMethodsTest extends TestCase
         self::assertInstanceOf(FileInfoInterface::class, $uploader->fromUrl('https://httpbin.org/image/jpeg'));
     }
 
-    public function testFromResourceMethod()
+    public function testFromResourceMethod(): void
     {
         $body = ['file' => \uuid_create()];
         $uploader = $this->makeUploaderWithResponse($body);
@@ -88,7 +87,7 @@ class UploaderMethodsTest extends TestCase
         self::assertInstanceOf(FileInfoInterface::class, $uploader->fromResource($handle));
     }
 
-    public function testFromContentMethod()
+    public function testFromContentMethod(): void
     {
         $body = ['file' => \uuid_create()];
         $uploader = $this->makeUploaderWithResponse($body);

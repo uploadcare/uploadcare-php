@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Tests\Serializer\Examples;
 
@@ -6,15 +6,12 @@ use Uploadcare\Interfaces\SerializableInterface;
 
 class ExampleParent implements SerializableInterface
 {
-    /**
-     * @var string|null
-     */
-    private $name = null;
+    private ?string $name = null;
 
     /**
      * @var array|ExampleIncluded[]
      */
-    private $dates = [];
+    private array $dates = [];
 
     public static function rules(): array
     {
@@ -25,30 +22,28 @@ class ExampleParent implements SerializableInterface
     }
 
     /**
-     * @param string|null $name
-     *
      * @return $this
      */
-    public function setName($name)
+    public function setName(?string $name): self
     {
         $this->name = $name;
 
         return $this;
     }
 
-    public function getName()
+    public function getName(): ?string
     {
         return $this->name;
     }
 
-    public function addDate(ExampleIncluded $included)
+    public function addDate(ExampleIncluded $included): self
     {
         $this->dates[] = $included;
 
         return $this;
     }
 
-    public function getDates()
+    public function getDates(): array
     {
         return $this->dates;
     }

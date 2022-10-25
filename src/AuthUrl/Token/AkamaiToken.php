@@ -5,39 +5,31 @@ namespace Uploadcare\AuthUrl\Token;
 /**
  * Akamai Token Generator.
  *
+ * @psalm-suppress PropertyNotSetInConstructor
+ *
  * @see https://uploadcare.com/docs/security/secure_delivery/
  */
 class AkamaiToken implements TokenInterface
 {
-    protected static $algorithms = ['sha256', 'sha1', 'md5'];
-    protected static $template = 'https://{cdn}/{uuid}/?token=exp={timestamp}~acl=/{uuid}/~hmac={token}';
-    protected static $fieldDelimiter = '~';
+    protected static array $algorithms = ['sha256', 'sha1', 'md5'];
+    protected static string $template = 'https://{cdn}/{uuid}/?token=exp={timestamp}~acl=/{uuid}/~hmac={token}';
+    protected static string $fieldDelimiter = '~';
 
-    /**
-     * @var string Encryption key
-     */
-    private $key;
-
-    /**
-     * @var int token lifetime
-     */
-    private $window;
+    private string $key;
+    private int $window;
 
     /**
      * @var string Encryption algorithm
      */
-    private $algo = 'sha256';
+    private string $algo = 'sha256';
 
     /**
      * @var string|null Access control list
      */
-    private $acl = null;
+    private ?string $acl = null;
 
     /**
      * AkamaiToken constructor.
-     *
-     * @param string $key
-     * @param int    $window
      */
     public function __construct(string $key, int $window = 300)
     {
@@ -45,30 +37,19 @@ class AkamaiToken implements TokenInterface
         $this->setWindow($window);
     }
 
-    /**
-     * @return string
-     */
     public function getUrlTemplate(): string
     {
         return \str_replace('~', self::$fieldDelimiter, self::$template);
     }
 
-    /**
-     * @return string
-     */
     public function getKey(): string
     {
         return $this->key;
     }
 
-    /**
-     * @param string $key
-     *
-     * @return AkamaiToken
-     */
     public function setKey(string $key): self
     {
-        if (preg_match('/^[a-fA-F0-9]+$/', $key) && (\strlen($key) % 2) === 0) {
+        if (\preg_match('/^[a-fA-F0-9]+$/', $key) && (\strlen($key) % 2) === 0) {
             $this->key = $key;
 
             return $this;
@@ -77,19 +58,11 @@ class AkamaiToken implements TokenInterface
         throw new TokenException('Key must be a hex string (a-f,0-9 and even number of chars)');
     }
 
-    /**
-     * @return int
-     */
     public function getWindow(): int
     {
         return $this->window;
     }
 
-    /**
-     * @param int $window
-     *
-     * @return AkamaiToken
-     */
     public function setWindow(int $window): self
     {
         if ($window <= 0) {
@@ -100,22 +73,14 @@ class AkamaiToken implements TokenInterface
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getAlgo(): string
     {
         return $this->algo;
     }
 
-    /**
-     * @param string $algo
-     *
-     * @return AkamaiToken
-     */
     public function setAlgo(string $algo): self
     {
-        if (!\in_array($algo, self::$algorithms)) {
+        if (!\in_array($algo, self::$algorithms, true)) {
             throw new TokenException(\sprintf('Invalid algorithm. Must be one of %s', \implode(', ', self::$algorithms)));
         }
 
@@ -124,9 +89,6 @@ class AkamaiToken implements TokenInterface
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getAcl(): string
     {
         if ($this->acl === null) {
@@ -136,11 +98,6 @@ class AkamaiToken implements TokenInterface
         return $this->acl;
     }
 
-    /**
-     * @param string|null $acl
-     *
-     * @return AkamaiToken
-     */
     public function setAcl(?string $acl): self
     {
         $this->acl = $acl;
@@ -150,8 +107,6 @@ class AkamaiToken implements TokenInterface
 
     /**
      * Token expiration timestamp.
-     *
-     * @return int
      */
     public function getExpired(): int
     {
@@ -160,8 +115,6 @@ class AkamaiToken implements TokenInterface
 
     /**
      * Token string.
-     *
-     * @return string
      */
     public function getToken(): string
     {
@@ -174,10 +127,7 @@ class AkamaiToken implements TokenInterface
     }
 
     /**
-     * @param string          $fieldName
      * @param string|int|null $value
-     *
-     * @return string
      */
     private function makeField(string $fieldName, $value): string
     {
@@ -185,6 +135,6 @@ class AkamaiToken implements TokenInterface
             return '';
         }
 
-        return \sprintf('%s=%s%s', $fieldName, (string) $value, self::$fieldDelimiter);
+        return \sprintf('%s=%s%s', $fieldName, $value, self::$fieldDelimiter);
     }
 }

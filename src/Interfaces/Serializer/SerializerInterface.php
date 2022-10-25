@@ -5,14 +5,9 @@ namespace Uploadcare\Interfaces\Serializer;
 interface SerializerInterface
 {
     /**
-     * @param object $object
-     * @param array  $context
-     *
-     * @return string
-     *
      * @throws \RuntimeException
      */
-    public function serialize($object, array $context = []): string;
+    public function serialize(object $object, array $context = []): string;
 
     /**
      * @param string      $string    Data string

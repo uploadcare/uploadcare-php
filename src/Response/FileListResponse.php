@@ -4,35 +4,24 @@ namespace Uploadcare\Response;
 
 use Uploadcare\File\FileCollection;
 use Uploadcare\Interfaces\File\CollectionInterface;
+use Uploadcare\Interfaces\File\FileInfoInterface;
 use Uploadcare\Interfaces\Response\ListResponseInterface;
 use Uploadcare\Interfaces\SerializableInterface;
 
 final class FileListResponse implements ListResponseInterface, SerializableInterface
 {
-    /**
-     * @var string|null
-     */
-    private $next;
+    private ?string $next = null;
 
-    /**
-     * @var string|null
-     */
-    private $previous;
+    private ?string $previous = null;
 
-    /**
-     * @var int
-     */
-    private $total;
+    private int $total = 0;
 
-    /**
-     * @var int
-     */
-    private $perPage;
+    private int $perPage = 10;
 
     /**
      * @var CollectionInterface|FileCollection
      */
-    private $results;
+    private CollectionInterface $results;
 
     public function __construct()
     {
@@ -82,19 +71,11 @@ final class FileListResponse implements ListResponseInterface, SerializableInter
         return $this->perPage;
     }
 
-    /**
-     * @return CollectionInterface
-     */
     public function getResults(): CollectionInterface
     {
         return $this->results;
     }
 
-    /**
-     * @param string|null $next
-     *
-     * @return FileListResponse
-     */
     public function setNext(?string $next): self
     {
         $this->next = $next;
@@ -102,11 +83,6 @@ final class FileListResponse implements ListResponseInterface, SerializableInter
         return $this;
     }
 
-    /**
-     * @param string|null $previous
-     *
-     * @return FileListResponse
-     */
     public function setPrevious(?string $previous): self
     {
         $this->previous = $previous;
@@ -114,11 +90,6 @@ final class FileListResponse implements ListResponseInterface, SerializableInter
         return $this;
     }
 
-    /**
-     * @param int $total
-     *
-     * @return FileListResponse
-     */
     public function setTotal(int $total): self
     {
         $this->total = $total;
@@ -126,11 +97,6 @@ final class FileListResponse implements ListResponseInterface, SerializableInter
         return $this;
     }
 
-    /**
-     * @param int $perPage
-     *
-     * @return FileListResponse
-     */
     public function setPerPage(int $perPage): self
     {
         $this->perPage = $perPage;
@@ -138,7 +104,7 @@ final class FileListResponse implements ListResponseInterface, SerializableInter
         return $this;
     }
 
-    public function addResult($result): self
+    public function addResult(?FileInfoInterface $result): self
     {
         if ($result !== null && !$this->results->contains($result)) {
             $this->results->add($result);
@@ -147,11 +113,6 @@ final class FileListResponse implements ListResponseInterface, SerializableInter
         return $this;
     }
 
-    /**
-     * @param CollectionInterface $results
-     *
-     * @return self
-     */
     public function setResults(CollectionInterface $results): self
     {
         $this->results = $results;

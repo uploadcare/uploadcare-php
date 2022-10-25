@@ -10,25 +10,10 @@ use Uploadcare\Interfaces\SerializableInterface;
  */
 class ConvertedItem implements ConvertedItemInterface, SerializableInterface
 {
-    /**
-     * @var string
-     */
-    private $originalSource;
-
-    /**
-     * @var string
-     */
-    private $uuid;
-
-    /**
-     * @var int
-     */
-    private $token;
-
-    /**
-     * @var string|null
-     */
-    private $thumbnailsGroupUuid;
+    private ?string $originalSource = null;
+    private ?string $uuid = null;
+    private int $token = 0;
+    private ?string $thumbnailsGroupUuid = null;
 
     public static function rules(): array
     {
@@ -40,19 +25,11 @@ class ConvertedItem implements ConvertedItemInterface, SerializableInterface
         ];
     }
 
-    /**
-     * @return string
-     */
     public function getOriginalSource(): string
     {
-        return $this->originalSource;
+        return $this->originalSource ?? '';
     }
 
-    /**
-     * @param string $originalSource
-     *
-     * @return ConvertedItem
-     */
     public function setOriginalSource(string $originalSource): self
     {
         $this->originalSource = $originalSource;
@@ -60,19 +37,11 @@ class ConvertedItem implements ConvertedItemInterface, SerializableInterface
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getUuid(): string
     {
-        return $this->uuid;
+        return $this->uuid ?? '';
     }
 
-    /**
-     * @param string $uuid
-     *
-     * @return ConvertedItem
-     */
     public function setUuid(string $uuid): self
     {
         $this->uuid = $uuid;
@@ -80,19 +49,11 @@ class ConvertedItem implements ConvertedItemInterface, SerializableInterface
         return $this;
     }
 
-    /**
-     * @return int
-     */
     public function getToken(): int
     {
         return $this->token;
     }
 
-    /**
-     * @param int $token
-     *
-     * @return ConvertedItem
-     */
     public function setToken(int $token): self
     {
         $this->token = $token;
@@ -100,19 +61,11 @@ class ConvertedItem implements ConvertedItemInterface, SerializableInterface
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getThumbnailsGroupUuid(): ?string
     {
         return $this->thumbnailsGroupUuid;
     }
 
-    /**
-     * @param string|null $thumbnailsGroupUuid
-     *
-     * @return ConvertedItem
-     */
     public function setThumbnailsGroupUuid(?string $thumbnailsGroupUuid): self
     {
         $this->thumbnailsGroupUuid = $thumbnailsGroupUuid;

@@ -7,14 +7,12 @@ use Uploadcare\Interfaces\File\CollectionInterface;
 /**
  * Object of batch file store / delete.
  *
- * @see https://uploadcare.com/api-refs/rest-api/v0.6.0/#operation/filesStoring
+ * @see https://uploadcare.com/api-refs/rest-api/v0.7.0/#operation/filesStoring
  */
 interface BatchResponseInterface
 {
     /**
      * Response status (usually 'ok').
-     *
-     * @return string
      */
     public function getStatus(): string;
 
@@ -25,8 +23,5 @@ interface BatchResponseInterface
      */
     public function getProblems(): array;
 
-    /**
-     * @return CollectionInterface
-     */
     public function getResult(): CollectionInterface;
 }

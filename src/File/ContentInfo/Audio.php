@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace Uploadcare\File;
+namespace Uploadcare\File\ContentInfo;
 
-use Uploadcare\Interfaces\File\AudioInterface;
+use Uploadcare\Interfaces\File\ContentInfo\AudioInterface;
 use Uploadcare\Interfaces\SerializableInterface;
 
 /**
@@ -10,25 +10,10 @@ use Uploadcare\Interfaces\SerializableInterface;
  */
 final class Audio implements AudioInterface, SerializableInterface
 {
-    /**
-     * @var int|null
-     */
-    private $bitrate;
-
-    /**
-     * @var string|null
-     */
-    private $codec;
-
-    /**
-     * @var int|null
-     */
-    private $sampleRate;
-
-    /**
-     * @var string|null
-     */
-    private $channels;
+    private ?int $bitrate = null;
+    private ?string $codec = null;
+    private ?int $sampleRate = null;
+    private ?string $channels = null;
 
     /**
      * {@inheritDoc}
@@ -43,19 +28,11 @@ final class Audio implements AudioInterface, SerializableInterface
         ];
     }
 
-    /**
-     * @return int|null
-     */
     public function getBitrate(): ?int
     {
         return $this->bitrate;
     }
 
-    /**
-     * @param int|null $bitrate
-     *
-     * @return Audio
-     */
     public function setBitrate(?int $bitrate): self
     {
         $this->bitrate = $bitrate;
@@ -63,19 +40,11 @@ final class Audio implements AudioInterface, SerializableInterface
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getCodec(): ?string
     {
         return $this->codec;
     }
 
-    /**
-     * @param string|null $codec
-     *
-     * @return Audio
-     */
     public function setCodec(?string $codec): self
     {
         $this->codec = $codec;
@@ -83,19 +52,11 @@ final class Audio implements AudioInterface, SerializableInterface
         return $this;
     }
 
-    /**
-     * @return int|null
-     */
     public function getSampleRate(): ?int
     {
         return $this->sampleRate;
     }
 
-    /**
-     * @param int|null $sampleRate
-     *
-     * @return Audio
-     */
     public function setSampleRate(?int $sampleRate): self
     {
         $this->sampleRate = $sampleRate;
@@ -103,19 +64,11 @@ final class Audio implements AudioInterface, SerializableInterface
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getChannels(): ?string
     {
         return $this->channels;
     }
 
-    /**
-     * @param string|null $channels
-     *
-     * @return Audio
-     */
     public function setChannels(?string $channels): self
     {
         $this->channels = $channels;

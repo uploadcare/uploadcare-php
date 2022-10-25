@@ -2,13 +2,14 @@
 
 namespace Uploadcare\File;
 
+use ArrayAccess;
 use Uploadcare\Interfaces\File\CollectionInterface;
 
 /**
  * Abstract Collection.
  * Contains common collection methods.
  *
- * @psalm-template TKey of int
+ * @psalm-template TKey of mixed
  * @psalm-template T
  */
 abstract class AbstractCollection implements CollectionInterface
@@ -16,13 +17,12 @@ abstract class AbstractCollection implements CollectionInterface
     /**
      * @var array<TKey,T>
      */
-    protected $elements = [];
+    protected array $elements = [];
 
     /**
-     * @return \Traversable
+     * @psalm-return \Traversable
      */
-    #[\ReturnTypeWillChange]
-    public function getIterator(): iterable
+    public function getIterator(): \Traversable
     {
         if (\count($this->elements) === 0) {
             return new \EmptyIterator();
@@ -51,6 +51,12 @@ abstract class AbstractCollection implements CollectionInterface
         return $this->elements[$key];
     }
 
+    /**
+     * @psalm-param TKey|null $offset
+     * @psalm-param T $value
+     *
+     * @psalm-suppress ImplementedParamTypeMismatch
+     */
     public function offsetSet($offset, $value): void
     {
         if (!isset($offset)) {
@@ -63,7 +69,10 @@ abstract class AbstractCollection implements CollectionInterface
     }
 
     /**
-     * @param mixed $element
+     * @param mixed $element the element to add
+     *
+     * @psalm-param T $element
+     *
      * @psalm-suppress InvalidPropertyAssignmentValue
      *
      * @return true
@@ -76,15 +85,26 @@ abstract class AbstractCollection implements CollectionInterface
     }
 
     /**
-     * @param int|string $key
-     * @param mixed      $value
-     * @psalm-suppress InvalidPropertyAssignmentValue
+     * Sets an element in the collection at the specified key/index.
+     *
+     * @param string|int $key   the key/index of the element to set
+     * @param mixed      $value the element to set
+     *
+     * @psalm-param TKey $key
+     * @psalm-param T $value
      */
     public function set($key, $value): void
     {
         $this->elements[$key] = $value;
     }
 
+    /**
+     * Required by interface ArrayAccess.
+     *
+     * @param TKey $offset
+     *
+     * @psalm-suppress ImplementedParamTypeMismatch
+     */
     public function offsetUnset($offset): void
     {
         $this->remove($offset);

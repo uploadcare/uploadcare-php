@@ -1,10 +1,11 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Tests\Api;
 
 use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Tests\DataFile;
 use Uploadcare\Configuration;
@@ -22,11 +23,9 @@ class UploaderEdgeCasesTest extends TestCase
     }
 
     /**
-     * @param array $methods
-     *
-     * @return \PHPUnit_Framework_MockObject_MockObject|Uploader
+     * @return MockObject|Uploader
      */
-    protected function getMockUploader($methods = [])
+    protected function getMockUploader(array $methods = []): MockObject
     {
         return $this->getMockBuilder(Uploader::class)
             ->setConstructorArgs([$this->getConfiguration()])
@@ -35,15 +34,15 @@ class UploaderEdgeCasesTest extends TestCase
     }
 
     /** @noinspection PhpParamsInspection */
-    public function testWrongResource()
+    public function testWrongResource(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $uploader = new Uploader($this->getConfiguration());
         $uploader->fromResource('not-a-resource');
-        $this->expectExceptionMessageRegExp('Wrong parameter at');
+        $this->expectExceptionMessageMatches('/Wrong parameter at/');
     }
 
-    public function testSwitchToMultipart()
+    public function testSwitchToMultipart(): void
     {
         $mock = $this->getMockUploader(['getSize', 'sendRequest', 'fileInfo']);
         $mock
@@ -78,6 +77,6 @@ class UploaderEdgeCasesTest extends TestCase
 
         $handle = \fopen(\dirname(__DIR__) . '/_data/empty.file.txt', 'rb');
         $mock->fromResource($handle);
-        $this->expectExceptionMessageRegExp('Unable to connect');
+        $this->expectExceptionMessageMatches('/Unable to connect/');
     }
 }

@@ -9,15 +9,11 @@ interface ResponseProblemInterface
 {
     /**
      * Problem file UUID.
-     *
-     * @return string
      */
-    public function getId(): string;
+    public function getId(): ?string;
 
     /**
      * Problem reason.
-     *
-     * @return string
      */
-    public function getReason(): string;
+    public function getReason(): ?string;
 }

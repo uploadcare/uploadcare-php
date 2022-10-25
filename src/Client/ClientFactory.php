@@ -2,8 +2,7 @@
 
 namespace Uploadcare\Client;
 
-use GuzzleHttp\Client;
-use GuzzleHttp\ClientInterface;
+use GuzzleHttp\{Client, ClientInterface};
 use Uploadcare\Interfaces\ClientFactoryInterface;
 
 /**
@@ -11,11 +10,6 @@ use Uploadcare\Interfaces\ClientFactoryInterface;
  */
 class ClientFactory implements ClientFactoryInterface
 {
-    /**
-     * @param array $options
-     *
-     * @return ClientInterface
-     */
     public static function createClient(array $options = []): ClientInterface
     {
         return new Client($options);

@@ -8,7 +8,7 @@ use Uploadcare\Interfaces\Response\WebhookInterface;
 /**
  * Webhooks management.
  *
- * @see https://uploadcare.com/api-refs/rest-api/v0.5.0/#tag/Webhook
+ * @see https://uploadcare.com/api-refs/rest-api/v0.7.0/#tag/Webhook
  */
 interface WebhookApiInterface
 {
@@ -17,27 +17,12 @@ interface WebhookApiInterface
      */
     public function listWebhooks(): CollectionInterface;
 
-    /**
-     * @param string $targetUrl
-     * @param bool   $isActive
-     * @param string $event
-     *
-     * @return WebhookInterface
-     */
     public function createWebhook(string $targetUrl, bool $isActive = true, string $signingSecret = null, string $event = 'file.uploaded'): WebhookInterface;
 
     /**
-     * @param int   $id
      * @param array $parameters Parameters for update: string `target_url`, bool `is_active`
-     *
-     * @return WebhookInterface
      */
     public function updateWebhook(int $id, array $parameters): WebhookInterface;
 
-    /**
-     * @param string $targetUrl
-     *
-     * @return bool
-     */
     public function deleteWebhook(string $targetUrl): bool;
 }

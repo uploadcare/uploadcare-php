@@ -8,9 +8,6 @@ use Uploadcare\Response\ProjectInfoResponse;
 
 final class ProjectApi extends AbstractApi implements ProjectApiInterface
 {
-    /**
-     * @return ProjectInfoInterface
-     */
     public function getProjectInfo(): ProjectInfoInterface
     {
         $response = $this->request('GET', 'project/');

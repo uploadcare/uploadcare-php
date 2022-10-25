@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Tests\VideoEncoding;
 
@@ -9,7 +9,7 @@ use Uploadcare\Interfaces\Conversion\VideoEncodingRequestInterface;
 
 class VideoEncodingRequestTest extends TestCase
 {
-    public function testSetHorizontalSize()
+    public function testSetHorizontalSize(): void
     {
         $request = new VideoEncodingRequest();
         self::assertInstanceOf(VideoEncodingRequestInterface::class, $request->setHorizontalSize(640));
@@ -18,7 +18,7 @@ class VideoEncodingRequestTest extends TestCase
         self::assertNull($request->getHorizontalSize());
     }
 
-    public function testSetVerticalSize()
+    public function testSetVerticalSize(): void
     {
         $request = new VideoEncodingRequest();
         self::assertInstanceOf(VideoEncodingRequestInterface::class, $request->setVerticalSize(480));
@@ -27,7 +27,7 @@ class VideoEncodingRequestTest extends TestCase
         self::assertNull($request->getVerticalSize());
     }
 
-    public function provideWrongSizes()
+    public function provideWrongSizes(): array
     {
         return [
             [7],
@@ -41,12 +41,12 @@ class VideoEncodingRequestTest extends TestCase
      *
      * @param int|string $size
      */
-    public function testWrongHorizontalSize($size)
+    public function testWrongHorizontalSize($size): void
     {
         $this->expectException(InvalidArgumentException::class);
         $request = new VideoEncodingRequest();
         $request->setHorizontalSize($size);
-        $this->expectExceptionMessageRegExp('Horizontal size must be an int divisible by 4');
+        $this->expectExceptionMessageMatches('/Horizontal size must be an int divisible by 4/');
     }
 
     /**
@@ -54,15 +54,15 @@ class VideoEncodingRequestTest extends TestCase
      *
      * @param int|string $size
      */
-    public function testWrongVerticalSize($size)
+    public function testWrongVerticalSize($size): void
     {
         $this->expectException(InvalidArgumentException::class);
         $request = new VideoEncodingRequest();
         $request->setVerticalSize($size);
-        $this->expectExceptionMessageRegExp('Vertical size must be an int divisible by 4');
+        $this->expectExceptionMessageMatches('/Vertical size must be an int divisible by 4/');
     }
 
-    public function testSetResizeMode()
+    public function testSetResizeMode(): void
     {
         $request = new VideoEncodingRequest();
         $modes = (new \ReflectionObject($request))->getProperty('resizes');
@@ -75,7 +75,7 @@ class VideoEncodingRequestTest extends TestCase
         self::assertNull($request->getResizeMode());
     }
 
-    public function provideWrongResizeModes()
+    public function provideWrongResizeModes(): array
     {
         return [
             ['some-wrong-resize'],
@@ -89,15 +89,17 @@ class VideoEncodingRequestTest extends TestCase
      *
      * @param string|int $mode
      */
-    public function testWrongResizeModes($mode)
+    public function testWrongResizeModes($mode): void
     {
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(!\is_string($mode) ? \TypeError::class : InvalidArgumentException::class);
         $request = new VideoEncodingRequest();
         $request->setResizeMode($mode);
-        $this->expectExceptionMessageRegExp('is invalid. Use one of');
+        if (\is_string($mode)) {
+            $this->expectExceptionMessageMatches('/is invalid. Use one of/');
+        }
     }
 
-    public function testSetQuality()
+    public function testSetQuality(): void
     {
         $request = new VideoEncodingRequest();
         $qualities = (new \ReflectionObject($request))->getProperty('qualities');
@@ -110,7 +112,7 @@ class VideoEncodingRequestTest extends TestCase
         self::assertNull($request->getQuality());
     }
 
-    public function provideWrongQuality()
+    public function provideWrongQuality(): array
     {
         return [
             ['not-valid-quality-string'],
@@ -124,15 +126,17 @@ class VideoEncodingRequestTest extends TestCase
      *
      * @param int|string $quality
      */
-    public function testWrongQualities($quality)
+    public function testWrongQualities($quality): void
     {
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(!\is_string($quality) ? \TypeError::class : InvalidArgumentException::class);
         $request = new VideoEncodingRequest();
         $request->setQuality($quality);
-        $this->expectExceptionMessageRegExp('is invalid. Use one of');
+        if (\is_string($quality)) {
+            $this->expectExceptionMessageMatches('/is invalid. Use one of/');
+        }
     }
 
-    public function testSetFormat()
+    public function testSetFormat(): void
     {
         $request = new VideoEncodingRequest();
         $formats = (new \ReflectionObject($request))->getProperty('formats');
@@ -143,7 +147,7 @@ class VideoEncodingRequestTest extends TestCase
         self::assertEquals($format, $request->getTargetFormat());
     }
 
-    public function provideWrongFormat()
+    public function provideWrongFormat(): array
     {
         return [
             ['not-valid-format'],
@@ -158,15 +162,17 @@ class VideoEncodingRequestTest extends TestCase
      *
      * @param int|string|null $format
      */
-    public function testSetWrongFormat($format)
+    public function testSetWrongFormat($format): void
     {
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(!\is_string($format) ? \TypeError::class : InvalidArgumentException::class);
         $request = new VideoEncodingRequest();
         $request->setTargetFormat($format);
-        $this->expectExceptionMessageRegExp('is invalid. Use one of');
+        if (\is_string($format)) {
+            $this->expectExceptionMessageMatches('is invalid. Use one of');
+        }
     }
 
-    public function provideTimes()
+    public function provideTimes(): array
     {
         return [
             ['1:2:40.535'],
@@ -178,10 +184,8 @@ class VideoEncodingRequestTest extends TestCase
 
     /**
      * @dataProvider provideTimes
-     *
-     * @param string $time
      */
-    public function testSetTimes($time)
+    public function testSetTimes(string $time): void
     {
         $request = new VideoEncodingRequest();
         self::assertInstanceOf(VideoEncodingRequestInterface::class, $request->setStartTime($time));
@@ -195,30 +199,30 @@ class VideoEncodingRequestTest extends TestCase
         self::assertNull($request->getEndTime());
     }
 
-    public function testSetWrongStartTime()
+    public function testSetWrongStartTime(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $request = new VideoEncodingRequest();
         $request->setStartTime('not:a:time');
-        $this->expectExceptionMessageRegExp('Time string');
+        $this->expectExceptionMessageMatches('/Time string/');
     }
 
-    public function testSetWrongEndTime()
+    public function testSetWrongEndTime(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $request = new VideoEncodingRequest();
         $request->setEndTime('not:a:time');
-        $this->expectExceptionMessageRegExp('Time string');
+        $this->expectExceptionMessageMatches('/Time string/');
     }
 
-    public function testSetThumbs()
+    public function testSetThumbs(): void
     {
         $request = new VideoEncodingRequest();
         self::assertInstanceOf(VideoEncodingRequestInterface::class, $request->setThumbs(10));
         self::assertEquals(10, $request->getThumbs());
     }
 
-    public function testSetTooManyThumbs()
+    public function testSetTooManyThumbs(): void
     {
         $request = new VideoEncodingRequest();
         $count = VideoEncodingRequest::MAX_THUMBS * 2;

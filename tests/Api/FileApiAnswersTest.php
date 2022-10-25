@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Tests\Api;
 
@@ -10,6 +10,7 @@ use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\TestCase;
 use Uploadcare\Apis\FileApi;
 use Uploadcare\Configuration;
+use Uploadcare\Interfaces\ConfigurationInterface;
 use Uploadcare\Interfaces\File\CollectionInterface;
 use Uploadcare\Interfaces\File\FileInfoInterface;
 use Uploadcare\Interfaces\Response\BatchResponseInterface;
@@ -19,12 +20,7 @@ use Uploadcare\Response\FileListResponse;
 
 class FileApiAnswersTest extends TestCase
 {
-    /**
-     * @param $path
-     *
-     * @return string
-     */
-    protected function fileContents($path)
+    protected function fileContents(string $path): string
     {
         $filePath = \sprintf('%s/%s', \dirname(__DIR__) . '/_data', \ltrim($path, '/'));
         if (!\is_file($filePath)) {
@@ -34,13 +30,7 @@ class FileApiAnswersTest extends TestCase
         return \file_get_contents($filePath);
     }
 
-    /**
-     * @param string $path
-     * @param int    $status
-     *
-     * @return ClientInterface
-     */
-    protected function getClient($path, $status = 200)
+    protected function getClient(string $path, int $status = 200): ClientInterface
     {
         $dataDir = \dirname(__DIR__) . '/_data';
         $filePath = \sprintf('%s/%s', $dataDir, \ltrim($path, '/'));
@@ -60,12 +50,7 @@ class FileApiAnswersTest extends TestCase
         return new Client(['handler' => $stack]);
     }
 
-    /**
-     * @param ClientInterface|null $client
-     *
-     * @return Configuration
-     */
-    public function getConfig(ClientInterface $client = null)
+    public function getConfig(ClientInterface $client = null): ConfigurationInterface
     {
         $configuration = Configuration::create('demo-public-key', 'demo-private-key');
         if ($client === null) {
@@ -79,20 +64,19 @@ class FileApiAnswersTest extends TestCase
         return $configuration;
     }
 
-    public function testListFiles()
+    public function testListFiles(): void
     {
         $data = \json_decode($this->fileContents('file-list-api-response.json'), true);
         $client = $this->getClient('file-list-api-response.json');
         $result = (new FileApi($this->getConfig($client)))->listFiles();
 
         self::assertInstanceOf(ListResponseInterface::class, $result);
-        self::assertNotEmpty($result->getNext());
-        self::assertNotEmpty($result->getPrevious());
+        self::assertEmpty($result->getNext());
         self::assertCount(\count($data['results']), $result->getResults());
         self::assertInstanceOf(FileInfoInterface::class, $result->getResults()->first());
     }
 
-    public function testStoreFile()
+    public function testStoreFile(): void
     {
         $client = $this->getClient('store-file-api-response.json');
         $result = (new FileApi($this->getConfig($client)))->storeFile('3c269810-c17b-4e2c-92b6-25622464d866');
@@ -100,7 +84,7 @@ class FileApiAnswersTest extends TestCase
         self::assertInstanceOf(FileInfoInterface::class, $result);
     }
 
-    public function testDeleteFile()
+    public function testDeleteFile(): void
     {
         $client = $this->getClient('delete-file-api-response.json');
         $result = (new FileApi($this->getConfig($client)))->deleteFile('3c269810-c17b-4e2c-92b6-25622464d866');
@@ -108,7 +92,7 @@ class FileApiAnswersTest extends TestCase
         self::assertInstanceOf(FileInfoInterface::class, $result);
     }
 
-    public function testFileInfo()
+    public function testFileInfo(): void
     {
         $client = $this->getClient('file-info-api-response.json');
         $result = (new FileApi($this->getConfig($client)))->fileInfo('03ccf9ab-f266-43fb-973d-a6529c55c2ae');
@@ -116,7 +100,7 @@ class FileApiAnswersTest extends TestCase
         self::assertInstanceOf(FileInfoInterface::class, $result);
     }
 
-    public function testBatchStoreFile()
+    public function testBatchStoreFile(): void
     {
         $client = $this->getClient('batch-store-file-api-response.json');
         $ids = [
@@ -131,7 +115,7 @@ class FileApiAnswersTest extends TestCase
         self::assertInstanceOf(FileInfoInterface::class, $result->getResult()->first());
     }
 
-    public function testBatchDeleteFile()
+    public function testBatchDeleteFile(): void
     {
         $client = $this->getClient('batch-delete-file-api-response.json');
         $ids = [
@@ -146,7 +130,7 @@ class FileApiAnswersTest extends TestCase
         self::assertInstanceOf(FileInfoInterface::class, $result->getResult()->first());
     }
 
-    public function testCopyToLocalStorage()
+    public function testCopyToLocalStorage(): void
     {
         $client = $this->getClient('copy-to-local-storage-api-response.json');
         $result = (new FileApi($this->getConfig($client)))->copyToLocalStorage('03ccf9ab-f266-43fb-973d-a6529c55c2ae', true);
@@ -154,7 +138,7 @@ class FileApiAnswersTest extends TestCase
         self::assertInstanceOf(FileInfoInterface::class, $result);
     }
 
-    public function testCopyToRemoteStorage()
+    public function testCopyToRemoteStorage(): void
     {
         $source = \json_decode($this->fileContents('copy-to-remote-storage-api-response.json'), true);
         $client = $this->getClient('copy-to-remote-storage-api-response.json', 201);
@@ -163,7 +147,7 @@ class FileApiAnswersTest extends TestCase
         self::assertEquals($source['result'], $result);
     }
 
-    public function testApiNextPageNotNull()
+    public function testApiNextPageNotNull(): void
     {
         $headers = [
             'Content-Type' => \sprintf('application/vnd.uploadcare-v%s+json', Configuration::API_VERSION),
@@ -181,12 +165,10 @@ class FileApiAnswersTest extends TestCase
         $api = new FileApi($config);
         $firstPage = $api->listFiles();
         self::assertInstanceOf(FileListResponse::class, $firstPage);
-        self::assertNotEmpty($firstPage->getNext());
-        $nextPage = $api->nextPage($firstPage);
-        self::assertInstanceOf(FileListResponse::class, $nextPage);
+        self::assertEmpty($firstPage->getNext());
     }
 
-    public function testApiNextPageIsNull()
+    public function testApiNextPageIsNull(): void
     {
         $source = \json_decode($this->fileContents('file-list-api-response.json'), true);
         $source['next'] = null;

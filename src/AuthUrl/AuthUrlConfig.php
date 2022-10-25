@@ -10,21 +10,11 @@ use Uploadcare\Interfaces\AuthUrl\AuthUrlConfigInterface;
  */
 class AuthUrlConfig implements AuthUrlConfigInterface
 {
-    /**
-     * @var TokenInterface
-     */
-    private $token;
-
-    /**
-     * @var string
-     */
-    private $cdnUrl;
+    private TokenInterface $token;
+    private string $cdnUrl;
 
     /**
      * AuthUrlConfig constructor.
-     *
-     * @param string         $cdnUrl
-     * @param TokenInterface $token
      */
     public function __construct(string $cdnUrl, TokenInterface $token)
     {

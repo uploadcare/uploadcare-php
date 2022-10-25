@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Tests\Conversion;
 
@@ -8,14 +8,14 @@ use Uploadcare\Conversion\VideoUrlBuilder;
 
 class VideoUrlBuilderTest extends TestCase
 {
-    public function generateRequests()
+    public function generateRequests(): array
     {
         $default = '-/format/mp4/-/thumbs~1/';
 
         return [
             [
                 '/video/' . $default,
-                (new VideoEncodingRequest()),
+                new VideoEncodingRequest(),
             ],
             [
                 '/video/-/size/720x540/preserve_ratio/' . $default,
@@ -76,9 +76,8 @@ class VideoUrlBuilderTest extends TestCase
      * @dataProvider generateRequests
      *
      * @param $url
-     * @param VideoEncodingRequest $request
      */
-    public function testVideoUrlGeneration($url, VideoEncodingRequest $request)
+    public function testVideoUrlGeneration(string $url, VideoEncodingRequest $request): void
     {
         $builder = new VideoUrlBuilder($request);
         self::assertEquals($builder(), $url);

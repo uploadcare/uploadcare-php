@@ -13,9 +13,11 @@ final class FileCollection extends AbstractCollection
 {
     /**
      * @var array<array-key,T>
+     *
      * @psalm-suppress NonInvariantDocblockPropertyType
+     * @psalm-suppress NonInvariantPropertyType
      */
-    protected $elements;
+    protected array $elements;
 
     public function __construct(array $elements = [])
     {

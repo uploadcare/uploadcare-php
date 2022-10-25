@@ -2,34 +2,26 @@
 
 namespace Uploadcare\Apis;
 
-use Uploadcare\Conversion\ConversionStatus;
-use Uploadcare\Conversion\VideoUrlBuilder;
-use Uploadcare\Exception\ConversionException;
-use Uploadcare\Exception\InvalidArgumentException;
+use Uploadcare\Conversion\{ConversionStatus, VideoUrlBuilder};
+use Uploadcare\Exception\{ConversionException, InvalidArgumentException};
 use Uploadcare\Interfaces\Api\ConversionApiInterface;
-use Uploadcare\Interfaces\Conversion\ConversionRequestInterface;
-use Uploadcare\Interfaces\Conversion\ConversionStatusInterface;
-use Uploadcare\Interfaces\Conversion\ConvertedItemInterface;
-use Uploadcare\Interfaces\Conversion\DocumentConversionRequestInterface;
-use Uploadcare\Interfaces\Conversion\VideoEncodingRequestInterface;
+use Uploadcare\Interfaces\Conversion\{ConversionRequestInterface, ConversionStatusInterface, ConvertedItemInterface,
+    DocumentConversionRequestInterface, VideoEncodingRequestInterface};
 use Uploadcare\Interfaces\File\FileInfoInterface;
-use Uploadcare\Interfaces\Response\BatchResponseInterface;
-use Uploadcare\Interfaces\Response\ResponseProblemInterface;
+use Uploadcare\Interfaces\Response\{BatchResponseInterface, ResponseProblemInterface};
 use Uploadcare\Response\BatchConversionResponse;
 
 /**
  * Conversion Api.
  *
- * @see https://uploadcare.com/api-refs/rest-api/v0.6.0/#tag/Conversion
+ * @see https://uploadcare.com/api-refs/rest-api/v0.7.0/#tag/Conversion
  */
 final class ConversionApi extends AbstractApi implements ConversionApiInterface
 {
     /**
      * @param int|ConvertedItemInterface $id
      *
-     * @return ConversionStatusInterface
-     *
-     * @see https://uploadcare.com/api-refs/rest-api/v0.6.0/#tag/Conversion/paths/~1convert~1document~1status~1{token}~1/get
+     * @see https://uploadcare.com/api-refs/rest-api/v0.7.0/#tag/Conversion/paths/~1convert~1document~1status~1{token}~1/get
      */
     public function documentJobStatus($id): ConversionStatusInterface
     {
@@ -51,13 +43,15 @@ final class ConversionApi extends AbstractApi implements ConversionApiInterface
     /**
      * {@inheritDoc}
      *
+     * @param FileInfoInterface|string $file
+     *
      * @return ConvertedItemInterface|ResponseProblemInterface
      *
      * @throws \RuntimeException|InvalidArgumentException
      *
-     * @see https://uploadcare.com/api-refs/rest-api/v0.6.0/#operation/documentConvert
+     * @see https://uploadcare.com/api-refs/rest-api/v0.7.0/#operation/documentConvert
      */
-    public function convertDocument($file, ConversionRequestInterface $request)
+    public function convertDocument($file, ConversionRequestInterface $request): object
     {
         if (!$request instanceof DocumentConversionRequestInterface) {
             throw new \RuntimeException(\sprintf('Request parameter must implements %s interface', DocumentConversionRequestInterface::class));
@@ -76,7 +70,7 @@ final class ConversionApi extends AbstractApi implements ConversionApiInterface
             $problem = \array_values($result->getProblems())[0];
 
             if ($request->throwError()) {
-                throw new ConversionException($problem->getReason());
+                throw new ConversionException($problem->getReason() ?? 'Unknown problem');
             }
 
             return $problem;
@@ -116,14 +110,13 @@ final class ConversionApi extends AbstractApi implements ConversionApiInterface
      *
      * @return ConvertedItemInterface|ResponseProblemInterface
      *
-     * @see https://uploadcare.com/api-refs/rest-api/v0.6.0/#operation/videoConvert
+     * @see https://uploadcare.com/api-refs/rest-api/v0.7.0/#operation/videoConvert
      */
-    public function convertVideo($file, ConversionRequestInterface $request)
+    public function convertVideo($file, ConversionRequestInterface $request): object
     {
-        if ($file instanceof FileInfoInterface) {
-            $file = $file->getUuid();
-        }
-        if (!\is_string($file) || !\uuid_is_valid($file)) {
+        $file = (string) $file;
+
+        if (!\uuid_is_valid($file)) {
             throw new InvalidArgumentException(\sprintf('File argument must be an UUID or instance of %s interface', FileInfoInterface::class));
         }
 
@@ -134,12 +127,13 @@ final class ConversionApi extends AbstractApi implements ConversionApiInterface
         $conversionUrl = $this->makeVideoConversionUrl($request);
         $fileUrl = \sprintf('%s/%s', $file, \ltrim($conversionUrl, '/'));
 
-        $requestBody = [
-            'store' => $request->store(),
-            'paths' => [$fileUrl],
-        ];
+        try {
+            $requestBody = \json_encode(['store' => $request->store(), 'paths' => [$fileUrl]], JSON_THROW_ON_ERROR);
+        } catch (\Throwable $e) {
+            throw new ConversionException($e->getMessage());
+        }
         $response = $this->request('POST', '/convert/video/', [
-            'body' => \json_encode($requestBody),
+            'body' => $requestBody,
         ]);
         $result = $this->configuration->getSerializer()
             ->deserialize($response->getBody()->getContents(), BatchConversionResponse::class);
@@ -153,7 +147,7 @@ final class ConversionApi extends AbstractApi implements ConversionApiInterface
             $reason = $problem instanceof ResponseProblemInterface ? $problem->getReason() : 'Unknown problem';
 
             if ($request->throwError()) {
-                throw new ConversionException($reason);
+                throw new ConversionException($reason ?? 'Unknown problem');
             }
 
             return $problem;
@@ -186,13 +180,14 @@ final class ConversionApi extends AbstractApi implements ConversionApiInterface
         if (empty($urls)) {
             throw new InvalidArgumentException('Collection has no valid files or uuid\'s');
         }
-        $requestBody = [
-            'store' => $request->store(),
-            'paths' => $urls,
-        ];
+        try {
+            $requestBody = \json_encode(['store' => $request->store(), 'paths' => $urls], JSON_THROW_ON_ERROR);
+        } catch (\Throwable $e) {
+            throw new \RuntimeException($e->getMessage());
+        }
 
         $response = $this->request('POST', '/convert/video/', [
-            'body' => \json_encode($requestBody),
+            'body' => $requestBody,
         ]);
 
         $result = $this->configuration->getSerializer()
@@ -208,16 +203,14 @@ final class ConversionApi extends AbstractApi implements ConversionApiInterface
     /**
      * {@inheritDoc}
      *
-     * @see https://uploadcare.com/api-refs/rest-api/v0.6.0/#operation/videoConvertStatus
+     * @see https://uploadcare.com/api-refs/rest-api/v0.7.0/#operation/videoConvertStatus
      */
-    public function videoJobStatus($id)
+    public function videoJobStatus($id): ConversionStatusInterface
     {
         if ($id instanceof ConvertedItemInterface) {
             $id = $id->getToken();
         }
-        if (!\is_int($id)) {
-            throw new InvalidArgumentException(\sprintf('Conversion result ID must be a number, %s given', \gettype($id)));
-        }
+
         $url = \sprintf('/convert/video/status/%s/', $id);
         $response = $this->request('GET', $url);
 
@@ -231,11 +224,6 @@ final class ConversionApi extends AbstractApi implements ConversionApiInterface
         return $result;
     }
 
-    /**
-     * @param VideoEncodingRequestInterface $request
-     *
-     * @return string
-     */
     protected function makeVideoConversionUrl(VideoEncodingRequestInterface $request): string
     {
         $builder = new VideoUrlBuilder($request);
@@ -243,15 +231,16 @@ final class ConversionApi extends AbstractApi implements ConversionApiInterface
         return $builder();
     }
 
-    /**
-     * @param array $conversionParams
-     *
-     * @return BatchResponseInterface
-     */
     private function requestDocumentConversion(array $conversionParams): BatchResponseInterface
     {
+        try {
+            $parameters = \json_encode($conversionParams, JSON_THROW_ON_ERROR);
+        } catch (\Throwable $e) {
+            throw new \RuntimeException($e->getMessage());
+        }
+
         $response = $this->request('POST', 'convert/document/', [
-            'body' => \json_encode($conversionParams),
+            'body' => $parameters,
         ]);
 
         $result = $this->configuration->getSerializer()
@@ -265,10 +254,7 @@ final class ConversionApi extends AbstractApi implements ConversionApiInterface
     }
 
     /**
-     * @param array                              $ids     File ID's
-     * @param DocumentConversionRequestInterface $request
-     *
-     * @return array
+     * @param array $ids File ID's
      */
     private function makeDocumentConversionUrl(array $ids, DocumentConversionRequestInterface $request): array
     {
