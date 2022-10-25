@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Tests\Decorated;
 
@@ -12,6 +12,7 @@ use Tests\DataFile;
 use Uploadcare\Apis\FileApi;
 use Uploadcare\Configuration;
 use Uploadcare\File\File;
+use Uploadcare\Interfaces\Api\FileApiInterface;
 use Uploadcare\Interfaces\File\FileInfoInterface;
 use Uploadcare\Interfaces\Serializer\SerializerInterface;
 use Uploadcare\Security\Signature;
@@ -19,10 +20,7 @@ use Uploadcare\Serializer\SerializerFactory;
 
 class DecoratedFileTest extends TestCase
 {
-    /**
-     * @var SerializerInterface
-     */
-    private $serializer;
+    private SerializerInterface $serializer;
 
     protected function setUp(): void
     {
@@ -30,7 +28,7 @@ class DecoratedFileTest extends TestCase
         $this->serializer = SerializerFactory::create();
     }
 
-    protected function fakeApi($responses = [])
+    protected function fakeApi(array $responses = []): FileApiInterface
     {
         if (empty($responses)) {
             $responses = [
@@ -51,7 +49,7 @@ class DecoratedFileTest extends TestCase
     }
 
     /** @noinspection PhpParamsInspection */
-    public function testCallInnerMethod()
+    public function testCallInnerMethod(): void
     {
         $fileInfo = $this->serializer->deserialize(DataFile::contents('file-info.json'), File::class);
         self::assertInstanceOf(FileInfoInterface::class, $fileInfo);
@@ -60,13 +58,13 @@ class DecoratedFileTest extends TestCase
         self::assertInstanceOf(FileInfoInterface::class, $decoratedFile->store());
     }
 
-    public function commonMethods()
+    public function commonMethods(): array
     {
         return [
             ['getDatetimeRemoved'],
             ['getDatetimeStored'],
             ['getDatetimeUploaded'],
-            ['getImageInfo'],
+            ['getContentInfo'],
             ['isImage'],
             ['isReady'],
             ['getMimeType'],
@@ -76,19 +74,16 @@ class DecoratedFileTest extends TestCase
             ['getUrl'],
             ['getUuid'],
             ['getVariations'],
-            ['getVideoInfo'],
             ['getSource'],
-            ['getRekognitionInfo'],
         ];
     }
 
     /**
      * @dataProvider commonMethods
      *
-     * @param string $method
      * @noinspection PhpParamsInspection
      */
-    public function testParentMethods($method)
+    public function testParentMethods(string $method): void
     {
         $fileInfo = $this->serializer->deserialize(DataFile::contents('file-info.json'), File::class);
         $decoratedFile = new \Uploadcare\File($fileInfo, $this->fakeApi());
@@ -96,7 +91,7 @@ class DecoratedFileTest extends TestCase
         self::assertSame($fileInfo->{$method}(), $decoratedFile->{$method}());
     }
 
-    public function testStoreActiveFile()
+    public function testStoreActiveFile(): void
     {
         $responses = [
             new Response(200, [], Utils::streamFor(DataFile::fopen('file-info.json', 'rb'))),
@@ -108,7 +103,7 @@ class DecoratedFileTest extends TestCase
         self::assertInstanceOf(\Uploadcare\File::class, $result->store());
     }
 
-    public function testDeleteActiveFile()
+    public function testDeleteActiveFile(): void
     {
         $responses = [
             new Response(200, [], Utils::streamFor(DataFile::fopen('file-info.json', 'rb'))),
@@ -120,7 +115,7 @@ class DecoratedFileTest extends TestCase
         self::assertInstanceOf(File::class, $result->delete());
     }
 
-    public function testActiveFileCopyToLocalStorage()
+    public function testActiveFileCopyToLocalStorage(): void
     {
         $responses = [
             new Response(200, [], Utils::streamFor(DataFile::fopen('file-info.json', 'rb'))),
@@ -131,7 +126,7 @@ class DecoratedFileTest extends TestCase
         self::assertInstanceOf(\Uploadcare\File::class, $result->copyToLocalStorage());
     }
 
-    public function testActiveFileCopyToRemoteStorage()
+    public function testActiveFileCopyToRemoteStorage(): void
     {
         $responses = [
             new Response(200, [], Utils::streamFor(DataFile::fopen('file-info.json', 'rb'))),

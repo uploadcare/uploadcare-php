@@ -7,15 +7,8 @@ use Uploadcare\Interfaces\SerializableInterface;
 
 class ConversionResult implements StatusResultInterface, SerializableInterface
 {
-    /**
-     * @var string
-     */
-    private $uuid;
-
-    /**
-     * @var string|null
-     */
-    private $thumbnailsGroupUuid;
+    private ?string $uuid = null;
+    private ?string $thumbnailsGroupUuid = null;
 
     public static function rules(): array
     {
@@ -25,19 +18,11 @@ class ConversionResult implements StatusResultInterface, SerializableInterface
         ];
     }
 
-    /**
-     * @return string
-     */
-    public function getUuid(): string
+    public function getUuid(): ?string
     {
         return $this->uuid;
     }
 
-    /**
-     * @param string $uuid
-     *
-     * @return ConversionResult
-     */
     public function setUuid(string $uuid): self
     {
         $this->uuid = $uuid;
@@ -45,19 +30,11 @@ class ConversionResult implements StatusResultInterface, SerializableInterface
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getThumbnailsGroupUuid(): ?string
     {
         return $this->thumbnailsGroupUuid;
     }
 
-    /**
-     * @param string|null $thumbnailsGroupUuid
-     *
-     * @return ConversionResult
-     */
     public function setThumbnailsGroupUuid(?string $thumbnailsGroupUuid): self
     {
         $this->thumbnailsGroupUuid = $thumbnailsGroupUuid;

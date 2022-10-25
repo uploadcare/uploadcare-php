@@ -7,15 +7,8 @@ use Uploadcare\Interfaces\SerializableInterface;
 
 final class ResponseProblem implements ResponseProblemInterface, SerializableInterface
 {
-    /**
-     * @var string
-     */
-    private $id;
-
-    /**
-     * @var string
-     */
-    private $reason;
+    private ?string $id = null;
+    private ?string $reason = null;
 
     public static function rules(): array
     {
@@ -28,12 +21,12 @@ final class ResponseProblem implements ResponseProblemInterface, SerializableInt
     /**
      * {@inheritDoc}
      */
-    public function getId(): string
+    public function getId(): ?string
     {
         return $this->id;
     }
 
-    public function setId(string $id)
+    public function setId(string $id): self
     {
         $this->id = $id;
 
@@ -43,7 +36,7 @@ final class ResponseProblem implements ResponseProblemInterface, SerializableInt
     /**
      * {@inheritDoc}
      */
-    public function getReason(): string
+    public function getReason(): ?string
     {
         return $this->reason;
     }

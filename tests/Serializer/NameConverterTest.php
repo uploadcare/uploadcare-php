@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Tests\Serializer;
 
@@ -7,7 +7,7 @@ use Uploadcare\Serializer\SnackCaseConverter;
 
 class NameConverterTest extends TestCase
 {
-    public function propertyNamesGenerator()
+    public function propertyNamesGenerator(): array
     {
         return [
             ['camelCased', 'camel_cased'],
@@ -22,7 +22,7 @@ class NameConverterTest extends TestCase
      * @param string $cc
      * @param string $normal
      */
-    public function testNormalizeNames($cc, $normal)
+    public function testNormalizeNames($cc, $normal): void
     {
         $result = (new SnackCaseConverter())->normalize($cc);
         $this->assertSame($normal, $result);
@@ -30,17 +30,14 @@ class NameConverterTest extends TestCase
 
     /**
      * @dataProvider propertyNamesGenerator
-     *
-     * @param string $cc
-     * @param string $normal
      */
-    public function testDenormalizeNames($cc, $normal)
+    public function testDenormalizeNames(string $cc, string $normal): void
     {
         $result = (new SnackCaseConverter())->denormalize($normal);
         $this->assertSame($cc, $result);
     }
 
-    public function testActionIfNotSet()
+    public function testActionIfNotSet(): void
     {
         $attributes = [
             'actAttribute',

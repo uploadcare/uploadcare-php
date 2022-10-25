@@ -4,12 +4,8 @@ namespace Uploadcare\Serializer;
 
 use Uploadcare\Interfaces\File\CollectionInterface;
 use Uploadcare\Interfaces\SerializableInterface;
-use Uploadcare\Interfaces\Serializer\NameConverterInterface;
-use Uploadcare\Interfaces\Serializer\SerializerInterface;
-use Uploadcare\Serializer\Exceptions\ClassNotFoundException;
-use Uploadcare\Serializer\Exceptions\ConversionException;
-use Uploadcare\Serializer\Exceptions\MethodNotFoundException;
-use Uploadcare\Serializer\Exceptions\SerializerException;
+use Uploadcare\Interfaces\Serializer\{NameConverterInterface, SerializerInterface};
+use Uploadcare\Serializer\Exceptions\{ClassNotFoundException, ConversionException, MethodNotFoundException, SerializerException};
 
 class Serializer implements SerializerInterface
 {
@@ -19,7 +15,7 @@ class Serializer implements SerializerInterface
     public const DATE_FORMAT_SHORT = 'Y-m-d\TH:i:s\Z';
     public const ORIGINAL_DATE_FORMAT = 'Y-m-d\TH:i:s';
 
-    protected static $coreTypes = [
+    protected static array $coreTypes = [
         'int' => true,
         'bool' => true,
         'string' => true,
@@ -27,16 +23,14 @@ class Serializer implements SerializerInterface
         'array' => true,
     ];
 
-    protected static $validClasses = [
+    protected static array $validClasses = [
         \DateTimeInterface::class,
         SerializableInterface::class,
     ];
 
-    protected static $defaultJsonOptions = JSON_PRETTY_PRINT;
-    /**
-     * @var NameConverterInterface
-     */
-    private $nameConverter;
+    protected static int $defaultJsonOptions = JSON_PRETTY_PRINT;
+
+    private NameConverterInterface $nameConverter;
 
     public function __construct(NameConverterInterface $nameConverter)
     {
@@ -44,14 +38,9 @@ class Serializer implements SerializerInterface
     }
 
     /**
-     * @param object $object
-     * @param array  $context
-     *
-     * @return string
-     *
      * @throws \RuntimeException
      */
-    public function serialize($object, array $context = []): string
+    public function serialize(object $object, array $context = []): string
     {
         if (!$object instanceof SerializableInterface) {
             throw new SerializerException(\sprintf('Class \'%s\' must implements \'%s\' interface', \get_class($object), SerializableInterface::class));
@@ -60,8 +49,9 @@ class Serializer implements SerializerInterface
         $options = $context[self::JSON_OPTIONS_KEY] ?? self::$defaultJsonOptions;
         $normalized = [];
         $this->normalize($object, $normalized, $context);
-        $result = \json_encode($normalized, $options);
-        if (\json_last_error() !== JSON_ERROR_NONE) {
+        try {
+            $result = \json_encode($normalized, JSON_THROW_ON_ERROR | $options);
+        } catch (\Throwable $e) {
             throw new ConversionException(\sprintf('Unable to decode given data. Error is %s', \json_last_error_msg()));
         }
 
@@ -69,10 +59,6 @@ class Serializer implements SerializerInterface
     }
 
     /**
-     * @param string      $string
-     * @param string|null $className
-     * @param array       $context
-     *
      * @return object|array
      *
      * @throws \RuntimeException
@@ -81,8 +67,9 @@ class Serializer implements SerializerInterface
     {
         $options = $context[self::JSON_OPTIONS_KEY] ?? self::$defaultJsonOptions;
 
-        $data = \json_decode($string, true, 512, $options);
-        if (\json_last_error() !== JSON_ERROR_NONE) {
+        try {
+            $data = \json_decode($string, true, 512, JSON_THROW_ON_ERROR | $options);
+        } catch (\Throwable $e) {
             throw new ConversionException(\sprintf('Unable to decode given value. Error is %s', \json_last_error_msg()));
         }
 
@@ -93,16 +80,9 @@ class Serializer implements SerializerInterface
             throw new ClassNotFoundException(\sprintf('Class \'%s\' not found', $className));
         }
 
-        return $this->denormalize(($data ?? []), $className, $context);
+        return $this->denormalize($data ?? [], $className, $context);
     }
 
-    /**
-     * @param SerializableInterface $object
-     * @param array                 $result
-     * @param array                 $context
-     *
-     * @return void
-     */
     protected function normalize(SerializableInterface $object, array &$result = [], array $context = []): void
     {
         $rules = $object::rules();
@@ -143,14 +123,7 @@ class Serializer implements SerializerInterface
         }
     }
 
-    /**
-     * @param array  $data
-     * @param string $className
-     * @param array  $context
-     *
-     * @return object
-     */
-    protected function denormalize(array $data, string $className, array $context)
+    protected function denormalize(array $data, string $className, array $context): object
     {
         $this->validateClass($className);
         if (!\is_a($className, SerializableInterface::class, true)) {
@@ -166,21 +139,13 @@ class Serializer implements SerializerInterface
         return $class;
     }
 
-    /**
-     * @param SerializableInterface $class
-     * @param array                 $data
-     * @param array                 $rules
-     * @param array                 $excluded
-     *
-     * @return void
-     */
     private function processData(SerializableInterface $class, array $data, array $rules, array $excluded): void
     {
         foreach ($data as $propertyName => $value) {
-            $convertedName = $this->nameConverter->denormalize($propertyName);
+            $convertedName = $this->nameConverter->denormalize((string) $propertyName);
             if (!isset($rules[$convertedName])) {
                 // Property can be named as `isSomething`
-                $convertedName = \sprintf('is%s', ucfirst($convertedName));
+                $convertedName = \sprintf('is%s', \ucfirst($convertedName));
             }
             if (!isset($rules[$convertedName])) {
                 // There is no rule with this name
@@ -193,8 +158,8 @@ class Serializer implements SerializerInterface
             }
 
             if (\is_array($rule)) {
-                // This means the property contains an array with other classes
-                // and we need to denormalize this classes first.
+                // This means the property contains an array with other classes, and
+                // we need to denormalize this classes first.
                 $innerClassName = $rule[\key($rule)];
                 $this->denormalizeClassesArray($class, $innerClassName, $convertedName, $value);
                 continue;
@@ -240,12 +205,6 @@ class Serializer implements SerializerInterface
         }
     }
 
-    /**
-     * @param SerializableInterface $parentClass
-     * @param string                $targetClassName
-     * @param string                $targetProperty
-     * @param array                 $data
-     */
     private function denormalizeClassesArray(SerializableInterface $parentClass, string $targetClassName, string $targetProperty, array $data): void
     {
         $set = false;
@@ -279,8 +238,6 @@ class Serializer implements SerializerInterface
 
     /**
      * @param string $dateTime Date string in `Y-m-d\TH:i:s.u\Z` format
-     *
-     * @return \DateTimeInterface
      */
     private function denormalizeDate(string $dateTime): \DateTimeInterface
     {
@@ -302,11 +259,6 @@ class Serializer implements SerializerInterface
         return $date;
     }
 
-    /**
-     * @param \DateTime $dateTime
-     *
-     * @return string
-     */
     private function normalizeDate(\DateTime $dateTime): string
     {
         if (empty(\ini_get('date.timezone'))) {
@@ -316,11 +268,6 @@ class Serializer implements SerializerInterface
         return $dateTime->format(self::DATE_FORMAT);
     }
 
-    /**
-     * @param string $className
-     *
-     * @return void
-     */
     private function validateClass(string $className): void
     {
         foreach (self::$validClasses as $validClass) {
@@ -336,8 +283,6 @@ class Serializer implements SerializerInterface
      * @param string $propertyName      Property for method
      * @param string $prefix            Method prefix
      * @param bool   $convertToSingular Whether convert property in plural form to singular
-     *
-     * @return string
      */
     private function getMethodName(string $propertyName, $prefix = 'set', $convertToSingular = false): string
     {

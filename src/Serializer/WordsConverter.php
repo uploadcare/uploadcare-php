@@ -15,6 +15,9 @@ class WordsConverter
             'results' => 'result',
             'files' => 'file',
             'problems' => 'problem',
+            'labels' => 'label',
+            'parents' => 'parent',
+            'instances' => 'instance',
         ];
     }
 }

@@ -3,23 +3,18 @@
 namespace Uploadcare\Response;
 
 use Uploadcare\File\FileCollection;
-use Uploadcare\Interfaces\File\CollectionInterface;
-use Uploadcare\Interfaces\File\FileInfoInterface;
-use Uploadcare\Interfaces\Response\BatchResponseInterface;
-use Uploadcare\Interfaces\Response\ResponseProblemInterface;
+use Uploadcare\Interfaces\File\{CollectionInterface, FileInfoInterface};
+use Uploadcare\Interfaces\Response\{BatchResponseInterface, ResponseProblemInterface};
 use Uploadcare\Interfaces\SerializableInterface;
 
 final class BatchFileResponse implements BatchResponseInterface, SerializableInterface
 {
-    /**
-     * @var string
-     */
-    private $status;
+    private string $status = 'ok';
 
     /**
      * @var ResponseProblemInterface[]
      */
-    private $problems;
+    private array $problems;
 
     /**
      * @var CollectionInterface
@@ -65,8 +60,6 @@ final class BatchFileResponse implements BatchResponseInterface, SerializableInt
     }
 
     /**
-     * @param array $problems
-     *
      * @return $this
      */
     public function setProblems(array $problems): self
@@ -98,11 +91,6 @@ final class BatchFileResponse implements BatchResponseInterface, SerializableInt
         return $this->result;
     }
 
-    /**
-     * @param CollectionInterface $fileCollection
-     *
-     * @return self
-     */
     public function setResult(CollectionInterface $fileCollection): self
     {
         $this->result = $fileCollection;

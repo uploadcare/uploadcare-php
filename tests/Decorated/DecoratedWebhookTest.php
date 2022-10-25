@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Tests\Decorated;
 
@@ -21,7 +21,7 @@ use Uploadcare\WebhookCollection;
 
 class DecoratedWebhookTest extends TestCase
 {
-    protected function fakeApi($responses = [])
+    protected function fakeApi(array $responses = []): WebhookApiInterface
     {
         $handler = new MockHandler($responses);
         $client = new Client(['handler' => HandlerStack::create($handler)]);
@@ -30,7 +30,7 @@ class DecoratedWebhookTest extends TestCase
         return new WebhookApi($config);
     }
 
-    public function commonMethods()
+    public function commonMethods(): array
     {
         return [
             ['getId'],
@@ -50,7 +50,7 @@ class DecoratedWebhookTest extends TestCase
      *
      * @throws \ReflectionException
      */
-    public function testCommonMethods($method)
+    public function testCommonMethods(string $method): void
     {
         $api = $this->fakeApi([
             new Response(200, [], DataFile::contents('webhook-response.json')),
@@ -63,7 +63,7 @@ class DecoratedWebhookTest extends TestCase
         self::assertSame($inner->{$method}(), $wh->{$method}());
     }
 
-    public function testCreateFromMethod()
+    public function testCreateFromMethod(): void
     {
         $wh = SerializerFactory::create()->deserialize(DataFile::contents('webhook-response.json'), WebhookResponse::class);
         $collection = new WebhookCollection(new \Uploadcare\Response\WebhookCollection([$wh]), $this->fakeApi());
@@ -74,12 +74,12 @@ class DecoratedWebhookTest extends TestCase
         self::assertEquals($collection, $result);
     }
 
-    public function testElementClass()
+    public function testElementClass(): void
     {
         self::assertEquals(Webhook::class, WebhookCollection::elementClass());
     }
 
-    public function testDeleteMethod()
+    public function testDeleteMethod(): void
     {
         $api = $this->fakeApi([
             new Response(204),
@@ -91,7 +91,7 @@ class DecoratedWebhookTest extends TestCase
         self::assertTrue($decorated->delete());
     }
 
-    public function provideDecoratedMethods()
+    public function provideDecoratedMethods(): array
     {
         return [
             ['activate'],
@@ -102,10 +102,8 @@ class DecoratedWebhookTest extends TestCase
 
     /**
      * @dataProvider provideDecoratedMethods
-     *
-     * @param string $method
      */
-    public function testDecoratedMethods($method)
+    public function testDecoratedMethods(string $method): void
     {
         $api = $this->fakeApi([
             new Response(200, [], DataFile::contents('webhook-response.json')),
@@ -118,7 +116,7 @@ class DecoratedWebhookTest extends TestCase
         self::assertInstanceOf(Webhook::class, $result);
     }
 
-    public function testMainApiMethod()
+    public function testMainApiMethod(): void
     {
         $api = new Api(Configuration::create('public', 'private'));
         self::assertInstanceOf(WebhookApiInterface::class, $api->webhook());

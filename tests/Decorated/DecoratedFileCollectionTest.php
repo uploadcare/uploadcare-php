@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Tests\Decorated;
 
@@ -20,10 +20,7 @@ use Uploadcare\Serializer\SerializerFactory;
 
 class DecoratedFileCollectionTest extends TestCase
 {
-    /**
-     * @var SerializerInterface
-     */
-    private $serializer;
+    private SerializerInterface $serializer;
 
     protected function setUp(): void
     {
@@ -31,12 +28,7 @@ class DecoratedFileCollectionTest extends TestCase
         $this->serializer = SerializerFactory::create();
     }
 
-    /**
-     * @param array $responses
-     *
-     * @return FileApi
-     */
-    protected function fakeApi($responses = [])
+    protected function fakeApi(array $responses = []): FileApi
     {
         $handler = new MockHandler($responses);
         $client = new Client(['handler' => HandlerStack::create($handler)]);
@@ -45,7 +37,7 @@ class DecoratedFileCollectionTest extends TestCase
         return new FileApi($config);
     }
 
-    public function testListFiles()
+    public function testListFiles(): void
     {
         $collectionResponse = new Response(200, [], DataFile::contents('file-list-api-response.json'));
         $batchStoreResponse = new Response(200, [], DataFile::contents('batch-store-file-api-response.json'));
@@ -61,7 +53,7 @@ class DecoratedFileCollectionTest extends TestCase
         self::assertInstanceOf(File::class, $store->getResult()->first());
     }
 
-    public function testBatchStoreFiles()
+    public function testBatchStoreFiles(): void
     {
         $responses = [
             $collectionResponse = new Response(200, [], DataFile::contents('file-list-api-response.json')),
@@ -75,7 +67,7 @@ class DecoratedFileCollectionTest extends TestCase
         self::assertInstanceOf(File\File::class, $deleted->getResult()->first());
     }
 
-    public function testCollectionCreateFrom()
+    public function testCollectionCreateFrom(): void
     {
         $file = SerializerFactory::create()->deserialize(DataFile::contents('file-info.json'), File\File::class);
         $collection = new FileCollection(new File\FileCollection([$file]), $this->fakeApi());
@@ -85,7 +77,7 @@ class DecoratedFileCollectionTest extends TestCase
         self::assertEquals($collection, $createFrom->invokeArgs($collection, [[$file]]));
     }
 
-    public function testElementClass()
+    public function testElementClass(): void
     {
         self::assertEquals(File::class, FileCollection::elementClass());
     }

@@ -1,42 +1,353 @@
 {
   "datetime_removed": null,
-  "datetime_stored": "2018-11-26T12:49:10.477888Z",
-  "datetime_uploaded": "2018-11-26T12:49:09.945335Z",
-  "image_info": {
-    "color_mode": "RGB",
-    "orientation": null,
-    "format": "JPEG",
-    "sequence": false,
-    "height": 500,
-    "width": 800,
-    "geo_location": null,
-    "datetime_original": null,
-    "dpi": [
-      144,
-      144
-    ]
-  },
+  "datetime_stored": "2022-09-18T08:56:33.439558Z",
+  "datetime_uploaded": "2022-09-18T08:56:33.348711Z",
   "is_image": true,
   "is_ready": true,
-  "mime_type": "application/octet-stream",
-  "original_file_url": "https://ucarecdn.com/3c269810-c17b-4e2c-92b6-25622464d866/papaya.jpg",
-  "original_filename": "papaya.jpg",
-  "size": 642,
-  "url": "https://api.uploadcare.com/files/3c269810-c17b-4e2c-92b6-25622464d866/",
-  "uuid": "3c269810-c17b-4e2c-92b6-25622464d866",
+  "mime_type": "image/heic",
+  "original_file_url": "https://ucarecdn.com/2cbc65a3-89d0-4757-a8ca-543df258dad4/6A17E17C180A462AA5EB4B8596BB51FD.heic",
+  "original_filename": "6A17E17C-180A-462A-A5EB-4B8596BB51FD.heic",
+  "size": 2570483,
+  "url": "https://api.uploadcare.com/files/2cbc65a3-89d0-4757-a8ca-543df258dad4/",
+  "uuid": "2cbc65a3-89d0-4757-a8ca-543df258dad4",
   "variations": null,
-  "video_info": null,
-  "source": null,
-  "rekognition_info": {
-    "Art": 0.60401,
-    "Home Decor": 0.719,
-    "Ornament": 0.60401,
-    "Shutter": 0.719,
-    "Arabesque Pattern": 0.60401,
-    "Window": 0.719,
-    "Curtain": 0.719,
-    "Brick": 0.75331,
-    "Window Shade": 0.719,
-    "Balcony": 0.70572
+  "content_info": {
+    "mime": {
+      "mime": "image/heic",
+      "type": "image",
+      "subtype": "heic"
+    },
+    "image": {
+      "dpi": [
+        72.0,
+        72.0
+      ],
+      "width": 3024,
+      "format": "HEIF",
+      "height": 4032,
+      "sequence": false,
+      "color_mode": "RGB",
+      "orientation": 6,
+      "geo_location": {
+        "latitude": 50.087386111111115,
+        "longitude": 14.406325
+      },
+      "datetime_original": "2022-08-23T15:21:18"
+    }
+  },
+  "metadata": {
+    "foo": "2022-09-18T08:13:31+00:00"
+  },
+  "appdata": {
+    "aws_rekognition_detect_labels": {
+      "data": {
+        "Labels": [
+          {
+            "Name": "Downtown",
+            "Parents": [
+              {
+                "Name": "City"
+              },
+              {
+                "Name": "Urban"
+              },
+              {
+                "Name": "Building"
+              }
+            ],
+            "Instances": [],
+            "Confidence": 99.88898468017578
+          },
+          {
+            "Name": "City",
+            "Parents": [
+              {
+                "Name": "Urban"
+              },
+              {
+                "Name": "Building"
+              }
+            ],
+            "Instances": [],
+            "Confidence": 99.88898468017578
+          },
+          {
+            "Name": "Building",
+            "Parents": [],
+            "Instances": [],
+            "Confidence": 99.88898468017578
+          },
+          {
+            "Name": "Urban",
+            "Parents": [],
+            "Instances": [],
+            "Confidence": 99.88898468017578
+          },
+          {
+            "Name": "Pedestrian",
+            "Parents": [
+              {
+                "Name": "Person"
+              }
+            ],
+            "Instances": [],
+            "Confidence": 99.87149047851562
+          },
+          {
+            "Name": "Person",
+            "Parents": [],
+            "Instances": [
+              {
+                "Confidence": 99.80677032470703,
+                "BoundingBox": {
+                  "Top": 0.7648626565933228,
+                  "Left": 0.7592476606369019,
+                  "Width": 0.06914404034614563,
+                  "Height": 0.18532384932041168
+                }
+              },
+              {
+                "Confidence": 99.75228118896484,
+                "BoundingBox": {
+                  "Top": 0.7755077481269836,
+                  "Left": 0.5418590903282166,
+                  "Width": 0.07033593952655792,
+                  "Height": 0.1699046641588211
+                }
+              },
+              {
+                "Confidence": 99.35772705078125,
+                "BoundingBox": {
+                  "Top": 0.7731937170028687,
+                  "Left": 0.6692097187042236,
+                  "Width": 0.06163232401013374,
+                  "Height": 0.16205944120883942
+                }
+              },
+              {
+                "Confidence": 99.2680435180664,
+                "BoundingBox": {
+                  "Top": 0.7712882161140442,
+                  "Left": 0.4578738212585449,
+                  "Width": 0.07507682591676712,
+                  "Height": 0.14980444312095642
+                }
+              },
+              {
+                "Confidence": 99.17286682128906,
+                "BoundingBox": {
+                  "Top": 0.779432475566864,
+                  "Left": 0.6058067679405212,
+                  "Width": 0.06713631004095078,
+                  "Height": 0.15512169897556305
+                }
+              },
+              {
+                "Confidence": 97.62358093261719,
+                "BoundingBox": {
+                  "Top": 0.7854974269866943,
+                  "Left": 0.2787376046180725,
+                  "Width": 0.042252156883478165,
+                  "Height": 0.10956518352031708
+                }
+              },
+              {
+                "Confidence": 97.32373046875,
+                "BoundingBox": {
+                  "Top": 0.8066412806510925,
+                  "Left": 0.036937374621629715,
+                  "Width": 0.1374676674604416,
+                  "Height": 0.19006310403347015
+                }
+              },
+              {
+                "Confidence": 97.14485168457031,
+                "BoundingBox": {
+                  "Top": 0.7950683832168579,
+                  "Left": 0.3485235571861267,
+                  "Width": 0.03735237568616867,
+                  "Height": 0.0994429960846901
+                }
+              },
+              {
+                "Confidence": 95.90531921386719,
+                "BoundingBox": {
+                  "Top": 0.7899389863014221,
+                  "Left": 0.1663808524608612,
+                  "Width": 0.0354398712515831,
+                  "Height": 0.06772167980670929
+                }
+              },
+              {
+                "Confidence": 92.68800354003906,
+                "BoundingBox": {
+                  "Top": 0.7821115255355835,
+                  "Left": 0.02104058675467968,
+                  "Width": 0.03297741711139679,
+                  "Height": 0.08272082358598709
+                }
+              },
+              {
+                "Confidence": 91.33192443847656,
+                "BoundingBox": {
+                  "Top": 0.7828062176704407,
+                  "Left": 0.38844770193099976,
+                  "Width": 0.03862573206424713,
+                  "Height": 0.09694909304380417
+                }
+              },
+              {
+                "Confidence": 90.6844711303711,
+                "BoundingBox": {
+                  "Top": 0.7851786017417908,
+                  "Left": 0.1389535665512085,
+                  "Width": 0.027944214642047882,
+                  "Height": 0.06177587807178497
+                }
+              },
+              {
+                "Confidence": 84.1337661743164,
+                "BoundingBox": {
+                  "Top": 0.7837957739830017,
+                  "Left": 0.2322489470243454,
+                  "Width": 0.03959806263446808,
+                  "Height": 0.09620092809200287
+                }
+              },
+              {
+                "Confidence": 83.75342559814453,
+                "BoundingBox": {
+                  "Top": 0.7925049066543579,
+                  "Left": 0.42148375511169434,
+                  "Width": 0.030168456956744194,
+                  "Height": 0.08421716094017029
+                }
+              },
+              {
+                "Confidence": 75.9493637084961,
+                "BoundingBox": {
+                  "Top": 0.7765177488327026,
+                  "Left": 0.32455337047576904,
+                  "Width": 0.03568027913570404,
+                  "Height": 0.08229663223028183
+                }
+              },
+              {
+                "Confidence": 74.03496551513672,
+                "BoundingBox": {
+                  "Top": 0.7823280692100525,
+                  "Left": 0.20941227674484253,
+                  "Width": 0.02737056463956833,
+                  "Height": 0.07316186279058456
+                }
+              },
+              {
+                "Confidence": 65.06137084960938,
+                "BoundingBox": {
+                  "Top": 0.786568820476532,
+                  "Left": 0.24805550277233124,
+                  "Width": 0.03307649865746498,
+                  "Height": 0.09605774283409119
+                }
+              },
+              {
+                "Confidence": 48.5122184753418,
+                "BoundingBox": {
+                  "Top": 0.7627545595169067,
+                  "Left": 0.6359838247299194,
+                  "Width": 0.038797687739133835,
+                  "Height": 0.06711425632238388
+                }
+              },
+              {
+                "Confidence": 46.81319808959961,
+                "BoundingBox": {
+                  "Top": 0.7783509492874146,
+                  "Left": 0.711956799030304,
+                  "Width": 0.028455892577767372,
+                  "Height": 0.08910766243934631
+                }
+              }
+            ],
+            "Confidence": 99.87149047851562
+          },
+          {
+            "Name": "Architecture",
+            "Parents": [
+              {
+                "Name": "Building"
+              }
+            ],
+            "Instances": [],
+            "Confidence": 99.80545043945312
+          },
+          {
+            "Name": "Spire",
+            "Parents": [
+              {
+                "Name": "Tower"
+              },
+              {
+                "Name": "Architecture"
+              },
+              {
+                "Name": "Building"
+              }
+            ],
+            "Instances": [],
+            "Confidence": 98.87499237060547
+          },
+          {
+            "Name": "Tower",
+            "Parents": [
+              {
+                "Name": "Architecture"
+              },
+              {
+                "Name": "Building"
+              }
+            ],
+            "Instances": [],
+            "Confidence": 98.87499237060547
+          },
+          {
+            "Name": "Metropolis",
+            "Parents": [
+              {
+                "Name": "City"
+              },
+              {
+                "Name": "Urban"
+              },
+              {
+                "Name": "Building"
+              }
+            ],
+            "Instances": [],
+            "Confidence": 86.52997589111328
+          }
+        ],
+        "LabelModelVersion": "2.0"
+      },
+      "datetime_created": "2022-09-18T11:46:33.854529Z",
+      "datetime_updated": "2022-09-18T11:46:33.854553Z",
+      "version": "2016-06-27"
+    },
+    "uc_clamav_virus_scan": {
+      "data": {
+        "infected": false
+      },
+      "datetime_created": "2022-09-18T08:56:33.474483Z",
+      "datetime_updated": "2022-09-18T08:56:33.474502Z",
+      "version": "0.105.1"
+    },
+    "remove_bg": {
+      "data": {
+        "foreground_type": "product"
+      },
+      "datetime_created": "2022-10-03T13:09:27.061147Z",
+      "datetime_updated": "2022-10-03T13:09:27.061165Z",
+      "version": "1.0"
+    }
   }
 }

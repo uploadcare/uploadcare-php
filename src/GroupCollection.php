@@ -9,17 +9,10 @@ use Uploadcare\Interfaces\GroupInterface;
 /**
  * Decorated Group Collection.
  */
-class GroupCollection extends File\AbstractCollection
+final class GroupCollection extends File\AbstractCollection
 {
-    /**
-     * @var CollectionInterface
-     */
-    private $inner;
-
-    /**
-     * @var GroupApi
-     */
-    private $api;
+    private CollectionInterface $inner;
+    private GroupApi $api;
 
     public function __construct(CollectionInterface $inner, GroupApi $api)
     {
@@ -30,7 +23,7 @@ class GroupCollection extends File\AbstractCollection
     }
 
     /**
-     * Make this elements decorated.
+     * Make this element decorated.
      */
     private function decorateElements(): void
     {
@@ -43,7 +36,7 @@ class GroupCollection extends File\AbstractCollection
 
     protected function createFrom(array $elements): CollectionInterface
     {
-        return new static(new File\GroupCollection($elements), $this->api);
+        return new self(new File\GroupCollection($elements), $this->api);
     }
 
     public static function elementClass(): string

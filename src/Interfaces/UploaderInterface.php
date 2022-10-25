@@ -17,56 +17,41 @@ interface UploaderInterface
     /**
      * Upload file from local path.
      *
-     * @param string      $path
-     * @param string|null $mimeType
-     * @param string|null $filename
-     * @param string      $store
-     *
      * @throws InvalidArgumentException
-     *
-     * @return FileInfoInterface
      */
-    public function fromPath(string $path, string $mimeType = null, string $filename = null, string $store = 'auto'): FileInfoInterface;
+    public function fromPath(string $path, string $mimeType = null, string $filename = null, string $store = 'auto', array $metadata = []): FileInfoInterface;
 
     /**
-     * Upload file from remote URL.
-     *
-     * @param string      $url
-     * @param string|null $mimeType
-     * @param string|null $filename
-     * @param string      $store
+     * Upload file from remote URL. Returns token to check status.
      *
      * @throws InvalidArgumentException
-     *
-     * @return FileInfoInterface
      */
-    public function fromUrl(string $url, string $mimeType = null, string $filename = null, string $store = 'auto'): FileInfoInterface;
+    public function fromUrl(string $url, string $mimeType = null, string $filename = null, string $store = 'auto', array $metadata = []): string;
 
     /**
      * Upload file from resource opened by `\fopen()`.
      *
-     * @param resource    $handle
-     * @param string|null $mimeType
-     * @param string|null $filename
-     * @param string      $store
+     * @param resource $handle
      *
      * @throws InvalidArgumentException
-     *
-     * @return FileInfoInterface
      */
-    public function fromResource($handle, string $mimeType = null, string $filename = null, string $store = 'auto'): FileInfoInterface;
+    public function fromResource($handle, string $mimeType = null, string $filename = null, string $store = 'auto', array $metadata = []): FileInfoInterface;
 
     /**
      * Upload file from content string.
      *
-     * @param string      $content
-     * @param string|null $mimeType
-     * @param string|null $filename
-     * @param string      $store
-     *
      * @throws InvalidArgumentException
-     *
-     * @return FileInfoInterface
      */
-    public function fromContent(string $content, string $mimeType = null, string $filename = null, string $store = 'auto'): FileInfoInterface;
+    public function fromContent(string $content, string $mimeType = null, string $filename = null, string $store = 'auto', array $metadata = []): FileInfoInterface;
+
+    /**
+     * Check the status of a task to fetch/upload a file from a URL.
+     *
+     * @param string $token token received from `fromUrl` method
+     *
+     * @see \Uploadcare\Interfaces\UploaderInterface::fromUrl
+     *
+     * @return string one of 'waiting', 'progress', 'success', 'error', 'unknown'
+     */
+    public function checkStatus(string $token): string;
 }

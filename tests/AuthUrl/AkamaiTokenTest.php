@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Tests\AuthUrl;
 
@@ -8,7 +8,7 @@ use Uploadcare\AuthUrl\Token\TokenException;
 
 class AkamaiTokenTest extends TestCase
 {
-    private $key;
+    private string $key;
 
     protected function setUp(): void
     {
@@ -16,7 +16,7 @@ class AkamaiTokenTest extends TestCase
         $this->key = \bin2hex(\random_bytes(32));
     }
 
-    public function testEmptyTokenCreation()
+    public function testEmptyTokenCreation(): void
     {
         $token = new AkamaiToken($this->key);
         $token->setAcl(\uuid_create());
@@ -26,36 +26,30 @@ class AkamaiTokenTest extends TestCase
         self::assertNotEmpty($token->getExpired());
     }
 
-    public function testSetWrongKey()
+    public function testSetWrongKey(): void
     {
         $this->expectException(TokenException::class);
         new AkamaiToken('00~00');
-        $this->expectExceptionMessageRegExp('Key must be a hex string');
+        $this->expectExceptionMessageMatches('/Key must be a hex string/');
     }
 
-    public function testSetWrongWindow()
-    {
-        $this->expectException(\TypeError::class);
-        new AkamaiToken($this->key, 'not-a-number');
-    }
-
-    public function testSetInvalidAlgorithm()
+    public function testSetInvalidAlgorithm(): void
     {
         $this->expectException(TokenException::class);
         $token = new AkamaiToken($this->key);
         $token->setAlgo('UNKNOWN');
-        $this->expectExceptionMessageRegExp('Invalid algorithm');
+        $this->expectExceptionMessageMatches('/Invalid algorithm/');
     }
 
-    public function testNoAclInObject()
+    public function testNoAclInObject(): void
     {
         $this->expectException(TokenException::class);
         $token = new AkamaiToken($this->key);
         $token->getAcl();
-        $this->expectExceptionMessageRegExp('You must set file uuid as ACL');
+        $this->expectExceptionMessageMatches('/You must set file uuid as ACL/');
     }
 
-    public function testSetValidAlgorithm()
+    public function testSetValidAlgorithm(): void
     {
         $token = new AkamaiToken($this->key);
         $token->setAlgo('sha256');

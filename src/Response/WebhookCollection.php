@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Uploadcare\Response;
 
@@ -12,9 +12,10 @@ final class WebhookCollection extends AbstractCollection
 {
     /**
      * @var array<array-key,T>
+     *
      * @psalm-suppress NonInvariantDocblockPropertyType
      */
-    protected $elements;
+    protected array $elements;
 
     public function __construct(array $elements = [])
     {

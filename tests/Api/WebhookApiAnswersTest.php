@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Tests\Api;
 
@@ -21,10 +21,8 @@ class WebhookApiAnswersTest extends TestCase
 {
     /**
      * @param array $responses
-     *
-     * @return WebhookApi
      */
-    protected function fakeApi($responses = [])
+    protected function fakeApi($responses = []): WebhookApi
     {
         $handler = new MockHandler($responses);
         $client = new Client(['handler' => HandlerStack::create($handler)]);
@@ -33,7 +31,7 @@ class WebhookApiAnswersTest extends TestCase
         return new WebhookApi($config);
     }
 
-    public function testListWebhooks()
+    public function testListWebhooks(): void
     {
         $api = $this->fakeApi([
             new Response(200, [], DataFile::contents('webhook-list-response.json')),
@@ -43,7 +41,7 @@ class WebhookApiAnswersTest extends TestCase
         self::assertInstanceOf(WebhookInterface::class, $result->first());
     }
 
-    public function testCreateWebhook()
+    public function testCreateWebhook(): void
     {
         $api = $this->fakeApi([
             new Response(200, [], DataFile::contents('webhook-response.json')),
@@ -52,7 +50,7 @@ class WebhookApiAnswersTest extends TestCase
         self::assertInstanceOf(WebhookInterface::class, $result);
     }
 
-    public function testUpdateWebhook()
+    public function testUpdateWebhook(): void
     {
         $api = $this->fakeApi([
             new Response(200, [], DataFile::contents('webhook-response.json')),
@@ -61,7 +59,7 @@ class WebhookApiAnswersTest extends TestCase
         self::assertInstanceOf(WebhookInterface::class, $result);
     }
 
-    public function testGroupCreateFrom()
+    public function testGroupCreateFrom(): void
     {
         $wh = $this->createMock(WebhookInterface::class);
         $collection = new WebhookCollection([$wh]);
@@ -71,7 +69,7 @@ class WebhookApiAnswersTest extends TestCase
         self::assertEquals($collection, $createFrom->invokeArgs($collection, [[$wh]]));
     }
 
-    public function testGroupElementClass()
+    public function testGroupElementClass(): void
     {
         self::assertEquals(WebhookResponse::class, WebhookCollection::elementClass());
     }

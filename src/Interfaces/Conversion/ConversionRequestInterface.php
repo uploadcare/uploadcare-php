@@ -7,18 +7,9 @@ namespace Uploadcare\Interfaces\Conversion;
  */
 interface ConversionRequestInterface
 {
-    /**
-     * @return string
-     */
     public function getTargetFormat(): string;
 
-    /**
-     * @return bool
-     */
     public function throwError(): bool;
 
-    /**
-     * @return bool
-     */
     public function store(): bool;
 }

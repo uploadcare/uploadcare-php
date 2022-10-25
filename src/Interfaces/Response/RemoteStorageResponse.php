@@ -12,15 +12,10 @@ use Uploadcare\Interfaces\Api\FileApiInterface;
  */
 interface RemoteStorageResponse
 {
-    /**
-     * @return string
-     */
     public function getType(): string;
 
     /**
      * For the url type, the result is a URL with the s3 scheme. Your bucket name is put as a host, and an s3 object path follows.
-     *
-     * @return string
      */
     public function getResult(): string;
 }

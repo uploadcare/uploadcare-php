@@ -2,10 +2,9 @@
 
 namespace Uploadcare;
 
-use Uploadcare\Apis\FileApi;
-use Uploadcare\Interfaces\File\FileInfoInterface;
-use Uploadcare\Interfaces\File\ImageInfoInterface;
-use Uploadcare\Interfaces\File\VideoInfoInterface;
+use Uploadcare\File\Metadata;
+use Uploadcare\Interfaces\Api\FileApiInterface;
+use Uploadcare\Interfaces\File\{AppDataInterface, ContentInfoInterface, FileInfoInterface};
 
 /**
  * File decorator.
@@ -15,59 +14,38 @@ final class File implements FileInfoInterface
     /**
      * @var File\File|FileInfoInterface
      */
-    private $inner;
+    private FileInfoInterface $inner;
+    private FileApiInterface $api;
 
-    /**
-     * @var FileApi
-     */
-    private $api;
-
-    /**
-     * @param FileInfoInterface $inner
-     * @param FileApi           $api
-     */
-    public function __construct(FileInfoInterface $inner, FileApi $api)
+    public function __construct(FileInfoInterface $inner, FileApiInterface $api)
     {
         $this->inner = $inner;
         $this->api = $api;
     }
 
-    /**
-     * @return FileInfoInterface
-     */
+    public function __toString(): string
+    {
+        return (string) $this->inner;
+    }
+
     public function store(): FileInfoInterface
     {
         return $this->api->storeFile($this->inner->getUuid());
     }
 
-    /**
-     * @return FileInfoInterface
-     */
     public function delete(): FileInfoInterface
     {
         return $this->api->deleteFile($this->inner->getUuid());
     }
 
-    /**
-     * @param bool $store
-     *
-     * @return FileInfoInterface
-     */
     public function copyToLocalStorage(bool $store = true): FileInfoInterface
     {
         return $this->api->copyToLocalStorage($this->inner->getUuid(), $store);
     }
 
-    /**
-     * @param string      $target
-     * @param bool        $makePublic
-     * @param string|null $pattern
-     *
-     * @return string
-     */
     public function copyToRemoteStorage(string $target, bool $makePublic = true, ?string $pattern = null): string
     {
-        return $this->api->copyToRemoteStorage($this->inner->getUuid(), $target, $makePublic, $pattern);
+        return $this->api->copyToRemoteStorage($this->inner->getUuid(), $target, $makePublic, $pattern ?? '');
     }
 
     public function generateSecureUrl(): ?string
@@ -88,11 +66,6 @@ final class File implements FileInfoInterface
     public function getDatetimeUploaded(): ?\DateTimeInterface
     {
         return $this->inner->getDatetimeUploaded();
-    }
-
-    public function getImageInfo(): ?ImageInfoInterface
-    {
-        return $this->inner->getImageInfo();
     }
 
     public function isImage(): bool
@@ -140,18 +113,23 @@ final class File implements FileInfoInterface
         return $this->inner->getVariations();
     }
 
-    public function getVideoInfo(): ?VideoInfoInterface
-    {
-        return $this->inner->getVideoInfo();
-    }
-
     public function getSource(): string
     {
         return $this->inner->getSource();
     }
 
-    public function getRekognitionInfo(): array
+    public function getMetadata(): Metadata
     {
-        return $this->inner->getRekognitionInfo();
+        return $this->api->getMetadata($this->inner);
+    }
+
+    public function getContentInfo(): ?ContentInfoInterface
+    {
+        return $this->inner->getContentInfo();
+    }
+
+    public function getAppdata(): ?AppDataInterface
+    {
+        return $this->inner->getAppdata();
     }
 }

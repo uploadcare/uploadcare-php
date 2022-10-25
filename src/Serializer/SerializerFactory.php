@@ -9,10 +9,7 @@ use Uploadcare\Interfaces\Serializer\SerializerInterface;
  */
 class SerializerFactory
 {
-    /**
-     * @return SerializerInterface
-     */
-    public static function create()
+    public static function create(): SerializerInterface
     {
         return new Serializer(new SnackCaseConverter());
     }

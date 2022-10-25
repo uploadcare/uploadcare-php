@@ -6,16 +6,22 @@ use GuzzleHttp\Exception\ClientException;
 
 class ThrottledException extends AbstractClientException
 {
-    private $retryAfter = 10;
+    private int $retryAfter = 10;
 
-    public function __construct($message = '', $code = 0, \Exception $previous = null)
+    public function __construct(string $message = '', int $code = 0, \Exception $previous = null)
     {
         parent::__construct($message, $code, $previous);
 
         if ($previous instanceof ClientException) {
             $response = $previous->getResponse();
             $retryHeader = $response->getHeader('Retry-After');
-            $this->retryAfter = $retryHeader[0] ?? 10;
+
+            if (!empty($retryHeader)) {
+                $retry = \current($retryHeader);
+                if ((int) $retry > 10) {
+                    $this->retryAfter = (int) $retry;
+                }
+            }
         }
     }
 
@@ -28,6 +34,6 @@ class ThrottledException extends AbstractClientException
 
     public function getRetryAfter(): int
     {
-        return (int) $this->retryAfter;
+        return $this->retryAfter;
     }
 }

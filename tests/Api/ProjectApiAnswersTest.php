@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Tests\Api;
 
@@ -16,7 +16,7 @@ use Uploadcare\Serializer\SerializerFactory;
 
 class ProjectApiAnswersTest extends TestCase
 {
-    protected function fakeApi($responses = [])
+    protected function fakeApi(array $responses = []): ProjectApi
     {
         $handler = new MockHandler($responses);
         $client = new Client(['handler' => HandlerStack::create($handler)]);
@@ -25,7 +25,7 @@ class ProjectApiAnswersTest extends TestCase
         return new ProjectApi($config);
     }
 
-    public function testProjectInfo()
+    public function testProjectInfo(): void
     {
         $api = $this->fakeApi([
             new Response(200, [], DataFile::contents('project-info-response.json')),
@@ -36,6 +36,5 @@ class ProjectApiAnswersTest extends TestCase
         self::assertTrue($result->isAutostoreEnabled());
         self::assertNotEmpty($result->getName());
         self::assertNotEmpty($result->getPubKey());
-        self::assertTrue(\is_array($result->getCollaborators()));
     }
 }

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Tests\Configuration;
 
@@ -8,9 +8,9 @@ use Uploadcare\Configuration;
 
 class ConfigurationTest extends TestCase
 {
-    private $header;
-    private $publicKey = 'demo-public-key';
-    private $privateKey = 'demo-private-key';
+    private string $header;
+    private string $publicKey = 'demo-public-key';
+    private string $privateKey = 'demo-private-key';
 
     protected function setUp(): void
     {
@@ -22,7 +22,7 @@ class ConfigurationTest extends TestCase
         ]);
     }
 
-    public function generateHeaders()
+    public function generateHeaders(): array
     {
         return [
             [null],
@@ -35,36 +35,9 @@ class ConfigurationTest extends TestCase
     /**
      * @dataProvider generateHeaders
      *
-     * @param $headerString
-     *
      * @throws \ReflectionException
      */
-    public function testUserAgentStringCreation($headerString)
-    {
-        $conf = Configuration::create($this->publicKey, $this->privateKey);
-
-        $headers = [];
-        if ($headerString !== null) {
-            $headers['User-Agent'] = $headerString;
-        }
-
-        $setUserAgent = (new \ReflectionObject($conf))->getMethod('setUserAgent');
-        $setUserAgent->setAccessible(true);
-        $setUserAgent->invokeArgs($conf, [&$headers]);
-
-        self::assertNotEmpty($headers);
-        self::assertArrayHasKey('User-Agent', $headers);
-        self::assertSame($this->header, $headers['User-Agent']);
-    }
-
-    /**
-     * @dataProvider generateHeaders
-     *
-     * @param $headerString
-     *
-     * @throws \ReflectionException
-     */
-    public function testGetHeadersWithClient($headerString)
+    public function testGetHeadersWithClient($headerString): void
     {
         $conf = Configuration::create($this->publicKey, $this->privateKey);
         if ($headerString !== null) {
@@ -78,7 +51,7 @@ class ConfigurationTest extends TestCase
         self::assertSame($this->header, $result['User-Agent']);
     }
 
-    public function testHeaderWithFramework()
+    public function testHeaderWithFramework(): void
     {
         $conf = Configuration::create($this->publicKey, $this->privateKey, ['framework' => ['Symfony', '5.1']]);
         $result = $conf->getHeaders();

@@ -7,8 +7,5 @@ namespace Uploadcare\Interfaces\Conversion;
  */
 interface DocumentConversionRequestInterface extends ConversionRequestInterface
 {
-    /**
-     * @return int|null
-     */
     public function getPageNumber(): ?int;
 }

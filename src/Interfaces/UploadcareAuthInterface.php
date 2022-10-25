@@ -14,23 +14,11 @@ interface UploadcareAuthInterface
 
     /**
      * Formatted date for `Date` header.
-     *
-     * @param \DateTimeInterface|null $date
-     *
-     * @return string
      */
     public function getDateHeaderString(?\DateTimeInterface $date = null): string;
 
     /**
      * Auth header.
-     *
-     * @param string                  $method
-     * @param string                  $uri
-     * @param string                  $data
-     * @param string                  $contentType
-     * @param \DateTimeInterface|null $date
-     *
-     * @return string
      */
     public function getAuthHeaderString(string $method, string $uri, string $data, string $contentType = 'application/json', ?\DateTimeInterface $date = null): string;
 }
