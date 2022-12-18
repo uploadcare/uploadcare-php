@@ -67,17 +67,6 @@ class UploaderMethodsTest extends TestCase
         self::assertInstanceOf(FileInfoInterface::class, $response);
     }
 
-    /**
-     * @group local-only
-     */
-    public function testFromUrlMethod(): void
-    {
-        $body = ['file' => \uuid_create()];
-        $uploader = $this->makeUploaderWithResponse($body);
-
-        self::assertInstanceOf(FileInfoInterface::class, $uploader->fromUrl('https://httpbin.org/image/jpeg'));
-    }
-
     public function testFromResourceMethod(): void
     {
         $body = ['file' => \uuid_create()];

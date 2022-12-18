@@ -192,7 +192,7 @@ After that, you can access to file operation methods:
     - int             `$limit`     A preferred amount of files in a list for a single response. Defaults to 100, while the maximum is 1000.
     - string          `$orderBy`   Specifies the way to sort files in a returned list.
     - string|int|null `$from`      A starting point for a file filter. The value depends on your `$orderBy` parameter value.
-    - array           `$addFields` Adds special fields to the file object.
+    - array           `$addFields` **Deprecated** This parameter is deprecated since v4.0.1 and will be removed in v4.1
     - bool|null       `$stored`    `true` includes the only stored files, `false` includes temporary files. If not set (default): both stored and not stored files will be included.
     - bool            `$removed`   `true` to only include removed files in the response, `false` to include existing files. The default value is false.
 - `nextPage(FileListResponseInterface $response)` — next page from previous answer, if next pages exist. You can use it in a simple `while` loop, for example:     
@@ -325,7 +325,7 @@ After that, you can access group operation methods:
 - `createGroup($files)` — Creates a file group. You can pass the array of IDs or `Uploadcare\File\FileCollection` as an argument. Returns an `Uploadcare\File\Group` object.
 - `listGroups($limit, $asc = true)` — Gets a paginated list of groups. The default limit is 100, and the default sorting is by the date and time created (ascending). You can reverse the sorting order to descending dates with `$asc = false`. Returns `Uploadcare\Response\GroupListResponse`.
 - `groupInfo($id)` — Gets a file group info by UUID. Returns an `Uploadcare\Group` object.
-- `storeGroup($id)` — Marks all files in a group as stored. Returns an `Uploadcare\Group` object.
+- `removeGroup($id): void` — delete group by UUID or `Uploadcare\Group` object.
 
 ### `Uploadcare\Group` class
 

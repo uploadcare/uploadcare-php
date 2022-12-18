@@ -40,6 +40,8 @@ interface GroupApiInterface
      * @param string|GroupInterface $id Group UUID
      *
      * @throws HttpException
+     *
+     * @deprecated
      */
     public function storeGroup($id): GroupInterface;
 

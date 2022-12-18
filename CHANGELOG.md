@@ -5,6 +5,14 @@ The format is based now on [Keep a
 Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to
 [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [4.0.1]
+### Removed
+- `GroupApiInterface::storeGroup($id)` method: see [Uploadcare API changelog](https://uploadcare.com/api-refs/rest-api/v0.7.0/#tag/Changelog)
+### Deprecated
+- The `$addFields` parameter of `FileApiInterface::listFiles` method
+### Added
+- `GroupApiInterface::removeGroup($id)` method to delete a group
+
 ## [4.0.0]
 ### Removed
 - PHP 7.1 support (now minimal version is 7.4, PHP 8.0 is also supported)

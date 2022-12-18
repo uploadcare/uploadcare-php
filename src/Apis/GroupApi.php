@@ -103,24 +103,17 @@ final class GroupApi extends AbstractApi implements GroupApiInterface
 
     /**
      * {@inheritDoc}
+     *
+     * @deprecated since Uploadcare API 0.7.0
+     * @see https://uploadcare.com/api-refs/rest-api/v0.7.0/#tag/Changelog
      */
     public function storeGroup($id): GroupInterface
     {
-        if ($id instanceof GroupInterface) {
-            $strId = $id->getId();
-            if ($strId === null) {
-                throw new HttpException();
-            }
-            $id = $strId;
-        }
+        \trigger_deprecation('uploadcare/uploadcare-php', '4.0.1', 'This parameter was removed from Uploadcare API');
 
-        $uri = \sprintf('/groups/%s/storage/', $id);
-        $response = $this->request('PUT', $uri);
-        if ($response->getStatusCode() === 200) {
-            return $this->groupInfo($id);
-        }
+        $result = $id instanceof GroupInterface ? $id : (new Group())->setId($id);
 
-        throw new HttpException('Wrong response from API', $response->getStatusCode());
+        return (new GroupDecorator($result, $this))->setConfiguration($this->configuration);
     }
 
     public function removeGroup($id): void
