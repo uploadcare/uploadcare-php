@@ -65,7 +65,7 @@ final class FileApi extends AbstractApi implements FileApiInterface
      * @param int             $limit     A preferred amount of files in a list for a single response. Defaults to 100, while the maximum is 1000.
      * @param string          $orderBy   specifies the way files are sorted in a returned list
      * @param string|int|null $from      A starting point for filtering files. The value depends on your $orderBy parameter value.
-     * @param array           $addFields @dep Add special fields to the file object
+     * @param array           $addFields This parameter is deprecated since v4.0.1 and will be removed in v4.1
      * @param bool|null       $stored    `true` to only include files that were stored, `false` to include temporary ones. The default is unset: both stored and not stored files are returned.
      * @param bool            $removed   `true` to only include removed files in the response, `false` to include existing files. Defaults to false.
      */

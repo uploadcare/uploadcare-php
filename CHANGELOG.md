@@ -11,7 +11,7 @@ Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to
 ### Deprecated
 - The `$addFields` parameter of `FileApiInterface::listFiles` method
 ### Added
-- `GroupApiInterface::removeGroup($id)` method for delete group
+- `GroupApiInterface::removeGroup($id)` method to delete a group
 
 ## [4.0.0]
 ### Removed
