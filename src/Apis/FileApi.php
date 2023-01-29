@@ -202,7 +202,8 @@ final class FileApi extends AbstractApi implements FileApiInterface
     public function copyToLocalStorage($source, bool $store): FileInfoInterface
     {
         $source = (string) $source;
-        if (!\uuid_is_valid($source)) {
+        [$uuid, ] = \explode('/', $source);
+        if (!\uuid_is_valid($uuid)) {
             throw new InvalidArgumentException(\sprintf('Uuid \'%s\' for request not valid', $source));
         }
 
@@ -248,7 +249,8 @@ final class FileApi extends AbstractApi implements FileApiInterface
         if ($source instanceof FileInfoInterface) {
             $source = $source->getUuid();
         }
-        if (!\uuid_is_valid($source)) {
+        [$uuid, ] = \explode('/', $source);
+        if (!\uuid_is_valid($uuid)) {
             throw new InvalidArgumentException(\sprintf('Uuid \'%s\' for request not valid', $source));
         }
 
