@@ -22,4 +22,10 @@ interface MetadataApiInterface
      * @return Metadata ArrayAccess
      */
     public function setKey($id, string $key, string $value): Metadata;
+
+    /**
+     * @param string|FileInfoInterface $id  Uuid of File
+     * @param string                   $key String up to 64 characters
+     */
+    public function removeKey($id, string $key): void;
 }
