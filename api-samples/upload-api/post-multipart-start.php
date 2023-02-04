@@ -6,7 +6,7 @@ $uploader = new Uploadcare\Uploader\Uploader($configuration);
 $path = '/path-to-large-file.zip';
 $handle = \fopen($path, 'rb');
 $response = $uploader->fromResource($handle, null, null, 'auto', [
-    'size' => \filesize($path),
+    'size' => \filesize($path), // The "size" is the metadata key
 ]);
 
 echo \sprintf('File uploaded. ID is \'%s\'', $response->getUuid());

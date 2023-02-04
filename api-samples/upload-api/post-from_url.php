@@ -5,7 +5,7 @@ $uploader = new Uploadcare\Uploader\Uploader($configuration);
 
 $url = 'https://source.unsplash.com/random';
 $token = $uploader->fromUrl($url, null, null, 'auto', [
-    'action' => 'upload from URL',
+    'action' => 'upload from URL', // The "Action" is the metadata key
     'checkDuplicates' => true,
     'storeDuplicates' => false,
 ]);
