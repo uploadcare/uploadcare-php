@@ -101,6 +101,8 @@ abstract class AbstractUploader implements UploaderInterface
             'check_URL_duplicates' => $checkDuplicates ? '1' : '0',
             'save_URL_duplicates' => $storeDuplicates ? '1' : '0',
             'pub_key' => $this->configuration->getPublicKey(),
+			'store' => $store,
+			'filename' => $filename,
         ], $this->makeMetadataParameters($metadata)));
 
         try {
