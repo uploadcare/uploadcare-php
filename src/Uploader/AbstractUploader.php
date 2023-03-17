@@ -142,6 +142,24 @@ abstract class AbstractUploader implements UploaderInterface
         return (string) $response['status'];
     }
 
+    public function checkStatusGetFullResponse(string $token)
+    {
+        try {
+            $request = $this->sendRequest('GET', '/from_url/status/', [
+                'query' => ['token' => $token],
+            ])->getBody()->getContents();
+            $response = \json_decode($request, true, 215, JSON_THROW_ON_ERROR);
+        } catch (\Throwable $e) {
+            throw $this->handleException($e);
+        }
+
+        if (!\array_key_exists('status', $response)) {
+            throw new HttpException('Unable to get \'status\' key from response');
+        }
+
+        return $response;
+    }
+
     /**
      * Upload file from content string.
      *
