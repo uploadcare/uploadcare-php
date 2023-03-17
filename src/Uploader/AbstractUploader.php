@@ -88,11 +88,11 @@ abstract class AbstractUploader implements UploaderInterface
         $checkDuplicates = false;
         $storeDuplicates = false;
         if (\array_key_exists('checkDuplicates', $metadata)) {
-            $checkDuplicates = true;
+            $checkDuplicates = $metadata['checkDuplicates'];
             unset($metadata['checkDuplicates']);
         }
         if (\array_key_exists('storeDuplicates', $metadata)) {
-            $storeDuplicates = true;
+            $storeDuplicates = $metadata['storeDuplicates'];
             unset($metadata['storeDuplicates']);
         }
 
