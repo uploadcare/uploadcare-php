@@ -6,7 +6,7 @@ use Psr\Http\Message\RequestInterface;
 
 class HttpException extends \RuntimeException
 {
-    public function __construct(string $message = '', int $code = 0, \Exception $previous = null)
+    public function __construct(string $message = '', int $code = 0, \Throwable $previous = null)
     {
         if ($previous !== null) {
             $message = $this->makeMessage($previous, $message);
@@ -16,7 +16,7 @@ class HttpException extends \RuntimeException
         parent::__construct($message, $code, $previous);
     }
 
-    protected function makeMessage(\Exception $exception, string $message = ''): string
+    protected function makeMessage(\Throwable $exception, string $message = ''): string
     {
         $messages = [];
         if (!empty($message)) {
