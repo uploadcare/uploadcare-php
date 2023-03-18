@@ -9,7 +9,7 @@ use Uploadcare\Exception\Upload\{AccountException, FileTooLargeException, Reques
 use Uploadcare\Exception\{HttpException, InvalidArgumentException};
 use Uploadcare\File\File;
 use Uploadcare\File\Metadata;
-use Uploadcare\Interfaces\{ConfigurationInterface, File\FileInfoInterface, UploaderInterface};
+use Uploadcare\Interfaces\{ConfigurationInterface, File\FileInfoInterface, SignatureInterface, UploaderInterface};
 
 /**
  * Main Uploader.
@@ -21,6 +21,11 @@ abstract class AbstractUploader implements UploaderInterface
     public function __construct(ConfigurationInterface $configuration)
     {
         $this->configuration = $configuration;
+    }
+
+    public function getSignature(): SignatureInterface
+    {
+        return $this->configuration->getSecureSignature();
     }
 
     /**

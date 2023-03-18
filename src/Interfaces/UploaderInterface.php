@@ -16,6 +16,11 @@ interface UploaderInterface
     public const UPLOADCARE_DEFAULT_STORE = 'auto';
 
     /**
+     * Get signature to use in third-party uploaders.
+     */
+    public function getSignature(): SignatureInterface;
+
+    /**
      * Upload file from local path.
      *
      * @throws InvalidArgumentException

@@ -158,6 +158,17 @@ $path = __DIR__ . '/squirrel.jpg';
 $result = $uploader->fromContent(\file_get_contents($path), 'image/jpeg');
 ```
 
+Secure signature. If you are using secure uploads, you can use `getSignature` method to fetch an instance of `SignatureInterface`. For example:
+
+```php
+$configuration = \Uploadcare\Configuration::create($_ENV['UPLOADCARE_PUBLIC_KEY'], $_ENV['UPLOADCARE_SECRET_KEY']);
+$uploader = (new \Uploadcare\Api($configuration))->uploader();
+$signature = $uploader->getSignature();
+
+$key = $signature->getSignature(); // Sign string
+$expired = $signature->getExpire()->getTimestamp(); // Time when secure signature will expire
+```
+
 #### File metadata
 
 Every upload method can set a [file metadata](https://uploadcare.com/api-refs/rest-api/v0.7.0/#tag/File-metadata). For example:

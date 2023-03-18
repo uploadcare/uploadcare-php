@@ -10,6 +10,7 @@ Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to
 - `Uploadcare\Interfaces\UploaderInterface::checkStatus(string $token)` now returns `Uploadcare\Interfaces\File\FileInfoInterface`
 ### Added
 - `Uploadcare\Interfaces\UploaderInterface::syncUploadFromUrl` method for synchronically upload file from remote URL
+- `Uploadcare\Interfaces\UploaderInterface::getSignature` method for get signature to use in third-party uploaders.
 
 ## [4.0.1]
 ### Removed
