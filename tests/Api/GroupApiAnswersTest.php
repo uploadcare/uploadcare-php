@@ -12,9 +12,7 @@ use Uploadcare\Apis\GroupApi;
 use Uploadcare\Configuration;
 use Uploadcare\File\File;
 use Uploadcare\File\FileCollection;
-use Uploadcare\File\Group;
 use Uploadcare\Interfaces\ConfigurationInterface;
-use Uploadcare\Interfaces\GroupInterface;
 use Uploadcare\Response\GroupListResponse;
 use Uploadcare\Security\Signature;
 use Uploadcare\Serializer\Serializer;
@@ -64,31 +62,6 @@ class GroupApiAnswersTest extends TestCase
         self::assertNotEmpty($result->getId());
         self::assertNotEmpty($result->getFilesCount());
         self::assertInstanceOf(\Uploadcare\File::class, $result->getFiles()->first());
-    }
-
-    public function provideGroupsForStore(): array
-    {
-        return [
-            [\uuid_create()],
-            [(new Group())->setId(\uuid_create())],
-        ];
-    }
-
-    /**
-     * @dataProvider provideGroupsForStore
-     *
-     * @param string|GroupInterface $group
-     */
-    public function testStoreGroup($group): void
-    {
-        $answers = [
-            new Response(200, []),
-            new Response(200, [], DataFile::contents('group/group-info-response.json')),
-        ];
-        $conf = $this->getConfig($answers);
-        $api = new GroupApi($conf);
-
-        self::assertInstanceOf(GroupInterface::class, $api->storeGroup($group));
     }
 
     public function testListGroups(): void

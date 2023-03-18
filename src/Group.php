@@ -3,7 +3,6 @@
 namespace Uploadcare;
 
 use Uploadcare\Apis\{FileApi, GroupApi};
-use Uploadcare\Exception\HttpException;
 use Uploadcare\Interfaces\File\CollectionInterface;
 use Uploadcare\Interfaces\{ConfigurationInterface, GroupInterface};
 
@@ -14,14 +13,11 @@ final class Group implements GroupInterface
 {
     private GroupInterface $inner;
 
-    private GroupApi $api;
-
     private ?ConfigurationInterface $configuration = null;
 
-    public function __construct(GroupInterface $inner, GroupApi $api)
+    public function __construct(GroupInterface $inner)
     {
         $this->inner = $inner;
-        $this->api = $api;
     }
 
     public function setConfiguration(ConfigurationInterface $configuration): self
@@ -29,15 +25,6 @@ final class Group implements GroupInterface
         $this->configuration = $configuration;
 
         return $this;
-    }
-
-    public function store(): GroupInterface
-    {
-        if (($id = $this->inner->getId()) === null) {
-            throw new HttpException();
-        }
-
-        return $this->api->storeGroup($id);
     }
 
     public function getId(): ?string

@@ -11,6 +11,9 @@ Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to
 ### Added
 - `Uploadcare\Interfaces\UploaderInterface::syncUploadFromUrl` method for synchronically upload file from remote URL
 - `Uploadcare\Interfaces\UploaderInterface::getSignature` method for get signature to use in third-party uploaders.
+### Removed
+- `Uploadcare\Interfaces\Api\GroupApiInterface::storeGroup($id)`
+- `Uploadcare\Group::store()`
 
 ## [4.0.1]
 ### Removed
