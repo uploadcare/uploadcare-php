@@ -46,4 +46,17 @@ class MetadataApi extends AbstractApi implements MetadataApiInterface
 
         return $this->getMetadata($id);
     }
+
+    public function removeKey($id, string $key): void
+    {
+        if (Metadata::validateKey($key) === false) {
+            throw new MetadataException('Key should be string up to 64 characters length. Allowed symbols are A-z, 0-9, underscore, hyphen, dot and colon.');
+        }
+        $uri = \sprintf('/files/%s/metadata/%s/', (string) $id, $key);
+        $response = $this->request('DELETE', $uri);
+
+        if ($response->getStatusCode() !== 204) {
+            throw new HttpException('Wrong response. Call to support');
+        }
+    }
 }

@@ -5,7 +5,7 @@ The format is based now on [Keep a
 Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to
 [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## [4.0.2]
+## [4.0.3]
 ### BC changes
 - `Uploadcare\Interfaces\UploaderInterface::checkStatus(string $token)` now returns `Uploadcare\Interfaces\File\FileInfoInterface`
 ### Added
@@ -14,6 +14,11 @@ Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to
 ### Removed
 - `Uploadcare\Interfaces\Api\GroupApiInterface::storeGroup($id)`
 - `Uploadcare\Group::store()`
+
+## [4.0.2]
+### Added
+- Method `removeKey` to remove medatada keys
+- Samples for all API requests
 
 ## [4.0.1]
 ### Removed
