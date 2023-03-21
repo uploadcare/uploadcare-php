@@ -16,7 +16,7 @@ interface UploaderInterface
     public const UPLOADCARE_DEFAULT_STORE = 'auto';
 
     /**
-     * Get signature to use in third-party uploaders.
+     * Get signature to use outside of this library.
      */
     public function getSignature(): SignatureInterface;
 
@@ -35,7 +35,7 @@ interface UploaderInterface
     public function fromUrl(string $url, string $mimeType = null, string $filename = null, string $store = 'auto', array $metadata = []): string;
 
     /**
-     * Synchronically upload file from remote URL. Returns FileInfoInterface.
+     * Synchronically upload a file from a remote URL. Returns FileInfoInterface.
      *
      * @throws InvalidArgumentException|HttpException
      */

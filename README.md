@@ -122,14 +122,14 @@ $url = 'https://httpbin.org/image/jpeg';
 $result = $uploader->fromUrl($url, 'image/jpeg'); // If success, $result will be string to check upload status (see below)
 ```
 
-The option for upload from URL is to use **synchronically upload**
+You can upload files from URL **synchronically**,
 
 ```php
 $url = 'https://httpbin.org/image/jpeg';
 $result = $uploader->syncUploadFromUrl($url, 'image/jpeg'); // $result is Uploadcare\Interfaces\File\FileInfoInterface 
 ```
 
-Check upload file status:
+Check an uploading file status,
 
 ```php
 $url = 'https://httpbin.org/image/jpeg';
