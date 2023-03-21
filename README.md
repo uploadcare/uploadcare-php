@@ -122,6 +122,21 @@ $url = 'https://httpbin.org/image/jpeg';
 $result = $uploader->fromUrl($url, 'image/jpeg'); // If success, $result will be string to check upload status (see below)
 ```
 
+You can upload files from URL **synchronically**,
+
+```php
+$url = 'https://httpbin.org/image/jpeg';
+$result = $uploader->syncUploadFromUrl($url, 'image/jpeg'); // $result is Uploadcare\Interfaces\File\FileInfoInterface 
+```
+
+Check an uploading file status,
+
+```php
+$url = 'https://httpbin.org/image/jpeg';
+$result = $uploader->fromUrl($url, 'image/jpeg'); 
+$status = $uploader->checkStatus($result); // Instance of Uploadcare\Interfaces\File\FileInfoInterface with isReady() === false until file is not uploaded.
+```
+
 Another way of uploading files is by using **a path**,
 
 ```php
@@ -143,12 +158,15 @@ $path = __DIR__ . '/squirrel.jpg';
 $result = $uploader->fromContent(\file_get_contents($path), 'image/jpeg');
 ```
 
-Check upload file status:
+Secure signature. If you are using secure uploads, you can use `getSignature` method to fetch an instance of `SignatureInterface`. For example:
 
 ```php
-$url = 'https://httpbin.org/image/jpeg';
-$result = $uploader->fromUrl($url, 'image/jpeg'); 
-$status = $uploader->checkStatus($result); // Will be 'waiting', 'progress', 'success', 'error' or 'unknown'
+$configuration = \Uploadcare\Configuration::create($_ENV['UPLOADCARE_PUBLIC_KEY'], $_ENV['UPLOADCARE_SECRET_KEY']);
+$uploader = (new \Uploadcare\Api($configuration))->uploader();
+$signature = $uploader->getSignature();
+
+$key = $signature->getSignature(); // Sign string
+$expired = $signature->getExpire()->getTimestamp(); // Time when secure signature will expire
 ```
 
 #### File metadata

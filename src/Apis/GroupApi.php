@@ -59,7 +59,7 @@ final class GroupApi extends AbstractApi implements GroupApiInterface
             throw new \RuntimeException('Unable to deserialize response. Call to support');
         }
 
-        return (new GroupDecorator($result, $this))->setConfiguration($this->configuration);
+        return (new GroupDecorator($result))->setConfiguration($this->configuration);
     }
 
     /**
@@ -98,22 +98,7 @@ final class GroupApi extends AbstractApi implements GroupApiInterface
             throw new \RuntimeException('Unable to deserialize response. Call to support');
         }
 
-        return (new GroupDecorator($result, $this))->setConfiguration($this->configuration);
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @deprecated since Uploadcare API 0.7.0
-     * @see https://uploadcare.com/api-refs/rest-api/v0.7.0/#tag/Changelog
-     */
-    public function storeGroup($id): GroupInterface
-    {
-        \trigger_deprecation('uploadcare/uploadcare-php', '4.0.1', 'This parameter was removed from Uploadcare API');
-
-        $result = $id instanceof GroupInterface ? $id : (new Group())->setId($id);
-
-        return (new GroupDecorator($result, $this))->setConfiguration($this->configuration);
+        return (new GroupDecorator($result))->setConfiguration($this->configuration);
     }
 
     public function removeGroup($id): void

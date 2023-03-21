@@ -35,17 +35,6 @@ interface GroupApiInterface
     public function groupInfo(string $id): GroupInterface;
 
     /**
-     * Mark all files in a group as stored.
-     *
-     * @param string|GroupInterface $id Group UUID
-     *
-     * @throws HttpException
-     *
-     * @deprecated
-     */
-    public function storeGroup($id): GroupInterface;
-
-    /**
      * Delete a file group.
      * The operation only removes the group object itself. All the files that were part of the group are left as is.
      *

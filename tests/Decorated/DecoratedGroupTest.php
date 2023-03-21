@@ -45,19 +45,6 @@ class DecoratedGroupTest extends TestCase
         self::assertInstanceOf(Group::class, $api->groupInfo(\uuid_create()));
     }
 
-    public function testStoreGroup(): void
-    {
-        $api = $this->fakeApi([
-            new Response(200),
-            new Response(200, [], DataFile::contents('group/group-info-response.json')),
-        ]);
-        $group = SerializerFactory::create()->deserialize(DataFile::contents('group/group-info-response.json'), \Uploadcare\File\Group::class);
-        /** @noinspection PhpParamsInspection */
-        $decorated = new Group($group, $api);
-
-        self::assertInstanceOf(Group::class, $decorated->store());
-    }
-
     public function provideMethods(): array
     {
         return [

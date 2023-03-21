@@ -2,6 +2,7 @@
 
 namespace Uploadcare\Interfaces;
 
+use Uploadcare\Exception\HttpException;
 use Uploadcare\Exception\InvalidArgumentException;
 use Uploadcare\Interfaces\File\FileInfoInterface;
 
@@ -13,6 +14,11 @@ interface UploaderInterface
     public const UPLOADCARE_SIGNATURE_KEY = 'signature';
     public const UPLOADCARE_EXPIRE_KEY = 'expire';
     public const UPLOADCARE_DEFAULT_STORE = 'auto';
+
+    /**
+     * Get signature to use outside of this library.
+     */
+    public function getSignature(): SignatureInterface;
 
     /**
      * Upload file from local path.
@@ -27,6 +33,13 @@ interface UploaderInterface
      * @throws InvalidArgumentException
      */
     public function fromUrl(string $url, string $mimeType = null, string $filename = null, string $store = 'auto', array $metadata = []): string;
+
+    /**
+     * Synchronically upload a file from a remote URL. Returns FileInfoInterface.
+     *
+     * @throws InvalidArgumentException|HttpException
+     */
+    public function syncUploadFromUrl(string $url, string $mimeType = null, string $filename = null, string $store = 'auto', array $metadata = []): FileInfoInterface;
 
     /**
      * Upload file from resource opened by `\fopen()`.
@@ -51,7 +64,7 @@ interface UploaderInterface
      *
      * @see \Uploadcare\Interfaces\UploaderInterface::fromUrl
      *
-     * @return string one of 'waiting', 'progress', 'success', 'error', 'unknown'
+     * @throws HttpException
      */
-    public function checkStatus(string $token): string;
+    public function checkStatus(string $token): FileInfoInterface;
 }

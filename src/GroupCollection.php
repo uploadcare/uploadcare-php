@@ -29,7 +29,7 @@ final class GroupCollection extends File\AbstractCollection
     {
         foreach ($this->inner->toArray() as $k => $el) {
             if ($el instanceof GroupInterface) {
-                $this->elements[$k] = new Group($el, $this->api);
+                $this->elements[$k] = new Group($el);
             }
         }
     }

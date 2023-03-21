@@ -7,8 +7,9 @@ use Psr\Http\Message\ResponseInterface;
 use Uploadcare\Apis\FileApi;
 use Uploadcare\Exception\Upload\{AccountException, FileTooLargeException, RequestParametersException, ThrottledException};
 use Uploadcare\Exception\{HttpException, InvalidArgumentException};
+use Uploadcare\File\File;
 use Uploadcare\File\Metadata;
-use Uploadcare\Interfaces\{ConfigurationInterface, File\FileInfoInterface, UploaderInterface};
+use Uploadcare\Interfaces\{ConfigurationInterface, File\FileInfoInterface, SignatureInterface, UploaderInterface};
 
 /**
  * Main Uploader.
@@ -20,6 +21,11 @@ abstract class AbstractUploader implements UploaderInterface
     public function __construct(ConfigurationInterface $configuration)
     {
         $this->configuration = $configuration;
+    }
+
+    public function getSignature(): SignatureInterface
+    {
+        return $this->configuration->getSecureSignature();
     }
 
     /**
@@ -78,6 +84,16 @@ abstract class AbstractUploader implements UploaderInterface
         return $this->fromResource(\fopen($path, 'rb'), $mimeType, $filename, $store, $metadata);
     }
 
+    public function syncUploadFromUrl(string $url, string $mimeType = null, string $filename = null, string $store = 'auto', array $metadata = []): FileInfoInterface
+    {
+        $token = $this->fromUrl($url, $mimeType, $filename, $store, $metadata);
+        do {
+            $file = $this->checkStatus($token);
+        } while ($file->isReady() === false);
+
+        return $file;
+    }
+
     /**
      * Upload file from remote URL.
      *
@@ -88,11 +104,11 @@ abstract class AbstractUploader implements UploaderInterface
         $checkDuplicates = false;
         $storeDuplicates = false;
         if (\array_key_exists('checkDuplicates', $metadata)) {
-            $checkDuplicates = true;
+            $checkDuplicates = (bool) $metadata['checkDuplicates'];
             unset($metadata['checkDuplicates']);
         }
         if (\array_key_exists('storeDuplicates', $metadata)) {
-            $storeDuplicates = true;
+            $storeDuplicates = (bool) $metadata['storeDuplicates'];
             unset($metadata['storeDuplicates']);
         }
 
@@ -100,6 +116,8 @@ abstract class AbstractUploader implements UploaderInterface
             'source_url' => $url,
             'check_URL_duplicates' => $checkDuplicates ? '1' : '0',
             'save_URL_duplicates' => $storeDuplicates ? '1' : '0',
+            'filename' => $filename,
+            'store' => $store,
             'pub_key' => $this->configuration->getPublicKey(),
         ], $this->makeMetadataParameters($metadata)));
 
@@ -122,7 +140,7 @@ abstract class AbstractUploader implements UploaderInterface
         return (string) $responseArray['token'];
     }
 
-    public function checkStatus(string $token): string
+    public function checkStatus(string $token): FileInfoInterface
     {
         try {
             $request = $this->sendRequest('GET', '/from_url/status/', [
@@ -137,7 +155,25 @@ abstract class AbstractUploader implements UploaderInterface
             throw new HttpException('Unable to get \'status\' key from response');
         }
 
-        return (string) $response['status'];
+        switch ($response['status']) {
+            case 'waiting':
+            case 'progress':
+            case 'unknown':
+            default:
+                $result = (new File())->setIsReady(false);
+                break;
+            case 'success':
+                $result = $this->configuration->getSerializer()->deserialize($request, File::class);
+                break;
+            case 'error':
+                $errorCode = $response['error_code'] ?? '400';
+                throw new HttpException($response['error'] ?? 'Error in upload', (int) $errorCode);
+        }
+        if (!$result instanceof File) {
+            throw new \RuntimeException('Unable to deserialize response. Call to support');
+        }
+
+        return $result;
     }
 
     /**
