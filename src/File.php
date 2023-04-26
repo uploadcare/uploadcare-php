@@ -120,7 +120,7 @@ final class File implements FileInfoInterface
 
     public function getMetadata(): Metadata
     {
-        return $this->inner->getMetadata();
+        return $this->api->getMetadata($this->inner);
     }
 
     public function getContentInfo(): ?ContentInfoInterface
@@ -131,5 +131,10 @@ final class File implements FileInfoInterface
     public function getAppdata(): ?AppDataInterface
     {
         return $this->inner->getAppdata();
+    }
+
+    public function getInner(): FileInfoInterface
+    {
+        return $this->inner;
     }
 }
