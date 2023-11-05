@@ -396,7 +396,7 @@ Now, the `$projectInfo` variable contains the `Uploadcare\Interfaces\Response\Pr
 - `getPubKey()` — Project public key as string.
 - `isAutostoreEnabled()` — Returns `true` if the project files are stored automatically.
 
-## Webhooks
+## [Webhooks](https://uploadcare.com/docs/webhooks/)
 
 Call the webhook API:
 
@@ -408,7 +408,7 @@ $webhookApi = (new \Uploadcare\Api($config))->webhook();
 The methods are:
 
 - `listWebhooks()` — Returns a list of project webhooks as an instance of an `Uploadcare\WebhookCollection` class. Each element of this collection is an instance of a `Uploadcare\Webhook` class (see below);
-- `createWebhook(string $targetUrl, bool $isActive = true, string $signingSecret = null, string $event = 'file.uploaded')` — Creates a new webhook for the event. Returns the `Uploadcare\Webhook` class.
+- `createWebhook(string $targetUrl, bool $isActive = true, string $signingSecret = null, string $event = 'file.uploaded')` — Creates a new webhook for the event. Returns the `Uploadcare\Webhook` class. Event types described [here](https://uploadcare.com/docs/webhooks/#event-types)
 - `updateWebhook($id, array $parameters)` — Updates an existing webhook with these parameters. Parameters can be:
     - `target_url` — A target callback URL;
     - `event` — The only `file.uploaded` event is supported at the moment.

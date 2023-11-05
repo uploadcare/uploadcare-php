@@ -17,6 +17,17 @@ interface WebhookApiInterface
      */
     public function listWebhooks(): CollectionInterface;
 
+    /**
+     * @param string      $targetUrl     Webhook endpoint
+     * @param bool        $isActive      Is webhook active
+     * @param string|null $signingSecret Secret for sign a webhook endpoint call
+     * @param string      $event         The event can be any of `file.uploaded`, `file.info_updated`, `file.deleted`, `file.stored`, `file.infected`
+     *
+     * @return WebhookInterface Result of creation
+     *
+     * @see https://uploadcare.com/api-refs/rest-api/v0.7.0/#tag/Webhook
+     * @see https://uploadcare.com/docs/webhooks/
+     */
     public function createWebhook(string $targetUrl, bool $isActive = true, string $signingSecret = null, string $event = 'file.uploaded'): WebhookInterface;
 
     /**
