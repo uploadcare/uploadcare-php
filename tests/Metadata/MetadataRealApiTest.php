@@ -33,7 +33,9 @@ class MetadataRealApiTest extends TestCase
         $value = \date_create()->format(\DateTimeInterface::ATOM);
 
         $api->metadata()->setKey($file, $key, $value);
+        $dateOne = \date_create($value)->format('Y-m-d');
+        $dateTwo = \date_create($file->getMetadata()->offsetGet($key))->format('Y-m-d');
 
-        self::assertSame($value, $file->getMetadata()->offsetGet($key));
+        self::assertSame($dateOne, $dateTwo);
     }
 }

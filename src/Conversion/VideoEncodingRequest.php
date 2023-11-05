@@ -208,4 +208,9 @@ class VideoEncodingRequest implements VideoEncodingRequestInterface
             throw new InvalidArgumentException(\sprintf('Time string \'%s\' not valid', $time));
         }
     }
+
+    public function isSaveInGroup(): bool
+    {
+        return false;
+    }
 }

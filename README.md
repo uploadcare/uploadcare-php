@@ -435,6 +435,14 @@ Result will contain one of two objects:
 
 The `ConvertedItemInterface` will contain a UUID of converted document and token with conversion job ID. You can request the conversion job status with this ID (or the `ConvertedItemInterface` object itself):
 
+You can also pass the `true` to the `setSaveInGroup` method to the Request object.
+
+```php
+$request = (new \Uploadcare\Conversion\DocumentConversionRequest('pdf'))->setSaveInGroup(true);
+```
+
+In this case, the result of the document conversion will be stored in a group. See further details [here](https://uploadcare.com/docs/transformations/document-conversion/#multipage-conversion).
+
 ```php
 $status = $convertor->documentJobStatus($result); // or $result->getToken()
 ```

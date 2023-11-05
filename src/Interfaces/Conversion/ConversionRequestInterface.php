@@ -12,4 +12,6 @@ interface ConversionRequestInterface
     public function throwError(): bool;
 
     public function store(): bool;
+
+    public function isSaveInGroup(): bool;
 }
