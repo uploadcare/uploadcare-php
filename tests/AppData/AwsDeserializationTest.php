@@ -5,8 +5,11 @@ namespace Tests\AppData;
 use PHPUnit\Framework\TestCase;
 use Uploadcare\File\AppData\AwsInstance;
 use Uploadcare\File\AppData\AwsLabel;
+use Uploadcare\File\AppData\AwsModerationLabel;
 use Uploadcare\File\AppData\AwsRecognitionData;
 use Uploadcare\File\AppData\AwsRecognitionLabels;
+use Uploadcare\File\AppData\AwsRecognitionModerationData;
+use Uploadcare\File\AppData\AwsRecognitionModerationLabels;
 use Uploadcare\File\AppData\BoundingBox;
 use Uploadcare\File\AppData\LabelParent;
 use Uploadcare\Interfaces\Serializer\SerializerInterface;
@@ -16,6 +19,7 @@ use Uploadcare\Serializer\SnackCaseConverter;
 class AwsDeserializationTest extends TestCase
 {
     private string $awsLabels;
+    private string $awsModerationLabels;
 
     protected function setUp(): void
     {
@@ -24,8 +28,11 @@ class AwsDeserializationTest extends TestCase
         $fileInfoArray = \json_decode($fileInfo, true, 512, JSON_THROW_ON_ERROR);
         $labels = $fileInfoArray['appdata']['aws_rekognition_detect_labels'] ?? null;
         self::assertIsArray($labels);
-
         $this->awsLabels = \json_encode($labels, JSON_THROW_ON_ERROR);
+
+        $moderationLabels = $fileInfoArray['appdata']['aws_rekognition_detect_moderation_labels'] ?? null;
+        self::assertIsArray($moderationLabels);
+        $this->awsModerationLabels = \json_encode($moderationLabels, JSON_THROW_ON_ERROR);
     }
 
     protected function getSerializer(): SerializerInterface
@@ -33,7 +40,7 @@ class AwsDeserializationTest extends TestCase
         return new Serializer(new SnackCaseConverter());
     }
 
-    public function testDeserialization(): void
+    public function testLabelsDeserialization(): void
     {
         $result = $this->getSerializer()->deserialize($this->awsLabels, AwsRecognitionLabels::class);
         self::assertInstanceOf(AwsRecognitionLabels::class, $result);
@@ -68,5 +75,25 @@ class AwsDeserializationTest extends TestCase
         self::assertInstanceOf(AwsInstance::class, $instance);
         self::assertNotEmpty($instance->getConfidence());
         self::assertInstanceOf(BoundingBox::class, $instance->getBoundingBox());
+    }
+
+    public function testModerationLabelsDeserialization(): void
+    {
+        $result = $this->getSerializer()->deserialize($this->awsModerationLabels, AwsRecognitionModerationLabels::class);
+        self::assertInstanceOf(AwsRecognitionModerationLabels::class, $result);
+        self::assertInstanceOf(\DateTimeInterface::class, $result->getDatetimeCreated());
+        self::assertInstanceOf(\DateTimeInterface::class, $result->getDatetimeUpdated());
+
+        $data = $result->getData();
+        self::assertInstanceOf(AwsRecognitionModerationData::class, $data);
+        self::assertSame('6.0', $data->getLabelModelVersion());
+        $labels = $data->getLabels();
+        self::assertNotEmpty($labels);
+
+        $label = \reset($labels);
+        self::assertInstanceOf(AwsModerationLabel::class, $label);
+        self::assertIsFloat($label->getConfidence());
+        self::assertEquals('Weapons', $label->getName());
+        self::assertEquals('Violence', $label->getParentName());
     }
 }

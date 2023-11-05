@@ -39,6 +39,21 @@
     "foo": "2022-09-18T08:13:31+00:00"
   },
   "appdata": {
+    "aws_rekognition_detect_moderation_labels": {
+      "data": {
+        "ModerationModelVersion": "6.0",
+        "ModerationLabels": [
+          {
+            "Confidence": 93.41645812988281,
+            "Name": "Weapons",
+            "ParentName": "Violence"
+          }
+        ]
+      },
+      "version": "2016-06-27",
+      "datetime_created": "2023-02-21T11:25:31.259763Z",
+      "datetime_updated": "2023-02-21T11:27:33.359763Z"
+    },
     "aws_rekognition_detect_labels": {
       "data": {
         "Labels": [

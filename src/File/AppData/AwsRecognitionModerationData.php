@@ -12,13 +12,13 @@ class AwsRecognitionModerationData implements AwsRecognitionDataInterface, Seria
     /**
      * @var AwsModerationLabel[]
      */
-    private array $labels = [];
+    private array $moderationLabels = [];
 
     public static function rules(): array
     {
         return [
-            'labelModelVersion' => 'string',
-            'labels' => [AwsModerationLabel::class],
+            'moderationModelVersion' => 'string',
+            'moderationLabels' => [AwsModerationLabel::class],
         ];
     }
 
@@ -27,7 +27,7 @@ class AwsRecognitionModerationData implements AwsRecognitionDataInterface, Seria
         return $this->labelModelVersion;
     }
 
-    public function setLabelModelVersion(?string $labelModelVersion): self
+    public function setModerationModelVersion(?string $labelModelVersion): self
     {
         $this->labelModelVersion = $labelModelVersion;
 
@@ -39,13 +39,13 @@ class AwsRecognitionModerationData implements AwsRecognitionDataInterface, Seria
      */
     public function getLabels(): iterable
     {
-        return $this->labels;
+        return $this->moderationLabels;
     }
 
-    public function addLabel(AwsModerationLabel $label): self
+    public function addModerationLabel(AwsModerationLabel $label): self
     {
-        if (!\in_array($label, $this->labels, true)) {
-            $this->labels[] = $label;
+        if (!\in_array($label, $this->moderationLabels, true)) {
+            $this->moderationLabels[] = $label;
         }
 
         return $this;

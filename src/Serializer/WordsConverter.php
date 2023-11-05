@@ -16,6 +16,7 @@ class WordsConverter
             'files' => 'file',
             'problems' => 'problem',
             'labels' => 'label',
+            'moderationLabels' => 'moderationLabel',
             'parents' => 'parent',
             'instances' => 'instance',
         ];
