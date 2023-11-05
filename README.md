@@ -370,8 +370,7 @@ After that, you can access group operation methods:
 
 ### `Uploadcare\Group` class
 
-This class implements `Uploadcare\Interfaces\GroupInterface` aand has an additional `store()` method that applies the store operation to the group. Calls `GroupApi::store group`;
-
+This class implements `Uploadcare\Interfaces\GroupInterface`.    
 The `getFiles()` method of the `Uploadcare\Group` object returns [FileCollection](#uploadcarefilecollection-class).
 
 ## Project operations

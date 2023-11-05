@@ -8,6 +8,7 @@ Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to
 ## [4.1.2]
 - Possibility to store conversion details in a separate group.
 - Possibility to run "Unsafe content detection" functionality.
+- `\Uploadcare\Group::getDatetimeStored` method is deprecated.
 
 ## [4.1.1]
 - Retrieve the Metadata without additional requests when using `getMetadata`.
