@@ -7,7 +7,7 @@ interface AwsRecognitionDataInterface
     public function getLabelModelVersion(): ?string;
 
     /**
-     * @return iterable<AwsLabelInterface>
+     * @return iterable<AwsLabelInterface|AwsModerationLabelInterface>
      */
     public function getLabels(): iterable;
 }

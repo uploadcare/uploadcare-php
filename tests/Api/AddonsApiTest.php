@@ -64,4 +64,20 @@ class AddonsApiTest extends TestCase
         self::assertSame($requestId, $api->requestRemoveBackground(\uuid_create(), $rr));
         self::assertSame('done', $api->checkRemoveBackground($requestId));
     }
+
+    public function testRecognitionModerationMethods(): void
+    {
+        $id = \uuid_create();
+
+        $api = $this->fakeApi([
+            new Response(200, [], \json_encode(['request_id' => $id])),
+            new Response(200, [], \json_encode(['status' => 'done'])),
+        ]);
+
+        $result = $api->requestAwsRecognitionModeration(\uuid_create());
+        self::assertSame($result, $id);
+
+        $status = $api->checkAwsRecognitionModeration($id);
+        self::assertSame('done', $status);
+    }
 }

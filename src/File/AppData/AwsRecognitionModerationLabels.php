@@ -6,9 +6,9 @@ use Uploadcare\Interfaces\File\AppData\AwsRecognitionData\AwsRecognitionDataInte
 use Uploadcare\Interfaces\File\AppData\AwsRecognitionLabelsInterface;
 use Uploadcare\Interfaces\SerializableInterface;
 
-class AwsRecognitionLabels extends AbstractAwsLabels implements AwsRecognitionLabelsInterface, SerializableInterface
+class AwsRecognitionModerationLabels extends AbstractAwsLabels implements AwsRecognitionLabelsInterface, SerializableInterface
 {
-    private ?AwsRecognitionData $awsRecognitionData = null;
+    private ?AwsRecognitionModerationData $awsRecognitionData = null;
 
     public static function rules(): array
     {
@@ -16,7 +16,7 @@ class AwsRecognitionLabels extends AbstractAwsLabels implements AwsRecognitionLa
             'version' => 'string',
             'datetimeCreated' => \DateTime::class,
             'datetimeUpdated' => \DateTime::class,
-            'data' => AwsRecognitionData::class,
+            'data' => AwsRecognitionModerationData::class,
         ];
     }
 
@@ -25,9 +25,9 @@ class AwsRecognitionLabels extends AbstractAwsLabels implements AwsRecognitionLa
         return $this->awsRecognitionData;
     }
 
-    public function setData(?AwsRecognitionData $awsRecognitionData): self
+    public function setData(?AwsRecognitionModerationData $data): self
     {
-        $this->awsRecognitionData = $awsRecognitionData;
+        $this->awsRecognitionData = $data;
 
         return $this;
     }

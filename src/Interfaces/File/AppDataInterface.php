@@ -2,14 +2,13 @@
 
 namespace Uploadcare\Interfaces\File;
 
-use Uploadcare\Interfaces\File\AppData\ClamAvVirusScanInterface;
-use Uploadcare\Interfaces\File\AppData\RemoveBgInterface;
-
 interface AppDataInterface
 {
+    public function getAwsRekognitionDetectModerationLabels(): ?AppData\AwsRecognitionLabelsInterface;
+
     public function getAwsRekognitionDetectLabels(): ?AppData\AwsRecognitionLabelsInterface;
 
-    public function getClamAvVirusScan(): ?ClamAvVirusScanInterface;
+    public function getClamAvVirusScan(): ?AppData\ClamAvVirusScanInterface;
 
-    public function getRemoveBg(): ?RemoveBgInterface;
+    public function getRemoveBg(): ?AppData\RemoveBgInterface;
 }

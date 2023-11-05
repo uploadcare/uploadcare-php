@@ -3,6 +3,7 @@
 namespace Uploadcare\File;
 
 use Uploadcare\File\AppData\AwsRecognitionLabels;
+use Uploadcare\File\AppData\AwsRecognitionModerationLabels;
 use Uploadcare\File\AppData\ClamAvVirusScan;
 use Uploadcare\File\AppData\RemoveBg;
 use Uploadcare\Interfaces\File\AppDataInterface;
@@ -11,6 +12,7 @@ use Uploadcare\Interfaces\SerializableInterface;
 final class AppData implements AppDataInterface, SerializableInterface
 {
     private ?AwsRecognitionLabels $awsRecognitionLabels = null;
+    private ?AwsRecognitionModerationLabels $awsRekognitionDetectModerationLabels = null;
     private ?ClamAvVirusScan $clamAvVirusScan = null;
     private ?RemoveBg $removeBg = null;
 
@@ -18,9 +20,22 @@ final class AppData implements AppDataInterface, SerializableInterface
     {
         return [
             'awsRekognitionDetectLabels' => AwsRecognitionLabels::class,
+            'awsRekognitionDetectModerationLabels' => AwsRecognitionModerationLabels::class,
             'ucClamavVirusScan' => ClamAvVirusScan::class,
             'removeBg' => RemoveBg::class,
         ];
+    }
+
+    public function getAwsRekognitionDetectModerationLabels(): ?AwsRecognitionModerationLabels
+    {
+        return $this->awsRekognitionDetectModerationLabels;
+    }
+
+    public function setAwsRekognitionDetectModerationLabels(?AwsRecognitionModerationLabels $labels): self
+    {
+        $this->awsRekognitionDetectModerationLabels = $labels;
+
+        return $this;
     }
 
     public function getAwsRekognitionDetectLabels(): ?AwsRecognitionLabels

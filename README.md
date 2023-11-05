@@ -288,6 +288,29 @@ while (($status = $api->addons()->checkAwsRecognition($token)) !== 'done') {
 $recognitionData = $api->file()->fileInfo($file->getUuid())->getAppdata()->getAwsRekognitionDetectLabels(); // Instance of \Uploadcare\Interfaces\File\AppData\AwsRecognitionLabelsInterface
 ```
 
+### [Unsafe content detection](https://uploadcare.com/docs/unsafe-content/)
+
+To call unsafe content detection from the library:
+
+```php
+$configuration = \Uploadcare\Configuration::create($_ENV['UPLOADCARE_PUBLIC_KEY'], $_ENV['UPLOADCARE_SECRET_KEY']);
+
+$api = new \Uploadcare\Api($configuration);
+/** @var \Uploadcare\Interfaces\File\FileInfoInterface $file */
+$file = $api->file()->listFiles()->getResults()->first();
+
+# Request recognition, get token to check status
+$token = $api->addons()->requestAwsRecognitionModeration($file);
+while (($status = $api->addons()->checkAwsRecognitionModeration($token)) !== 'done') {
+    \usleep(1000);
+    if ($status === 'error') {
+        throw new \Exception('Error in process');
+    }
+}
+
+$recognitionModerationData = $api->file()->fileInfo($file->getUuid())->getAppdata()->getAwsRekognitionDetectModerationLabels() // Instance of \Uploadcare\Interfaces\File\AppData\AwsModerationLabelInterface
+```
+
 ### [Remove background](https://uploadcare.com/docs/remove-bg/)
 
 Remove background from image:
