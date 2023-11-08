@@ -39,6 +39,7 @@ final class Group implements GroupInterface
 
     public function getDatetimeStored(): ?\DateTimeInterface
     {
+        /** @psalm-suppress DeprecatedMethod */
         return $this->inner->getDatetimeStored();
     }
 

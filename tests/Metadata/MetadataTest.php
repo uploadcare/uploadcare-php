@@ -2,12 +2,18 @@
 
 namespace Tests\Metadata;
 
+use GuzzleHttp\ClientInterface;
+use GuzzleHttp\Exception\ConnectException;
+use GuzzleHttp\Psr7\Request;
 use PHPUnit\Framework\TestCase;
+use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\String\ByteString;
 use Uploadcare\Apis\MetadataApi;
 use Uploadcare\Configuration;
-use Uploadcare\Exception\MetadataException;
+use Uploadcare\Exception\{HttpException, MetadataException};
 use Uploadcare\File\Metadata;
+use Uploadcare\Security\Signature;
+use Uploadcare\Serializer\SerializerFactory;
 
 class MetadataTest extends TestCase
 {
@@ -54,5 +60,45 @@ class MetadataTest extends TestCase
         $this->expectExceptionMessageMatches('/Up to 512 characters value allowed/');
 
         $api->setKey(\uuid_create(), $key, $value);
+    }
+
+    public function testRemoveReyWithTheWrongKey(): void
+    {
+        $key = ByteString::fromRandom(128)->toString();
+
+        $api = new MetadataApi(Configuration::create('demo', 'demo'));
+        $this->expectException(MetadataException::class);
+        $this->expectExceptionMessageMatches('/Key should be string up to 64 characters length/');
+
+        $api->removeKey(\uuid_create(), $key);
+    }
+
+    public function testRemoveKeyWithAnErrorInTheResponse(): void
+    {
+        $client = $this->createMock(ClientInterface::class);
+        $client->expects(self::atLeastOnce())->method('request')->willThrowException(new ConnectException('Error string', new Request('DELETE', 'https://example.com')));
+        $configuration = new Configuration('demo', new Signature('demo'), $client, SerializerFactory::create());
+
+        $key = 'validString';
+        $api = new MetadataApi($configuration);
+        $this->expectException(HttpException::class);
+
+        $api->removeKey(\uuid_create(), $key);
+    }
+
+    public function testRemoveKeyWithTheWrongResponseStatus(): void
+    {
+        $response = $this->createMock(ResponseInterface::class);
+        $response->expects(self::atLeastOnce())->method('getStatusCode')->willReturn(401);
+        $client = $this->createMock(ClientInterface::class);
+        $client->expects(self::atLeastOnce())->method('request')->willReturn($response);
+        $configuration = new Configuration('demo', new Signature('demo'), $client, SerializerFactory::create());
+
+        $key = 'validString';
+        $api = new MetadataApi($configuration);
+        $this->expectException(HttpException::class);
+        $this->expectExceptionMessageMatches('/Wrong response. Call to support/');
+
+        $api->removeKey(\uuid_create(), $key);
     }
 }

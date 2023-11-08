@@ -9,6 +9,30 @@ use Uploadcare\Interfaces\File\FileInfoInterface;
 interface AddonsApiInterface
 {
     /**
+     * Execute AWS Rekognition Moderation Add-On for a given target to detect moderation labels in an image.
+     * Note: Detected moderation labels are stored in the file's appdata.
+     *
+     * @see https://uploadcare.com/api-refs/rest-api/v0.7.0/#tag/Add-Ons/operation/awsRekognitionDetectModerationLabelsExecute
+     * @see https://docs.aws.amazon.com/rekognition/latest/dg/moderation.html
+     *
+     * @param FileInfoInterface|string $id
+     *
+     * @return string Request ID
+     *
+     * @throws HttpException|\RuntimeException
+     */
+    public function requestAwsRecognitionModeration($id): string;
+
+    /**
+     * Check the status of an Add-On execution request that had been started using the Execute Add-On operation.
+     *
+     * @param string $id Request ID
+     *
+     * @return string Status of AWS recognition. Could be "in_progress", "error", "done", "unknown"
+     */
+    public function checkAwsRecognitionModeration(string $id): string;
+
+    /**
      * Execute AWS Rekognition Add-On for a given target to detect labels in an image.
      * Note: Detected labels are stored in the file's appdata.
      *

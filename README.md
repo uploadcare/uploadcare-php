@@ -288,6 +288,29 @@ while (($status = $api->addons()->checkAwsRecognition($token)) !== 'done') {
 $recognitionData = $api->file()->fileInfo($file->getUuid())->getAppdata()->getAwsRekognitionDetectLabels(); // Instance of \Uploadcare\Interfaces\File\AppData\AwsRecognitionLabelsInterface
 ```
 
+### [Unsafe content detection](https://uploadcare.com/docs/unsafe-content/)
+
+To call unsafe content detection from the library:
+
+```php
+$configuration = \Uploadcare\Configuration::create($_ENV['UPLOADCARE_PUBLIC_KEY'], $_ENV['UPLOADCARE_SECRET_KEY']);
+
+$api = new \Uploadcare\Api($configuration);
+/** @var \Uploadcare\Interfaces\File\FileInfoInterface $file */
+$file = $api->file()->listFiles()->getResults()->first();
+
+# Request recognition, get token to check status
+$token = $api->addons()->requestAwsRecognitionModeration($file);
+while (($status = $api->addons()->checkAwsRecognitionModeration($token)) !== 'done') {
+    \usleep(1000);
+    if ($status === 'error') {
+        throw new \Exception('Error in process');
+    }
+}
+
+$recognitionModerationData = $api->file()->fileInfo($file->getUuid())->getAppdata()->getAwsRekognitionDetectModerationLabels() // Instance of \Uploadcare\Interfaces\File\AppData\AwsModerationLabelInterface
+```
+
 ### [Remove background](https://uploadcare.com/docs/remove-bg/)
 
 Remove background from image:
@@ -347,8 +370,7 @@ After that, you can access group operation methods:
 
 ### `Uploadcare\Group` class
 
-This class implements `Uploadcare\Interfaces\GroupInterface` aand has an additional `store()` method that applies the store operation to the group. Calls `GroupApi::store group`;
-
+This class implements `Uploadcare\Interfaces\GroupInterface`.    
 The `getFiles()` method of the `Uploadcare\Group` object returns [FileCollection](#uploadcarefilecollection-class).
 
 ## Project operations
@@ -373,7 +395,7 @@ Now, the `$projectInfo` variable contains the `Uploadcare\Interfaces\Response\Pr
 - `getPubKey()` — Project public key as string.
 - `isAutostoreEnabled()` — Returns `true` if the project files are stored automatically.
 
-## Webhooks
+## [Webhooks](https://uploadcare.com/docs/webhooks/)
 
 Call the webhook API:
 
@@ -385,7 +407,7 @@ $webhookApi = (new \Uploadcare\Api($config))->webhook();
 The methods are:
 
 - `listWebhooks()` — Returns a list of project webhooks as an instance of an `Uploadcare\WebhookCollection` class. Each element of this collection is an instance of a `Uploadcare\Webhook` class (see below);
-- `createWebhook(string $targetUrl, bool $isActive = true, string $signingSecret = null, string $event = 'file.uploaded')` — Creates a new webhook for the event. Returns the `Uploadcare\Webhook` class.
+- `createWebhook(string $targetUrl, bool $isActive = true, string $signingSecret = null, string $event = 'file.uploaded')` — Creates a new webhook for the event. Returns the `Uploadcare\Webhook` class. Event types described [here](https://uploadcare.com/docs/webhooks/#event-types)
 - `updateWebhook($id, array $parameters)` — Updates an existing webhook with these parameters. Parameters can be:
     - `target_url` — A target callback URL;
     - `event` — The only `file.uploaded` event is supported at the moment.
@@ -434,6 +456,14 @@ Result will contain one of two objects:
 - `ResponseProblemInterface` object in case of error (and `$throwError` in request sets to `false`).
 
 The `ConvertedItemInterface` will contain a UUID of converted document and token with conversion job ID. You can request the conversion job status with this ID (or the `ConvertedItemInterface` object itself):
+
+You can also pass the `true` to the `setSaveInGroup` method to the Request object.
+
+```php
+$request = (new \Uploadcare\Conversion\DocumentConversionRequest('pdf'))->setSaveInGroup(true);
+```
+
+In this case, the result of the document conversion will be stored in a group. See further details [here](https://uploadcare.com/docs/transformations/document-conversion/#multipage-conversion).
 
 ```php
 $status = $convertor->documentJobStatus($result); // or $result->getToken()

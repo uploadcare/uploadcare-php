@@ -16,6 +16,7 @@ class DocumentConversionRequest implements DocumentConversionRequestInterface
     private bool $throwError = false;
     private bool $store = true;
     private ?int $pageNumber = null;
+    private bool $saveToGroup = false;
 
     public function __construct(string $targetFormat = 'pdf', bool $throwError = false, bool $store = true, ?int $pageNumber = null)
     {
@@ -75,5 +76,17 @@ class DocumentConversionRequest implements DocumentConversionRequestInterface
         $this->pageNumber = $pageNumber;
 
         return $this;
+    }
+
+    public function setSaveInGroup(bool $saveInGroup): self
+    {
+        $this->saveToGroup = $saveInGroup;
+
+        return $this;
+    }
+
+    public function isSaveInGroup(): bool
+    {
+        return $this->pageNumber !== null ? false : $this->saveToGroup;
     }
 }

@@ -5,6 +5,11 @@ The format is based now on [Keep a
 Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to
 [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [4.2.0]
+- Added [multi-page document conversion](https://uploadcare.com/docs/transformations/document-conversion/#multipage-conversion).
+- Added [Unsafe content detection](https://uploadcare.com/docs/unsafe-content/).
+- `\Uploadcare\Group::getDatetimeStored` method is deprecated.
+
 ## [4.1.1]
 - Retrieve the Metadata without additional requests when using `getMetadata`.
 - You can still get the fresh metadata for the file by calling `getMetadata` method from the `MetadataApiInterface`.

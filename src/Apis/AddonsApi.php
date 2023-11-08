@@ -7,6 +7,23 @@ use Uploadcare\Interfaces\Conversion\RemoveBackgroundRequestInterface;
 
 class AddonsApi extends AbstractApi implements AddonsApiInterface
 {
+    public function requestAwsRecognitionModeration($id): string
+    {
+        $response = $this->request('POST', '/addons/aws_rekognition_detect_moderation_labels/execute/', [
+            'body' => ['target' => (string) $id],
+        ])->getBody()->getContents();
+
+        return $this->getResponseParameter($response, 'request_id');
+    }
+
+    public function checkAwsRecognitionModeration(string $id): string
+    {
+        $uri = \sprintf('/addons/aws_rekognition_detect_moderation_labels/execute/status/?request_id=%s', $id);
+        $response = $this->request('GET', $uri)->getBody()->getContents();
+
+        return $this->getResponseParameter($response, 'status');
+    }
+
     public function requestAwsRecognition($id): string
     {
         $response = $this->request('POST', '/addons/aws_rekognition_detect_labels/execute/', [

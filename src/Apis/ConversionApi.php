@@ -254,7 +254,7 @@ final class ConversionApi extends AbstractApi implements ConversionApiInterface
     }
 
     /**
-     * @param array $ids File ID's
+     * @param string[] $ids File ID's
      */
     private function makeDocumentConversionUrl(array $ids, DocumentConversionRequestInterface $request): array
     {
@@ -268,9 +268,14 @@ final class ConversionApi extends AbstractApi implements ConversionApiInterface
             }
         }
 
-        return [
+        $requestParameters = [
             'paths' => $patch,
             'store' => $request->store(),
         ];
+        if ($request->isSaveInGroup() === true) {
+            $requestParameters['save_in_group'] = true;
+        }
+
+        return $requestParameters;
     }
 }
