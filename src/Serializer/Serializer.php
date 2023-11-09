@@ -13,7 +13,12 @@ class Serializer implements SerializerInterface
     public const EXCLUDE_PROPERTY_KEY = 'exclude_property';
     public const DATE_FORMAT = 'Y-m-d\TH:i:s.u\Z';
     public const DATE_FORMAT_SHORT = 'Y-m-d\TH:i:s\Z';
-    public const ORIGINAL_DATE_FORMAT = 'Y-m-d\TH:i:s';
+    public const ORIGINAL_DATE_FORMATS = [
+        \DateTimeInterface::ATOM,
+        'Y-m-d\TH:i:s',
+        'Y-m-d\TH:i:s.u',
+        'Y-m-d\TH:i:s.uP'
+    ];
 
     protected static array $coreTypes = [
         'int' => true,
@@ -248,8 +253,10 @@ class Serializer implements SerializerInterface
         if ($date === false) {
             $date = \date_create_from_format(self::DATE_FORMAT_SHORT, $dateTime);
         }
-        if ($date === false) {
-            $date = \date_create_from_format(self::ORIGINAL_DATE_FORMAT, $dateTime);
+        foreach (self::ORIGINAL_DATE_FORMATS as $dateFormat) {
+            if ($date === false) {
+                $date = \date_create_from_format($dateFormat, $dateTime);
+            }
         }
 
         if ($date === false) {
