@@ -9,6 +9,7 @@ Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to
 - Added [multi-page document conversion](https://uploadcare.com/docs/transformations/document-conversion/#multipage-conversion).
 - Added [Unsafe content detection](https://uploadcare.com/docs/unsafe-content/).
 - `\Uploadcare\Group::getDatetimeStored` method is deprecated.
+- Improved date conversion.
 
 ## [4.1.1]
 - Retrieve the Metadata without additional requests when using `getMetadata`.
