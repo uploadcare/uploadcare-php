@@ -13,7 +13,12 @@ class Serializer implements SerializerInterface
     public const EXCLUDE_PROPERTY_KEY = 'exclude_property';
     public const DATE_FORMAT = 'Y-m-d\TH:i:s.u\Z';
     public const DATE_FORMAT_SHORT = 'Y-m-d\TH:i:s\Z';
-    public const ORIGINAL_DATE_FORMATS = [ 'Y-m-d\TH:i:s', \DateTimeInterface::ATOM, 'Y-m-d\TH:i:s.u' ];
+    public const ORIGINAL_DATE_FORMATS = [
+        \DateTimeInterface::ATOM,
+        'Y-m-d\TH:i:s',
+        'Y-m-d\TH:i:s.u',
+        'Y-m-d\TH:i:s.uP'
+    ];
 
     protected static array $coreTypes = [
         'int' => true,
