@@ -251,6 +251,9 @@ class Serializer implements SerializerInterface
         if ($date === false) {
             $date = \date_create_from_format(self::ORIGINAL_DATE_FORMAT, $dateTime);
         }
+        if ($date === false) {
+            $date = \date_create_from_format(\DateTimeInterface::ATOM, $dateTime);
+        }
 
         if ($date === false) {
             throw new ConversionException(\sprintf('Unable to convert \'%s\' to \'%s\'', $dateTime, \DateTime::class));
