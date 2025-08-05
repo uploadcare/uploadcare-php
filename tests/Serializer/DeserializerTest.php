@@ -99,7 +99,7 @@ class DeserializerTest extends TestCase
     /**
      * @dataProvider provideDateInDifferentFormats
      */
-    public function testVariousDateFormats(string $date, string $exception = null): void
+    public function testVariousDateFormats(string $date, ?string $exception = null): void
     {
         $serializer = $this->getSerializer();
         $denormalizeDate = (new \ReflectionObject($serializer))->getMethod('denormalizeDate');

@@ -6,3 +6,4 @@
 /psalm.phar
 .phpunit.result.cache
 .php-cs-fixer.cache
+/rector-cache

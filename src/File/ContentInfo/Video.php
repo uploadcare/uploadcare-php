@@ -78,9 +78,6 @@ final class Video implements VideoInterface, SerializableInterface
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getCodec(): ?string
     {
         return $this->codec;

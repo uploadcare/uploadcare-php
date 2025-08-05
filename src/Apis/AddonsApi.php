@@ -41,7 +41,7 @@ class AddonsApi extends AbstractApi implements AddonsApiInterface
         return $this->getResponseParameter($response, 'status');
     }
 
-    public function requestAntivirusScan($id, bool $purge = null): string
+    public function requestAntivirusScan($id, ?bool $purge = null): string
     {
         $parameters = ['target' => (string) $id];
         if (\is_bool($purge)) {

@@ -5,9 +5,9 @@ namespace Uploadcare;
 use GuzzleHttp\ClientInterface;
 use Uploadcare\Client\ClientFactory;
 use Uploadcare\Interfaces\AuthUrl\AuthUrlConfigInterface;
+use Uploadcare\Interfaces\{ClientFactoryInterface, ConfigurationInterface};
 use Uploadcare\Interfaces\Serializer\{SerializerFactoryInterface, SerializerInterface};
 use Uploadcare\Interfaces\SignatureInterface;
-use Uploadcare\Interfaces\{ClientFactoryInterface, ConfigurationInterface};
 use Uploadcare\Security\Signature;
 use Uploadcare\Serializer\SerializerFactory;
 
@@ -34,7 +34,7 @@ final class Configuration implements ConfigurationInterface
      * @param string $secretKey     Uploadcare API private key
      * @param array  $clientOptions Parameters for Http client (proxy, special headers, etc.)
      */
-    public static function create(string $publicKey, string $secretKey, array $clientOptions = [], ClientFactoryInterface $clientFactory = null, SerializerFactoryInterface $serializerFactory = null): Configuration
+    public static function create(string $publicKey, string $secretKey, array $clientOptions = [], ?ClientFactoryInterface $clientFactory = null, ?SerializerFactoryInterface $serializerFactory = null): Configuration
     {
         $signature = new Signature($secretKey);
         $framework = $clientOptions['framework'] ?? null;

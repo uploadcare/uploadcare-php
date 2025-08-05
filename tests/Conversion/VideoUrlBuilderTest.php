@@ -74,8 +74,6 @@ class VideoUrlBuilderTest extends TestCase
 
     /**
      * @dataProvider generateRequests
-     *
-     * @param $url
      */
     public function testVideoUrlGeneration(string $url, VideoEncodingRequest $request): void
     {

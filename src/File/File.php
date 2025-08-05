@@ -194,7 +194,7 @@ final class File implements FileInfoInterface, SerializableInterface
         return $this->variations;
     }
 
-    public function setVariations(array $variations = null): self
+    public function setVariations(?array $variations = null): self
     {
         $this->variations = $variations;
 

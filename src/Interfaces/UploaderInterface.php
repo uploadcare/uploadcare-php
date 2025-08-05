@@ -25,21 +25,21 @@ interface UploaderInterface
      *
      * @throws InvalidArgumentException
      */
-    public function fromPath(string $path, string $mimeType = null, string $filename = null, string $store = 'auto', array $metadata = []): FileInfoInterface;
+    public function fromPath(string $path, ?string $mimeType = null, ?string $filename = null, string $store = 'auto', array $metadata = []): FileInfoInterface;
 
     /**
      * Upload file from remote URL. Returns token to check status.
      *
      * @throws InvalidArgumentException
      */
-    public function fromUrl(string $url, string $mimeType = null, string $filename = null, string $store = 'auto', array $metadata = []): string;
+    public function fromUrl(string $url, ?string $mimeType = null, ?string $filename = null, string $store = 'auto', array $metadata = []): string;
 
     /**
      * Synchronically upload a file from a remote URL. Returns FileInfoInterface.
      *
      * @throws InvalidArgumentException|HttpException
      */
-    public function syncUploadFromUrl(string $url, string $mimeType = null, string $filename = null, string $store = 'auto', array $metadata = []): FileInfoInterface;
+    public function syncUploadFromUrl(string $url, ?string $mimeType = null, ?string $filename = null, string $store = 'auto', array $metadata = []): FileInfoInterface;
 
     /**
      * Upload file from resource opened by `\fopen()`.
@@ -48,21 +48,21 @@ interface UploaderInterface
      *
      * @throws InvalidArgumentException
      */
-    public function fromResource($handle, string $mimeType = null, string $filename = null, string $store = 'auto', array $metadata = []): FileInfoInterface;
+    public function fromResource($handle, ?string $mimeType = null, ?string $filename = null, string $store = 'auto', array $metadata = []): FileInfoInterface;
 
     /**
      * Upload file from content string.
      *
      * @throws InvalidArgumentException
      */
-    public function fromContent(string $content, string $mimeType = null, string $filename = null, string $store = 'auto', array $metadata = []): FileInfoInterface;
+    public function fromContent(string $content, ?string $mimeType = null, ?string $filename = null, string $store = 'auto', array $metadata = []): FileInfoInterface;
 
     /**
      * Check the status of a task to fetch/upload a file from a URL.
      *
      * @param string $token token received from `fromUrl` method
      *
-     * @see \Uploadcare\Interfaces\UploaderInterface::fromUrl
+     * @see UploaderInterface::fromUrl
      *
      * @throws HttpException
      */

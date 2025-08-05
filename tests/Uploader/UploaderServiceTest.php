@@ -23,7 +23,7 @@ use Uploadcare\Uploader\Uploader;
  */
 class UploaderServiceTest extends TestCase
 {
-    private function getMockUploader(Configuration $configuration = null): UploaderInterface
+    private function getMockUploader(?Configuration $configuration = null): UploaderInterface
     {
         $uploader = $this->getMockBuilder(Uploader::class)
             ->setConstructorArgs([$configuration ?: $this->getConf()])
@@ -36,7 +36,7 @@ class UploaderServiceTest extends TestCase
         return $uploader;
     }
 
-    private function getConf(ClientInterface $client = null): ConfigurationInterface
+    private function getConf(?ClientInterface $client = null): ConfigurationInterface
     {
         return new Configuration('demo-public-key', new Signature('demo-private-key'), $client ?: $this->mockClient(), $this->getSerializer());
     }

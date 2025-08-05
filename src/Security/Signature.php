@@ -14,7 +14,7 @@ class Signature implements SignatureInterface
      * @param string   $secretKey Uploadcare private key
      * @param int|null $ttl       Signature time-to-life
      */
-    public function __construct(string $secretKey, int $ttl = null)
+    public function __construct(string $secretKey, ?int $ttl = null)
     {
         $this->secretKey = $secretKey;
         if ($ttl === null || $ttl > self::MAX_TTL) {
@@ -54,7 +54,7 @@ class Signature implements SignatureInterface
     /**
      * {@inheritDoc}
      */
-    public function getAuthHeaderString(string $method, string $uri, string $data, string $contentType = 'application/json', \DateTimeInterface $date = null): string
+    public function getAuthHeaderString(string $method, string $uri, string $data, string $contentType = 'application/json', ?\DateTimeInterface $date = null): string
     {
         $uri = \sprintf('/%s', \ltrim($uri, '/'));
         $data = \md5($data);

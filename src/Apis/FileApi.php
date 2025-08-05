@@ -5,13 +5,13 @@ namespace Uploadcare\Apis;
 use Psr\Http\Message\ResponseInterface;
 use Uploadcare\AuthUrl\Token\AkamaiToken;
 use Uploadcare\Exception\InvalidArgumentException;
+use Uploadcare\{File as FileDecorator, File\File, File\FileCollection, File\Metadata};
 use Uploadcare\FileCollection as FileCollectionDecorator;
 use Uploadcare\Interfaces\Api\FileApiInterface;
 use Uploadcare\Interfaces\AuthUrl\AuthUrlConfigInterface;
 use Uploadcare\Interfaces\File\{CollectionInterface, FileInfoInterface};
 use Uploadcare\Interfaces\Response\{BatchResponseInterface, ListResponseInterface};
 use Uploadcare\Response\{BatchFileResponse, FileListResponse};
-use Uploadcare\{File as FileDecorator, File\File, File\FileCollection, File\Metadata};
 
 /**
  * File Api.
@@ -202,7 +202,7 @@ final class FileApi extends AbstractApi implements FileApiInterface
     public function copyToLocalStorage($source, bool $store): FileInfoInterface
     {
         $source = (string) $source;
-        [$uuid, ] = \explode('/', $source);
+        [$uuid] = \explode('/', $source);
         if (!\uuid_is_valid($uuid)) {
             throw new InvalidArgumentException(\sprintf('Uuid \'%s\' for request not valid', $source));
         }
@@ -244,12 +244,12 @@ final class FileApi extends AbstractApi implements FileApiInterface
      * @param bool                     $makePublic true to make copied files available via public links, false to reverse the behavior
      * @param string|null              $pattern    Enum: "${default}" "${auto_filename}" "${effects}" "${filename}" "${uuid}" "${ext}" The parameter is used to specify file names Uploadcare passes to a custom storage. In case the parameter is omitted, we use pattern of your custom storage. Use any combination of allowed values.
      */
-    public function copyToRemoteStorage($source, string $target, bool $makePublic = true, string $pattern = null): string
+    public function copyToRemoteStorage($source, string $target, bool $makePublic = true, ?string $pattern = null): string
     {
         if ($source instanceof FileInfoInterface) {
             $source = $source->getUuid();
         }
-        [$uuid, ] = \explode('/', $source);
+        [$uuid] = \explode('/', $source);
         if (!\uuid_is_valid($uuid)) {
             throw new InvalidArgumentException(\sprintf('Uuid \'%s\' for request not valid', $source));
         }

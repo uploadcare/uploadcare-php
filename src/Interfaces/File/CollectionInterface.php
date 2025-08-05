@@ -19,9 +19,9 @@ interface CollectionInterface extends \Countable, \IteratorAggregate, \ArrayAcce
     public static function elementClass(): string;
 
     /**
-     * @return true
-     *
      * @psalm-param T $element
+     *
+     * @return true
      */
     public function add($element): bool;
 
@@ -37,9 +37,9 @@ interface CollectionInterface extends \Countable, \IteratorAggregate, \ArrayAcce
     /**
      * @param string|int $key
      *
-     * @return mixed Removed element
-     *
      * @psalm-param TKey $key
+     *
+     * @return mixed Removed element
      *
      * @psalm-return T|null
      */
@@ -119,9 +119,9 @@ interface CollectionInterface extends \Countable, \IteratorAggregate, \ArrayAcce
     public function map(\Closure $func): self;
 
     /**
-     * @return int|string|bool
-     *
      * @psalm-param T $element
+     *
+     * @return int|string|bool
      *
      * @psalm-return TKey|false
      */

@@ -9,7 +9,7 @@ class AwsModerationLabel implements AwsModerationLabelInterface, SerializableInt
 {
     private ?float $confidence = null;
     private ?string $name = null;
-    private ?string  $parentName = null;
+    private ?string $parentName = null;
 
     public static function rules(): array
     {
