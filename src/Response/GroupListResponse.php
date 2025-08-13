@@ -95,7 +95,7 @@ final class GroupListResponse implements ListResponseInterface, SerializableInte
         return $this->results;
     }
 
-    public function addResult(GroupInterface $result = null): self
+    public function addResult(?GroupInterface $result = null): self
     {
         if ($result !== null && !$this->results->contains($result)) {
             $this->results->add($result);

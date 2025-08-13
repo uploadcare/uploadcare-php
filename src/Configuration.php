@@ -5,9 +5,9 @@ namespace Uploadcare;
 use GuzzleHttp\ClientInterface;
 use Uploadcare\Client\ClientFactory;
 use Uploadcare\Interfaces\AuthUrl\AuthUrlConfigInterface;
+use Uploadcare\Interfaces\{ClientFactoryInterface, ConfigurationInterface};
 use Uploadcare\Interfaces\Serializer\{SerializerFactoryInterface, SerializerInterface};
 use Uploadcare\Interfaces\SignatureInterface;
-use Uploadcare\Interfaces\{ClientFactoryInterface, ConfigurationInterface};
 use Uploadcare\Security\Signature;
 use Uploadcare\Serializer\SerializerFactory;
 
@@ -16,7 +16,7 @@ use Uploadcare\Serializer\SerializerFactory;
  */
 final class Configuration implements ConfigurationInterface
 {
-    public const LIBRARY_VERSION = 'v4.2.0';
+    public const LIBRARY_VERSION = 'v4.2.1';
     public const API_VERSION = '0.7';
     public const API_BASE_URL = 'api.uploadcare.com';
     public const USER_AGENT_TEMPLATE = 'PHPUploadcare/{lib-version}/{publicKey} (PHP/{lang-version})';
@@ -34,7 +34,7 @@ final class Configuration implements ConfigurationInterface
      * @param string $secretKey     Uploadcare API private key
      * @param array  $clientOptions Parameters for Http client (proxy, special headers, etc.)
      */
-    public static function create(string $publicKey, string $secretKey, array $clientOptions = [], ClientFactoryInterface $clientFactory = null, SerializerFactoryInterface $serializerFactory = null): Configuration
+    public static function create(string $publicKey, string $secretKey, array $clientOptions = [], ?ClientFactoryInterface $clientFactory = null, ?SerializerFactoryInterface $serializerFactory = null): Configuration
     {
         $signature = new Signature($secretKey);
         $framework = $clientOptions['framework'] ?? null;

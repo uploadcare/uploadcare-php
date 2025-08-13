@@ -46,8 +46,6 @@ class DecoratedWebhookTest extends TestCase
     /**
      * @dataProvider commonMethods
      *
-     * @param $method
-     *
      * @throws \ReflectionException
      */
     public function testCommonMethods(string $method): void

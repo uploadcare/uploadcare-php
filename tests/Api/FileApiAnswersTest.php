@@ -50,7 +50,7 @@ class FileApiAnswersTest extends TestCase
         return new Client(['handler' => $stack]);
     }
 
-    public function getConfig(ClientInterface $client = null): ConfigurationInterface
+    public function getConfig(?ClientInterface $client = null): ConfigurationInterface
     {
         $configuration = Configuration::create('demo-public-key', 'demo-private-key');
         if ($client === null) {

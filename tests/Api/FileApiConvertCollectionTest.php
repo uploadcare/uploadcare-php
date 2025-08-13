@@ -65,8 +65,6 @@ class FileApiConvertCollectionTest extends TestCase
     /**
      * @dataProvider provideWrongData
      *
-     * @param $item
-     *
      * @throws \ReflectionException
      */
     public function testExceptionWithWrongObject($item): void

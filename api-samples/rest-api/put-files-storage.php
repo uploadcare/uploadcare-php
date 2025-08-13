@@ -12,5 +12,5 @@ foreach ($result->getResult() as $result) {
         continue;
     }
 
-    \sprintf('Result %s is stored at %s', $result->getUuid(), $result->getDatetimeStored()->format(\DateTimeInterface::ATOM));
+    \printf('Result %s is stored at %s', $result->getUuid(), $result->getDatetimeStored()->format(DateTimeInterface::ATOM));
 }

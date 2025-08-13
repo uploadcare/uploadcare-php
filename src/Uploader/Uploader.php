@@ -26,7 +26,7 @@ class Uploader extends AbstractUploader
     /**
      * @param resource $handle
      */
-    public function fromResource($handle, string $mimeType = null, string $filename = null, string $store = 'auto', array $metadata = []): FileInfoInterface
+    public function fromResource($handle, ?string $mimeType = null, ?string $filename = null, string $store = 'auto', array $metadata = []): FileInfoInterface
     {
         try {
             $this->checkResource($handle);
@@ -81,7 +81,7 @@ class Uploader extends AbstractUploader
     /**
      * @param resource $handle
      */
-    private function uploadByParts($handle, int $fileSize, string $mimeType = null, string $filename = null, string $store = null, array $metadata = []): ResponseInterface
+    private function uploadByParts($handle, int $fileSize, ?string $mimeType = null, ?string $filename = null, ?string $store = null, array $metadata = []): ResponseInterface
     {
         if ($filename === null) {
             $filename = \uuid_create();

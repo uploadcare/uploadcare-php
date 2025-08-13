@@ -78,9 +78,6 @@ class WebhookResponse implements WebhookInterface, SerializableInterface
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getTargetUrl(): ?string
     {
         return $this->targetUrl;

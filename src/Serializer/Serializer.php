@@ -17,7 +17,7 @@ class Serializer implements SerializerInterface
         \DateTimeInterface::ATOM,
         'Y-m-d\TH:i:s',
         'Y-m-d\TH:i:s.u',
-        'Y-m-d\TH:i:s.uP'
+        'Y-m-d\TH:i:s.uP',
     ];
 
     protected static array $coreTypes = [
@@ -135,7 +135,7 @@ class Serializer implements SerializerInterface
             throw new SerializerException(\sprintf('Class \'%s\' must implements the \'%s\' interface', $className, SerializableInterface::class));
         }
 
-        $class = new $className;
+        $class = new $className();
         $excluded = $context[self::EXCLUDE_PROPERTY_KEY] ?? [];
 
         $rules = $class::rules();

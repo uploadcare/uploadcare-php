@@ -21,6 +21,7 @@ interface GroupInterface
 
     /**
      * Date and time when files in a group were stored.
+     *
      * @deprecated
      */
     public function getDatetimeStored(): ?\DateTimeInterface;

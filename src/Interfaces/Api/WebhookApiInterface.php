@@ -28,7 +28,7 @@ interface WebhookApiInterface
      * @see https://uploadcare.com/api-refs/rest-api/v0.7.0/#tag/Webhook
      * @see https://uploadcare.com/docs/webhooks/
      */
-    public function createWebhook(string $targetUrl, bool $isActive = true, string $signingSecret = null, string $event = 'file.uploaded'): WebhookInterface;
+    public function createWebhook(string $targetUrl, bool $isActive = true, ?string $signingSecret = null, string $event = 'file.uploaded'): WebhookInterface;
 
     /**
      * @param array $parameters Parameters for update: string `target_url`, bool `is_active`

@@ -5,8 +5,8 @@ namespace Uploadcare\Uploader;
 use GuzzleHttp\Exception\{ClientException, GuzzleException};
 use Psr\Http\Message\ResponseInterface;
 use Uploadcare\Apis\FileApi;
-use Uploadcare\Exception\Upload\{AccountException, FileTooLargeException, RequestParametersException, ThrottledException};
 use Uploadcare\Exception\{HttpException, InvalidArgumentException};
+use Uploadcare\Exception\Upload\{AccountException, FileTooLargeException, RequestParametersException, ThrottledException};
 use Uploadcare\File\File;
 use Uploadcare\File\Metadata;
 use Uploadcare\Interfaces\{ConfigurationInterface, File\FileInfoInterface, SignatureInterface, UploaderInterface};
@@ -68,14 +68,14 @@ abstract class AbstractUploader implements UploaderInterface
      *
      * @throws InvalidArgumentException
      */
-    abstract public function fromResource($handle, string $mimeType = null, string $filename = null, string $store = 'auto', array $metadata = []): FileInfoInterface;
+    abstract public function fromResource($handle, ?string $mimeType = null, ?string $filename = null, string $store = 'auto', array $metadata = []): FileInfoInterface;
 
     /**
      * Upload file from local path.
      *
      * @throws InvalidArgumentException
      */
-    public function fromPath(string $path, string $mimeType = null, string $filename = null, string $store = 'auto', array $metadata = []): FileInfoInterface
+    public function fromPath(string $path, ?string $mimeType = null, ?string $filename = null, string $store = 'auto', array $metadata = []): FileInfoInterface
     {
         if (!\file_exists($path) || !\is_readable($path)) {
             throw new InvalidArgumentException(\sprintf('Unable to read \'%s\': file not found or not readable', $path));
@@ -84,7 +84,7 @@ abstract class AbstractUploader implements UploaderInterface
         return $this->fromResource(\fopen($path, 'rb'), $mimeType, $filename, $store, $metadata);
     }
 
-    public function syncUploadFromUrl(string $url, string $mimeType = null, string $filename = null, string $store = 'auto', array $metadata = []): FileInfoInterface
+    public function syncUploadFromUrl(string $url, ?string $mimeType = null, ?string $filename = null, string $store = 'auto', array $metadata = []): FileInfoInterface
     {
         $token = $this->fromUrl($url, $mimeType, $filename, $store, $metadata);
         do {
@@ -99,7 +99,7 @@ abstract class AbstractUploader implements UploaderInterface
      *
      * @throws InvalidArgumentException
      */
-    public function fromUrl(string $url, string $mimeType = null, string $filename = null, string $store = 'auto', array $metadata = []): string
+    public function fromUrl(string $url, ?string $mimeType = null, ?string $filename = null, string $store = 'auto', array $metadata = []): string
     {
         $checkDuplicates = false;
         $storeDuplicates = false;
@@ -181,7 +181,7 @@ abstract class AbstractUploader implements UploaderInterface
      *
      * @throws InvalidArgumentException
      */
-    public function fromContent(string $content, string $mimeType = null, string $filename = null, string $store = 'auto', array $metadata = []): FileInfoInterface
+    public function fromContent(string $content, ?string $mimeType = null, ?string $filename = null, string $store = 'auto', array $metadata = []): FileInfoInterface
     {
         $res = \fopen('php://temp', 'rb+');
         \fwrite($res, $content);

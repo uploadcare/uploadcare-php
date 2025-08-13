@@ -2,9 +2,9 @@
 
 namespace Uploadcare;
 
-use Uploadcare\Apis\{FileApi, GroupApi};
-use Uploadcare\Interfaces\File\CollectionInterface;
+use Uploadcare\Apis\{FileApi};
 use Uploadcare\Interfaces\{ConfigurationInterface, GroupInterface};
+use Uploadcare\Interfaces\File\CollectionInterface;
 
 /**
  * Decorated Group.

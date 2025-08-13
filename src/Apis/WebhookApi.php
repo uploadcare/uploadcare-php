@@ -41,7 +41,7 @@ final class WebhookApi extends AbstractApi implements WebhookApiInterface
     /**
      * {@inheritDoc}
      */
-    public function createWebhook(string $targetUrl, bool $isActive = true, string $signingSecret = null, string $event = 'file.uploaded'): WebhookInterface
+    public function createWebhook(string $targetUrl, bool $isActive = true, ?string $signingSecret = null, string $event = 'file.uploaded'): WebhookInterface
     {
         if ($signingSecret !== null) {
             $signingSecret = \substr($signingSecret, 0, 32);
