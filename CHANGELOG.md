@@ -5,6 +5,10 @@ The format is based now on [Keep a
 Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to
 [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [4.2.1]
+- Introduce Rector to fix implicitly nullable parameter warnings.
+- Thanks to @kayw-geek for the contribution.
+
 ## [4.2.0]
 - Added [multi-page document conversion](https://uploadcare.com/docs/transformations/document-conversion/#multipage-conversion).
 - Added [Unsafe content detection](https://uploadcare.com/docs/unsafe-content/).
@@ -42,7 +46,7 @@ Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to
 ### Removed
 - PHP 7.1 support (now minimal version is 7.4, PHP 8.0 is also supported)
 - `FileInfoInterface::getImageInfo()`, `FileInfoInterface::getVideoInfo()`, `FileInfoInterface::getRekognitionInfo()` — see `FileInfoInterface::getContentInfo()`
-### Added 
+### Added
 - Support for [REST API 0.7](https://uploadcare.com/api-refs/rest-api/v0.7.0/)
 - `FileInfoInterface::getContentInfo()`: returns `ContentInfoInterface` with `getMime()` (information about MimeType), `getImage` (`ImageInfoInterface` in case of an image) and `getVideo` (`VideoInfoInterface` in case of a video) methods;
 - `FileInfoInterface::getMetadata()` method returns file associated metadata array-accessible object;
@@ -105,7 +109,7 @@ Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to
 ### Fix
 - Added support for guzzlehttp/guzzle:^7.
 
-## [3.0.0] 
+## [3.0.0]
 ### BREAKING CHANGES
 - You must update PHP to 5.6 or a newer version.
 - This **completely new** version **is not** backward compatibile with the
