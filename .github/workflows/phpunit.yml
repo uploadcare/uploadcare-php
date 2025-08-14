@@ -1,35 +1,47 @@
 name: CI-coverage
 
-on: [ push ]
+on: [ push, pull_request ]
+
+permissions:
+  contents: read
 
 jobs:
   test-php:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: true
       matrix:
-        php-versions: [ "7.4", "8.0", "8.4" ]
-        phpunit-versions: [ "9" ]
+        php-version: [ "7.4", "8.0", "8.4" ]
     steps:
-      - uses: actions/checkout@v2
-      - uses: php-actions/composer@v6
+      - uses: actions/checkout@v5
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
         with:
-          php_version: "${{ matrix.php-versions }}"
-          dev: yes
-          interaction: no
-      - name: PHPUnit Tests php
-        uses: php-actions/phpunit@v2
+          php-version: "${{ matrix.php-version }}"
+          extensions: curl, json
+          coverage: xdebug
+          tools: composer:v2
+          ini-values: xdebug.mode=coverage
+
+      - name: Validate Composer files
+        run: composer validate --strict
+
+      - name: Install dependencies
+        uses: ramsey/composer-install@v3
         with:
-          version: "${{ matrix.phpunit-versions }}"
-          php_version: "${{ matrix.php-versions }}"
-          php_extensions: xdebug
-          bootstrap: vendor/autoload.php
-          configuration: phpunit.xml
-          args: --coverage-clover=coverage.xml --exclude-group local-only
+          composer-options: --no-interaction --prefer-dist
+
+      - name: Run PHPUnit
+        run: vendor/bin/phpunit --configuration phpunit.xml --coverage-clover=coverage.xml --exclude-group local-only
         env:
           XDEBUG_MODE: coverage
-      - name: Upload to Codecov
-        uses: codecov/codecov-action@v1
+
+      - name: Upload coverage to Codecov
+        if: matrix.php-version == '8.4'
+        uses: codecov/codecov-action@v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          file: ./coverage.xml
+          files: ./coverage.xml
+          disable_search: true
+          fail_ci_if_error: true
