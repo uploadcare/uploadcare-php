@@ -1,6 +1,7 @@
 FROM composer:latest as composer
-FROM php:7.4-fpm-alpine as php
+FROM php:8.3-fpm-alpine as php
 
+RUN apk add --update linux-headers
 RUN apk add --no-cache git
 
 RUN set -xe \
