@@ -4,4 +4,9 @@ $configuration = Uploadcare\Configuration::create((string) $_ENV['UPLOADCARE_PUB
 $uploader = new Uploadcare\Uploader\Uploader($configuration);
 $fileInfo = $uploader->fromPath(__DIR__ . '/squirrel.jpg');
 
-echo \sprintf('URL: %s, ID: %s, Mime type: %s', $fileInfo->getUrl(), $fileInfo->getUuid(), $fileInfo->getMimeType());
+header('Content-Type: application/json; charset=utf-8');
+echo json_encode([
+    'url' => $fileInfo->getUrl(),
+    'id' => $fileInfo->getUuid(),
+    'mimeType' => $fileInfo->getMimeType(),
+], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);

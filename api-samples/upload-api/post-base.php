@@ -7,7 +7,13 @@ $fileInfo = $uploader->fromPath(__DIR__ . '/squirrel.jpg', null, null, '1', [
     'pet' => 'cat',
 ]);
 
-echo \sprintf("URL: %s, ID: %s, Mime type: %s\n", $fileInfo->getUrl(), $fileInfo->getUuid(), $fileInfo->getMimeType());
+$data = [
+    'url' => $fileInfo->getUrl(),
+    'id' => $fileInfo->getUuid(),
+    'mimeType' => $fileInfo->getMimeType(),
+];
 foreach ($fileInfo->getMetadata() as $key => $value) {
-    echo \sprintf("%s: %s\n", $key, $value);
+    $data[$key] = $value;
 }
+header('Content-Type: application/json; charset=utf-8');
+echo json_encode($data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
