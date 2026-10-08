@@ -9,6 +9,7 @@ use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\TestCase;
+use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Uploadcare\Configuration;
 use Uploadcare\Interfaces\ConfigurationInterface;
@@ -83,5 +84,46 @@ class UploaderMethodsTest extends TestCase
         $content = \file_get_contents(\dirname(__DIR__) . '/_data/test.jpg');
 
         self::assertInstanceOf(FileInfoInterface::class, $uploader->fromContent($content));
+    }
+
+    public function provideFileContentTypes(): array
+    {
+        return [
+            'explicit mime type' => ['image/png', 'image/png'],
+            'inferred from filename' => [null, 'text/plain'],
+        ];
+    }
+
+    /**
+     * @dataProvider provideFileContentTypes
+     */
+    public function testFileContentTypeHeader(?string $mimeType, string $expected): void
+    {
+        $requestBody = '';
+        $boundary = '';
+        // The uploader closes the file handle after sending, so the body has to be read at send time.
+        $handler = new MockHandler([
+            static function (RequestInterface $request) use (&$requestBody, &$boundary): ResponseInterface {
+                $requestBody = (string) $request->getBody();
+                \preg_match('/boundary=([^\s;]+)/', $request->getHeaderLine('Content-Type'), $matches);
+                $boundary = $matches[1];
+
+                return new Response(200, [], \json_encode(['file' => \uuid_create()]));
+            },
+            new Response(200, [], \file_get_contents(\dirname(__DIR__) . '/_data/file-info.json')),
+        ]);
+        $uploader = new Uploader($this->makeConfiguration(new Client(['handler' => HandlerStack::create($handler)])));
+        $uploader->fromContent('content', $mimeType, 'file.txt');
+
+        $fileHeaders = null;
+        foreach (\explode('--' . $boundary, $requestBody) as $part) {
+            if (\strpos($part, 'name="file"') !== false) {
+                $fileHeaders = \explode("\r\n\r\n", $part, 2)[0];
+            }
+        }
+
+        self::assertNotNull($fileHeaders);
+        self::assertSame(1, \substr_count(\strtolower($fileHeaders), 'content-type:'));
+        self::assertStringContainsString("Content-Type: {$expected}\r\n", $fileHeaders . "\r\n");
     }
 }
