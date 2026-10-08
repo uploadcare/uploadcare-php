@@ -12,6 +12,7 @@ jobs:
       fail-fast: true
       matrix:
         php-version: [ "7.4", "8.0", "8.4" ]
+        guzzle-version: [ "7.5", "8.0" ]
     steps:
       - uses: actions/checkout@v5
 
@@ -27,6 +28,9 @@ jobs:
       - name: Validate Composer files
         run: composer validate --strict
 
+      - name: Pin Guzzle version
+        run: composer require --no-update --no-interaction "guzzlehttp/guzzle:^${{ matrix.guzzle-version }}"
+
       - name: Install dependencies
         uses: ramsey/composer-install@v3
         with:
@@ -38,7 +42,7 @@ jobs:
           XDEBUG_MODE: coverage
 
       - name: Upload coverage to Codecov
-        if: matrix.php-version == '8.4'
+        if: matrix.php-version == '8.4' && matrix.guzzle-version == '8.0'
         uses: codecov/codecov-action@v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
