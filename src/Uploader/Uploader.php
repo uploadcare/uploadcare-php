@@ -56,13 +56,17 @@ class Uploader extends AbstractUploader
      */
     private function directUpload($handle, ?string $mimeType = null, ?string $filename = null, string $store = 'auto', array $metadata = []): ResponseInterface
     {
+        $file = [
+            'name' => 'file',
+            'contents' => $handle,
+            'filename' => $filename ?: \uuid_create(),
+        ];
+        if ($mimeType !== null) {
+            $file['headers'] = ['Content-Type' => $mimeType];
+        }
+
         $parameters = $this->makeMultipartParameters(\array_merge($this->getDefaultParameters(), [
-            [
-                'name' => 'file',
-                'contents' => $handle,
-                'filename' => $filename ?: \uuid_create(),
-                'headers' => ['Content-Type' => $mimeType],
-            ],
+            $file,
             self::UPLOADCARE_STORE_KEY => $store,
         ], $this->makeMetadataParameters($metadata)));
 

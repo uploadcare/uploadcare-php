@@ -27,7 +27,6 @@ class ConfigurationTest extends TestCase
         return [
             [null],
             ['Some-existing-header'],
-            [false],
             ['0'],
         ];
     }

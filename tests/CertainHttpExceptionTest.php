@@ -30,7 +30,7 @@ class CertainHttpExceptionTest extends TestCase
                 RequestParametersException::class,
             ],
             ThrottledException::class => [
-                new ClientException('', $request, new Response(429, ['Retry-After' => 40], 'Request was throttled.')),
+                new ClientException('', $request, new Response(429, ['Retry-After' => '40'], 'Request was throttled.')),
                 ThrottledException::class,
             ],
         ];
@@ -72,7 +72,7 @@ class CertainHttpExceptionTest extends TestCase
         $handleException = (new \ReflectionObject($uploader))->getMethod('handleException');
         $handleException->setAccessible(true);
 
-        $unknownClientException = new ClientException('', new Request('GET', 'https://example.com'), new Response(411, ['Retry-After' => 40], 'Request was throttled.'));
+        $unknownClientException = new ClientException('', new Request('GET', 'https://example.com'), new Response(411, ['Retry-After' => '40'], 'Request was throttled.'));
         self::assertInstanceOf(HttpException::class, $handleException->invokeArgs($uploader, [$unknownClientException]));
 
         $abstractException = new \Exception();
