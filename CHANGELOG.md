@@ -5,6 +5,9 @@ The format is based now on [Keep a
 Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to
 [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [4.3.0]
+- Support Guzzle 8 and psr7 3.
+
 ## [4.2.1]
 - Introduce Rector to fix implicitly nullable parameter warnings.
 - Thanks to @kayw-geek for the contribution.
