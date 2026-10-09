@@ -18,7 +18,7 @@ class HttpExceptionTest extends TestCase
         $request = new Request('GET', 'https://localhost');
 
         return [
-            [new RequestException('Wrong Request', $request, new Response(400))],
+            [new RequestException('Wrong Request', $request)],
             [new TooManyRedirectsException('Too many redirects', $request, new Response(400))],
             [new ConnectException('Cant connect', $request)],
             [new ServerException('Server made a boo-boo', $request, new Response(400))],

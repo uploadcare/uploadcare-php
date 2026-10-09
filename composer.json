@@ -27,8 +27,8 @@
     "php": ">=7.4 || >=8.0",
     "ext-curl": "*",
     "ext-json": "*",
-    "guzzlehttp/guzzle": "^7.5",
-    "guzzlehttp/psr7": "^2.4",
+    "guzzlehttp/guzzle": "^7.5 || ^8.0",
+    "guzzlehttp/psr7": "^2.4 || ^3.0",
     "symfony/polyfill-php80": "^1.26",
     "symfony/polyfill-uuid": "^1.26"
   },
