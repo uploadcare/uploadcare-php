@@ -1,0 +1,14 @@
+{
+  "tags": [
+    "cat",
+    "animal",
+    "cute"
+  ],
+  "added": [
+    "animal",
+    "cute"
+  ],
+  "deleted": [
+    "old-tag"
+  ]
+}
