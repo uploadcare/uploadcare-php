@@ -1,0 +1,28 @@
+{
+  "next": null,
+  "previous": "https://api.uploadcare.com/files/search/?include=appdata&limit=2&offset=0",
+  "total": 3,
+  "per_page": 2,
+  "results": [
+    {
+      "datetime_removed": null,
+      "datetime_stored": "2024-07-16T03:28:06.175429Z",
+      "datetime_uploaded": "2024-07-16T03:28:06.043475Z",
+      "is_image": false,
+      "is_ready": true,
+      "mime_type": "application/pdf",
+      "original_file_url": "https://ucarecdn.com/3a2b1c0d-1111-4222-8333-444455556666/vacationplan.pdf",
+      "original_filename": "vacation-plan.pdf",
+      "size": 2048,
+      "url": "https://api.uploadcare.com/files/3a2b1c0d-1111-4222-8333-444455556666/",
+      "uuid": "3a2b1c0d-1111-4222-8333-444455556666",
+      "variations": null,
+      "content_info": null,
+      "metadata": {},
+      "tags": [],
+      "highlight": {
+        "original_filename": ["<em>vacation</em>-plan.pdf"]
+      }
+    }
+  ]
+}

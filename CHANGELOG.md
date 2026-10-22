@@ -11,6 +11,8 @@ Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to
     - `Uploadcare\Api::tags()` with `getTags`, `replaceTags` and `updateTags` methods.
     - `Uploadcare\Interfaces\File\FileInfoInterface::getTags()` returns the tags of a file without an additional request.
     - Every upload method accepts a list of tags as the last argument.
+- [File search](https://uploadcare.com/docs/file-search/) support: `Uploadcare\Api::search()` with `search` and
+  `nextPage` methods, and the `Uploadcare\Search\SearchQuery` builder for search conditions.
 ### Changed
 - `Uploadcare\Interfaces\File\FileInfoInterface` has a new `getTags` method, and every upload method of
   `Uploadcare\Interfaces\UploaderInterface` has a new trailing `array $tags = []` parameter. Custom

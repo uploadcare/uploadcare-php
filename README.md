@@ -307,8 +307,76 @@ The same limits as for the upload apply: up to 50 tags per file, up to 100 chara
 only Latin letters, digits, hyphen, underscore and dot are allowed. Invalid values throw an
 `Uploadcare\Exception\TagsException` without making a request.
 
-Mind that filtering files by tags is a part of the file search API, which this library does not
-support yet.
+To find files by tags, use the [file search](#file-search).
+
+### File search
+
+[File search](https://uploadcare.com/docs/file-search/) combines full-text search, exact
+matching, range and tag filters in a single request. Build the conditions with
+`Uploadcare\Search\SearchQuery` and pass them to the `search()` API:
+
+```php
+use Uploadcare\Search\SearchQuery;
+
+$config = \Uploadcare\Configuration::create($_ENV['UPLOADCARE_PUBLIC_KEY'], $_ENV['UPLOADCARE_SECRET_KEY']);
+$searchApi = (new \Uploadcare\Api($config))->search();
+
+$query = (new SearchQuery())
+    ->phrase(SearchQuery::FIELD_ORIGINAL_FILENAME, 'invoice')
+    ->exact(SearchQuery::FIELD_MIME_TYPE, ['application/pdf'])
+    ->datetimeUploaded(SearchQuery::GTE, new \DateTimeImmutable('2024-01-01'))
+    ->datetimeUploaded(SearchQuery::LT, new \DateTimeImmutable('2025-01-01'))
+    ->sort('-datetime_uploaded');
+
+$result = $searchApi->search($query, 50);
+foreach ($result->getResults() as $file) {
+    echo $file->getOriginalFilename() . \PHP_EOL;
+}
+```
+
+Different conditions are combined with AND. The available conditions are:
+
+- `query($term)` — full-text search across filename, metadata and MIME type at once. A file UUID in
+  the term puts that file at the top.
+- `phrase($field, $term)` — full-text search in `original_filename`, `detected_mime_type` or
+  `metadata`. Several fields are combined with AND.
+- `exact($field, $values)` — exact match of `original_filename`, `detected_mime_type` or `uuid`, and
+  `exactMetadata($key, $values)` for a single metadata key. Several values are combined with OR.
+- `datetimeUploaded($operator, \DateTimeInterface $date)` and `size($operator, $bytes)` — range
+  filters with `SearchQuery::GT`, `GTE`, `LT` and `LTE`. Call twice to make a range.
+- `isImage(true|false)` — images only, or everything but images.
+- `tagsAny($tags)`, `tagsAll($tags)`, `tagsNone($tags)` — the file has at least one, all, or none of
+  the tags.
+
+Two modifiers change how files are matched and ordered:
+
+- `fuzziness()` — typo-tolerant `query` and `phrase`. It makes the request noticeably slower.
+- `sort(...$keys)` — 1 to 4 of `score`, `datetime_uploaded`, `size`, `original_filename`, prefix a
+  key with `-` for descending order. Without it, results are ordered by relevance. For filter-only
+  queries the order is undefined, so always pass a sort there.
+
+`query` and `phrase` terms must be at least 4 characters long. Use `exact` for short values. A field
+cannot be used in both `phrase` and `exact`. Invalid conditions throw an
+`Uploadcare\Exception\SearchException` without making a request.
+
+`search(SearchQuery $query, int $limit = 20, int $offset = 0, bool $includeAppData = false)` returns
+an `Uploadcare\Response\SearchResponse`. It is a regular list response with `Uploadcare\File`
+results, so you can `store()` or `delete()` them right away. Two more methods are available:
+
+```php
+// Matched tokens of full-text conditions, empty for filter-only matches
+$result->getHighlight($file); // ['original_filename' => ['<em>invoice</em>-2024.pdf']]
+
+// The same query, next page. `null` on the last page.
+$next = $searchApi->nextPage($result);
+```
+
+`$limit` is from 1 to 100, and `$offset + $limit` must not exceed 1000: results beyond the first
+1000 cannot be paged through, so narrow the query instead. Pass `$includeAppData = true` to embed
+the application data (moderation, virus-scan results) into each file.
+
+Mind that files are indexed asynchronously: new uploads and changes, including tag updates, may take
+up to 15 seconds to show up in the results.
 
 ### `Uploadcare\FileCollection` class
 
