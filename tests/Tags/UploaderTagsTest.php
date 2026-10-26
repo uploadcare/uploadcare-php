@@ -154,11 +154,11 @@ class UploaderTagsTest extends TestCase
 
     public function testMultipartUploadSendsTagsOnStartOnly(): void
     {
-        // Sparse write: the uploader only looks at the size, so there is no need to
-        // materialize 100 Mb of content.
-        $handle = \fopen('php://temp', 'rb+');
-        \fseek($handle, Uploader::MULTIPART_UPLOAD_SIZE - 1);
-        \fwrite($handle, 'a');
+        // Sparse file: the uploader only looks at the size, so there is no need to
+        // materialize 100 Mb of content. A real file is used because seeking past the
+        // end of a php://temp stream fails silently before PHP 8.1.
+        $handle = \tmpfile();
+        self::assertTrue(\ftruncate($handle, Uploader::MULTIPART_UPLOAD_SIZE));
         \rewind($handle);
 
         $configuration = $this->makeConfiguration([
