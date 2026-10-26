@@ -266,7 +266,7 @@ They are a part of the file info, so no extra request is needed to read them:
 
 ```php
 $config = \Uploadcare\Configuration::create($_ENV['UPLOADCARE_PUBLIC_KEY'], $_ENV['UPLOADCARE_SECRET_KEY']);
-$fileInfo = (new \Uploadcare\Api($config))->file()->fileInfo('1bac376c-aa7e-4356-861b-dd2657b5bfd2');
+$fileInfo = (new \Uploadcare\Api($config))->file()->fileInfo($uuid);
 
 foreach ($fileInfo->getTags() as $tag) {
     echo $tag . \PHP_EOL;
@@ -293,14 +293,14 @@ $tagsApi = (new \Uploadcare\Api($config))->tags();
 `Uploadcare\Response\TagsResponse` with the resulting list and the difference that has been made:
 
 ```php
-$result = $tagsApi->replaceTags('1bac376c-aa7e-4356-861b-dd2657b5bfd2', ['cat', 'animal', 'cute']);
+$result = $tagsApi->replaceTags($uuid, ['cat', 'animal', 'cute']);
 
 $result->getTags();    // Uploadcare\File\Tags, the resulting list in storage order
 $result->getAdded();   // ['animal', 'cute']
 $result->getDeleted(); // ['old-tag']
 
-$tagsApi->updateTags('1bac376c-aa7e-4356-861b-dd2657b5bfd2', ['dog'], ['cat']);
-$tagsApi->replaceTags('1bac376c-aa7e-4356-861b-dd2657b5bfd2', []); // clear all tags
+$tagsApi->updateTags($uuid, ['dog'], ['cat']);
+$tagsApi->replaceTags($uuid, []); // clear all tags
 ```
 
 The same limits as for the upload apply: up to 50 tags per file, up to 100 characters each, and
