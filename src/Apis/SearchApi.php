@@ -55,7 +55,7 @@ final class SearchApi extends AbstractApi implements SearchApiInterface
         $result
             ->setResults(new FileCollectionDecorator($result->getResults(), $this->fileApi))
             ->setHighlights($this->highlights($contents))
-            ->setQuery($query);
+            ->setQuery(clone $query);
 
         return $result;
     }
@@ -74,7 +74,9 @@ final class SearchApi extends AbstractApi implements SearchApiInterface
 
         $limit = isset($parameters['limit']) ? (int) $parameters['limit'] : $response->getPerPage();
         $offset = isset($parameters['offset']) ? (int) $parameters['offset'] : 0;
-        if ($offset + $limit > self::MAX_WINDOW) {
+        // Shrink the last page to fit the window instead of losing the remaining results.
+        $limit = \min($limit, self::MAX_WINDOW - $offset);
+        if ($limit < 1) {
             return null;
         }
 

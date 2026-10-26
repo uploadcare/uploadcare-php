@@ -114,7 +114,8 @@ class SearchApiTest extends TestCase
         self::assertSame(2, $result->getPerPage());
         self::assertNull($result->getPrevious());
         self::assertStringContainsString('offset=2', (string) $result->getNext());
-        self::assertSame($query, $result->getQuery());
+        self::assertEquals($query, $result->getQuery());
+        self::assertNotSame($query, $result->getQuery());
 
         $files = $result->getResults();
         self::assertCount(2, $files);
@@ -172,6 +173,32 @@ class SearchApiTest extends TestCase
 
         self::assertNull($api->nextPage($response));
         self::assertCount(0, $this->history);
+    }
+
+    public function testNextPageShrinksTheLastPageToTheWindow(): void
+    {
+        $api = new SearchApi($this->getConfig([$this->response('file-search-last-page-response.json')]));
+        $response = (new SearchResponse())
+            ->setNext('https://api.uploadcare.com/files/search/?limit=30&offset=990')
+            ->setQuery((new SearchQuery())->isImage());
+
+        self::assertInstanceOf(SearchResponse::class, $api->nextPage($response));
+        self::assertSame(['limit' => '10', 'offset' => '990'], $this->queryOf($this->request(0)));
+    }
+
+    public function testNextPageIsNotAffectedByChangesOfTheQuery(): void
+    {
+        $api = new SearchApi($this->getConfig([
+            $this->response('file-search-response.json'),
+            $this->response('file-search-last-page-response.json'),
+        ]));
+        $query = (new SearchQuery())->query('vacation');
+        $first = $api->search($query, 2);
+
+        $query->isImage();
+        $api->nextPage($first);
+
+        self::assertSame((string) $this->request(0)->getBody(), (string) $this->request(1)->getBody());
     }
 
     public function testNextPageRequiresTheQuery(): void
