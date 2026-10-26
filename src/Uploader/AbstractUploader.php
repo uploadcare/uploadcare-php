@@ -8,7 +8,7 @@ use Uploadcare\Apis\FileApi;
 use Uploadcare\Exception\{HttpException, InvalidArgumentException};
 use Uploadcare\Exception\Upload\{AccountException, FileTooLargeException, RequestParametersException, ThrottledException};
 use Uploadcare\File\File;
-use Uploadcare\File\Metadata;
+use Uploadcare\File\{Metadata, Tags};
 use Uploadcare\Interfaces\{ConfigurationInterface, File\FileInfoInterface, SignatureInterface, UploaderInterface};
 
 /**
@@ -68,25 +68,25 @@ abstract class AbstractUploader implements UploaderInterface
      *
      * @throws InvalidArgumentException
      */
-    abstract public function fromResource($handle, ?string $mimeType = null, ?string $filename = null, string $store = 'auto', array $metadata = []): FileInfoInterface;
+    abstract public function fromResource($handle, ?string $mimeType = null, ?string $filename = null, string $store = 'auto', array $metadata = [], array $tags = []): FileInfoInterface;
 
     /**
      * Upload file from local path.
      *
      * @throws InvalidArgumentException
      */
-    public function fromPath(string $path, ?string $mimeType = null, ?string $filename = null, string $store = 'auto', array $metadata = []): FileInfoInterface
+    public function fromPath(string $path, ?string $mimeType = null, ?string $filename = null, string $store = 'auto', array $metadata = [], array $tags = []): FileInfoInterface
     {
         if (!\file_exists($path) || !\is_readable($path)) {
             throw new InvalidArgumentException(\sprintf('Unable to read \'%s\': file not found or not readable', $path));
         }
 
-        return $this->fromResource(\fopen($path, 'rb'), $mimeType, $filename, $store, $metadata);
+        return $this->fromResource(\fopen($path, 'rb'), $mimeType, $filename, $store, $metadata, $tags);
     }
 
-    public function syncUploadFromUrl(string $url, ?string $mimeType = null, ?string $filename = null, string $store = 'auto', array $metadata = []): FileInfoInterface
+    public function syncUploadFromUrl(string $url, ?string $mimeType = null, ?string $filename = null, string $store = 'auto', array $metadata = [], array $tags = []): FileInfoInterface
     {
-        $token = $this->fromUrl($url, $mimeType, $filename, $store, $metadata);
+        $token = $this->fromUrl($url, $mimeType, $filename, $store, $metadata, $tags);
         do {
             $file = $this->checkStatus($token);
         } while ($file->isReady() === false);
@@ -99,7 +99,7 @@ abstract class AbstractUploader implements UploaderInterface
      *
      * @throws InvalidArgumentException
      */
-    public function fromUrl(string $url, ?string $mimeType = null, ?string $filename = null, string $store = 'auto', array $metadata = []): string
+    public function fromUrl(string $url, ?string $mimeType = null, ?string $filename = null, string $store = 'auto', array $metadata = [], array $tags = []): string
     {
         $checkDuplicates = false;
         $storeDuplicates = false;
@@ -119,7 +119,7 @@ abstract class AbstractUploader implements UploaderInterface
             'filename' => $filename,
             'store' => $store,
             'pub_key' => $this->configuration->getPublicKey(),
-        ], $this->makeMetadataParameters($metadata)));
+        ], $this->makeMetadataParameters($metadata), $this->makeTagsParameters($tags)));
 
         try {
             $response = $this->sendRequest('POST', 'from_url/', $parameters)->getBody()->getContents();
@@ -181,13 +181,31 @@ abstract class AbstractUploader implements UploaderInterface
      *
      * @throws InvalidArgumentException
      */
-    public function fromContent(string $content, ?string $mimeType = null, ?string $filename = null, string $store = 'auto', array $metadata = []): FileInfoInterface
+    public function fromContent(string $content, ?string $mimeType = null, ?string $filename = null, string $store = 'auto', array $metadata = [], array $tags = []): FileInfoInterface
     {
         $res = \fopen('php://temp', 'rb+');
         \fwrite($res, $content);
         $this->rewind($res);
 
-        return $this->fromResource($res, $mimeType, $filename, $store, $metadata);
+        return $this->fromResource($res, $mimeType, $filename, $store, $metadata, $tags);
+    }
+
+    /**
+     * Unlike metadata keys, an invalid tag is not skipped silently: the API rejects the whole
+     * upload with a 400, so it is better to fail before the file is sent.
+     *
+     * @param array<array-key, string> $tags
+     *
+     * @throws \Uploadcare\Exception\TagsException
+     */
+    protected function makeTagsParameters(array $tags): array
+    {
+        $normalized = Tags::assertValid($tags);
+        if ($normalized === []) {
+            return [];
+        }
+
+        return ['tags' => \implode(',', $normalized)];
     }
 
     protected function makeMetadataParameters(array $metadata): array

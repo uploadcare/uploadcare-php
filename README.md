@@ -9,19 +9,19 @@ Uploadcare PHP integration handles uploads and further operations with files by 
 [stack]: https://stackshare.io/uploadcare/stacks/
 [codecov-img]: https://codecov.io/gh/uploadcare/uploadcare-php/branch/master/graph/badge.svg
 
-* [Requirements](#requirements)
-* [Install](#install)
-* [Usage](#usage)
-  * [Uploading files](#uploading-files)
-  * [File operations](#file-operations)
-  * [Addons operations](#addons-operations)
-  * [Group operations](#group-operations)
-  * [Project operations](#project-operations)
-  * [Webhooks](#webhooks)
-  * [Conversion operations](#conversion-operations)
-  * [Secure delivery](#secure-delivery)
-  * [Tests](#tests)
-* [Useful links](#useful-links)
+- [Requirements](#requirements)
+- [Install](#install)
+- [Usage](#usage)
+    - [Uploading files](#uploading-files)
+    - [File operations](#file-operations)
+    - [Addons operations](#addons-operations)
+    - [Group operations](#group-operations)
+    - [Project operations](#project-operations)
+    - [Webhooks](#webhooks)
+    - [Conversion operations](#conversion-operations)
+    - [Secure delivery](#secure-delivery)
+    - [Tests](#tests)
+- [Useful links](#useful-links)
 
 ## Requirements
 
@@ -126,14 +126,14 @@ You can upload files from URL **synchronically**,
 
 ```php
 $url = 'https://httpbin.org/image/jpeg';
-$result = $uploader->syncUploadFromUrl($url, 'image/jpeg'); // $result is Uploadcare\Interfaces\File\FileInfoInterface 
+$result = $uploader->syncUploadFromUrl($url, 'image/jpeg'); // $result is Uploadcare\Interfaces\File\FileInfoInterface
 ```
 
 Check an uploading file status,
 
 ```php
 $url = 'https://httpbin.org/image/jpeg';
-$result = $uploader->fromUrl($url, 'image/jpeg'); 
+$result = $uploader->fromUrl($url, 'image/jpeg');
 $status = $uploader->checkStatus($result); // Instance of Uploadcare\Interfaces\File\FileInfoInterface with isReady() === false until file is not uploaded.
 ```
 
@@ -180,6 +180,23 @@ $result = $uploader->fromPath($path, 'image/jpeg', null, '1', ['type' => 'animal
 
 You will see this values in a `metadata` object of `Uploadcare\File` response.
 
+#### File tags
+
+Every upload method can also attach [file tags](https://uploadcare.com/docs/file-tags/) with the last argument:
+
+```php
+$path = __DIR__ . '/squirrel.jpg';
+$result = $uploader->fromPath($path, 'image/jpeg', null, '1', [], ['animal', 'squirrel']);
+```
+
+Tags are normalized by the API before they are stored: lowercased, whitespace-stripped, with
+duplicates removed. A file can have up to 50 tags, each up to 100 characters long, and only
+Latin letters, digits, hyphen (`-`), underscore (`_`) and dot (`.`) are allowed. Invalid tags
+throw an `Uploadcare\Exception\TagsException` before anything is sent.
+
+Mind that the upload response does not contain the tags. To read them back, request the file
+info and call `getTags()` on it, or use the [tags API](#file-tags-1).
+
 ### Multipart upload
 
 If you have a large file (more than 100Mb / 10485760 bytes), the uploader will automatically process it with a [multipart upload](https://uploadcare.com/api-refs/upload-api/#operation/multipartFileUploadStart). It'll take more time to upload, and also we don’t recommend it for a web environment.
@@ -197,7 +214,7 @@ All these operations are accessible via File API, and you can access them throug
 
 ## File operations
 
-For any file operation type, you’ll need to create an `Uploadcare\Api`  instance with configuration object and call the `file()` method:
+For any file operation type, you’ll need to create an `Uploadcare\Api` instance with configuration object and call the `file()` method:
 
 ```php
 $config = \Uploadcare\Configuration::create($_ENV['UPLOADCARE_PUBLIC_KEY'], $_ENV['UPLOADCARE_SECRET_KEY']);
@@ -207,28 +224,28 @@ $fileApi = (new \Uploadcare\Api($config))->file();
 After that, you can access to file operation methods:
 
 - `listFiles($limit = 100, $orderBy = 'datetime_uploaded', $from = null, $addFields = [], $stored = null, $removed = false)` — a list of files. Returns an `Uploadcare\FileCollection` instance (see below). Each element of collection is an `Uploadcare\File`. Arguments:
-    - int             `$limit`     A preferred amount of files in a list for a single response. Defaults to 100, while the maximum is 1000.
-    - string          `$orderBy`   Specifies the way to sort files in a returned list.
-    - string|int|null `$from`      A starting point for a file filter. The value depends on your `$orderBy` parameter value.
-    - array           `$addFields` **Deprecated** This parameter is deprecated since v4.0.1 and will be removed in v4.1
-    - bool|null       `$stored`    `true` includes the only stored files, `false` includes temporary files. If not set (default): both stored and not stored files will be included.
-    - bool            `$removed`   `true` to only include removed files in the response, `false` to include existing files. The default value is false.
-- `nextPage(FileListResponseInterface $response)` — next page from previous answer, if next pages exist. You can use it in a simple `while` loop, for example:     
+    - int `$limit` A preferred amount of files in a list for a single response. Defaults to 100, while the maximum is 1000.
+    - string `$orderBy` Specifies the way to sort files in a returned list.
+    - string|int|null `$from` A starting point for a file filter. The value depends on your `$orderBy` parameter value.
+    - array `$addFields` **Deprecated** This parameter is deprecated since v4.0.1 and will be removed in v4.1
+    - bool|null `$stored` `true` includes the only stored files, `false` includes temporary files. If not set (default): both stored and not stored files will be included.
+    - bool `$removed` `true` to only include removed files in the response, `false` to include existing files. The default value is false.
+- `nextPage(FileListResponseInterface $response)` — next page from previous answer, if next pages exist. You can use it in a simple `while` loop, for example:
     ```php
     $config = \Uploadcare\Configuration::create($_ENV['UPLOADCARE_PUBLIC_KEY'], $_ENV['UPLOADCARE_SECRET_KEY']);
     $fileApi = new \Uploadcare\Apis\FileApi($config);
     $page = $fileApi->listFiles(5); // Here is a FileListResponseInterface
     while (($page = $fileApi->nextPage($page)) !== null) {
-      $files = $page->getResults(); 
+      $files = $page->getResults();
     }
     ```
 - `getPageRequestParameters(string | null $url)` — Get an array with next page request parameters. Use it to create links to the previous/next page of the list.
 - `storeFile(string $id)` — Stores a single file by UUID. Returns the `Uploadcare\File` (`FileInfoInterface`).
-    Takes file UUID as an argument.
+  Takes file UUID as an argument.
 - `deleteFile(string $id)` — Removes individual files. Returns file info.
-    Takes file UUID as an argument.
+  Takes file UUID as an argument.
 - `fileInfo(string $id)` — Once you obtain a list of files, you might want to acquire some file-specific info. Returns `FileInfoInterface`.
-    Takes array of file UUID's as an argument.
+  Takes array of file UUID's as an argument.
 - `batchStoreFile(array $ids)` — Used to store multiple files in one step. Supports up to 100 files per request. Takes an array of file UUID's as an argument.
 - `batchDeleteFile(array $ids)` — Used to delete multiple files in one step. Takes an array of file UUID's as an argument.
 - `copyToLocalStorage(string $source, bool $store)` — Used to copy original files, or their modified versions to a default storage. Arguments:
@@ -239,8 +256,127 @@ After that, you can access to file operation methods:
     - `$target` — Defines a custom storage name related to your project and implies you are copying a file to a specified custom storage. Keep in mind that you can have multiple storages associated with one S3 bucket.
     - `$makePublic` — `true` to make copied files available via public links, `false` to reverse the behavior.
     - `$pattern` — The parameter is used to specify file names Uploadcare passes to a custom storage. In case when the parameter is omitted, we use a pattern of your custom storage. Use any combination of allowed values.
-    
+
 See the [API documentation](https://uploadcare.com/api-refs/rest-api/v0.7.0/#tag/File) for more details.
+
+### File tags
+
+Every file can carry a list of searchable string [tags](https://uploadcare.com/docs/file-tags/).
+They are a part of the file info, so no extra request is needed to read them:
+
+```php
+$config = \Uploadcare\Configuration::create($_ENV['UPLOADCARE_PUBLIC_KEY'], $_ENV['UPLOADCARE_SECRET_KEY']);
+$fileInfo = (new \Uploadcare\Api($config))->file()->fileInfo($uuid);
+
+foreach ($fileInfo->getTags() as $tag) {
+    echo $tag . \PHP_EOL;
+}
+
+$fileInfo->getTags()->has('cat'); // true or false
+$fileInfo->getTags()->toArray();  // ['cat', 'animal']
+```
+
+To modify tags, call the `tags()` method of the API object:
+
+```php
+$config = \Uploadcare\Configuration::create($_ENV['UPLOADCARE_PUBLIC_KEY'], $_ENV['UPLOADCARE_SECRET_KEY']);
+$tagsApi = (new \Uploadcare\Api($config))->tags();
+```
+
+- `getTags($id)` — the current tag list of a file. Returns `Uploadcare\File\Tags`.
+- `replaceTags($id, array $tags)` — replaces the whole tag set. Tags that are not in the new
+  list are deleted, an empty array clears all tags.
+- `updateTags($id, array $add = [], array $delete = [])` — adds and/or removes tags in a single
+  atomic operation. Delete is applied first, so a tag can be removed and added back in one call.
+
+`$id` is either a file UUID or any `FileInfoInterface` instance. Both modifying methods return an
+`Uploadcare\Response\TagsResponse` with the resulting list and the difference that has been made:
+
+```php
+$result = $tagsApi->replaceTags($uuid, ['cat', 'animal', 'cute']);
+
+$result->getTags();    // Uploadcare\File\Tags, the resulting list in storage order
+$result->getAdded();   // ['animal', 'cute']
+$result->getDeleted(); // ['old-tag']
+
+$tagsApi->updateTags($uuid, ['dog'], ['cat']);
+$tagsApi->replaceTags($uuid, []); // clear all tags
+```
+
+The same limits as for the upload apply: up to 50 tags per file, up to 100 characters each, and
+only Latin letters, digits, hyphen, underscore and dot are allowed. Invalid values throw an
+`Uploadcare\Exception\TagsException` without making a request.
+
+To find files by tags, use the [file search](#file-search).
+
+### File search
+
+[File search](https://uploadcare.com/docs/file-search/) combines full-text search, exact
+matching, range and tag filters in a single request. Build the conditions with
+`Uploadcare\Search\SearchQuery` and pass them to the `search()` API:
+
+```php
+use Uploadcare\Search\SearchQuery;
+
+$config = \Uploadcare\Configuration::create($_ENV['UPLOADCARE_PUBLIC_KEY'], $_ENV['UPLOADCARE_SECRET_KEY']);
+$searchApi = (new \Uploadcare\Api($config))->search();
+
+$query = (new SearchQuery())
+    ->phrase(SearchQuery::FIELD_ORIGINAL_FILENAME, 'invoice')
+    ->exact(SearchQuery::FIELD_MIME_TYPE, ['application/pdf'])
+    ->datetimeUploaded(SearchQuery::GTE, new \DateTimeImmutable('2024-01-01'))
+    ->datetimeUploaded(SearchQuery::LT, new \DateTimeImmutable('2025-01-01'))
+    ->sort('-datetime_uploaded');
+
+$result = $searchApi->search($query, 50);
+foreach ($result->getResults() as $file) {
+    echo $file->getOriginalFilename() . \PHP_EOL;
+}
+```
+
+Different conditions are combined with AND. The available conditions are:
+
+- `query($term)` — full-text search across filename, metadata and MIME type at once. A file UUID in
+  the term puts that file at the top.
+- `phrase($field, $term)` — full-text search in `original_filename`, `detected_mime_type` or
+  `metadata`. Several fields are combined with AND.
+- `exact($field, $values)` — exact match of `original_filename`, `detected_mime_type` or `uuid`, and
+  `exactMetadata($key, $values)` for a single metadata key. Several values are combined with OR.
+- `datetimeUploaded($operator, \DateTimeInterface $date)` and `size($operator, $bytes)` — range
+  filters with `SearchQuery::GT`, `GTE`, `LT` and `LTE`. Call twice to make a range.
+- `isImage(true|false)` — images only, or everything but images.
+- `tagsAny($tags)`, `tagsAll($tags)`, `tagsNone($tags)` — the file has at least one, all, or none of
+  the tags.
+
+Two modifiers change how files are matched and ordered:
+
+- `fuzziness()` — typo-tolerant `query` and `phrase`. It makes the request noticeably slower.
+- `sort(...$keys)` — 1 to 4 of `score`, `datetime_uploaded`, `size`, `original_filename`, prefix a
+  key with `-` for descending order. Without it, results are ordered by relevance. For filter-only
+  queries the order is undefined, so always pass a sort there.
+
+`query` and `phrase` terms must be at least 4 characters long. Use `exact` for short values. A field
+cannot be used in both `phrase` and `exact`. Invalid conditions throw an
+`Uploadcare\Exception\SearchException` without making a request.
+
+`search(SearchQuery $query, int $limit = 20, int $offset = 0, bool $includeAppData = false)` returns
+an `Uploadcare\Response\SearchResponse`. It is a regular list response with `Uploadcare\File`
+results, so you can `store()` or `delete()` them right away. Two more methods are available:
+
+```php
+// Matched tokens of full-text conditions, empty for filter-only matches
+$result->getHighlight($file); // ['original_filename' => ['<em>invoice</em>-2024.pdf']]
+
+// The same query, next page. `null` on the last page.
+$next = $searchApi->nextPage($result);
+```
+
+`$limit` is from 1 to 100, and `$offset + $limit` must not exceed 1000: results beyond the first
+1000 cannot be paged through, so narrow the query instead. Pass `$includeAppData = true` to embed
+the application data (moderation, virus-scan results) into each file.
+
+Mind that files are indexed asynchronously: new uploads and changes, including tag updates, may take
+up to 15 seconds to show up in the results.
 
 ### `Uploadcare\FileCollection` class
 
@@ -254,6 +390,7 @@ Each file in the collection is an object of the `Uploadcare\File` class.
 ### `Uploadcare\File` class
 
 This class implements `FileInfoInterface` and has additional methods for file operations:
+
 - `store()` — Stores the current file.
 - `delete()` — Deletes the current file.
 - `copyToLocalStorage($store = true)` — Copies the current file to the default storage.
@@ -370,7 +507,7 @@ After that, you can access group operation methods:
 
 ### `Uploadcare\Group` class
 
-This class implements `Uploadcare\Interfaces\GroupInterface`.    
+This class implements `Uploadcare\Interfaces\GroupInterface`.  
 The `getFiles()` method of the `Uploadcare\Group` object returns [FileCollection](#uploadcarefilecollection-class).
 
 ## Project operations
@@ -440,7 +577,7 @@ The default arguments and examples are:
 
 - `$targetFormat = 'pdf'` — Target format.
 - `$throwError = false` — If set to `true`, a wrong request will throw an exception, otherwise, it'll return null.
-- `$store = true` —  The conversion results will go to your default storage.
+- `$store = true` — The conversion results will go to your default storage.
 - `$pageNumber = 1` — Specifies pages to convert in multi-page documents.
 
 After that, you can convert your file:
@@ -452,6 +589,7 @@ $result = $convertor->convertDocument($file, $request);
 ```
 
 Result will contain one of two objects:
+
 - `ConvertedItemInterface` object with conversion result in case of successful operation, or
 - `ResponseProblemInterface` object in case of error (and `$throwError` in request sets to `false`).
 
@@ -470,6 +608,7 @@ $status = $convertor->documentJobStatus($result); // or $result->getToken()
 ```
 
 This status object will implement `ConversionStatusInterface` with these methods:
+
 - `getStatus()` — Status string. Pending, processing, finished, failed or canceled.
 - `getError()` — An error string in case of error or null.
 - `getResult()` — The `StatusResultInterface` object.
@@ -555,7 +694,7 @@ $api->file()->generateSecureUrl('/*/'); # Access to all files in project
 $api->file()->generateSecureUrl('/{uuid}/-/resize/640x/other/transformations/'); # Access to modified file version
 ```
 
---------------------------------------------------------------------
+---
 
 ## Tests
 
@@ -583,4 +722,4 @@ UPLOADCARE_secret_KEY=<your secret key>
 [Changelog](https://github.com/uploadcare/uploadcare-php/blob/master/CHANGELOG.md)  
 [Contributing guide](https://github.com/uploadcare/.github/blob/master/CONTRIBUTING.md)  
 [Security policy](https://github.com/uploadcare/uploadcare-php/security/policy)  
-[Support](https://github.com/uploadcare/.github/blob/master/SUPPORT.md)  
+[Support](https://github.com/uploadcare/.github/blob/master/SUPPORT.md)

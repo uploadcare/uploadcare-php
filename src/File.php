@@ -2,7 +2,7 @@
 
 namespace Uploadcare;
 
-use Uploadcare\File\Metadata;
+use Uploadcare\File\{Metadata, Tags};
 use Uploadcare\Interfaces\Api\FileApiInterface;
 use Uploadcare\Interfaces\File\{AppDataInterface, ContentInfoInterface, FileInfoInterface};
 
@@ -121,6 +121,11 @@ final class File implements FileInfoInterface
     public function getMetadata(): Metadata
     {
         return $this->inner->getMetadata();
+    }
+
+    public function getTags(): Tags
+    {
+        return $this->inner->getTags();
     }
 
     public function getContentInfo(): ?ContentInfoInterface

@@ -2,7 +2,7 @@
 
 namespace Uploadcare\Interfaces\File;
 
-use Uploadcare\File\Metadata;
+use Uploadcare\File\{Metadata, Tags};
 
 /**
  * Uploadcare API file representation.
@@ -84,6 +84,13 @@ interface FileInfoInterface extends \Stringable
     public function getContentInfo(): ?ContentInfoInterface;
 
     public function getMetadata(): Metadata;
+
+    /**
+     * Searchable string tags attached to the file.
+     *
+     * @see https://uploadcare.com/docs/file-tags/
+     */
+    public function getTags(): Tags;
 
     public function getAppdata(): ?AppDataInterface;
 }
