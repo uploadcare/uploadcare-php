@@ -28,6 +28,7 @@ final class File implements FileInfoInterface, SerializableInterface
     private string $source = '';
     private ?ContentInfoInterface $contentInfo = null;
     private array $metadata = [];
+    private array $tags = [];
     private ?AppData $appdata = null;
 
     public static function rules(): array
@@ -48,6 +49,7 @@ final class File implements FileInfoInterface, SerializableInterface
             'source' => 'string',
             'contentInfo' => ContentInfo::class,
             'metadata' => 'array',
+            'tags' => 'array',
             'appdata' => AppData::class,
         ];
     }
@@ -223,6 +225,18 @@ final class File implements FileInfoInterface, SerializableInterface
     public function getMetadata(): Metadata
     {
         return new Metadata($this->metadata);
+    }
+
+    public function setTags(array $tags): self
+    {
+        $this->tags = $tags;
+
+        return $this;
+    }
+
+    public function getTags(): Tags
+    {
+        return new Tags($this->tags);
     }
 
     public function getContentInfo(): ?ContentInfoInterface

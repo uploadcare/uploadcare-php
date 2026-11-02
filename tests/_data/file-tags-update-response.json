@@ -1,0 +1,12 @@
+{
+  "tags": [
+    "pet",
+    "cat"
+  ],
+  "added": [
+    "cat"
+  ],
+  "deleted": [
+    "dog"
+  ]
+}

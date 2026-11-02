@@ -5,7 +5,7 @@ $uploader = new Uploadcare\Uploader\Uploader($configuration);
 $fileInfo = $uploader->fromPath(__DIR__ . '/squirrel.jpg', null, null, '1', [
     'system' => 'php-uploader',
     'pet' => 'cat',
-]);
+], ['cat', 'animal']);
 
 $data = [
     'url' => $fileInfo->getUrl(),

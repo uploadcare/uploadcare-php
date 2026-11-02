@@ -2,13 +2,15 @@
 
 namespace Uploadcare;
 
-use Uploadcare\Apis\{AddonsApi, ConversionApi, FileApi, GroupApi, MetadataApi, ProjectApi, WebhookApi};
+use Uploadcare\Apis\{AddonsApi, ConversionApi, FileApi, GroupApi, MetadataApi, ProjectApi, SearchApi, TagsApi, WebhookApi};
 use Uploadcare\Interfaces\Api\{AddonsApiInterface,
     ConversionApiInterface,
     FileApiInterface,
     GroupApiInterface,
     MetadataApiInterface,
     ProjectApiInterface,
+    SearchApiInterface,
+    TagsApiInterface,
     WebhookApiInterface};
 use Uploadcare\Interfaces\{ConfigurationInterface, RestApiInterface, UploaderInterface};
 use Uploadcare\Uploader\Uploader;
@@ -26,6 +28,8 @@ final class Api implements RestApiInterface
     private ConversionApiInterface $conversionApi;
     private AddonsApiInterface $addonsApi;
     private MetadataApiInterface $metadataApi;
+    private TagsApiInterface $tagsApi;
+    private SearchApiInterface $searchApi;
 
     public static function create(string $publicKey, string $secretKey): self
     {
@@ -47,6 +51,8 @@ final class Api implements RestApiInterface
         $this->conversionApi = new ConversionApi($configuration);
         $this->addonsApi = new AddonsApi($configuration);
         $this->metadataApi = new MetadataApi($configuration);
+        $this->tagsApi = new TagsApi($configuration);
+        $this->searchApi = new SearchApi($configuration, $this->fileApi);
     }
 
     public function file(): FileApiInterface
@@ -87,5 +93,15 @@ final class Api implements RestApiInterface
     public function metadata(): MetadataApiInterface
     {
         return $this->metadataApi;
+    }
+
+    public function tags(): TagsApiInterface
+    {
+        return $this->tagsApi;
+    }
+
+    public function search(): SearchApiInterface
+    {
+        return $this->searchApi;
     }
 }

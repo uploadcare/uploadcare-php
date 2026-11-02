@@ -1,0 +1,53 @@
+{
+  "next": "https://api.uploadcare.com/files/search/?include=appdata&limit=2&offset=2",
+  "previous": null,
+  "total": 3,
+  "per_page": 2,
+  "results": [
+    {
+      "datetime_removed": null,
+      "datetime_stored": "2024-07-14T03:28:06.175429Z",
+      "datetime_uploaded": "2024-07-14T03:28:06.043475Z",
+      "is_image": true,
+      "is_ready": true,
+      "mime_type": "image/jpeg",
+      "original_file_url": "https://ucarecdn.com/575ed4e8-f4e8-4c14-a58b-1527b6d9ee46/vacationphoto.jpg",
+      "original_filename": "vacation-photo.jpg",
+      "size": 145212,
+      "url": "https://api.uploadcare.com/files/575ed4e8-f4e8-4c14-a58b-1527b6d9ee46/",
+      "uuid": "575ed4e8-f4e8-4c14-a58b-1527b6d9ee46",
+      "variations": null,
+      "content_info": null,
+      "metadata": {
+        "trip": "vacation 2024"
+      },
+      "tags": [
+        "outdoor",
+        "cat"
+      ],
+      "highlight": {
+        "original_filename": ["<em>vacation</em>-photo.jpg"],
+        "metadata": {
+          "trip": ["<em>vacation</em> 2024"]
+        }
+      }
+    },
+    {
+      "datetime_removed": null,
+      "datetime_stored": "2024-07-15T03:28:06.175429Z",
+      "datetime_uploaded": "2024-07-15T03:28:06.043475Z",
+      "is_image": true,
+      "is_ready": true,
+      "mime_type": "image/png",
+      "original_file_url": "https://ucarecdn.com/a1cfbdb0-8293-4f72-b5ec-4f93c40303dc/beach.png",
+      "original_filename": "beach.png",
+      "size": 84491,
+      "url": "https://api.uploadcare.com/files/a1cfbdb0-8293-4f72-b5ec-4f93c40303dc/",
+      "uuid": "a1cfbdb0-8293-4f72-b5ec-4f93c40303dc",
+      "variations": null,
+      "content_info": null,
+      "metadata": {},
+      "tags": []
+    }
+  ]
+}

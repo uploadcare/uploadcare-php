@@ -41,7 +41,11 @@
       "metadata": {
         "foo": "2022-09-18T08:13:31+00:00",
         "current_timestamp": "2022-09-18T08:40:57+00:00"
-      }
+      },
+      "tags": [
+        "cat",
+        "animal"
+      ]
     },
     {
       "datetime_removed": null,
@@ -75,7 +79,8 @@
           "datetime_original": "2017-12-11T23:12:46"
         }
       },
-      "metadata": {}
+      "metadata": {},
+      "tags": []
     },
     {
       "datetime_removed": null,

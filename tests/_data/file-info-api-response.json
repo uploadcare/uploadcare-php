@@ -38,5 +38,9 @@
     "Brick": 0.75331,
     "Window Shade": 0.719,
     "Balcony": 0.70572
-  }
+  },
+  "tags": [
+    "cat",
+    "animal"
+  ]
 }
